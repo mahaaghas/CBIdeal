@@ -1,6 +1,5 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { NetlifyFormDefinitions } from "@/components/netlify-form-definitions"
 import { Cormorant_Garamond, Manrope } from "next/font/google"
 import { siteConfig } from "@/lib/site-config"
 import { getResolvedSiteSettings } from "@/lib/sanity/content"
@@ -79,10 +78,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${manrope.variable} ${cormorant.variable} font-sans antialiased`}>
-        <NetlifyFormDefinitions />
-        {children}
-      </body>
+      <body className={`${manrope.variable} ${cormorant.variable} font-sans antialiased`}>{children}</body>
     </html>
   )
 }

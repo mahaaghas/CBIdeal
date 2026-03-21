@@ -243,7 +243,7 @@ async function submitLeadFormToNetlify(values: LeadSubmissionInput): Promise<Lea
       ...buildNetlifyFormPayload(values),
     }
 
-    const response = await fetch("/", {
+    const response = await fetch("/__forms.html", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -301,10 +301,26 @@ async function submitLeadFormToApi(values: LeadSubmissionInput): Promise<LeadSub
 }
 
 export async function submitLeadForm(values: LeadSubmissionInput): Promise<LeadSubmissionResult> {
+  const isNetlifyRuntime =
+    typeof window !== "undefined" &&
+    (window.location.hostname.endsWith(".netlify.app") ||
+      Boolean(
+        document.querySelector(
+          'meta[name="generator"][content*="Netlify"], meta[name="generator"][content*="netlify"]',
+        ),
+      ))
+
   const netlifyResult = await submitLeadFormToNetlify(values)
 
   if (netlifyResult) {
     return netlifyResult
+  }
+
+  if (isNetlifyRuntime) {
+    return {
+      ok: false,
+      message: "We could not submit your request right now. Please try again in a moment.",
+    }
   }
 
   return submitLeadFormToApi(values)

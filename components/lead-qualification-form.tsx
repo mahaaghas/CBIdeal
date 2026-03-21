@@ -191,8 +191,7 @@ export function LeadQualificationForm({
         <form
           name={netlifyFormNames[formType]}
           method="POST"
-          data-netlify="true"
-          netlify-honeypot="bot-field"
+          action="/__forms.html"
           className="space-y-6"
           onSubmit={onSubmit}
         >

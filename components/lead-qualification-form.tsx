@@ -28,6 +28,7 @@ import {
   type LeadFormValues,
   leadFormDefaults,
   leadFormTypeCopy,
+  netlifyFormNames,
 } from "@/lib/forms"
 import { contactDetails } from "@/lib/site"
 import { cn } from "@/lib/utils"
@@ -187,7 +188,16 @@ export function LeadQualificationForm({
       ) : null}
 
       <Form {...form}>
-        <form className="space-y-6" onSubmit={onSubmit}>
+        <form
+          name={netlifyFormNames[formType]}
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          className="space-y-6"
+          onSubmit={onSubmit}
+        >
+          <input type="hidden" name="form-name" value={netlifyFormNames[formType]} />
+          <input type="hidden" name="bot-field" />
           {isInvestor ? (
             <>
               {step === 0 ? (

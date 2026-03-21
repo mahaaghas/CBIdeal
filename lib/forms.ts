@@ -60,6 +60,12 @@ export type LeadSubmissionResult =
   | { ok: true; referenceId: string }
   | { ok: false; message: string; fieldErrors?: LeadFormFieldErrors }
 
+export const netlifyFormNames: Record<LeadFormType, string> = {
+  investor: "investor-qualification",
+  company: "company-inquiry",
+  partner: "partner-inquiry",
+}
+
 export function buildLeadFormSchema(formType: LeadFormType) {
   return leadFormSchema.superRefine((values, ctx) => {
     if (!values.consent) {
@@ -181,7 +187,84 @@ export function leadFormDefaults(formType: LeadFormType): LeadFormValues {
   }
 }
 
-export async function submitLeadForm(values: LeadSubmissionInput): Promise<LeadSubmissionResult> {
+function buildNetlifyReferenceId(formType: LeadFormType) {
+  const prefix = formType === "investor" ? "INV" : formType === "partner" ? "PAR" : "COM"
+  const suffix = Date.now().toString(36).slice(-6).toUpperCase()
+
+  return `CBI-${prefix}-${suffix}`
+}
+
+function buildNetlifyFormPayload(values: LeadSubmissionInput) {
+  switch (values.formType) {
+    case "investor":
+      return {
+        full_name: values.fullName,
+        email: values.email,
+        phone_whatsapp: values.phone,
+        nationality: values.countryOfCitizenship ?? "",
+        residence_country: values.currentResidence ?? "",
+        preferred_destination: values.preferredDestination ?? "",
+        budget_range: values.budgetRange ?? "",
+        timeline: values.timeframe ?? "",
+        applicant_type: values.applicantScope ?? "",
+        program_type: values.programInterest ?? "",
+        notes: values.notes ?? "",
+        source_page: values.source,
+        consent: values.consent ? "yes" : "no",
+      }
+    case "company":
+    case "partner":
+      return {
+        company_name: values.companyName ?? "",
+        contact_person: values.fullName,
+        work_email: values.email,
+        phone_whatsapp: values.phone,
+        region_served: values.regionServed ?? "",
+        team_size: values.teamSize ?? "",
+        interest_type: values.businessInterest ?? "",
+        timeline: values.timeframe ?? "",
+        message: values.notes ?? "",
+        source_page: values.source,
+        consent: values.consent ? "yes" : "no",
+      }
+  }
+}
+
+function encodeFormBody(payload: Record<string, string>) {
+  return new URLSearchParams(payload).toString()
+}
+
+async function submitLeadFormToNetlify(values: LeadSubmissionInput): Promise<LeadSubmissionResult | null> {
+  try {
+    const formName = netlifyFormNames[values.formType]
+    const payload = {
+      "form-name": formName,
+      "bot-field": "",
+      ...buildNetlifyFormPayload(values),
+    }
+
+    const response = await fetch("/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: encodeFormBody(payload),
+    })
+
+    if (!response.ok) {
+      return null
+    }
+
+    return {
+      ok: true,
+      referenceId: buildNetlifyReferenceId(values.formType),
+    }
+  } catch {
+    return null
+  }
+}
+
+async function submitLeadFormToApi(values: LeadSubmissionInput): Promise<LeadSubmissionResult> {
   try {
     const response = await fetch("/api/leads", {
       method: "POST",
@@ -215,4 +298,14 @@ export async function submitLeadForm(values: LeadSubmissionInput): Promise<LeadS
       message: "We could not reach the server. Please try again.",
     }
   }
+}
+
+export async function submitLeadForm(values: LeadSubmissionInput): Promise<LeadSubmissionResult> {
+  const netlifyResult = await submitLeadFormToNetlify(values)
+
+  if (netlifyResult) {
+    return netlifyResult
+  }
+
+  return submitLeadFormToApi(values)
 }

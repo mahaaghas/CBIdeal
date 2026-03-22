@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, BarChart3, Building2, FileCheck2, MessagesSquare, ShieldCheck } from "lucide-react"
 import { CtaPanel } from "@/components/cta-panel"
@@ -13,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { LandingPageRenderer } from "@/components/cms/landing-page-renderer"
 import { buildPageMetadata } from "@/lib/metadata"
+import { siteImages } from "@/lib/site-images"
 import { ctaLinks, routeLinks } from "@/lib/site"
 import { getLandingPageBySlug, getResolvedSiteSettings } from "@/lib/sanity/content"
 
@@ -306,7 +308,11 @@ export default async function ForCompaniesPage() {
               </Button>
             </CardContent>
           </Card>
-          <Card className="section-card">
+          <Card className="section-card overflow-hidden p-0">
+            <div className="relative h-52">
+              <Image src={siteImages.businessStreet.src} alt={siteImages.businessStreet.alt} fill className="object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent" />
+            </div>
             <CardContent className="space-y-4 p-8">
               <span className="eyebrow">Guided demo</span>
               <h3 className="card-title text-foreground">Not ready for a product login? Start with a guided walkthrough.</h3>

@@ -1,6 +1,8 @@
+import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, CalendarRange, Clock3, Video } from "lucide-react"
 import { ctaLinks, schedulerConfig } from "@/lib/site"
+import { siteImages } from "@/lib/site-images"
 import { getResolvedSiteSettings } from "@/lib/sanity/content"
 import { Button } from "@/components/ui/button"
 
@@ -40,7 +42,7 @@ export async function MeetingSchedulerCard({
           </div>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button className="w-full sm:w-auto" asChild>
-              <Link href={settings.bookingUrl}>
+              <Link href={settings.bookingUrl} target="_blank" rel="noreferrer">
                 Book a meeting
                 <ArrowRight className="size-4" />
               </Link>
@@ -61,12 +63,19 @@ export async function MeetingSchedulerCard({
               20 to 30 minutes
             </span>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {["Tuesday 10:00", "Tuesday 13:30", "Wednesday 09:30", "Thursday 15:00"].map((slot) => (
-              <div key={slot} className="rounded-2xl border border-background bg-background/80 px-4 py-4 text-sm text-foreground shadow-sm">
-                {slot}
+          <div className="relative overflow-hidden rounded-[24px] border border-background/80 bg-background/80">
+            <div className="relative h-56">
+              <Image src={siteImages.stockholmNight.src} alt={siteImages.stockholmNight.alt} fill className="object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent" />
+            </div>
+            <div className="absolute inset-x-0 bottom-0 p-5">
+              <div className="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur">
+                <p className="text-sm font-medium text-primary-foreground">Real booking link</p>
+                <p className="mt-2 text-sm leading-7 text-primary-foreground/75">
+                  Open Calendly in a new tab to choose the slot that suits your team best.
+                </p>
               </div>
-            ))}
+            </div>
           </div>
           <div className="mt-4 rounded-2xl border border-dashed border-border/80 bg-background/70 px-4 py-4 text-sm leading-7 text-muted-foreground">
             Prefer email first? Use the fallback CTA and we will coordinate the right next step directly with your team.

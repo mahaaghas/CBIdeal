@@ -11,6 +11,7 @@ import { SiteShell } from "@/components/site-shell"
 import { TrustGrid } from "@/components/trust-grid"
 import { LandingPageRenderer } from "@/components/cms/landing-page-renderer"
 import { buildPageMetadata } from "@/lib/metadata"
+import { siteImages } from "@/lib/site-images"
 import { routeLinks } from "@/lib/site"
 import { getLandingPageBySlug, getResolvedSiteSettings } from "@/lib/sanity/content"
 
@@ -77,17 +78,20 @@ const pathways = [
   {
     title: "Caribbean citizenship routes",
     description: "Suitable for applicants prioritizing speed, mobility, and family inclusion through established donation or approved investment pathways.",
-    image: "/st-lucia-caribbean-beach-luxury-resort.jpg",
+    image: siteImages.petitPiton.src,
+    alt: siteImages.petitPiton.alt,
   },
   {
     title: "Southern Europe residency routes",
     description: "Designed for families who value optional relocation, real estate strategy, and long-term access planning across European markets.",
-    image: "/lisbon-portugal-cityscape-golden-hour.jpg",
+    image: siteImages.coimbra.src,
+    alt: siteImages.coimbra.alt,
   },
   {
     title: "Mediterranean residence and settlement planning",
     description: "Useful where clients need flexibility around lifestyle assets, tax conversations, or regional operating presence.",
-    image: "/santorini-greece-white-buildings-blue-domes.jpg",
+    image: siteImages.budapest.src,
+    alt: siteImages.budapest.alt,
   },
 ]
 

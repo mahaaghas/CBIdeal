@@ -9,6 +9,7 @@ import { SiteShell } from "@/components/site-shell"
 import { ctaLinks } from "@/lib/site"
 import { Card, CardContent } from "@/components/ui/card"
 import { buildPageMetadata } from "@/lib/metadata"
+import { siteImages } from "@/lib/site-images"
 import { getResolvedSiteSettings } from "@/lib/sanity/content"
 
 export const metadata: Metadata = buildPageMetadata({
@@ -67,7 +68,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           <Card className="section-card overflow-hidden p-0">
             <div className="grid gap-0 md:grid-cols-2">
               <div className="relative min-h-[300px]">
-                <Image src="/people-bg.png" alt="Professional consultation setting" fill className="object-cover" />
+                <Image src={siteImages.passportHandoff.src} alt={siteImages.passportHandoff.alt} fill className="object-cover" />
               </div>
               <CardContent className="space-y-5 p-8">
                 <span className="eyebrow">Reach the right team</span>
@@ -95,7 +96,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
 
           <Card className="section-card overflow-hidden p-0">
             <div className="relative min-h-[300px]">
-              <Image src="/santorini-greece-white-buildings-blue-domes.jpg" alt="Premium destination view" fill className="object-cover" />
+              <Image src={siteImages.coastalCafe.src} alt={siteImages.coastalCafe.alt} fill className="object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/25 to-transparent" />
             </div>
             <CardContent className="space-y-4 p-8">

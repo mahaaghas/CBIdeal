@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { LandingPageRenderer } from "@/components/cms/landing-page-renderer"
 import { buildPageMetadata } from "@/lib/metadata"
+import { siteImages } from "@/lib/site-images"
 import { ctaLinks, routeLinks } from "@/lib/site"
 import { getHomepageLandingPage, getResolvedSiteSettings } from "@/lib/sanity/content"
 
@@ -95,17 +96,20 @@ const programs = [
   {
     title: "Caribbean citizenship by investment",
     description: "For applicants prioritizing speed, mobility, and efficient family inclusion through established CBI programs.",
-    image: "/st-lucia-caribbean-beach-luxury-resort.jpg",
+    image: siteImages.stLuciaAerial.src,
+    alt: siteImages.stLuciaAerial.alt,
   },
   {
     title: "European residency by investment",
     description: "For families seeking long-term flexibility, optional relocation, and structured access into European markets.",
-    image: "/lisbon-portugal-cityscape-golden-hour.jpg",
+    image: siteImages.coimbra.src,
+    alt: siteImages.coimbra.alt,
   },
   {
     title: "Fast-track and family-led cases",
     description: "For cases where timing, dependants, or multi-jurisdiction planning matter as much as the headline program itself.",
-    image: "/valletta-malta-mediterranean-architecture.jpg",
+    image: siteImages.ghent.src,
+    alt: siteImages.ghent.alt,
   },
 ]
 
@@ -235,7 +239,7 @@ export default async function HomePage() {
           <Card className="section-card overflow-hidden p-0">
             <div className="grid gap-0 md:grid-cols-2">
               <div className="relative min-h-[320px]">
-                <Image src="/people-bg.png" alt="Professional advisory setting" fill className="object-cover" />
+                <Image src={siteImages.familyWaterfront.src} alt={siteImages.familyWaterfront.alt} fill className="object-cover" />
               </div>
               <CardContent className="space-y-5 p-8">
                 <span className="eyebrow">Trust and discretion</span>
@@ -252,7 +256,7 @@ export default async function HomePage() {
 
           <Card className="section-card overflow-hidden p-0">
             <div className="relative min-h-[320px]">
-              <Image src="/istanbul-turkey-bosphorus-skyline-modern.jpg" alt="Premium city skyline" fill className="object-cover" />
+              <Image src={siteImages.budapest.src} alt={siteImages.budapest.alt} fill className="object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/30 to-transparent" />
             </div>
             <CardContent className="space-y-4 p-8">

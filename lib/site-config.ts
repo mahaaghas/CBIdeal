@@ -11,6 +11,8 @@ const routeLinks = {
   partners: "/partners",
 } as const
 
+const calendlyBookingUrl = "https://calendly.com/va-agency-hirings/crm-lead-partnership-call"
+
 const ctaLinks = {
   checkEligibility: "/#eligibility",
   bookCompanyCall: `${routeLinks.forCompanies}#meeting`,
@@ -112,10 +114,10 @@ export const siteConfig = {
     whatsapp: "+357 99 245 120",
   },
   scheduling: {
-    provider: "Calendly or TidyCal",
-    bookingUrl: ctaLinks.contactIntentDemo,
+    provider: "Calendly",
+    bookingUrl: calendlyBookingUrl,
     helperText:
-      "Choose a time for a short introduction call focused on CRM rollout, qualified leads, or both.",
+      "Calendly opens in a new tab for a short introduction call focused on CRM rollout, qualified leads, or both.",
   },
   demo: {
     requestUrl: ctaLinks.requestDemo,

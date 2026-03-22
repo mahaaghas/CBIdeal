@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { getAlternateLanguageLinks, type Locale } from "@/lib/i18n/routing"
 import { siteConfig } from "@/lib/site-config"
 
 interface PageMetadataOptions {
@@ -12,6 +13,7 @@ interface PageMetadataOptions {
   noIndex?: boolean
   siteName?: string
   siteUrl?: string
+  locale?: Locale
 }
 
 const defaultKeywords = [
@@ -33,6 +35,7 @@ export function buildPageMetadata({
   noIndex = false,
   siteName = siteConfig.siteName,
   siteUrl = siteConfig.metadata.siteUrl,
+  locale = "en",
 }: PageMetadataOptions): Metadata {
   const url = new URL(path, siteUrl).toString()
   const ogImage = image ?? siteConfig.metadata.defaultOgImage
@@ -46,10 +49,11 @@ export function buildPageMetadata({
     keywords: [...defaultKeywords, ...keywords],
     alternates: {
       canonical: path,
+      languages: getAlternateLanguageLinks(path),
     },
     openGraph: {
       type: "website",
-      locale: "en_US",
+      locale: locale === "ar" ? "ar_AE" : locale === "ru" ? "ru_RU" : "en_US",
       url,
       title: resolvedOgTitle,
       description: resolvedOgDescription,

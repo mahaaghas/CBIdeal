@@ -167,6 +167,19 @@ Create these in Sanity:
 4. A `landingPage` for the homepage if you want the homepage editable in CMS
 5. A `blogPost` to populate `/insights`
 
+### 6. Blog SEO workflow
+
+For each `blogPost`, fill in:
+
+- `SEO title`
+- `Meta description`
+- `Featured image` with required alt text
+- inline article images with required alt text
+- `Related main pages` to link the article to key investor or company pages
+- `Related articles` if you want to hand-pick contextual internal links
+
+If `Related articles` is left empty, the frontend falls back to related posts based on category and tag overlap.
+
 ### 5. Image alt text
 
 Every structured image field includes an `alt` field. Fill it in for:

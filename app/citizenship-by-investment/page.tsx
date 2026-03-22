@@ -1,261 +1,296 @@
 import type { Metadata } from "next"
-import { BadgeCheck, CheckCircle2, Globe2, Shield, Users } from "lucide-react"
-import { CtaPanel } from "@/components/cta-panel"
-import { FaqList } from "@/components/faq-list"
-import { LeadQualificationForm } from "@/components/lead-qualification-form"
-import { PageHero } from "@/components/page-hero"
+import { BadgeCheck, CircleDollarSign, Compass, FileCheck2, Globe2, ShieldCheck, Users } from "lucide-react"
+import { LocalizedLandingLeadForm } from "@/components/forms/localized-landing-lead-form"
+import { LandingComparisonTable } from "@/components/landing/landing-comparison-table"
+import { LandingCtaSection } from "@/components/landing/landing-cta-section"
+import { LandingFaqSection } from "@/components/landing/landing-faq-section"
+import { LandingHero } from "@/components/landing/landing-hero"
+import { LandingLinkGrid } from "@/components/landing/landing-link-grid"
 import { ProcessSteps } from "@/components/process-steps"
-import { ProgramGrid } from "@/components/program-grid"
 import { SectionHeading } from "@/components/section-heading"
 import { SiteShell } from "@/components/site-shell"
 import { TrustGrid } from "@/components/trust-grid"
-import { LandingPageRenderer } from "@/components/cms/landing-page-renderer"
+import { Card, CardContent } from "@/components/ui/card"
+import { getRequestLocale } from "@/lib/i18n/request"
+import { localizeHref } from "@/lib/i18n/routing"
 import { buildPageMetadata } from "@/lib/metadata"
-import { siteImages } from "@/lib/site-images"
-import { routeLinks } from "@/lib/site"
-import { getLandingPageBySlug, getResolvedSiteSettings } from "@/lib/sanity/content"
+import { getLocalizedRouteLinks } from "@/lib/site"
 
 export async function generateMetadata(): Promise<Metadata> {
-  const [cmsPage, settings] = await Promise.all([
-    getLandingPageBySlug("citizenship-by-investment"),
-    getResolvedSiteSettings(),
-  ])
-
-  if (cmsPage?.seo) {
-    return buildPageMetadata({
-      title: cmsPage.seo.title || cmsPage.title,
-      description: cmsPage.seo.description || settings.siteDescription,
-      path: "/citizenship-by-investment",
-      keywords: cmsPage.seo.keywords ?? [
-        "citizenship by investment programs",
-        "residency by investment advisory",
-        "second passport options",
-      ],
-      image: cmsPage.seo.openGraphImage?.url,
-      openGraphTitle: cmsPage.seo.openGraphTitle,
-      openGraphDescription: cmsPage.seo.openGraphDescription,
-      noIndex: cmsPage.seo.noIndex,
-      siteName: settings.siteName,
-      siteUrl: settings.siteUrl,
-    })
-  }
+  const locale = getRequestLocale()
 
   return buildPageMetadata({
-    title: "Citizenship by Investment Options",
+    title: "Citizenship by Investment: A Structured Advisory Route for Global Investors",
     description:
-      "Review citizenship-by-investment and residency-by-investment pathways, qualify your profile, and connect with a provider suited to your budget, timing, and goals.",
-    path: "/citizenship-by-investment",
+      "Understand citizenship by investment from a realistic advisory perspective, including who it suits, what to compare, how the process works, and when to request a private consultation.",
+    path: localizeHref(locale, "/citizenship-by-investment"),
     keywords: [
-      "citizenship by investment programs",
-      "residency by investment advisory",
-      "second passport options",
+      "citizenship by investment",
+      "second citizenship advisory",
+      "citizenship by investment consultation",
+      "caribbean citizenship programs",
     ],
-    siteName: settings.siteName,
-    siteUrl: settings.siteUrl,
+    locale,
   })
 }
 
 const trustItems = [
   {
-    title: "Confidential screening",
-    description: "Every enquiry is framed around eligibility, documentation readiness, and commercial fit before a provider conversation begins.",
+    title: "Confidential first review",
+    description:
+      "Every enquiry is framed around profile fit, documentation readiness, and realistic next steps before a provider is introduced.",
   },
   {
-    title: "Family-first planning",
-    description: "We assess principal applicants, dependants, timing pressure, and multi-jurisdiction goals together rather than in isolation.",
+    title: "Designed for real decision-making",
+    description:
+      "We help clients compare suitability, family fit, and trade-offs rather than pushing one route on every profile.",
   },
   {
-    title: "Jurisdiction comparison",
-    description: "The process is structured to help clients compare mobility, due diligence, family fit, and execution complexity across programs.",
+    title: "Licensed-provider introductions",
+    description:
+      "Our role is to qualify and structure the enquiry before it reaches a licensed provider or authorized partner.",
   },
   {
-    title: "Provider matching",
-    description: "The goal is to connect each enquiry with a relevant provider that can make a serious, best-fit offer.",
-  },
-]
-
-const pathways = [
-  {
-    title: "Caribbean citizenship routes",
-    description: "Suitable for applicants prioritizing speed, mobility, and family inclusion through established donation or approved investment pathways.",
-    image: siteImages.petitPiton.src,
-    alt: siteImages.petitPiton.alt,
-  },
-  {
-    title: "Southern Europe residency routes",
-    description: "Designed for families who value optional relocation, real estate strategy, and long-term access planning across European markets.",
-    image: siteImages.coimbra.src,
-    alt: siteImages.coimbra.alt,
-  },
-  {
-    title: "Mediterranean residence and settlement planning",
-    description: "Useful where clients need flexibility around lifestyle assets, tax conversations, or regional operating presence.",
-    image: siteImages.budapest.src,
-    alt: siteImages.budapest.alt,
+    title: "Compliance-aware from the start",
+    description:
+      "Due diligence, AML, KYC, and source-of-funds readiness are treated as core parts of the process, not fine print.",
   },
 ]
 
-const process = [
+const processSteps = [
   {
-    icon: Shield,
-    title: "1. Suitability review",
-    description: "We begin with nationality, family structure, budget, timeline, and any immediate red flags that could affect program fit.",
+    icon: Compass,
+    title: "1. Private qualification",
+    description:
+      "We review your citizenship, residence, budget, family structure, and what you are actually trying to solve.",
   },
   {
     icon: Globe2,
-    title: "2. Provider matching",
-    description: "We narrow the route to suitable programs and pass the enquiry to a provider that fits the commercial and geographic context.",
+    title: "2. Route comparison",
+    description:
+      "We narrow the conversation to the programs that appear commercially and practically relevant to your profile.",
   },
   {
-    icon: Users,
-    title: "3. Offer and next steps",
-    description: "A matched provider follows up with the best-fit offer and the next steps for your case.",
+    icon: FileCheck2,
+    title: "3. Provider handoff",
+    description:
+      "A licensed provider or authorized partner reviews the case and outlines the formal next steps if the fit is real.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "4. Due diligence and application",
+    description:
+      "Formal review, document collection, and application handling proceed only through official program structures.",
   },
 ]
 
 const faqs = [
   {
-    question: "What happens after I submit the qualification form?",
+    question: "Who usually explores citizenship by investment seriously?",
     answer:
-      "A provider will review your details and contact you with the best available offer for your profile. You will also receive a submission reference after the form is sent.",
+      "Most serious applicants are planning for mobility, family optionality, business continuity, or long-term flexibility rather than simply chasing a passport ranking.",
   },
   {
-    question: "Is this page only for citizenship by investment?",
+    question: "Do you guarantee that a route will be suitable?",
     answer:
-      "No. The page is positioned for both citizenship by investment and residency by investment conversations, with the form capturing the distinction clearly.",
+      "No. The purpose of qualification is to test fit before expectations become unrealistic. Final suitability depends on your profile, documentation, and the rules of the official program involved.",
   },
   {
-    question: "Do you guarantee eligibility before review?",
+    question: "Is this only relevant for Caribbean programs?",
     answer:
-      "No. The messaging is intentionally built around qualification and provider matching rather than guarantees. Final advice always depends on the applicant profile and the program rules in force.",
+      "No. This pillar page is designed to explain citizenship by investment broadly, while related comparison pages help narrow the Caribbean shortlist or compare citizenship with residency routes.",
+  },
+  {
+    question: "What happens after I submit the form?",
+    answer:
+      "Your enquiry is reviewed privately and, where appropriate, matched to a licensed provider or authorized partner for a more formal conversation.",
   },
 ]
 
-export default async function CitizenshipByInvestmentPage() {
-  const cmsPage = await getLandingPageBySlug("citizenship-by-investment")
-
-  if (cmsPage) {
-    return (
-      <SiteShell>
-        <LandingPageRenderer page={cmsPage} />
-      </SiteShell>
-    )
-  }
+export default function CitizenshipByInvestmentPage() {
+  const locale = getRequestLocale()
+  const routes = getLocalizedRouteLinks(locale)
 
   return (
     <SiteShell>
-      <PageHero
-        eyebrow="Citizenship and residency options"
-        title="Get matched with the best citizenship or residency offer for your profile."
-        description="We focus on profile fit, budget, and provider matching so a suitable firm can come back with the right offer."
-        primaryAction={{ href: "#qualification", label: "Check your fit" }}
-        secondaryAction={{ href: routeLinks.forCompanies, label: "For agencies and companies" }}
+      <LandingHero
+        eyebrow="Citizenship by investment"
+        title="Citizenship by investment for investors who want a clearer, more structured route."
+        description="We help qualified clients compare official citizenship by investment programs, understand the trade-offs honestly, and speak with licensed providers that fit the profile."
+        primaryAction={{ href: "#qualification", label: "See your best-fit route" }}
+        secondaryAction={{ href: routes.bookConsultation, label: "Request a private consultation" }}
         stats={[
-          { value: "Provider match", label: "based on profile and goals" },
-          { value: "Warm demand", label: "qualified before handoff" },
-          { value: "Private review", label: "handled with discretion" },
+          { value: "Private review", label: "handled discreetly from the first step" },
+          { value: "Profile-led", label: "built around fit, not generic rankings" },
+          { value: "Provider match", label: "qualified before any introduction" },
         ]}
-      >
-        <div className="grid gap-4">
-          <div className="rounded-[28px] border border-white/10 bg-black/10 p-5 backdrop-blur">
-            <p className="text-sm uppercase tracking-[0.2em] text-primary-foreground/70">What you can expect</p>
-            <div className="mt-4 space-y-4">
-              {[
-                "Clear positioning for citizenship and residency by investment.",
-                "A qualification flow that filters for fit before provider contact.",
-                "A more private, trust-oriented first step for high-value enquiries.",
-              ].map((item) => (
-                <div key={item} className="flex items-start gap-3">
-                  <CheckCircle2 className="mt-0.5 size-5 text-secondary" />
-                  <p className="text-sm leading-7 text-primary-foreground/75">{item}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </PageHero>
+        highlightsLabel="Why investors use this page"
+        aside={
+          <LocalizedLandingLeadForm
+            locale={locale}
+            title="Start your qualification"
+            description="Share the essentials and we will help you understand which route appears most suitable before a provider conversation begins."
+            submitLabel="See your best-fit option"
+            sourceCategory="pillar"
+            sourcePage="citizenship-by-investment"
+          />
+        }
+      />
 
-      <section className="section-padding">
+      <section className="section-padding pt-0">
         <div className="container-shell">
           <TrustGrid items={trustItems} />
         </div>
       </section>
 
       <section className="section-padding pt-0">
-        <div className="container-shell">
+        <div className="container-shell space-y-10">
           <SectionHeading
-            eyebrow="Program framing"
-            title="Positioned around pathways, not generic brochure content."
-            description="The copy stays useful without relying on unstable legal thresholds. It signals seriousness while leaving room for market-specific updates later."
+            eyebrow="What this route is really for"
+            title="A second citizenship can be valuable, but only when the objective is clear."
+            description="The strongest cases usually begin with a practical goal: smoother travel, family planning, contingency options, or long-term international flexibility."
           />
-          <ProgramGrid items={pathways} />
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {[
+              {
+                icon: Globe2,
+                title: "Mobility",
+                text: "Useful where travel friction affects business, family movement, or international planning.",
+              },
+              {
+                icon: Users,
+                title: "Family optionality",
+                text: "Relevant for households planning for children, dependants, or future relocation choices.",
+              },
+              {
+                icon: CircleDollarSign,
+                title: "Long-term planning",
+                text: "Best understood as part of a wider private planning conversation rather than a quick purchase.",
+              },
+              {
+                icon: BadgeCheck,
+                title: "Structured execution",
+                text: "The right route depends on documentation quality, due diligence readiness, and provider fit.",
+              },
+            ].map((item) => (
+              <Card key={item.title} className="section-card h-full">
+                <CardContent className="space-y-4 p-6 md:p-7">
+                  <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                    <item.icon className="size-6" />
+                  </div>
+                  <h3 className="text-xl leading-tight text-foreground">{item.title}</h3>
+                  <p className="text-sm leading-7 text-muted-foreground">{item.text}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 
       <section className="section-padding bg-muted/30">
         <div className="container-shell">
           <SectionHeading
-            eyebrow="Process"
-            title="A better first conversation starts with cleaner qualification."
-            description="The process moves from website enquiry to provider handoff in a way that feels clear, selective, and easier to trust."
+            eyebrow="How the process works"
+            title="A serious first conversation starts with cleaner qualification."
+            description="This route is designed to move from enquiry to provider handoff in a way that feels selective, structured, and easier to trust."
           />
-          <ProcessSteps steps={process} />
+          <ProcessSteps steps={processSteps} />
         </div>
       </section>
 
-      <section id="qualification" className="section-padding">
-        <div className="container-shell grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="space-y-6">
-            <span className="eyebrow">Lead qualification</span>
-            <h2 className="section-title max-w-xl text-foreground">Request a private assessment.</h2>
-            <p className="max-w-xl text-lg leading-8 text-muted-foreground">
-              Use this form to screen citizenship or residency options, flag family-specific considerations, and surface urgency before a provider is introduced.
-            </p>
-            <div className="space-y-4">
-              {[
-                "Captures the details advisers need for a more productive first review.",
-                "Balances strong qualification with a calm, premium user experience.",
-                "Structured for secure routing and a consistent follow-up process.",
-              ].map((point) => (
-                <div key={point} className="flex items-start gap-3">
-                  <BadgeCheck className="mt-1 size-5 text-primary" />
-                  <p className="fine-print">{point}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <LeadQualificationForm
-            formType="investor"
-            title="Start your qualification"
-            description="Share enough context for a productive first review."
-            submitLabel="Request assessment"
-            source="citizenship"
-          />
-        </div>
-      </section>
-
-      <section className="section-padding pt-0">
-        <div className="container-shell">
+      <section className="section-padding">
+        <div className="container-shell space-y-10">
           <SectionHeading
-            eyebrow="FAQ"
-            title="Common questions from investor-side enquiries."
-            description="The answers keep expectations grounded and reinforce the site's trust-building tone."
+            eyebrow="Shortlist logic"
+            title="Most investors are comparing a few practical route types, not dozens of completely different outcomes."
+            description="The strongest comparison is usually not about tiny ranking differences. It is about fit: cost structure, family inclusion, reputation, and strategic use."
           />
-          <FaqList items={faqs} />
+          <LandingComparisonTable
+            columns={[
+              { key: "st-kitts", label: "St. Kitts & Nevis" },
+              { key: "dominica", label: "Dominica" },
+              { key: "antigua", label: "Antigua & Barbuda" },
+              { key: "grenada", label: "Grenada" },
+            ]}
+            rows={[
+              {
+                factor: "General positioning",
+                values: [
+                  "Premium and reputation-led",
+                  "Practical and value-conscious",
+                  "Often strong for family-led cases",
+                  "More strategic and longer-horizon",
+                ],
+              },
+              {
+                factor: "Who it often suits",
+                values: [
+                  "Investors prioritizing maturity and optics",
+                  "Applicants focused on cleaner economics",
+                  "Households comparing total family fit",
+                  "Business owners and broader planners",
+                ],
+              },
+              {
+                factor: "What to compare carefully",
+                values: [
+                  "Higher threshold vs perceived program strength",
+                  "Value vs long-term positioning",
+                  "Family economics and practical obligations",
+                  "Strategy fit rather than simple rankings",
+                ],
+              },
+            ]}
+          />
         </div>
       </section>
 
-      <section className="section-padding pt-0">
-        <div className="container-shell">
-          <CtaPanel
-            eyebrow="Also relevant"
-            title="If you operate an immigration firm, the company overview explains the CRM and lead side."
-            description="Use the company overview to explore the CRM, guided demo, pricing, and qualified lead partnership offer."
-            primaryAction={{ href: routeLinks.forCompanies, label: "View company overview" }}
-            secondaryAction={{ href: routeLinks.partners, label: "Explore partnerships" }}
+      <section id="qualification" className="section-padding pt-0">
+        <div className="container-shell space-y-10">
+          <SectionHeading
+            eyebrow="Where to go next"
+            title="Choose the next page based on the kind of decision you are making."
+            description="Some visitors need a broad comparison, others need a private consultation. This system is meant to support both without forcing a rushed decision."
+          />
+          <LandingLinkGrid
+            items={[
+              {
+                title: "Compare the main Caribbean routes",
+                description:
+                  "Use the comparison page if you want to understand how the principal Caribbean options differ in practice.",
+                href: routes.caribbeanComparison,
+              },
+              {
+                title: "Book a private consultation",
+                description:
+                  "Use the consultation page if you already have a profile, timing pressure, or a family-specific question.",
+                href: routes.bookConsultation,
+              },
+              {
+                title: "Read deeper advisory content",
+                description:
+                  "Use the insights hub if you are still working through trade-offs, due diligence, or region-specific questions.",
+                href: routes.insights,
+              },
+            ]}
           />
         </div>
       </section>
+
+      <LandingFaqSection
+        eyebrow="FAQ"
+        title="Common questions from investor-side enquiries."
+        description="These answers keep expectations realistic while helping serious enquirers understand what the process is designed to do."
+        items={faqs}
+      />
+
+      <LandingCtaSection
+        eyebrow="Private consultation"
+        title="Ready to discuss your case in a more structured setting?"
+        description="Request a private consultation if you want to move from broad research into a profile-led conversation with realistic next steps."
+        primaryAction={{ href: routes.bookConsultation, label: "Request a private consultation" }}
+        secondaryAction={{ href: routes.contact, label: "Contact the advisory team" }}
+      />
     </SiteShell>
   )
 }

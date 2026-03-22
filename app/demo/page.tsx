@@ -8,20 +8,43 @@ import { SectionHeading } from "@/components/section-heading"
 import { SiteShell } from "@/components/site-shell"
 import { Card, CardContent } from "@/components/ui/card"
 import { Compass, MonitorPlay, Users } from "lucide-react"
+import { getRequestLocale } from "@/lib/i18n/request"
+import { localizeHref } from "@/lib/i18n/routing"
 import { buildPageMetadata } from "@/lib/metadata"
-import { ctaLinks, routeLinks } from "@/lib/site"
+import { getLocalizedCtaLinks, getLocalizedRouteLinks } from "@/lib/site"
 
-export const metadata: Metadata = buildPageMetadata({
-  title: "Guided CRM Demo for Immigration Firms",
-  description:
-    "Request a guided CRM demo for passport companies and immigration firms, with a focused walkthrough of lead handling, follow-up, visibility, and next-step planning.",
-  path: "/demo",
-  keywords: [
-    "immigration CRM demo",
-    "passport company software demo",
-    "guided CRM walkthrough",
-  ],
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = getRequestLocale()
+  const localized = {
+    en: {
+      title: "Guided CRM Demo for Immigration Firms",
+      description:
+        "Request a guided CRM demo for passport companies and immigration firms, with a focused walkthrough of lead handling, follow-up, visibility, and next-step planning.",
+    },
+    ar: {
+      title: "عرض CRM إرشادي لشركات الهجرة",
+      description:
+        "اطلب عرضاً إرشادياً لنظام CRM المخصص لشركات الجوازات والهجرة مع شرح واضح لإدارة العملاء المحتملين والمتابعة والخطوات التالية.",
+    },
+    ru: {
+      title: "Проводимое демо CRM для иммиграционных фирм",
+      description:
+        "Запросите guided demo CRM для паспортных и иммиграционных компаний с фокусом на лидах, сопровождении и следующих шагах.",
+    },
+  }[locale]
+
+  return buildPageMetadata({
+    title: localized.title,
+    description: localized.description,
+    path: localizeHref(locale, "/demo"),
+    keywords: [
+      "immigration CRM demo",
+      "passport company software demo",
+      "guided CRM walkthrough",
+    ],
+    locale,
+  })
+}
 
 const demoSteps = [
   {
@@ -42,14 +65,44 @@ const demoSteps = [
 ]
 
 export default function DemoPage() {
+  const locale = getRequestLocale()
+  const ctaLinks = getLocalizedCtaLinks(locale)
+  const routeLinks = getLocalizedRouteLinks(locale)
+  const copy = {
+    en: {
+      eyebrow: "Guided demo",
+      title: "Request a guided demo of the CRM and lead workflow.",
+      description:
+        "A guided demo gives passport companies and immigration firms a clearer way to evaluate the CRM, the lead workflow, and the right next step for their team.",
+      requestDemo: "Request guided demo",
+      seePricing: "See pricing first",
+    },
+    ar: {
+      eyebrow: "عرض إرشادي",
+      title: "اطلب عرضاً إرشادياً لنظام CRM ومسار العملاء المحتملين.",
+      description:
+        "يوفر العرض الإرشادي لشركات الجوازات والهجرة طريقة أوضح لتقييم النظام ومسار العملاء والخطوة التالية المناسبة للفريق.",
+      requestDemo: "اطلب عرضاً إرشادياً",
+      seePricing: "اطلع على الأسعار أولاً",
+    },
+    ru: {
+      eyebrow: "Guided demo",
+      title: "Запросите guided demo CRM и процесса работы с лидами.",
+      description:
+        "Guided demo помогает паспортным и иммиграционным компаниям понятнее оценить CRM, процесс работы с лидами и следующий шаг для команды.",
+      requestDemo: "Запросить guided demo",
+      seePricing: "Сначала посмотреть тарифы",
+    },
+  }[locale]
+
   return (
     <SiteShell>
       <PageHero
-        eyebrow="Guided demo"
-        title="Request a guided demo of the CRM and lead workflow."
-        description="A guided demo gives passport companies and immigration firms a clearer way to evaluate the CRM, the lead workflow, and the right next step for their team."
-        primaryAction={{ href: "#demo-form", label: "Request guided demo" }}
-        secondaryAction={{ href: ctaLinks.viewPricing, label: "See pricing first" }}
+        eyebrow={copy.eyebrow}
+        title={copy.title}
+        description={copy.description}
+        primaryAction={{ href: "#demo-form", label: copy.requestDemo }}
+        secondaryAction={{ href: ctaLinks.viewPricing, label: copy.seePricing }}
         stats={[
           { value: "Walkthrough", label: "tailored to your workflow" },
           { value: "Realistic scope", label: "without product fluff" },
@@ -93,6 +146,7 @@ export default function DemoPage() {
             </Card>
           </div>
           <LeadQualificationForm
+            locale={locale}
             formType="company"
             title="Request guided demo"
             description="Tell us what your team wants to see."

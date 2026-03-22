@@ -7,20 +7,35 @@ import { SectionHeading } from "@/components/section-heading"
 import { SiteShell } from "@/components/site-shell"
 import { TrustGrid } from "@/components/trust-grid"
 import { Card, CardContent } from "@/components/ui/card"
+import { getRequestLocale } from "@/lib/i18n/request"
+import { localizeHref } from "@/lib/i18n/routing"
 import { buildPageMetadata } from "@/lib/metadata"
-import { routeLinks } from "@/lib/site"
+import { getLocalizedRouteLinks } from "@/lib/site"
 
-export const metadata: Metadata = buildPageMetadata({
-  title: "Partnerships for Agencies and Passport Companies",
-  description:
-    "Explore referral, white-label, and CRM partnership opportunities for agencies, passport companies, and cross-border immigration operators.",
-  path: "/partners",
-  keywords: [
-    "immigration firm partnerships",
-    "passport company partnerships",
-    "white label immigration CRM",
-  ],
-})
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = getRequestLocale()
+  return buildPageMetadata({
+    title:
+      locale === "ar"
+        ? "شراكات للوكالات وشركات الجوازات"
+        : locale === "ru"
+          ? "Партнёрства для агентств и паспортных компаний"
+          : "Partnerships for Agencies and Passport Companies",
+    description:
+      locale === "ar"
+        ? "استكشف فرص الشراكات بالإحالة أو العلامة البيضاء أو CRM للوكالات وشركات الجوازات ومشغلي الهجرة الدوليين."
+        : locale === "ru"
+          ? "Изучите реферальные, white-label и CRM-партнёрства для агентств, паспортных компаний и международных иммиграционных операторов."
+          : "Explore referral, white-label, and CRM partnership opportunities for agencies, passport companies, and cross-border immigration operators.",
+    path: localizeHref(locale, "/partners"),
+    keywords: [
+      "immigration firm partnerships",
+      "passport company partnerships",
+      "white label immigration CRM",
+    ],
+    locale,
+  })
+}
 
 const trustItems = [
   {
@@ -66,6 +81,8 @@ const criteria = [
 ]
 
 export default function PartnersPage() {
+  const locale = getRequestLocale()
+  const routeLinks = getLocalizedRouteLinks(locale)
   return (
     <SiteShell>
       <PageHero
@@ -167,6 +184,7 @@ export default function PartnersPage() {
             </p>
           </div>
           <LeadQualificationForm
+            locale={locale}
             formType="partner"
             title="Apply as a partner"
             description="Tell us where you operate and the relationship you want to explore."

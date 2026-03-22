@@ -1,10 +1,18 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { BrandMark } from "@/components/brand-mark"
-import { ctaLinks, mainNavLinks } from "@/lib/site"
+import { LanguageSwitcher } from "@/components/language-switcher"
+import { getRequestLocale } from "@/lib/i18n/request"
+import { getMessages } from "@/lib/i18n/messages"
+import { getLocalizedCtaLinks, getLocalizedMainNavLinks } from "@/lib/site"
 import { Button } from "@/components/ui/button"
 
 export function SiteHeader() {
+  const locale = getRequestLocale()
+  const messages = getMessages(locale)
+  const ctaLinks = getLocalizedCtaLinks(locale)
+  const mainNavLinks = getLocalizedMainNavLinks(locale)
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-xl">
       <div className="container-shell py-3 md:py-4">
@@ -24,12 +32,13 @@ export function SiteHeader() {
             </nav>
 
             <div className="hidden items-center gap-2 md:flex">
+              <LanguageSwitcher locale={locale} />
               <Button variant="outline" asChild>
-                <Link href={ctaLinks.bookCompanyCall}>Book company call</Link>
+                <Link href={ctaLinks.bookCompanyCall}>{messages.ctas.bookCompanyCall}</Link>
               </Button>
               <Button asChild>
                 <Link href={ctaLinks.checkEligibility}>
-                  Check eligibility
+                  {messages.ctas.checkEligibility}
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
@@ -37,7 +46,8 @@ export function SiteHeader() {
           </div>
 
           <div className="md:hidden">
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <LanguageSwitcher locale={locale} />
               {mainNavLinks.map((item) => (
                 <Link
                   key={item.href}
@@ -52,11 +62,11 @@ export function SiteHeader() {
 
           <div className="flex flex-col gap-2 sm:flex-row md:hidden">
             <Button variant="outline" className="w-full sm:flex-1" asChild>
-              <Link href={ctaLinks.bookCompanyCall}>Book company call</Link>
+              <Link href={ctaLinks.bookCompanyCall}>{messages.ctas.bookCompanyCall}</Link>
             </Button>
             <Button className="w-full sm:flex-1" asChild>
               <Link href={ctaLinks.checkEligibility}>
-                Check eligibility
+                {messages.ctas.checkEligibility}
                 <ArrowRight className="size-4" />
               </Link>
             </Button>

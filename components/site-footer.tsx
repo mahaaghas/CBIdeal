@@ -2,14 +2,21 @@ import Link from "next/link"
 import { Linkedin, Mail, MapPin, Phone } from "lucide-react"
 import { BrandMark } from "@/components/brand-mark"
 import {
-  footerCompanyFocus,
-  footerLegalLinks,
-  footerNavLinks,
+  getLocalizedFooterCompanyFocus,
+  getLocalizedFooterLegalLinks,
+  getLocalizedFooterNavLinks,
 } from "@/lib/site"
+import { getRequestLocale } from "@/lib/i18n/request"
+import { getMessages } from "@/lib/i18n/messages"
 import { getResolvedSiteSettings } from "@/lib/sanity/content"
 
 export async function SiteFooter() {
+  const locale = getRequestLocale()
+  const messages = getMessages(locale)
   const settings = await getResolvedSiteSettings()
+  const footerNavLinks = getLocalizedFooterNavLinks(locale)
+  const footerLegalLinks = getLocalizedFooterLegalLinks(locale)
+  const footerCompanyFocus = getLocalizedFooterCompanyFocus(locale)
   const socialItems = [
     { href: settings.socialLinks.linkedin, label: "LinkedIn", icon: Linkedin },
     { href: settings.socialLinks.x, label: "X" },
@@ -26,7 +33,7 @@ export async function SiteFooter() {
               {settings.footerSummary}
             </p>
             <div className="space-y-3">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground/70">Follow</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground/70">{messages.footer.follow}</p>
               <div className="flex flex-wrap gap-3 text-sm text-primary-foreground/75">
                 {socialItems.map((item) => (
                   <Link
@@ -44,7 +51,7 @@ export async function SiteFooter() {
             </div>
           </div>
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground/70">Explore</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground/70">{messages.footer.explore}</h3>
             <ul className="space-y-3 text-sm text-primary-foreground/75">
               {footerNavLinks.map((link) => (
                 <li key={link.href}>
@@ -56,7 +63,7 @@ export async function SiteFooter() {
             </ul>
           </div>
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground/70">Commercial focus</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground/70">{messages.footer.commercialFocus}</h3>
             <ul className="space-y-3 text-sm text-primary-foreground/75">
               {footerCompanyFocus.map((item) => (
                 <li key={item}>{item}</li>
@@ -65,7 +72,7 @@ export async function SiteFooter() {
           </div>
           <div className="space-y-6">
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground/70">Legal and contact</h3>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground/70">{messages.footer.legalAndContact}</h3>
               <ul className="space-y-3 text-sm text-primary-foreground/75">
                 {footerLegalLinks.map((link) => (
                   <li key={link.href}>
@@ -95,6 +102,11 @@ export async function SiteFooter() {
               </li>
             </ul>
           </div>
+        </div>
+        <div className="border-b border-white/10 py-5">
+          <p className="max-w-5xl text-sm leading-7 text-primary-foreground/70">
+            We comply with EU regulations, AML/KYC standards, and international sanctions. Services are not offered to sanctioned individuals or entities.
+          </p>
         </div>
         <div className="flex flex-col gap-3 pt-6 text-sm text-primary-foreground/60 lg:flex-row lg:items-center lg:justify-between">
           <p>{settings.footerBottomPrimary}</p>

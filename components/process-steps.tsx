@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
 
 interface ProcessStep {
@@ -13,7 +14,12 @@ interface ProcessStepsProps {
 
 export function ProcessSteps({ steps }: ProcessStepsProps) {
   return (
-    <div className="grid gap-6 lg:grid-cols-3">
+    <div
+      className={cn(
+        "grid gap-6",
+        steps.length >= 4 ? "md:grid-cols-2 xl:grid-cols-4" : "lg:grid-cols-3",
+      )}
+    >
       {steps.map((step) => (
         <Card key={step.title} className="section-card h-full">
           <CardContent className="space-y-4 p-7 md:p-8">

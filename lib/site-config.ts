@@ -1,6 +1,8 @@
 const routeLinks = {
   home: "/",
   programs: "/citizenship-by-investment",
+  caribbeanComparison: "/caribbean-cbi-comparison",
+  bookConsultation: "/book-a-cbi-consultation",
   forCompanies: "/for-companies",
   insights: "/insights",
   pricing: "/pricing",
@@ -22,6 +24,8 @@ const ctaLinks = {
   viewDataProtection: routeLinks.dataProtection,
   exploreCompany: routeLinks.forCompanies,
   explorePrograms: routeLinks.programs,
+  requestPrivateConsultation: routeLinks.bookConsultation,
+  compareCaribbeanPrograms: routeLinks.caribbeanComparison,
   exploreInsights: routeLinks.insights,
   explorePartnerships: routeLinks.partners,
   privacyContact: routeLinks.contact,

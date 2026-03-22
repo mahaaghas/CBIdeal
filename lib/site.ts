@@ -1,3 +1,5 @@
+import { getMessages } from "@/lib/i18n/messages"
+import { localizeHref, type Locale } from "@/lib/i18n/routing"
 import { siteConfig } from "@/lib/site-config"
 
 export { siteConfig }
@@ -39,3 +41,73 @@ export const footerCompanyFocus = footerConfig.companyFocusItems
 
 export const pricingPlans = siteConfig.pricing.plans
 export const futureLandingExamples = siteConfig.futureLandingExamples
+
+export function getLocalizedRouteLinks(locale: Locale) {
+  return Object.fromEntries(
+    Object.entries(routeLinks).map(([key, href]) => [key, localizeHref(locale, href)]),
+  ) as typeof routeLinks
+}
+
+export function getLocalizedCtaLinks(locale: Locale) {
+  return Object.fromEntries(
+    Object.entries(ctaLinks).map(([key, href]) => [key, localizeHref(locale, href)]),
+  ) as typeof ctaLinks
+}
+
+export function getLocalizedMainNavLinks(locale: Locale) {
+  const messages = getMessages(locale)
+  const localizedRoutes = getLocalizedRouteLinks(locale)
+
+  return [
+    { href: localizedRoutes.home, label: messages.nav.home },
+    { href: localizedRoutes.programs, label: messages.nav.programs },
+    { href: localizedRoutes.forCompanies, label: messages.nav.forCompanies },
+    { href: localizedRoutes.insights, label: messages.nav.insights },
+    { href: localizedRoutes.pricing, label: messages.nav.pricing },
+    { href: localizedRoutes.contact, label: messages.nav.contact },
+  ]
+}
+
+export function getLocalizedFooterNavLinks(locale: Locale) {
+  const messages = getMessages(locale)
+  const localizedRoutes = getLocalizedRouteLinks(locale)
+
+  return [
+    { href: localizedRoutes.home, label: messages.nav.home },
+    { href: localizedRoutes.programs, label: messages.nav.programs },
+    { href: localizedRoutes.forCompanies, label: messages.nav.forCompanies },
+    { href: localizedRoutes.insights, label: messages.nav.insights },
+    { href: localizedRoutes.pricing, label: messages.nav.pricing },
+  ]
+}
+
+export function getLocalizedFooterLegalLinks(locale: Locale) {
+  const localizedRoutes = getLocalizedRouteLinks(locale)
+  return [
+    {
+      href: localizedRoutes.dataProtection,
+      label: locale === "ar" ? "حماية البيانات" : locale === "ru" ? "Защита данных" : "Data protection",
+    },
+    { href: localizedRoutes.contact, label: getMessages(locale).nav.contact },
+  ]
+}
+
+export function getLocalizedFooterCompanyFocus(locale: Locale) {
+  if (locale === "ar") {
+    return [
+      "مطابقة العملاء المستثمرين",
+      "CRM لشركات الجوازات والهجرة",
+      "شراكات العملاء المحتملين المؤهلين",
+    ]
+  }
+
+  if (locale === "ru") {
+    return [
+      "Подбор инвесторских лидов",
+      "CRM для паспортных и иммиграционных компаний",
+      "Партнерства по квалифицированным лидам",
+    ]
+  }
+
+  return footerCompanyFocus
+}

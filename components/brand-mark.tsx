@@ -1,6 +1,8 @@
 import Link from "next/link"
+import { getRequestLocale } from "@/lib/i18n/request"
 import { brandConfig, routeLinks } from "@/lib/site"
 import { cn } from "@/lib/utils"
+import { localizeHref } from "@/lib/i18n/routing"
 
 interface BrandMarkProps {
   className?: string
@@ -8,8 +10,10 @@ interface BrandMarkProps {
 }
 
 export function BrandMark({ className, muted = false }: BrandMarkProps) {
+  const locale = getRequestLocale()
+
   return (
-    <Link href={routeLinks.home} className={cn("inline-flex items-center gap-3", className)}>
+    <Link href={localizeHref(locale, routeLinks.home)} className={cn("inline-flex items-center gap-3", className)}>
       <span
         className={cn(
           "flex size-10 items-center justify-center rounded-full border text-sm font-semibold tracking-[0.3em]",

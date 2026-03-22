@@ -166,8 +166,15 @@ export interface CmsBlogPostSummary {
   seo?: CmsSeo | null
 }
 
+export interface CmsBlogRelatedPage {
+  label: string
+  href: string
+}
+
 export interface CmsBlogPost extends CmsBlogPostSummary {
   body: unknown[]
+  relatedPages?: CmsBlogRelatedPage[]
+  relatedPosts?: CmsBlogPostSummary[]
 }
 
 export interface CmsSiteSettings {

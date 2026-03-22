@@ -213,6 +213,45 @@ export const blogPostBySlugQuery = defineQuery(`
         asset
       }
     },
+    relatedPages[]{
+      label,
+      href
+    },
+    "relatedPosts": relatedPosts[]->{
+      title,
+      "slug": slug.current,
+      excerpt,
+      featuredImage{
+        alt,
+        asset
+      },
+      "category": category->{
+        title,
+        "slug": slug.current
+      },
+      tags,
+      "author": author->{
+        name,
+        role,
+        image{
+          alt,
+          asset
+        }
+      },
+      publishedAt,
+      seo{
+        title,
+        description,
+        keywords,
+        openGraphTitle,
+        openGraphDescription,
+        openGraphImage{
+          alt,
+          asset
+        },
+        noIndex
+      }
+    },
     seo{
       title,
       description,

@@ -21,19 +21,21 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   buildLeadFormSchema,
   companyTeamSizeOptions,
+  getLeadFormTypeCopy,
   investorBudgetOptions,
   investorTimeframeOptions,
   submitLeadForm,
   type LeadFormType,
   type LeadFormValues,
   leadFormDefaults,
-  leadFormTypeCopy,
   netlifyFormNames,
 } from "@/lib/forms"
+import type { Locale } from "@/lib/i18n/routing"
 import { contactDetails } from "@/lib/site"
 import { cn } from "@/lib/utils"
 
 interface LeadQualificationFormProps {
+  locale?: Locale
   formType: LeadFormType
   title: string
   description: string
@@ -78,6 +80,7 @@ function FormGroup({ title, description, children }: FormGroupProps) {
 }
 
 export function LeadQualificationForm({
+  locale = "en",
   formType,
   title,
   description,
@@ -88,7 +91,7 @@ export function LeadQualificationForm({
   const [referenceId, setReferenceId] = useState<string | null>(null)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [step, setStep] = useState(0)
-  const copy = leadFormTypeCopy[formType]
+  const copy = getLeadFormTypeCopy(locale, formType)
   const isInvestor = formType === "investor"
 
   const form = useForm<LeadFormValues>({

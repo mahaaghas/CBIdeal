@@ -1,3 +1,4 @@
+import type { Locale } from "@/lib/i18n/routing"
 import { z } from "zod"
 
 export const leadFormTypeSchema = z.enum(["investor", "company", "partner"])
@@ -120,49 +121,123 @@ export function buildLeadFormSchema(formType: LeadFormType) {
   })
 }
 
-export const leadFormTypeCopy: Record<
-  LeadFormType,
-  {
-    eyebrow: string
-    contactLabel: string
-    emailLabel: string
-    successMessage: string
-    notesPlaceholder: string
-    notesHelp: string
-    submitIdleLabel: string
-  }
+const leadFormTypeCopyByLocale: Record<
+  Locale,
+  Record<
+    LeadFormType,
+    {
+      eyebrow: string
+      contactLabel: string
+      emailLabel: string
+      successMessage: string
+      notesPlaceholder: string
+      notesHelp: string
+      submitIdleLabel: string
+    }
+  >
 > = {
-  investor: {
-    eyebrow: "Investor qualification",
-    contactLabel: "Full name",
-    emailLabel: "Email",
-    successMessage:
-      "Thank you. One of our partner providers will review your details and contact you with the best available offer.",
-    notesPlaceholder:
-      "Add anything that matters for matching: family members, mobility goals, tax concerns, urgency, or countries already under consideration.",
-    notesHelp: "The more precise your profile, the easier it is to match you with the right provider and price point.",
-    submitIdleLabel: "Get best offer",
+  en: {
+    investor: {
+      eyebrow: "Investor qualification",
+      contactLabel: "Full name",
+      emailLabel: "Email",
+      successMessage:
+        "Thank you. One of our partner providers will review your details and contact you with the best available offer.",
+      notesPlaceholder:
+        "Add anything that matters for matching: family members, mobility goals, tax concerns, urgency, or countries already under consideration.",
+      notesHelp: "The more precise your profile, the easier it is to match you with the right provider and price point.",
+      submitIdleLabel: "Get best offer",
+    },
+    company: {
+      eyebrow: "Company enquiry",
+      contactLabel: "Contact person",
+      emailLabel: "Work email",
+      successMessage: "Thank you. We will contact you to discuss the best setup for your team.",
+      notesPlaceholder:
+        "Tell us about your current workflow, lead volume, product needs, and whether you are interested in CRM, qualified leads, or both.",
+      notesHelp: "Use this field for CRM scope, lead supply questions, rollout timing, or demo priorities.",
+      submitIdleLabel: "Contact sales",
+    },
+    partner: {
+      eyebrow: "Lead partnership enquiry",
+      contactLabel: "Contact person",
+      emailLabel: "Work email",
+      successMessage: "Thank you. We will review your enquiry and contact you to discuss the best partnership structure.",
+      notesPlaceholder:
+        "Describe the jurisdictions you cover, your client profile, and whether you are exploring referrals, white-label work, or software plus leads.",
+      notesHelp: "This helps us decide whether the best next step is CRM, lead supply, or a broader commercial partnership.",
+      submitIdleLabel: "Submit enquiry",
+    },
   },
-  company: {
-    eyebrow: "Company enquiry",
-    contactLabel: "Contact person",
-    emailLabel: "Work email",
-    successMessage: "Thank you. We will contact you to discuss the best setup for your team.",
-    notesPlaceholder:
-      "Tell us about your current workflow, lead volume, product needs, and whether you are interested in CRM, qualified leads, or both.",
-    notesHelp: "Use this field for CRM scope, lead supply questions, rollout timing, or demo priorities.",
-    submitIdleLabel: "Contact sales",
+  ar: {
+    investor: {
+      eyebrow: "تأهيل المستثمر",
+      contactLabel: "الاسم الكامل",
+      emailLabel: "البريد الإلكتروني",
+      successMessage: "شكراً لك. سيقوم أحد مزودي الخدمات الشركاء بمراجعة بياناتك والتواصل معك بأفضل عرض متاح.",
+      notesPlaceholder:
+        "أضف أي معلومات مهمة للمطابقة: عدد أفراد العائلة، أهداف التنقل، الجوانب الضريبية، عامل الوقت، أو الدول التي تدرسها بالفعل.",
+      notesHelp: "كلما كانت المعلومات أوضح، كان من الأسهل توجيهك إلى المزود والسعر الأنسب.",
+      submitIdleLabel: "احصل على أفضل عرض",
+    },
+    company: {
+      eyebrow: "استفسار شركة",
+      contactLabel: "الشخص المسؤول",
+      emailLabel: "بريد العمل",
+      successMessage: "شكراً لك. سنتواصل معك لمناقشة أفضل إعداد مناسب لفريقك.",
+      notesPlaceholder:
+        "أخبرنا عن سير العمل الحالي، حجم العملاء المحتملين، احتياجات المنتج، وما إذا كنت مهتماً بالـ CRM أو بالعملاء المحتملين المؤهلين أو بكليهما.",
+      notesHelp: "استخدم هذا الحقل لشرح نطاق الـ CRM أو متطلبات العملاء المحتملين أو توقيت الإطلاق أو أولويات العرض التوضيحي.",
+      submitIdleLabel: "تواصل مع المبيعات",
+    },
+    partner: {
+      eyebrow: "استفسار شراكة",
+      contactLabel: "الشخص المسؤول",
+      emailLabel: "بريد العمل",
+      successMessage: "شكراً لك. سنراجع طلبك ونتواصل معك لمناقشة أفضل هيكل للشراكة.",
+      notesPlaceholder:
+        "اشرح الولايات القضائية التي تغطيها، ونوعية عملائك، وما إذا كنت تستكشف الإحالات أو العمل بالعلامة البيضاء أو البرمجيات مع العملاء المحتملين.",
+      notesHelp: "يساعدنا ذلك على تحديد ما إذا كانت الخطوة التالية الأنسب هي الـ CRM أو العملاء المحتملون أو شراكة تجارية أوسع.",
+      submitIdleLabel: "إرسال الطلب",
+    },
   },
-  partner: {
-    eyebrow: "Lead partnership enquiry",
-    contactLabel: "Contact person",
-    emailLabel: "Work email",
-    successMessage: "Thank you. We will review your enquiry and contact you to discuss the best partnership structure.",
-    notesPlaceholder:
-      "Describe the jurisdictions you cover, your client profile, and whether you are exploring referrals, white-label work, or software plus leads.",
-    notesHelp: "This helps us decide whether the best next step is CRM, lead supply, or a broader commercial partnership.",
-    submitIdleLabel: "Submit enquiry",
+  ru: {
+    investor: {
+      eyebrow: "Квалификация инвестора",
+      contactLabel: "Полное имя",
+      emailLabel: "Электронная почта",
+      successMessage:
+        "Спасибо. Один из наших партнёрских провайдеров рассмотрит ваши данные и свяжется с вами с наиболее подходящим предложением.",
+      notesPlaceholder:
+        "Укажите всё важное для подбора: состав семьи, цели по мобильности, налоговые вопросы, срочность или страны, которые вы уже рассматриваете.",
+      notesHelp: "Чем точнее ваш профиль, тем проще подобрать подходящего провайдера и ценовой диапазон.",
+      submitIdleLabel: "Получить лучшее предложение",
+    },
+    company: {
+      eyebrow: "Запрос компании",
+      contactLabel: "Контактное лицо",
+      emailLabel: "Рабочий email",
+      successMessage: "Спасибо. Мы свяжемся с вами, чтобы обсудить оптимальную конфигурацию для вашей команды.",
+      notesPlaceholder:
+        "Расскажите о текущем процессе, объёме лидов, потребностях в продукте и интересует ли вас CRM, квалифицированные лиды или оба направления.",
+      notesHelp: "Используйте это поле для описания CRM, лидогенерации, сроков внедрения или приоритетов для демо.",
+      submitIdleLabel: "Связаться с продажами",
+    },
+    partner: {
+      eyebrow: "Партнёрский запрос",
+      contactLabel: "Контактное лицо",
+      emailLabel: "Рабочий email",
+      successMessage: "Спасибо. Мы рассмотрим ваш запрос и свяжемся с вами для обсуждения оптимальной структуры партнёрства.",
+      notesPlaceholder:
+        "Опишите юрисдикции, с которыми вы работаете, ваш клиентский профиль и интерес к рефералам, white-label сотрудничеству или программному продукту с лидами.",
+      notesHelp: "Это помогает понять, что логичнее обсудить дальше: CRM, лиды или более широкую коммерческую модель.",
+      submitIdleLabel: "Отправить запрос",
+    },
   },
+}
+
+export function getLeadFormTypeCopy(locale: Locale, formType: LeadFormType) {
+  return leadFormTypeCopyByLocale[locale][formType]
 }
 
 export function leadFormDefaults(formType: LeadFormType): LeadFormValues {

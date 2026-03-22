@@ -70,6 +70,27 @@ export const blogPostType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "relatedPages",
+      title: "Related main pages",
+      description: "Internal links to key investor or company pages to strengthen on-site SEO linking.",
+      type: "array",
+      of: [{ type: "linkObject" }],
+      validation: (Rule) => Rule.max(3),
+    }),
+    defineField({
+      name: "relatedPosts",
+      title: "Related articles",
+      description: "Optional hand-picked related posts shown on the article page.",
+      type: "array",
+      of: [
+        {
+          type: "reference",
+          to: [{ type: "blogPost" }],
+        },
+      ],
+      validation: (Rule) => Rule.max(3),
+    }),
+    defineField({
       name: "seo",
       title: "SEO",
       type: "seo",

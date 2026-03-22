@@ -3,17 +3,32 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Check, ChevronRight } from "lucide-react"
-import { ctaLinks, pricingPlans } from "@/lib/site"
+import { getLocalizedCtaLinks, pricingPlans } from "@/lib/site"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import type { Locale } from "@/lib/i18n/routing"
 
 interface PricingSectionProps {
+  locale?: Locale
   preview?: boolean
 }
 
-export function PricingSection({ preview = false }: PricingSectionProps) {
+export function PricingSection({ locale = "en", preview = false }: PricingSectionProps) {
   const [billingMode, setBillingMode] = useState<"monthly" | "yearly">("monthly")
+  const ctaLinks = getLocalizedCtaLinks(locale)
+  const copy = {
+    monthly: locale === "ar" ? "شهري" : locale === "ru" ? "Ежемесячно" : "Monthly",
+    yearly: locale === "ar" ? "سنوي" : locale === "ru" ? "Ежегодно" : "Yearly",
+    savings:
+      locale === "ar"
+        ? "وفّر ما يعادل شهرين تقريباً مع الفوترة السنوية."
+        : locale === "ru"
+          ? "Экономия примерно двух месяцев при годовой оплате."
+          : "Save roughly two months with annual billing.",
+    preview: locale === "ar" ? "عرض الأسعار كاملة" : locale === "ru" ? "Полные тарифы" : "View full pricing",
+    bestValue: locale === "ar" ? "أفضل قيمة" : locale === "ru" ? "Лучшее предложение" : "Best value",
+  }
 
   return (
     <div className="space-y-8">
@@ -36,7 +51,7 @@ export function PricingSection({ preview = false }: PricingSectionProps) {
                 billingMode === "monthly" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
               )}
             >
-              Monthly
+              {copy.monthly}
             </button>
             <button
               type="button"
@@ -46,10 +61,10 @@ export function PricingSection({ preview = false }: PricingSectionProps) {
                 billingMode === "yearly" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
               )}
             >
-              Yearly
+              {copy.yearly}
             </button>
           </div>
-          <p className="text-xs text-muted-foreground sm:text-right">Save roughly two months with annual billing.</p>
+          <p className="text-xs text-muted-foreground sm:text-right">{copy.savings}</p>
         </div>
       </div>
 
@@ -67,7 +82,7 @@ export function PricingSection({ preview = false }: PricingSectionProps) {
               <CardContent className="space-y-6 p-7 md:p-8">
                 {plan.featured ? (
                   <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground">
-                    Best value
+                    {copy.bestValue}
                   </span>
                 ) : null}
                 <div className="space-y-3">
@@ -121,7 +136,7 @@ export function PricingSection({ preview = false }: PricingSectionProps) {
         <div className="flex justify-start">
           <Button variant="outline" className="w-full sm:w-auto" asChild>
             <Link href={ctaLinks.viewPricing}>
-              View full pricing
+              {copy.preview}
               <ChevronRight className="size-4" />
             </Link>
           </Button>

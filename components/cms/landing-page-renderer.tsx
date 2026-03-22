@@ -21,6 +21,8 @@ import { SectionHeading } from "@/components/section-heading"
 import { TrustGrid } from "@/components/trust-grid"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { getRequestLocale } from "@/lib/i18n/request"
+import { localizeHref } from "@/lib/i18n/routing"
 import type { CmsLandingPage, CmsLandingSection, CmsProcessStep } from "@/lib/sanity/types"
 
 const processIconMap = {
@@ -36,7 +38,11 @@ const processIconMap = {
   users: Users,
 } as const
 
-function renderSection(section: CmsLandingSection, index: number) {
+function localizeCmsHref(locale: ReturnType<typeof getRequestLocale>, href: string) {
+  return href.startsWith("/") ? localizeHref(locale, href) : href
+}
+
+function renderSection(section: CmsLandingSection, index: number, locale: ReturnType<typeof getRequestLocale>) {
   switch (section._type) {
     case "heroSection":
       return (
@@ -45,8 +51,12 @@ function renderSection(section: CmsLandingSection, index: number) {
           eyebrow={section.eyebrow}
           title={section.title}
           description={section.description}
-          primaryAction={section.primaryAction}
-          secondaryAction={section.secondaryAction ?? undefined}
+          primaryAction={{ ...section.primaryAction, href: localizeCmsHref(locale, section.primaryAction.href) }}
+          secondaryAction={
+            section.secondaryAction
+              ? { ...section.secondaryAction, href: localizeCmsHref(locale, section.secondaryAction.href) }
+              : undefined
+          }
           stats={section.stats ?? []}
         >
           {section.highlights?.length || section.secondaryCard ? (
@@ -78,7 +88,7 @@ function renderSection(section: CmsLandingSection, index: number) {
                   <p className="mt-2 text-sm leading-7 text-muted-foreground">{section.secondaryCard.description}</p>
                   {section.secondaryCard.cta ? (
                     <Button asChild className="mt-4 w-full sm:w-auto">
-                      <Link href={section.secondaryCard.cta.href}>{section.secondaryCard.cta.label}</Link>
+                      <Link href={localizeCmsHref(locale, section.secondaryCard.cta.href)}>{section.secondaryCard.cta.label}</Link>
                     </Button>
                   ) : null}
                 </div>
@@ -179,6 +189,7 @@ function renderSection(section: CmsLandingSection, index: number) {
               ) : null}
             </div>
             <LeadQualificationForm
+              locale={locale}
               formType={section.formType}
               title={section.formTitle}
               description={section.formDescription}
@@ -211,8 +222,12 @@ function renderSection(section: CmsLandingSection, index: number) {
               eyebrow={section.eyebrow}
               title={section.title}
               description={section.description}
-              primaryAction={section.primaryAction}
-              secondaryAction={section.secondaryAction ?? undefined}
+              primaryAction={{ ...section.primaryAction, href: localizeCmsHref(locale, section.primaryAction.href) }}
+              secondaryAction={
+                section.secondaryAction
+                  ? { ...section.secondaryAction, href: localizeCmsHref(locale, section.secondaryAction.href) }
+                  : undefined
+              }
             />
           </div>
         </section>
@@ -228,5 +243,6 @@ interface LandingPageRendererProps {
 }
 
 export function LandingPageRenderer({ page }: LandingPageRendererProps) {
-  return <>{page.sections.map(renderSection)}</>
+  const locale = getRequestLocale()
+  return <>{page.sections.map((section, index) => renderSection(section, index, locale))}</>
 }

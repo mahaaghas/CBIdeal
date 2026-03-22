@@ -15,6 +15,7 @@ import {
 import type {
   CmsBlogPost,
   CmsBlogPostSummary,
+  CmsBlogRelatedPage,
   CmsImageAsset,
   CmsLandingPage,
   CmsLandingSection,
@@ -308,6 +309,8 @@ export const getBlogPostBySlug = cache(async (slug: string): Promise<CmsBlogPost
   const raw = await sanityFetch<
     | ({
         body: unknown[]
+        relatedPages?: CmsBlogRelatedPage[]
+        relatedPosts?: Array<Parameters<typeof mapBlogSummary>[0]>
       } & Parameters<typeof mapBlogSummary>[0])
     | null
   >(blogPostBySlugQuery, { slug })
@@ -317,5 +320,11 @@ export const getBlogPostBySlug = cache(async (slug: string): Promise<CmsBlogPost
   return {
     ...mapBlogSummary(raw),
     body: raw.body ?? [],
+    relatedPages:
+      raw.relatedPages?.filter((item) => item?.label && item?.href).map((item) => ({
+        label: item.label,
+        href: item.href,
+      })) ?? [],
+    relatedPosts: (raw.relatedPosts ?? []).map(mapBlogSummary),
   }
 })

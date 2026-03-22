@@ -1,10 +1,17 @@
 import Link from "next/link"
 import { ArrowRight, Home } from "lucide-react"
-import { ctaLinks, routeLinks } from "@/lib/site"
+import { getMessages } from "@/lib/i18n/messages"
+import { getRequestLocale } from "@/lib/i18n/request"
 import { SiteShell } from "@/components/site-shell"
 import { Button } from "@/components/ui/button"
+import { getLocalizedCtaLinks, getLocalizedRouteLinks } from "@/lib/site"
 
 export default function NotFound() {
+  const locale = getRequestLocale()
+  const messages = getMessages(locale)
+  const ctaLinks = getLocalizedCtaLinks(locale)
+  const routeLinks = getLocalizedRouteLinks(locale)
+
   return (
     <SiteShell>
       <section className="section-padding">
@@ -12,16 +19,16 @@ export default function NotFound() {
           <div className="hero-panel mx-auto max-w-4xl px-8 py-20 text-center md:px-14">
             <p className="eyebrow border-white/20 bg-white/10 text-primary-foreground/80">404</p>
             <div className="mt-7 space-y-4 md:mt-8">
-              <h1 className="display-title text-primary-foreground">We could not find that page.</h1>
+              <h1 className="display-title text-primary-foreground">{messages.notFound.title}</h1>
               <p className="mx-auto max-w-2xl text-lg leading-8 text-primary-foreground/75">
-                The link may have changed, or the page may not be part of the current public site. You can return to the investor homepage or continue to the main citizenship and residency overview.
+                {messages.notFound.description}
               </p>
             </div>
             <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
               <Button size="lg" variant="secondary" asChild>
                 <Link href={ctaLinks.returnHome}>
                   <Home className="size-4" />
-                  Return home
+                  {messages.ctas.returnHome}
                 </Link>
               </Button>
               <Button
@@ -31,7 +38,7 @@ export default function NotFound() {
                 asChild
               >
                 <Link href={routeLinks.programs}>
-                  Explore programs
+                  {messages.ctas.explorePrograms}
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>

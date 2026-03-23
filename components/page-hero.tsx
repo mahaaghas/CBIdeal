@@ -24,6 +24,7 @@ interface PageHeroProps {
   stats?: HeroStat[]
   children?: ReactNode
   compact?: boolean
+  sectionClassName?: string
 }
 
 export function PageHero({
@@ -35,13 +36,14 @@ export function PageHero({
   stats = [],
   children,
   compact = false,
+  sectionClassName,
 }: PageHeroProps) {
   const direction = getRequestDirection()
   const isRtl = direction === "rtl"
   const renderStatsBelow = Boolean(children && stats.length)
 
   return (
-    <section className={cn("section-padding pb-12 md:pb-16", compact && "py-14 md:py-16")}>
+    <section className={cn("section-padding pb-12 md:pb-16", compact && "py-14 md:py-16", sectionClassName)}>
       <div className="container-shell">
         <div
           className={cn(

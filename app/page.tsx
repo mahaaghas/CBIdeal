@@ -502,6 +502,7 @@ export default async function HomePage() {
         description={copy.heroDescription}
         primaryAction={{ href: ctaLinks.checkEligibility, label: copy.primaryCta }}
         secondaryAction={{ href: routeLinks.programs, label: copy.secondaryCta }}
+        sectionClassName="pb-20 md:pb-24"
         stats={copy.heroStats}
       >
         <div className="space-y-[1.125rem] md:space-y-5">
@@ -533,7 +534,7 @@ export default async function HomePage() {
         </div>
       </PageHero>
 
-      <section id="eligibility" className="section-padding pt-0">
+      <section id="eligibility" className="section-flow">
         <div className="container-shell grid gap-8 md:gap-10 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1fr)] lg:items-start">
           <div className="content-measure space-y-6 md:space-y-8">
             <span className="eyebrow">{copy.qualificationEyebrow}</span>
@@ -578,7 +579,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section-padding bg-muted/30">
+      <section className="section-flow bg-muted/30">
         <div className="container-shell">
           <SectionHeading
             eyebrow={copy.whyEyebrow}
@@ -589,7 +590,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section-padding">
+      <section className="section-flow">
         <div className="container-shell">
           <SectionHeading
             eyebrow={copy.programsEyebrow}
@@ -600,7 +601,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section-padding pt-0">
+      <section className="section-flow">
         <div className="container-shell">
           <SectionHeading
             eyebrow={copy.howEyebrow}
@@ -611,7 +612,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section-padding pt-0">
+      <section className="section-flow">
         <div className="container-shell grid gap-6 md:gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
           <Card className="section-card overflow-hidden p-0">
             <div className="grid gap-0 md:grid-cols-2">
@@ -665,7 +666,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section-padding pt-0">
+      <section className="section-flow">
         <div className="container-shell">
           <CtaPanel
             eyebrow={copy.finalEyebrow ?? "Final step"}

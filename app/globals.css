@@ -136,6 +136,10 @@
     @apply py-20 md:py-24;
   }
 
+  .section-flow {
+    @apply pt-0 pb-20 md:pb-24;
+  }
+
   .content-measure {
     @apply max-w-[42rem];
   }

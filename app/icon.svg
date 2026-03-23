@@ -1,18 +1,15 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect width="512" height="512" fill="transparent"/>
-  <circle cx="256" cy="262" r="196" fill="#0F1522" fill-opacity="0.12"/>
-  <circle cx="256" cy="256" r="188" fill="#293246"/>
-  <circle cx="256" cy="256" r="176" stroke="#D6BB83" stroke-opacity="0.55" stroke-width="8"/>
-  <path d="M123 256C123 183 179 129 256 129C333 129 389 183 389 256C389 329 333 383 256 383C179 383 123 329 123 256Z" fill="#D6BB83" fill-opacity="0.08"/>
+  <circle cx="256" cy="256" r="212" fill="#293246"/>
   <text
     x="256"
-    y="272"
+    y="278"
     text-anchor="middle"
     fill="#F6F1E5"
-    font-family="Manrope, Arial, sans-serif"
-    font-size="102"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="118"
     font-weight="800"
-    letter-spacing="2"
+    letter-spacing="0"
   >
     CBI
   </text>

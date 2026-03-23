@@ -39,29 +39,50 @@ export function PageHero({
   const renderStatsBelow = Boolean(children && stats.length)
 
   return (
-    <section className="section-padding pb-12 md:pb-14">
+    <section className="section-padding pb-12 md:pb-16">
       <div className="container-shell">
-        <div className="hero-panel relative overflow-hidden px-6 py-8 sm:px-8 sm:py-10 md:px-12 md:py-12 lg:px-14 lg:py-14">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(214,187,131,0.18),transparent_24%),linear-gradient(135deg,rgba(255,255,255,0.04),transparent_40%)]" />
+        <div className="hero-panel relative overflow-hidden px-7 py-9 sm:px-9 sm:py-11 md:px-12 md:py-12 lg:px-16 lg:py-15">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(214,187,131,0.14),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_34%)]" />
           <div
             dir={direction}
             className={cn(
-              "page-hero-grid relative grid gap-8 md:gap-10",
-              children ? "lg:grid-cols-[minmax(0,1.02fr)_minmax(18rem,0.88fr)] lg:items-start lg:gap-12" : "content-measure",
+              "page-hero-grid relative grid gap-9 md:gap-11",
+              children
+                ? "lg:grid-cols-[minmax(0,1.02fr)_minmax(22rem,0.86fr)] lg:items-start lg:gap-14"
+                : "content-measure",
             )}
           >
-            <div className={cn("page-hero-copy space-y-6 md:space-y-8", isRtl && "text-right")}>
+            <div className={cn("page-hero-copy flex min-w-0 flex-col justify-center space-y-7 md:space-y-9", isRtl && "text-right")}>
               <span className="eyebrow border-white/20 bg-white/10 text-primary-foreground/80">{eyebrow}</span>
-              <div className="space-y-4 md:space-y-5">
-                <h1 className="display-title max-w-[42rem] text-primary-foreground">
+              <div className="space-y-4 md:space-y-6">
+                <h1
+                  className={cn(
+                    "text-primary-foreground",
+                    children
+                      ? "max-w-[11ch] text-[clamp(2.75rem,5vw,4.55rem)] leading-[1.04] tracking-[-0.038em]"
+                      : "display-title max-w-[42rem]",
+                  )}
+                >
                   {title}
                 </h1>
-                <p className="max-w-[40rem] text-base leading-7 text-primary-foreground/75 md:text-lg md:leading-8">
+                <p
+                  className={cn(
+                    "text-primary-foreground/76",
+                    children
+                      ? "max-w-[35rem] text-[1rem] leading-8 md:text-[1.05rem]"
+                      : "max-w-[40rem] text-base leading-7 md:text-lg md:leading-8",
+                  )}
+                >
                   {description}
                 </p>
               </div>
-              <div className={cn("page-hero-actions flex flex-col gap-3 pt-1 sm:flex-row", isRtl && "sm:flex-row-reverse")}>
-                <Button size="lg" variant="secondary" className="w-full sm:w-auto" asChild>
+              <div className={cn("page-hero-actions flex flex-col gap-3.5 pt-1 sm:flex-row sm:items-center", isRtl && "sm:flex-row-reverse")}>
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="h-12 w-full rounded-full px-6 text-sm font-semibold sm:w-auto"
+                  asChild
+                >
                   <Link href={primaryAction.href}>
                     {primaryAction.label}
                     <ArrowRight className="size-4" />
@@ -71,7 +92,7 @@ export function PageHero({
                   <Button
                     size="lg"
                     variant="outline"
-                    className="w-full border-white/20 bg-transparent text-primary-foreground hover:bg-white/10 sm:w-auto"
+                    className="h-12 w-full rounded-full border-white/18 bg-white/[0.02] px-6 text-sm font-semibold text-primary-foreground hover:bg-white/10 sm:w-auto"
                     asChild
                   >
                     <Link href={secondaryAction.href}>{secondaryAction.label}</Link>
@@ -81,16 +102,16 @@ export function PageHero({
               {!renderStatsBelow && stats.length ? (
                 <div
                   className={cn(
-                    "page-hero-stats grid gap-4 pt-4 md:pt-6",
+                    "page-hero-stats grid gap-4 pt-5 md:pt-7",
                     children ? "md:grid-cols-2 xl:grid-cols-3" : "sm:grid-cols-2 lg:grid-cols-3",
                   )}
                 >
                   {stats.map((stat) => (
-                    <div key={stat.label} className="min-w-0 rounded-2xl border border-white/10 bg-black/10 p-5 md:p-6">
-                      <div className="min-w-0 text-xl leading-snug text-primary-foreground md:text-2xl [overflow-wrap:anywhere]">
+                    <div key={stat.label} className="min-w-0 rounded-[22px] border border-white/8 bg-white/[0.03] p-5 md:p-6">
+                      <div className="min-w-0 text-[1.35rem] leading-snug text-primary-foreground md:text-[1.55rem] [overflow-wrap:anywhere]">
                         {stat.value}
                       </div>
-                      <p className="mt-2 text-sm leading-6 text-primary-foreground/70">{stat.label}</p>
+                      <p className="mt-2.5 max-w-[18rem] text-sm leading-6 text-primary-foreground/68">{stat.label}</p>
                     </div>
                   ))}
                 </div>
@@ -99,8 +120,8 @@ export function PageHero({
             {children ? (
               <div
                 className={cn(
-                  "page-hero-aside w-full max-w-[25rem] self-start",
-                  isRtl ? "lg:justify-self-start lg:pr-2" : "lg:justify-self-end lg:pl-2",
+                  "page-hero-aside w-full max-w-[26.5rem] self-start",
+                  isRtl ? "lg:justify-self-start" : "lg:justify-self-end",
                 )}
               >
                 {children}
@@ -111,16 +132,16 @@ export function PageHero({
             <div
               dir={direction}
               className={cn(
-                "page-hero-stats relative mt-8 grid gap-4 md:mt-10 md:grid-cols-2 xl:grid-cols-3",
+                "page-hero-stats relative mt-9 border-t border-white/10 pt-7 md:mt-12 md:grid-cols-2 md:pt-8 xl:grid-cols-3",
                 isRtl && "text-right",
               )}
             >
               {stats.map((stat) => (
-                <div key={stat.label} className="min-w-0 rounded-2xl border border-white/10 bg-black/10 p-5 md:p-6">
-                  <div className="min-w-0 text-xl leading-snug text-primary-foreground md:text-2xl [overflow-wrap:anywhere]">
+                <div key={stat.label} className="min-w-0 rounded-[22px] border border-white/8 bg-white/[0.03] p-5 md:p-6">
+                  <div className="min-w-0 text-[1.35rem] leading-snug text-primary-foreground md:text-[1.55rem] [overflow-wrap:anywhere]">
                     {stat.value}
                   </div>
-                  <p className="mt-2 text-sm leading-6 text-primary-foreground/70">{stat.label}</p>
+                  <p className="mt-2.5 max-w-[18rem] text-sm leading-6 text-primary-foreground/68">{stat.label}</p>
                 </div>
               ))}
             </div>

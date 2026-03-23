@@ -144,13 +144,31 @@ export function LandingLeadFormBase({
     })
   })
 
+  const fieldShellClass = cn("space-y-2.5", isRtl && "text-right")
+  const labelClass = cn("text-[0.78rem] font-medium tracking-[0.01em] text-foreground/72", isRtl && "text-right")
+  const controlClass =
+    "h-11 rounded-2xl border-border/80 bg-white/75 px-3.5 text-sm shadow-none placeholder:text-muted-foreground/80 focus-visible:ring-[2px]"
+  const selectTriggerClass = cn("h-11 w-full rounded-2xl border-border/80 bg-white/75 px-3.5 text-sm shadow-none", isRtl && "text-right")
+  const textareaClass = cn("min-h-[104px] rounded-2xl border-border/80 bg-white/75 px-3.5 py-3 text-sm shadow-none placeholder:text-muted-foreground/80 focus-visible:ring-[2px]", isRtl && "text-right")
+
   return (
-    <div dir={dir} className={cn("section-card p-6 md:p-8", isRtl && "text-right", className)}>
-      <div className="mb-6 space-y-3">
-        <span className="eyebrow">{copy.eyebrow}</span>
-        <h3 className="text-2xl text-foreground md:text-3xl">{copy.title}</h3>
-        <p className="text-sm leading-7 text-muted-foreground md:text-base">{copy.description}</p>
-        <p className="text-sm leading-6 text-muted-foreground">{copy.confidentialityNote}</p>
+    <div
+      dir={dir}
+      className={cn(
+        "rounded-[30px] border border-black/6 bg-[linear-gradient(180deg,rgba(255,255,255,0.97),rgba(248,244,236,0.95))] p-6 shadow-[0_26px_90px_rgba(16,22,37,0.12)] md:p-8",
+        isRtl && "text-right",
+        className,
+      )}
+    >
+      <div className="mb-7 space-y-4">
+        <span className="eyebrow border-border/70 bg-white/70 text-muted-foreground">{copy.eyebrow}</span>
+        <div className="space-y-3">
+          <h3 className="text-[1.85rem] leading-[1.14] text-foreground md:text-[2.1rem]">{copy.title}</h3>
+          <p className="max-w-[30rem] text-sm leading-7 text-muted-foreground md:text-[0.98rem]">{copy.description}</p>
+        </div>
+        <p className="rounded-2xl border border-border/60 bg-white/45 px-4 py-3 text-[0.82rem] leading-6 text-muted-foreground">
+          {copy.confidentialityNote}
+        </p>
       </div>
 
       {referenceId ? (
@@ -178,7 +196,7 @@ export function LandingLeadFormBase({
           name={landingLeadFormName}
           method="POST"
           action="/__forms.html"
-          className={cn("space-y-5", isRtl && "text-right")}
+          className={cn("space-y-[1.375rem]", isRtl && "text-right")}
           onSubmit={onSubmit}
         >
           <input type="hidden" name="form-name" value={landingLeadFormName} />
@@ -187,15 +205,15 @@ export function LandingLeadFormBase({
           <input type="hidden" {...form.register("sourceCategory")} />
           <input type="hidden" {...form.register("language")} />
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-[1.125rem] md:grid-cols-2">
             <FormField
               control={form.control}
               name="fullName"
               render={({ field }) => (
-                <FormItem className={cn(isRtl && "text-right")}>
-                  <FormLabel className={cn(isRtl && "text-right")}>{copy.fullNameLabel}</FormLabel>
+                <FormItem className={fieldShellClass}>
+                  <FormLabel className={labelClass}>{copy.fullNameLabel}</FormLabel>
                   <FormControl>
-                    <Input placeholder={copy.fullNamePlaceholder} {...field} />
+                    <Input className={controlClass} placeholder={copy.fullNamePlaceholder} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -205,10 +223,10 @@ export function LandingLeadFormBase({
               control={form.control}
               name="nationality"
               render={({ field }) => (
-                <FormItem className={cn(isRtl && "text-right")}>
-                  <FormLabel className={cn(isRtl && "text-right")}>{copy.nationalityLabel}</FormLabel>
+                <FormItem className={fieldShellClass}>
+                  <FormLabel className={labelClass}>{copy.nationalityLabel}</FormLabel>
                   <FormControl>
-                    <Input placeholder={copy.nationalityPlaceholder} {...field} />
+                    <Input className={controlClass} placeholder={copy.nationalityPlaceholder} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -216,15 +234,15 @@ export function LandingLeadFormBase({
             />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-[1.125rem] md:grid-cols-2">
             <FormField
               control={form.control}
               name="currentResidence"
               render={({ field }) => (
-                <FormItem className={cn(isRtl && "text-right")}>
-                  <FormLabel className={cn(isRtl && "text-right")}>{copy.currentResidenceLabel}</FormLabel>
+                <FormItem className={fieldShellClass}>
+                  <FormLabel className={labelClass}>{copy.currentResidenceLabel}</FormLabel>
                   <FormControl>
-                    <Input placeholder={copy.currentResidencePlaceholder} {...field} />
+                    <Input className={controlClass} placeholder={copy.currentResidencePlaceholder} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -234,11 +252,11 @@ export function LandingLeadFormBase({
               control={form.control}
               name="budgetRange"
               render={({ field }) => (
-                <FormItem className={cn(isRtl && "text-right")}>
-                  <FormLabel className={cn(isRtl && "text-right")}>{copy.budgetRangeLabel}</FormLabel>
+                <FormItem className={fieldShellClass}>
+                  <FormLabel className={labelClass}>{copy.budgetRangeLabel}</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
+                      <SelectTrigger className={selectTriggerClass}>
                         <SelectValue placeholder={copy.budgetRangePlaceholder} />
                       </SelectTrigger>
                     </FormControl>
@@ -256,15 +274,20 @@ export function LandingLeadFormBase({
             />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-[1.125rem] md:grid-cols-2">
             <FormField
               control={form.control}
               name="whatsapp"
               render={({ field }) => (
-                <FormItem className={cn(isRtl && "text-right")}>
-                  <FormLabel className={cn(isRtl && "text-right")}>{copy.whatsappLabel}</FormLabel>
+                <FormItem className={fieldShellClass}>
+                  <FormLabel className={labelClass}>{copy.whatsappLabel}</FormLabel>
                   <FormControl>
-                    <Input dir="ltr" className="text-left" placeholder={copy.whatsappPlaceholder} {...field} />
+                    <Input
+                      dir="ltr"
+                      className={cn(controlClass, "text-left")}
+                      placeholder={copy.whatsappPlaceholder}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -274,15 +297,15 @@ export function LandingLeadFormBase({
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormItem className={cn(isRtl && "text-right")}>
-                  <FormLabel>
+                <FormItem className={fieldShellClass}>
+                  <FormLabel className={labelClass}>
                     {copy.emailLabel} <span className="text-muted-foreground">({copy.optionalLabel})</span>
                   </FormLabel>
                   <FormControl>
                     <Input
                       type="email"
                       dir="ltr"
-                      className="text-left"
+                      className={cn(controlClass, "text-left")}
                       placeholder={copy.emailPlaceholder}
                       {...field}
                       value={field.value ?? ""}
@@ -294,18 +317,18 @@ export function LandingLeadFormBase({
             />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-[1.125rem] md:grid-cols-2">
             <FormField
               control={form.control}
               name="timeline"
               render={({ field }) => (
-                <FormItem className={cn(isRtl && "text-right")}>
-                  <FormLabel>
+                <FormItem className={fieldShellClass}>
+                  <FormLabel className={labelClass}>
                     {copy.timelineLabel} <span className="text-muted-foreground">({copy.optionalLabel})</span>
                   </FormLabel>
                   <Select onValueChange={field.onChange} value={field.value || undefined}>
                     <FormControl>
-                      <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
+                      <SelectTrigger className={selectTriggerClass}>
                         <SelectValue placeholder={copy.timelinePlaceholder} />
                       </SelectTrigger>
                     </FormControl>
@@ -328,14 +351,14 @@ export function LandingLeadFormBase({
             control={form.control}
             name="notes"
             render={({ field }) => (
-              <FormItem className={cn(isRtl && "text-right")}>
-                <FormLabel>
+              <FormItem className={fieldShellClass}>
+                <FormLabel className={labelClass}>
                   {copy.notesLabel} <span className="text-muted-foreground">({copy.optionalLabel})</span>
                 </FormLabel>
                 <FormControl>
                   <Textarea
                     rows={4}
-                    className={cn(isRtl && "text-right")}
+                    className={textareaClass}
                     placeholder={copy.notesPlaceholder}
                     {...field}
                     value={field.value ?? ""}
@@ -349,7 +372,7 @@ export function LandingLeadFormBase({
           <button
             type="submit"
             disabled={isPending}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
+            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {isPending ? <LoaderCircle className="size-4 animate-spin" /> : null}
             {copy.submitLabel}

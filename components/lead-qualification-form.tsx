@@ -70,12 +70,12 @@ const investorStepTwoFields: Array<keyof LeadFormValues> = [
 
 function FormGroup({ title, description, children }: FormGroupProps) {
   return (
-    <div className="rounded-[24px] border border-border/70 bg-muted/25 p-4 md:p-6">
-      <div className="mb-5 space-y-1">
-        <h4 className="text-lg text-foreground md:text-xl">{title}</h4>
-        {description ? <p className="text-sm leading-6 text-muted-foreground">{description}</p> : null}
+    <div className="surface-muted p-5 md:p-7">
+      <div className="mb-5 space-y-2">
+        <h4 className="text-[1.15rem] leading-tight text-foreground md:text-[1.28rem]">{title}</h4>
+        {description ? <p className="max-w-[34rem] text-sm leading-6 text-muted-foreground">{description}</p> : null}
       </div>
-      <div className="space-y-5">{children}</div>
+      <div className="space-y-6">{children}</div>
     </div>
   )
 }
@@ -144,11 +144,11 @@ export function LeadQualificationForm({
   }
 
   return (
-    <div dir={isRtl ? "rtl" : "ltr"} className={cn("section-card p-6 md:p-10", isRtl && "text-right")}>
-      <div className="mb-8 space-y-3">
+    <div dir={isRtl ? "rtl" : "ltr"} className={cn("section-card p-7 md:p-9", isRtl && "text-right")}>
+      <div className="mb-8 space-y-4">
         <span className="eyebrow">{copy.eyebrow}</span>
-        <h3 className="text-2xl text-foreground md:text-3xl">{title}</h3>
-        <p className="text-sm leading-7 text-muted-foreground md:text-base">{description}</p>
+        <h3 className="max-w-[18ch] text-[2rem] leading-[1.12] text-foreground md:text-[2.35rem]">{title}</h3>
+        <p className="max-w-[34rem] text-sm leading-7 text-muted-foreground md:text-[0.98rem] md:leading-8">{description}</p>
       </div>
 
       {referenceId ? (
@@ -172,7 +172,7 @@ export function LeadQualificationForm({
       ) : null}
 
       {isInvestor ? (
-        <div className="mb-6 rounded-[24px] border border-border/70 bg-background/80 p-4">
+        <div className="mb-7 rounded-[26px] border border-border/70 bg-background/80 p-5">
           <div className={cn("mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between", isRtl && "sm:flex-row-reverse")}>
             <p className="text-sm font-medium text-foreground">Step {step + 1} of 2</p>
             <p className="text-sm text-muted-foreground">{step === 0 ? "Contact and residence" : "Program fit and notes"}</p>
@@ -202,7 +202,10 @@ export function LeadQualificationForm({
           name={netlifyFormNames[formType]}
           method="POST"
           action="/__forms.html"
-          className="space-y-6"
+          className={cn(
+            "space-y-6 [&_label]:text-[0.78rem] [&_label]:font-medium [&_label]:tracking-[0.01em] [&_label]:text-foreground/72 [&_textarea]:rounded-2xl [&_[role=combobox]]:h-11 [&_[role=combobox]]:rounded-2xl",
+            isRtl && "[&_label]:text-right",
+          )}
           onSubmit={onSubmit}
         >
           <input type="hidden" name="form-name" value={netlifyFormNames[formType]} />
@@ -210,12 +213,12 @@ export function LeadQualificationForm({
           {isInvestor ? (
             <>
               {step === 0 ? (
-                <div className="space-y-5">
+                <div className="space-y-6">
                   <FormGroup
                     title="Primary contact"
                     description="Start with the details a provider needs to review your enquiry quickly."
                   >
-                    <div className="grid gap-5 md:grid-cols-2">
+                    <div className="grid gap-4 md:grid-cols-2">
                       <FormField
                         control={form.control}
                         name="fullName"
@@ -264,7 +267,7 @@ export function LeadQualificationForm({
                     title="Current profile"
                     description="These details help narrow realistic routes before a provider gets in touch."
                   >
-                    <div className="grid gap-5 md:grid-cols-2">
+                    <div className="grid gap-4 md:grid-cols-2">
                       <FormField
                         control={form.control}
                         name="countryOfCitizenship"
@@ -295,12 +298,12 @@ export function LeadQualificationForm({
                   </FormGroup>
                 </div>
               ) : (
-                <div className="space-y-5">
+                <div className="space-y-6">
                   <FormGroup
                     title="Program goals"
                     description="Help us understand the destination, scope, and timing that matter most."
                   >
-                    <div className="grid gap-5 md:grid-cols-2">
+                    <div className="grid gap-4 md:grid-cols-2">
                       <FormField
                         control={form.control}
                         name="programInterest"
@@ -347,7 +350,7 @@ export function LeadQualificationForm({
                       />
                     </div>
 
-                    <div className="grid gap-5 md:grid-cols-3">
+                    <div className="grid gap-4 md:grid-cols-3">
                       <FormField
                         control={form.control}
                         name="preferredDestination"
@@ -456,12 +459,12 @@ export function LeadQualificationForm({
               )}
             </>
           ) : (
-            <div className="space-y-5">
+            <div className="space-y-6">
               <FormGroup
                 title="Primary contact"
                 description="Tell us who we should coordinate with and which firm or desk you represent."
               >
-                <div className="grid gap-5 md:grid-cols-2">
+                <div className="grid gap-4 md:grid-cols-2">
                   <FormField
                     control={form.control}
                     name="fullName"
@@ -490,7 +493,7 @@ export function LeadQualificationForm({
                   />
                 </div>
 
-                <div className="grid gap-5 md:grid-cols-2">
+                <div className="grid gap-4 md:grid-cols-2">
                   <FormField
                     control={form.control}
                     name="email"
@@ -524,7 +527,7 @@ export function LeadQualificationForm({
                 title="Operational context"
                 description="A few details help us prepare the right CRM, demo, or lead partnership conversation."
               >
-                <div className="grid gap-5 md:grid-cols-3">
+                <div className="grid gap-4 md:grid-cols-3">
                   <FormField
                     control={form.control}
                     name="regionServed"
@@ -656,12 +659,12 @@ export function LeadQualificationForm({
             </div>
           )}
 
-          <div className={cn("flex flex-col gap-3 border-t border-border/70 pt-5 sm:flex-row sm:items-center sm:justify-between", isRtl && "sm:flex-row-reverse")}>
+          <div className={cn("flex flex-col gap-3.5 border-t border-border/70 pt-6 sm:flex-row sm:items-center sm:justify-between", isRtl && "sm:flex-row-reverse")}>
             {isInvestor && step === 1 ? (
               <button
                 type="button"
                 onClick={() => setStep(0)}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground transition hover:bg-muted sm:w-auto"
+                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-border bg-background px-5 text-sm font-semibold text-foreground transition hover:bg-muted sm:w-auto"
               >
                 <ChevronLeft className="size-4" />
                 Back
@@ -674,7 +677,7 @@ export function LeadQualificationForm({
               <button
                 type="button"
                 onClick={goToInvestorStepTwo}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 sm:w-auto"
+                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 sm:w-auto"
               >
                 Continue to program fit
                 <ChevronRight className="size-4" />
@@ -683,7 +686,7 @@ export function LeadQualificationForm({
               <button
                 type="submit"
                 disabled={isPending}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+                className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
               >
                 {isPending ? <LoaderCircle className="size-4 animate-spin" /> : null}
                 {submitLabel ?? copy.submitIdleLabel}

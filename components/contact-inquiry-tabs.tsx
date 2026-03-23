@@ -36,14 +36,14 @@ export function ContactInquiryTabs({ locale = "en", defaultValue = "investor" }:
 
   return (
     <Tabs defaultValue={defaultValue} dir={isRtl ? "rtl" : "ltr"} className={isRtl ? "text-right" : undefined}>
-      <div className="mb-8 space-y-4">
+      <div className="mb-7 space-y-4">
         <span className="eyebrow">{messages.forms.tabsEyebrow}</span>
-        <h3 className="text-2xl text-foreground md:text-3xl">{messages.forms.tabsTitle}</h3>
-        <p className="max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
+        <h3 className="max-w-[18ch] text-[2rem] leading-[1.12] text-foreground md:text-[2.3rem]">{messages.forms.tabsTitle}</h3>
+        <p className="max-w-[38rem] text-sm leading-7 text-muted-foreground md:text-[0.98rem] md:leading-8">
           {messages.forms.tabsDescription}
         </p>
       </div>
-      <TabsList className="mb-8 grid h-auto w-full grid-cols-1 gap-2 rounded-2xl p-2 sm:grid-cols-2">
+      <TabsList className="mb-7 grid h-auto w-full grid-cols-1 gap-2 rounded-2xl p-2 sm:grid-cols-2">
         <TabsTrigger value="investor">{messages.forms.investorTab}</TabsTrigger>
         <TabsTrigger value="company">{messages.forms.companyTab}</TabsTrigger>
       </TabsList>

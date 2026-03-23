@@ -155,7 +155,7 @@ export function LandingLeadFormBase({
     <div
       dir={dir}
       className={cn(
-        "rounded-[30px] border border-black/6 bg-[linear-gradient(180deg,rgba(255,255,255,0.97),rgba(248,244,236,0.95))] p-6 shadow-[0_26px_90px_rgba(16,22,37,0.12)] md:p-8",
+        "rounded-[30px] border border-black/6 bg-[linear-gradient(180deg,rgba(255,255,255,0.97),rgba(248,244,236,0.95))] p-6 shadow-[0_22px_74px_rgba(16,22,37,0.11)] md:p-8",
         isRtl && "text-right",
         className,
       )}
@@ -163,8 +163,8 @@ export function LandingLeadFormBase({
       <div className="mb-7 space-y-4">
         <span className="eyebrow border-border/70 bg-white/70 text-muted-foreground">{copy.eyebrow}</span>
         <div className="space-y-3">
-          <h3 className="text-[1.85rem] leading-[1.14] text-foreground md:text-[2.1rem]">{copy.title}</h3>
-          <p className="max-w-[30rem] text-sm leading-7 text-muted-foreground md:text-[0.98rem]">{copy.description}</p>
+          <h3 className="max-w-[17ch] text-[1.78rem] leading-[1.14] text-foreground md:text-[2rem]">{copy.title}</h3>
+          <p className="max-w-[29rem] text-sm leading-7 text-muted-foreground md:text-[0.97rem] md:leading-8">{copy.description}</p>
         </div>
         <p className="rounded-2xl border border-border/60 bg-white/45 px-4 py-3 text-[0.82rem] leading-6 text-muted-foreground">
           {copy.confidentialityNote}
@@ -196,7 +196,10 @@ export function LandingLeadFormBase({
           name={landingLeadFormName}
           method="POST"
           action="/__forms.html"
-          className={cn("space-y-[1.375rem]", isRtl && "text-right")}
+          className={cn(
+            "space-y-[1.375rem] [&_label]:text-[0.78rem] [&_label]:font-medium [&_label]:tracking-[0.01em] [&_label]:text-foreground/72",
+            isRtl && "text-right [&_label]:text-right",
+          )}
           onSubmit={onSubmit}
         >
           <input type="hidden" name="form-name" value={landingLeadFormName} />

@@ -133,11 +133,11 @@
   }
 
   .section-padding {
-    @apply py-20 md:py-24;
+    @apply py-16 md:py-20 xl:py-24;
   }
 
   .section-flow {
-    @apply pt-0 pb-20 md:pb-24;
+    @apply pt-0 pb-16 md:pb-20 xl:pb-24;
   }
 
   .content-measure {
@@ -149,7 +149,7 @@
   }
 
   .section-card {
-    @apply rounded-[28px] border border-white/60 bg-card/90 shadow-[0_24px_80px_rgba(21,27,42,0.08)] backdrop-blur;
+    @apply rounded-[28px] border border-white/75 bg-card/[0.94] shadow-[0_20px_68px_rgba(21,27,42,0.075)] backdrop-blur;
   }
 
   .eyebrow {
@@ -165,14 +165,26 @@
   }
 
   .display-title {
-    @apply text-[2.5rem] leading-[1.06] tracking-[-0.03em] sm:text-[3rem] md:text-[4rem] md:leading-[1.02] lg:text-[4.5rem];
+    @apply text-[2.45rem] leading-[1.08] tracking-[-0.03em] sm:text-[2.95rem] md:text-[3.75rem] md:leading-[1.03] lg:text-[4.2rem];
   }
 
   .section-title {
-    @apply text-[2rem] leading-[1.1] tracking-[-0.025em] md:text-[2.7rem] md:leading-[1.05];
+    @apply text-[1.95rem] leading-[1.11] tracking-[-0.025em] md:text-[2.5rem] md:leading-[1.06];
   }
 
   .card-title {
-    @apply text-[1.55rem] leading-[1.16] tracking-[-0.02em] md:text-[1.9rem];
+    @apply text-[1.45rem] leading-[1.18] tracking-[-0.02em] md:text-[1.75rem];
+  }
+
+  .section-stack {
+    @apply space-y-4 md:space-y-5;
+  }
+
+  .card-stack {
+    @apply flex h-full flex-col space-y-4 md:space-y-5;
+  }
+
+  .surface-muted {
+    @apply rounded-[24px] border border-border/70 bg-muted/25;
   }
 }

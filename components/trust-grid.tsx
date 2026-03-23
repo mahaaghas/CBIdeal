@@ -11,9 +11,13 @@ export function TrustGrid({ items }: TrustGridProps) {
   return (
     <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
       {items.map((item) => (
-        <div key={item.title} className="section-card h-full p-6 md:p-7">
-          <h3 className="text-[1.35rem] leading-snug text-foreground">{item.title}</h3>
-          <p className="mt-3 text-sm leading-7 text-muted-foreground">{item.description}</p>
+        <div key={item.title} className="section-card flex h-full min-h-[220px] flex-col justify-center p-7 md:p-8">
+          <div className="section-stack">
+            <h3 className="max-w-[14rem] text-[1.28rem] leading-[1.22] text-foreground md:text-[1.4rem]">
+              {item.title}
+            </h3>
+            <p className="text-sm leading-7 text-muted-foreground">{item.description}</p>
+          </div>
         </div>
       ))}
     </div>

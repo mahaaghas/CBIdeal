@@ -22,18 +22,23 @@ export function CtaPanel({ eyebrow, title, description, primaryAction, secondary
   const isRtl = direction === "rtl"
 
   return (
-    <div className="hero-panel overflow-hidden px-6 py-8 sm:px-8 md:px-12 md:py-10">
+    <div className="hero-panel overflow-hidden px-6 py-8 sm:px-8 md:px-12 md:py-11">
       <div
         dir={direction}
-        className="cta-panel-grid grid gap-6 md:gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-end"
+        className="cta-panel-grid grid gap-7 md:gap-9 lg:grid-cols-[minmax(0,1.08fr)_auto] lg:items-end"
       >
-        <div className={cn("space-y-4 md:space-y-5", isRtl && "text-right")}>
+        <div className={cn("section-stack", isRtl && "text-right")}>
           <span className="eyebrow border-white/20 bg-white/10 text-primary-foreground/80">{eyebrow}</span>
-          <h2 className="section-title max-w-[42rem] text-primary-foreground">{title}</h2>
-          <p className="max-w-[40rem] text-base leading-7 text-primary-foreground/75 md:text-lg md:leading-8">{description}</p>
+          <h2 className="section-title max-w-[17ch] text-primary-foreground">{title}</h2>
+          <p className="max-w-[38rem] text-base leading-7 text-primary-foreground/76 md:text-[1.02rem] md:leading-8">{description}</p>
         </div>
-        <div className={cn("cta-panel-actions flex flex-col gap-3 sm:flex-row lg:flex-col lg:items-end", isRtl && "sm:flex-row-reverse lg:items-start")}>
-          <Button size="lg" variant="secondary" className="w-full sm:w-auto" asChild>
+        <div
+          className={cn(
+            "cta-panel-actions flex flex-col gap-3 sm:flex-row lg:min-w-[15rem] lg:flex-col lg:items-end",
+            isRtl && "sm:flex-row-reverse lg:items-start",
+          )}
+        >
+          <Button size="lg" variant="secondary" className="h-12 w-full rounded-full px-6 text-sm font-semibold sm:w-auto" asChild>
             <Link href={primaryAction.href}>
               {primaryAction.label}
               <ArrowRight className="size-4" />
@@ -43,7 +48,7 @@ export function CtaPanel({ eyebrow, title, description, primaryAction, secondary
             <Button
               size="lg"
               variant="outline"
-              className="w-full border-white/20 bg-transparent text-primary-foreground hover:bg-white/10 sm:w-auto"
+              className="h-12 w-full rounded-full border-white/20 bg-transparent px-6 text-sm font-semibold text-primary-foreground hover:bg-white/10 sm:w-auto"
               asChild
             >
               <Link href={secondaryAction.href}>{secondaryAction.label}</Link>

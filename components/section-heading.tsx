@@ -16,19 +16,19 @@ export function SectionHeading({ eyebrow, title, description, align = "left" }: 
     <div
       className={
         resolvedAlign === "center"
-          ? "mx-auto mb-8 max-w-[42rem] text-center md:mb-10"
+          ? "mx-auto mb-7 max-w-[41rem] text-center md:mb-8"
           : resolvedAlign === "right"
-            ? "mb-8 max-w-[42rem] text-right md:mb-10"
-            : "mb-8 max-w-[42rem] md:mb-10"
+            ? "mb-7 max-w-[41rem] text-right md:mb-8"
+            : "mb-7 max-w-[41rem] md:mb-8"
       }
     >
       <span className="eyebrow">{eyebrow}</span>
-      <h2 className="section-title mt-3 text-foreground md:mt-4">{title}</h2>
+      <h2 className="section-title mt-3 max-w-[18ch] text-foreground md:mt-4">{title}</h2>
       <p
         className={
           resolvedAlign === "center"
-            ? "mx-auto mt-3 max-w-[40rem] text-base leading-7 text-muted-foreground md:mt-4 md:text-lg md:leading-8"
-            : "mt-3 max-w-[40rem] text-base leading-7 text-muted-foreground md:mt-4 md:text-lg md:leading-8"
+            ? "mx-auto mt-3 max-w-[38rem] text-base leading-7 text-muted-foreground md:mt-4 md:text-[1.02rem] md:leading-8"
+            : "mt-3 max-w-[38rem] text-base leading-7 text-muted-foreground md:mt-4 md:text-[1.02rem] md:leading-8"
         }
       >
         {description}

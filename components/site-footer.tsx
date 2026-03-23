@@ -29,14 +29,14 @@ export async function SiteFooter() {
 
   return (
     <footer className="mt-10 bg-primary text-primary-foreground">
-      <div className="container-shell py-14">
+      <div className="container-shell py-12 md:py-14">
         <div
           className={cn(
-            "grid gap-10 border-b border-white/10 pb-10 lg:grid-cols-[1.05fr_0.72fr_0.72fr_0.95fr]",
+            "grid gap-8 border-b border-white/10 pb-10 lg:grid-cols-[1.05fr_0.72fr_0.72fr_0.95fr]",
             isRtl && "text-right",
           )}
         >
-          <div className="space-y-5">
+          <div className="space-y-4">
             <BrandMark muted />
             <p className="max-w-sm text-sm leading-7 text-primary-foreground/75">
               {settings.footerSummary}
@@ -82,7 +82,7 @@ export async function SiteFooter() {
               ))}
             </ul>
           </div>
-          <div className="space-y-6">
+          <div className="space-y-5">
             <div className="space-y-4">
               <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground/70">{messages.footer.legalAndContact}</h3>
               <ul className="space-y-3 text-sm text-primary-foreground/75">
@@ -95,7 +95,7 @@ export async function SiteFooter() {
                 ))}
               </ul>
             </div>
-            <ul className="space-y-4 text-sm text-primary-foreground/75">
+            <ul className="space-y-3.5 text-sm text-primary-foreground/75">
               <li className={cn("flex items-start gap-3", isRtl && "flex-row-reverse text-right")}>
                 <Mail className="mt-0.5 size-4" />
                 <Link href={`mailto:${settings.salesEmail}`} className="hover:text-primary-foreground">

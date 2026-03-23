@@ -36,15 +36,17 @@ export function BlogPostCard({ post, featured = false }: BlogPostCardProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/10 to-transparent" />
           </div>
         ) : null}
-        <CardContent className="space-y-5 p-7 md:p-8">
+        <CardContent className="card-stack justify-center p-7 md:p-8">
           <div className={cn("flex flex-wrap items-center gap-3 text-sm text-muted-foreground", isRtl && "flex-row-reverse justify-end")}>
             {post.category ? (
               <span className="rounded-full border border-border/70 px-3 py-1">{post.category.title}</span>
             ) : null}
             <span>{format(new Date(post.publishedAt), "d MMM yyyy")}</span>
           </div>
-          <div className="space-y-3">
-            <h3 className={featured ? "text-3xl text-foreground md:text-4xl" : "text-2xl text-foreground"}>{post.title}</h3>
+          <div className="section-stack">
+            <h3 className={featured ? "max-w-[16ch] text-[2rem] leading-[1.1] text-foreground md:text-[2.55rem]" : "max-w-[18ch] text-[1.75rem] leading-[1.15] text-foreground"}>
+              {post.title}
+            </h3>
             <p className="fine-print">{post.excerpt}</p>
           </div>
           {post.author ? (

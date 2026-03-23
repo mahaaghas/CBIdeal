@@ -22,12 +22,16 @@ export function ProcessSteps({ steps }: ProcessStepsProps) {
     >
       {steps.map((step) => (
         <Card key={step.title} className="section-card h-full">
-          <CardContent className="space-y-5 p-7 md:p-8">
+          <CardContent className="card-stack justify-center p-7 md:p-8">
             <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
               <step.icon className="size-6" />
             </div>
-            <h3 className="text-[1.35rem] leading-snug text-foreground">{step.title}</h3>
-            <p className="fine-print">{step.description}</p>
+            <div className="section-stack">
+              <h3 className="max-w-[16rem] text-[1.28rem] leading-[1.22] text-foreground md:text-[1.42rem]">
+                {step.title}
+              </h3>
+              <p className="fine-print">{step.description}</p>
+            </div>
           </CardContent>
         </Card>
       ))}

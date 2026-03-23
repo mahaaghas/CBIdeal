@@ -31,9 +31,9 @@ export function PricingSection({ locale = "en", preview = false }: PricingSectio
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-        <div className="max-w-2xl space-y-2">
+    <div className="space-y-8 md:space-y-9">
+      <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+        <div className="max-w-2xl space-y-2.5">
           <p className="text-sm leading-7 text-muted-foreground">
             Pricing is per user for software seats. Lead partnership setup is scoped separately depending on geography, volume, and qualification rules.
           </p>
@@ -79,15 +79,15 @@ export function PricingSection({ locale = "en", preview = false }: PricingSectio
                 plan.featured ? "border-primary/25 shadow-[0_28px_90px_rgba(28,37,56,0.16)]" : "",
               )}
             >
-              <CardContent className="space-y-6 p-7 md:p-8">
+              <CardContent className="card-stack p-7 md:p-8">
                 {plan.featured ? (
                   <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground">
                     {copy.bestValue}
                   </span>
                 ) : null}
-                <div className="space-y-3">
+                <div className="section-stack">
                   <div className="flex items-end justify-between gap-4">
-                    <h3 className="text-3xl text-foreground">{plan.name}</h3>
+                    <h3 className="text-[1.8rem] leading-[1.14] text-foreground">{plan.name}</h3>
                     <span className="text-sm text-muted-foreground">{plan.seats}</span>
                   </div>
                   <p className="fine-print">{plan.description}</p>

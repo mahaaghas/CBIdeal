@@ -88,12 +88,12 @@ export async function MeetingSchedulerCard({
       : description
 
   return (
-    <div className="section-card p-6 md:p-10">
-      <div dir={direction} className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-        <div className={cn("space-y-5", isRtl && "text-right")}>
+    <div className="section-card p-6 md:p-9">
+      <div dir={direction} className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-center">
+        <div className={cn("section-stack", isRtl && "text-right")}>
           <span className="eyebrow">{copy.eyebrow}</span>
-          <h3 className="text-2xl text-foreground md:text-3xl">{resolvedTitle}</h3>
-          <p className="text-base leading-8 text-muted-foreground">{resolvedDescription}</p>
+          <h3 className="max-w-[18ch] text-[2rem] leading-[1.12] text-foreground md:text-[2.35rem]">{resolvedTitle}</h3>
+          <p className="max-w-[34rem] text-base leading-8 text-muted-foreground">{resolvedDescription}</p>
 
           <div className="space-y-3 text-sm text-muted-foreground">
             <div className={cn("flex items-start gap-3", isRtl && "flex-row-reverse")}>
@@ -123,7 +123,7 @@ export async function MeetingSchedulerCard({
           </div>
         </div>
 
-        <div className={compact ? "rounded-[28px] border border-border/70 bg-muted/40 p-5" : "rounded-[28px] border border-border/70 bg-muted/40 p-6"}>
+        <div className={compact ? "rounded-[28px] border border-border/70 bg-muted/35 p-5" : "rounded-[28px] border border-border/70 bg-muted/35 p-6"}>
           <div className={cn("mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", isRtl && "sm:flex-row-reverse")}>
             <div>
               <p className="text-sm font-semibold text-foreground">{copy.availability}</p>

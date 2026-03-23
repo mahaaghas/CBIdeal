@@ -535,8 +535,8 @@ export default async function HomePage() {
       </PageHero>
 
       <section id="eligibility" className="section-flow">
-        <div className="container-shell grid gap-8 md:gap-10 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1fr)] lg:items-start">
-          <div className="content-measure space-y-6 md:space-y-8">
+        <div className="container-shell grid gap-8 md:gap-10 lg:grid-cols-[minmax(0,0.94fr)_minmax(0,1.06fr)] lg:items-start">
+          <div className="content-measure space-y-5 md:space-y-6">
             <span className="eyebrow">{copy.qualificationEyebrow}</span>
             <h2 className="section-title content-measure-tight text-foreground">{copy.qualificationTitle}</h2>
             <p className="content-measure-tight text-lg leading-8 text-muted-foreground">

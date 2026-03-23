@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import { BadgeCheck, CircleDollarSign, Compass, FileCheck2, Globe2, ShieldCheck, Users } from "lucide-react"
 import { LocalizedLandingLeadForm } from "@/components/forms/localized-landing-lead-form"
 import { LandingComparisonTable } from "@/components/landing/landing-comparison-table"
@@ -14,6 +15,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { getRequestLocale } from "@/lib/i18n/request"
 import { localizeHref } from "@/lib/i18n/routing"
 import { buildPageMetadata } from "@/lib/metadata"
+import { siteImages } from "@/lib/site-images"
 import { getLocalizedRouteLinks } from "@/lib/site"
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -144,57 +146,87 @@ export default function CitizenshipByInvestmentPage() {
       </section>
 
       <section className="section-padding pt-0">
-        <div className="container-shell space-y-10">
-          <SectionHeading
-            eyebrow="What this route is really for"
-            title="A second citizenship can be valuable, but only when the objective is clear."
-            description="The strongest cases usually begin with a practical goal: smoother travel, family planning, contingency options, or long-term international flexibility."
-          />
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {[
-              {
-                icon: Globe2,
-                title: "Mobility",
-                text: "Useful where travel friction affects business, family movement, or international planning.",
-              },
-              {
-                icon: Users,
-                title: "Family optionality",
-                text: "Relevant for households planning for children, dependants, or future relocation choices.",
-              },
-              {
-                icon: CircleDollarSign,
-                title: "Long-term planning",
-                text: "Best understood as part of a wider private planning conversation rather than a quick purchase.",
-              },
-              {
-                icon: BadgeCheck,
-                title: "Structured execution",
-                text: "The right route depends on documentation quality, due diligence readiness, and provider fit.",
-              },
-            ].map((item) => (
-              <Card key={item.title} className="section-card h-full">
-                <CardContent className="space-y-4 p-6 md:p-7">
-                  <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <item.icon className="size-6" />
-                  </div>
-                  <h3 className="text-xl leading-tight text-foreground">{item.title}</h3>
-                  <p className="text-sm leading-7 text-muted-foreground">{item.text}</p>
-                </CardContent>
-              </Card>
-            ))}
+        <div className="container-shell">
+          <div className="section-card relative overflow-hidden p-8 md:p-10 lg:p-12">
+            <div className="absolute inset-0">
+              <Image
+                src={siteImages.businessStreet.src}
+                alt={siteImages.businessStreet.alt}
+                fill
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(33,42,66,0.9),rgba(33,42,66,0.78)_34%,rgba(33,42,66,0.62)_100%)]" />
+            </div>
+            <div className="relative space-y-10">
+              <div className="max-w-[42rem] space-y-4">
+                <span className="eyebrow border-white/20 bg-white/10 text-primary-foreground/80">
+                  What this route is really for
+                </span>
+                <h2 className="section-title max-w-[40rem] text-primary-foreground">
+                  A second citizenship can be valuable, but only when the objective is clear.
+                </h2>
+                <p className="max-w-[40rem] text-base leading-8 text-primary-foreground/80 md:text-lg">
+                  The strongest cases usually begin with a practical goal: smoother travel, family planning, contingency options, or long-term international flexibility.
+                </p>
+              </div>
+              <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+                {[
+                  {
+                    icon: Globe2,
+                    title: "Mobility",
+                    text: "Useful where travel friction affects business, family movement, or international planning.",
+                  },
+                  {
+                    icon: Users,
+                    title: "Family optionality",
+                    text: "Relevant for households planning for children, dependants, or future relocation choices.",
+                  },
+                  {
+                    icon: CircleDollarSign,
+                    title: "Long-term planning",
+                    text: "Best understood as part of a wider private planning conversation rather than a quick purchase.",
+                  },
+                  {
+                    icon: BadgeCheck,
+                    title: "Structured execution",
+                    text: "The right route depends on documentation quality, due diligence readiness, and provider fit.",
+                  },
+                ].map((item) => (
+                  <Card key={item.title} className="h-full border border-white/12 bg-white/92 shadow-[0_24px_80px_rgba(13,18,31,0.12)] backdrop-blur-sm">
+                    <CardContent className="space-y-4 p-6 md:p-7">
+                      <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                        <item.icon className="size-6" />
+                      </div>
+                      <h3 className="text-xl leading-tight text-foreground">{item.title}</h3>
+                      <p className="text-sm leading-7 text-muted-foreground">{item.text}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="section-padding bg-muted/30">
+      <section className="section-padding">
         <div className="container-shell">
-          <SectionHeading
-            eyebrow="How the process works"
-            title="A serious first conversation starts with cleaner qualification."
-            description="This route is designed to move from enquiry to provider handoff in a way that feels selective, structured, and easier to trust."
-          />
-          <ProcessSteps steps={processSteps} />
+          <div className="section-card bg-primary p-8 md:p-10 lg:p-12">
+            <div className="space-y-10">
+              <div className="max-w-[42rem] space-y-4">
+                <span className="eyebrow border-white/20 bg-white/10 text-primary-foreground/80">
+                  How the process works
+                </span>
+                <h2 className="section-title max-w-[40rem] text-primary-foreground">
+                  A serious first conversation starts with cleaner qualification.
+                </h2>
+                <p className="max-w-[38rem] text-base leading-8 text-primary-foreground/80 md:text-lg">
+                  This route is designed to move from enquiry to provider handoff in a way that
+                  feels selective, structured, and easier to trust.
+                </p>
+              </div>
+              <ProcessSteps steps={processSteps} />
+            </div>
+          </div>
         </div>
       </section>
 

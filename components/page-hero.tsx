@@ -36,6 +36,7 @@ export function PageHero({
 }: PageHeroProps) {
   const direction = getRequestDirection()
   const isRtl = direction === "rtl"
+  const renderStatsBelow = Boolean(children && stats.length)
 
   return (
     <section className="section-padding pb-12 md:pb-14">
@@ -46,7 +47,7 @@ export function PageHero({
             dir={direction}
             className={cn(
               "page-hero-grid relative grid gap-8 md:gap-10",
-              children ? "lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.95fr)] lg:items-start lg:gap-12" : "content-measure",
+              children ? "lg:grid-cols-[minmax(0,1.02fr)_minmax(18rem,0.88fr)] lg:items-start lg:gap-12" : "content-measure",
             )}
           >
             <div className={cn("page-hero-copy space-y-6 md:space-y-8", isRtl && "text-right")}>
@@ -77,7 +78,7 @@ export function PageHero({
                   </Button>
                 ) : null}
               </div>
-              {stats.length ? (
+              {!renderStatsBelow && stats.length ? (
                 <div
                   className={cn(
                     "page-hero-stats grid gap-4 pt-4 md:pt-6",
@@ -95,8 +96,35 @@ export function PageHero({
                 </div>
               ) : null}
             </div>
-            {children ? <div className={cn("page-hero-aside max-w-[32rem]", isRtl ? "lg:justify-self-start lg:pr-2" : "lg:justify-self-end lg:pl-2")}>{children}</div> : null}
+            {children ? (
+              <div
+                className={cn(
+                  "page-hero-aside w-full max-w-[25rem] self-start",
+                  isRtl ? "lg:justify-self-start lg:pr-2" : "lg:justify-self-end lg:pl-2",
+                )}
+              >
+                {children}
+              </div>
+            ) : null}
           </div>
+          {renderStatsBelow ? (
+            <div
+              dir={direction}
+              className={cn(
+                "page-hero-stats relative mt-8 grid gap-4 md:mt-10 md:grid-cols-2 xl:grid-cols-3",
+                isRtl && "text-right",
+              )}
+            >
+              {stats.map((stat) => (
+                <div key={stat.label} className="min-w-0 rounded-2xl border border-white/10 bg-black/10 p-5 md:p-6">
+                  <div className="min-w-0 text-xl leading-snug text-primary-foreground md:text-2xl [overflow-wrap:anywhere]">
+                    {stat.value}
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-primary-foreground/70">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          ) : null}
         </div>
       </div>
     </section>

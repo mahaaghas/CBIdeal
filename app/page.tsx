@@ -549,6 +549,23 @@ export default async function HomePage() {
                 </div>
               ))}
             </div>
+            <div className="section-card content-measure-tight overflow-hidden p-0">
+              <div className="relative h-[280px] sm:h-[320px]">
+                <Image
+                  src={siteImages.passportHandoff.src}
+                  alt={siteImages.passportHandoff.alt}
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-primary/10 to-transparent" />
+              </div>
+              <div className="space-y-2 p-5 md:p-6">
+                <p className="text-sm font-semibold text-foreground">Private, structured, and provider-led.</p>
+                <p className="fine-print">
+                  A clearer intake makes the first provider conversation feel more prepared, more relevant, and easier to trust.
+                </p>
+              </div>
+            </div>
           </div>
           <LeadQualificationForm
             locale={locale}

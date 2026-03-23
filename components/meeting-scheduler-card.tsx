@@ -1,10 +1,8 @@
-import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, CalendarRange, Clock3, Video } from "lucide-react"
+import { ArrowRight, CalendarRange, Clock3, ExternalLink, Video } from "lucide-react"
 import { getMessages } from "@/lib/i18n/messages"
 import { getRequestDirection, getRequestLocale } from "@/lib/i18n/request"
 import { getLocalizedCtaLinks, schedulerConfig } from "@/lib/site"
-import { siteImages } from "@/lib/site-images"
 import { getResolvedSiteSettings } from "@/lib/sanity/content"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -26,12 +24,13 @@ export async function MeetingSchedulerCard({
   const messages = getMessages(locale)
   const ctaLinks = getLocalizedCtaLinks(locale)
   const settings = await getResolvedSiteSettings()
+
   const copy = {
     eyebrow: locale === "ar" ? "حجز الاجتماع" : locale === "ru" ? "Бронирование встречи" : "Meeting scheduler",
     defaultTitle: locale === "ar" ? "احجز اجتماعًا استكشافيًا" : locale === "ru" ? "Забронируйте встречу-знакомство" : "Book a discovery meeting",
     defaultDescription:
       locale === "ar"
-        ? "اختر مكالمة تعارف قصيرة لمناقشة الـ CRM أو العملاء المحتملين المؤهلين أو نهج الإطلاق المناسب لفريقك."
+        ? "اختر مكالمة تعريف قصيرة لمناقشة الـ CRM أو العملاء المحتملين المؤهلين أو نهج الإطلاق المناسب لفريقك."
         : locale === "ru"
           ? "Выберите короткий вводный звонок, чтобы обсудить CRM, квалифицированные лиды или подходящий формат запуска для вашей команды."
           : "Choose a short introduction call to discuss the CRM, qualified lead delivery, or the right rollout approach for your team.",
@@ -47,22 +46,41 @@ export async function MeetingSchedulerCard({
         : locale === "ru"
           ? "Рекомендуемая продолжительность первой беседы: 20–30 минут."
           : "Recommended slot length: 20 to 30 minutes for first conversations.",
-    preview: locale === "ar" ? "معاينة الحجز" : locale === "ru" ? "Предпросмотр бронирования" : "Booking preview",
-    duration: locale === "ar" ? "20 إلى 30 دقيقة" : locale === "ru" ? "20–30 минут" : "20 to 30 minutes",
-    realLink: locale === "ar" ? "رابط حجز حقيقي" : locale === "ru" ? "Реальная ссылка на бронь" : "Real booking link",
+    availability:
+      locale === "ar"
+        ? "حجز مباشر عبر Calendly"
+        : locale === "ru"
+          ? "Прямое бронирование через Calendly"
+          : "Live booking via Calendly",
+    availabilityBody:
+      locale === "ar"
+        ? "استخدم الرابط المباشر لفتح جدول المواعيد الحقيقي واختيار الوقت الذي يناسب فريقك."
+        : locale === "ru"
+          ? "Используйте прямую ссылку, чтобы открыть реальный календарь слотов и выбрать удобное время."
+          : "Use the direct link to open the real scheduling calendar and choose a time that fits.",
+    realLink:
+      locale === "ar" ? "رابط حجز حقيقي" : locale === "ru" ? "Реальная ссылка на бронь" : "Real booking link",
     realLinkBody:
       locale === "ar"
-        ? "افتح Calendly في علامة تبويب جديدة لاختيار الموعد الأنسب لفريقك."
+        ? "سيفتح Calendly في علامة تبويب جديدة حتى تتمكن من اختيار الموعد الأنسب مباشرة."
         : locale === "ru"
-          ? "Откройте Calendly в новой вкладке, чтобы выбрать слот, который лучше всего подходит вашей команде."
-          : "Open Calendly in a new tab to choose the slot that suits your team best.",
+          ? "Calendly откроется в новой вкладке, чтобы вы могли выбрать подходящий слот напрямую."
+          : "Calendly opens in a new tab so you can choose the most suitable slot directly.",
+    directOpen:
+      locale === "ar"
+        ? "افتح الجدول المباشر"
+        : locale === "ru"
+          ? "Открыть живое расписание"
+          : "Open live scheduler",
     fallback:
       locale === "ar"
         ? "تفضل البدء عبر البريد؟ استخدم زر التواصل البديل وسننسق الخطوة التالية مباشرة مع فريقك."
         : locale === "ru"
           ? "Предпочитаете сначала email? Используйте запасной CTA, и мы скоординируем следующий шаг напрямую с вашей командой."
           : "Prefer email first? Use the fallback CTA and we will coordinate the right next step directly with your team.",
+    duration: locale === "ar" ? "20 إلى 30 دقيقة" : locale === "ru" ? "20–30 минут" : "20 to 30 minutes",
   }
+
   const resolvedTitle = title === "Book a discovery meeting" ? copy.defaultTitle : title
   const resolvedDescription =
     description === "Choose a short introduction call to discuss the CRM, qualified lead delivery, or the right rollout approach for your team."
@@ -76,6 +94,7 @@ export async function MeetingSchedulerCard({
           <span className="eyebrow">{copy.eyebrow}</span>
           <h3 className="text-2xl text-foreground md:text-3xl">{resolvedTitle}</h3>
           <p className="text-base leading-8 text-muted-foreground">{resolvedDescription}</p>
+
           <div className="space-y-3 text-sm text-muted-foreground">
             <div className={cn("flex items-start gap-3", isRtl && "flex-row-reverse")}>
               <CalendarRange className="mt-0.5 size-4 text-primary" />
@@ -90,6 +109,7 @@ export async function MeetingSchedulerCard({
               <p>{schedulerConfig.helperText}</p>
             </div>
           </div>
+
           <div className={cn("flex flex-col gap-3 sm:flex-row", isRtl && "sm:flex-row-reverse")}>
             <Button className="w-full sm:w-auto" asChild>
               <Link href={settings.bookingUrl} target="_blank" rel="noreferrer">
@@ -104,29 +124,44 @@ export async function MeetingSchedulerCard({
         </div>
 
         <div className={compact ? "rounded-[28px] border border-border/70 bg-muted/40 p-5" : "rounded-[28px] border border-border/70 bg-muted/40 p-6"}>
-            <div className={cn("mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", isRtl && "sm:flex-row-reverse")}>
-              <div>
-                <p className="text-sm font-semibold text-foreground">{copy.preview}</p>
-                <p className="text-sm text-muted-foreground">{schedulerConfig.provider}</p>
-              </div>
-              <span className="rounded-full border border-border/70 px-3 py-1 text-xs font-medium text-muted-foreground">
-                {copy.duration}
-              </span>
+          <div className={cn("mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", isRtl && "sm:flex-row-reverse")}>
+            <div>
+              <p className="text-sm font-semibold text-foreground">{copy.availability}</p>
+              <p className="text-sm text-muted-foreground">{schedulerConfig.provider}</p>
             </div>
-          <div className="relative overflow-hidden rounded-[24px] border border-background/80 bg-background/80">
-            <div className="relative h-56">
-              <Image src={siteImages.stockholmNight.src} alt={siteImages.stockholmNight.alt} fill className="object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent" />
-            </div>
-            <div className="absolute inset-x-0 bottom-0 p-5">
-              <div className="rounded-2xl border border-white/10 bg-black/25 p-4 backdrop-blur">
-                <p className="text-sm font-medium text-primary-foreground">{copy.realLink}</p>
-                <p className="mt-2 text-sm leading-7 text-primary-foreground/75">
-                  {copy.realLinkBody}
-                </p>
+            <span className="rounded-full border border-border/70 px-3 py-1 text-xs font-medium text-muted-foreground">
+              {copy.duration}
+            </span>
+          </div>
+
+          <div className="rounded-[24px] border border-border/70 bg-background/85 p-5 md:p-6">
+            <div className="space-y-5">
+              <div className="rounded-2xl border border-primary/10 bg-primary/[0.03] p-4">
+                <div className={cn("flex items-start gap-3", isRtl && "flex-row-reverse text-right")}>
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <ExternalLink className="size-4" />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-foreground">{copy.realLink}</p>
+                    <p className="text-sm leading-7 text-muted-foreground">{copy.availabilityBody}</p>
+                  </div>
+                </div>
               </div>
+
+              <div className="rounded-2xl border border-dashed border-border/80 px-4 py-4">
+                <p className="text-sm font-medium text-foreground">{copy.availability}</p>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">{copy.realLinkBody}</p>
+              </div>
+
+              <Button className="w-full" asChild>
+                <Link href={settings.bookingUrl} target="_blank" rel="noreferrer">
+                  {copy.directOpen}
+                  <ArrowRight className="size-4" />
+                </Link>
+              </Button>
             </div>
           </div>
+
           <div className="mt-4 rounded-2xl border border-dashed border-border/80 bg-background/70 px-4 py-4 text-sm leading-7 text-muted-foreground">
             {copy.fallback}
           </div>

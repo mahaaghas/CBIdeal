@@ -2,11 +2,12 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, CalendarRange, Clock3, Video } from "lucide-react"
 import { getMessages } from "@/lib/i18n/messages"
-import { getRequestLocale } from "@/lib/i18n/request"
+import { getRequestDirection, getRequestLocale } from "@/lib/i18n/request"
 import { getLocalizedCtaLinks, schedulerConfig } from "@/lib/site"
 import { siteImages } from "@/lib/site-images"
 import { getResolvedSiteSettings } from "@/lib/sanity/content"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 interface MeetingSchedulerCardProps {
   title?: string
@@ -20,6 +21,8 @@ export async function MeetingSchedulerCard({
   compact = false,
 }: MeetingSchedulerCardProps) {
   const locale = getRequestLocale()
+  const direction = getRequestDirection()
+  const isRtl = direction === "rtl"
   const messages = getMessages(locale)
   const ctaLinks = getLocalizedCtaLinks(locale)
   const settings = await getResolvedSiteSettings()
@@ -68,26 +71,26 @@ export async function MeetingSchedulerCard({
 
   return (
     <div className="section-card p-6 md:p-10">
-      <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
-        <div className="space-y-5">
+      <div dir={direction} className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+        <div className={cn("space-y-5", isRtl && "text-right")}>
           <span className="eyebrow">{copy.eyebrow}</span>
           <h3 className="text-2xl text-foreground md:text-3xl">{resolvedTitle}</h3>
           <p className="text-base leading-8 text-muted-foreground">{resolvedDescription}</p>
           <div className="space-y-3 text-sm text-muted-foreground">
-            <div className="flex items-start gap-3">
+            <div className={cn("flex items-start gap-3", isRtl && "flex-row-reverse")}>
               <CalendarRange className="mt-0.5 size-4 text-primary" />
               <p>{copy.ideal}</p>
             </div>
-            <div className="flex items-start gap-3">
+            <div className={cn("flex items-start gap-3", isRtl && "flex-row-reverse")}>
               <Clock3 className="mt-0.5 size-4 text-primary" />
               <p>{copy.timing}</p>
             </div>
-            <div className="flex items-start gap-3">
+            <div className={cn("flex items-start gap-3", isRtl && "flex-row-reverse")}>
               <Video className="mt-0.5 size-4 text-primary" />
               <p>{schedulerConfig.helperText}</p>
             </div>
           </div>
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className={cn("flex flex-col gap-3 sm:flex-row", isRtl && "sm:flex-row-reverse")}>
             <Button className="w-full sm:w-auto" asChild>
               <Link href={settings.bookingUrl} target="_blank" rel="noreferrer">
                 {messages.ctas.bookCompanyCall}
@@ -101,7 +104,7 @@ export async function MeetingSchedulerCard({
         </div>
 
         <div className={compact ? "rounded-[28px] border border-border/70 bg-muted/40 p-5" : "rounded-[28px] border border-border/70 bg-muted/40 p-6"}>
-            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className={cn("mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between", isRtl && "sm:flex-row-reverse")}>
               <div>
                 <p className="text-sm font-semibold text-foreground">{copy.preview}</p>
                 <p className="text-sm text-muted-foreground">{schedulerConfig.provider}</p>

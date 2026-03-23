@@ -13,9 +13,10 @@ interface LanguageSwitcherProps {
 export function LanguageSwitcher({ locale }: LanguageSwitcherProps) {
   const pathname = usePathname()
   const messages = getMessages(locale)
+  const isRtl = locale === "ar"
 
   return (
-    <div className="inline-flex items-center gap-2">
+    <div className={cn("inline-flex items-center gap-2", isRtl && "flex-row-reverse")}>
       <span className="hidden text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground lg:inline">
         {messages.languageSwitch}
       </span>

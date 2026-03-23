@@ -98,6 +98,17 @@
       linear-gradient(180deg, rgba(28, 37, 56, 0.04), transparent 24%);
   }
 
+  html[dir="rtl"] body {
+    text-align: right;
+  }
+
+  html[dir="rtl"] .lucide-arrow-right,
+  html[dir="rtl"] .lucide-arrow-left,
+  html[dir="rtl"] .lucide-chevron-right,
+  html[dir="rtl"] .lucide-chevron-left {
+    transform: scaleX(-1);
+  }
+
   ::selection {
     background: rgba(39, 48, 75, 0.85);
     color: #f8f4ea;
@@ -125,6 +136,14 @@
     @apply py-20 md:py-24;
   }
 
+  .content-measure {
+    @apply max-w-[42rem];
+  }
+
+  .content-measure-tight {
+    @apply max-w-[38rem];
+  }
+
   .section-card {
     @apply rounded-[28px] border border-white/60 bg-card/90 shadow-[0_24px_80px_rgba(21,27,42,0.08)] backdrop-blur;
   }
@@ -142,14 +161,14 @@
   }
 
   .display-title {
-    @apply text-[2.5rem] leading-[1.02] tracking-[-0.03em] sm:text-[3.15rem] md:text-[4.35rem] md:leading-[0.98] lg:text-[4.75rem];
+    @apply text-[2.5rem] leading-[1.06] tracking-[-0.03em] sm:text-[3rem] md:text-[4rem] md:leading-[1.02] lg:text-[4.5rem];
   }
 
   .section-title {
-    @apply text-[2rem] leading-[1.08] tracking-[-0.025em] md:text-[2.85rem] md:leading-[1.03];
+    @apply text-[2rem] leading-[1.1] tracking-[-0.025em] md:text-[2.7rem] md:leading-[1.05];
   }
 
   .card-title {
-    @apply text-[1.7rem] leading-[1.12] tracking-[-0.02em] md:text-[2rem];
+    @apply text-[1.55rem] leading-[1.16] tracking-[-0.02em] md:text-[1.9rem];
   }
 }

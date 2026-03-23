@@ -1,11 +1,11 @@
 import type { Metadata } from "next"
 import { LockKeyhole, MessageSquareQuote, ShieldCheck, TimerReset } from "lucide-react"
+import { CalendlyInlineEmbed } from "@/components/calendly-inline-embed"
 import { LocalizedLandingLeadForm } from "@/components/forms/localized-landing-lead-form"
 import { LandingCtaSection } from "@/components/landing/landing-cta-section"
 import { LandingFaqSection } from "@/components/landing/landing-faq-section"
 import { LandingHero } from "@/components/landing/landing-hero"
 import { LandingLinkGrid } from "@/components/landing/landing-link-grid"
-import { MeetingSchedulerCard } from "@/components/meeting-scheduler-card"
 import { SectionHeading } from "@/components/section-heading"
 import { SiteShell } from "@/components/site-shell"
 import { TrustGrid } from "@/components/trust-grid"
@@ -13,7 +13,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { getRequestLocale } from "@/lib/i18n/request"
 import { localizeHref } from "@/lib/i18n/routing"
 import { buildPageMetadata } from "@/lib/metadata"
-import { getLocalizedRouteLinks } from "@/lib/site"
+import { getLocalizedRouteLinks, schedulerConfig } from "@/lib/site"
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = getRequestLocale()
@@ -153,14 +153,25 @@ export default function BookConsultationPage() {
       <section id="consultation-form" className="section-padding">
         <div className="container-shell space-y-10">
           <SectionHeading
-            eyebrow="Two ways to start"
-            title="Use the form for context, the scheduler for timing, or both."
-            description="Some enquiries are better in writing first. Others move faster with a scheduled introduction call. This page is built to support both without forcing the wrong format."
+            eyebrow="Choose a time directly"
+            title="Select a suitable consultation slot in a cleaner, more direct format."
+            description="If you are ready for a scheduled conversation, use the live booking calendar below to choose a convenient time without leaving the advisory flow."
           />
-          <MeetingSchedulerCard
-            title="Prefer to choose a time directly?"
-            description="Use the live booking link if you already know you want a short, structured conversation about route fit, timing, and next steps."
-          />
+          <div className="section-card overflow-hidden p-5 md:p-8">
+            <div className="mx-auto max-w-[42rem] space-y-4 pb-6 md:pb-8">
+              <h3 className="card-title text-foreground">Book a private consultation</h3>
+              <p className="text-base leading-8 text-muted-foreground">
+                Choose a suitable time for a short, structured discussion about route fit, timing, and the most realistic next step for your profile.
+              </p>
+              <p className="text-sm leading-7 text-muted-foreground">
+                Your booking is private, there is no obligation to proceed, and the call is intended to clarify options before any formal provider introduction.
+              </p>
+            </div>
+
+            <div className="overflow-hidden rounded-[28px] border border-border/70 bg-background/70 p-2 md:p-3">
+              <CalendlyInlineEmbed url={schedulerConfig.bookingUrl} />
+            </div>
+          </div>
         </div>
       </section>
 

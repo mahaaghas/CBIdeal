@@ -504,10 +504,10 @@ export default async function HomePage() {
         secondaryAction={{ href: routeLinks.programs, label: copy.secondaryCta }}
         stats={copy.heroStats}
       >
-        <div className="space-y-4">
-          <div className="rounded-[28px] border border-white/10 bg-white/10 p-6 backdrop-blur">
+        <div className="space-y-5 md:space-y-6">
+          <div className="rounded-[28px] border border-white/10 bg-white/10 p-6 md:p-7 backdrop-blur">
             <p className="text-sm uppercase tracking-[0.2em] text-primary-foreground/70">{copy.nextLabel}</p>
-            <div className="mt-4 space-y-4">
+            <div className="mt-4 space-y-4 md:mt-5">
               {copy.nextItems.map((item) => (
                 <div key={item} className="flex items-start gap-3">
                   <BadgeCheck className="mt-0.5 size-5 text-secondary" />
@@ -517,10 +517,10 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-secondary/30 bg-background/95 p-5 text-foreground shadow-[0_20px_60px_rgba(19,24,38,0.16)]">
+          <div className="rounded-[28px] border border-secondary/30 bg-background/95 p-5 text-foreground shadow-[0_20px_60px_rgba(19,24,38,0.16)] md:p-6">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">{copy.companyLabel}</p>
-            <h3 className="card-title mt-2 text-foreground">{copy.companyTitle}</h3>
-            <p className="mt-2 text-sm leading-7 text-muted-foreground">
+            <h3 className="card-title mt-3 max-w-[24rem] text-foreground">{copy.companyTitle}</h3>
+            <p className="mt-3 max-w-[30rem] text-sm leading-7 text-muted-foreground">
               {copy.companyDescription}
             </p>
             <Button asChild className="mt-4 w-full sm:w-auto">
@@ -534,14 +534,14 @@ export default async function HomePage() {
       </PageHero>
 
       <section id="eligibility" className="section-padding pt-0">
-        <div className="container-shell grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
-          <div className="space-y-6">
+        <div className="container-shell grid gap-8 md:gap-10 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1fr)] lg:items-start">
+          <div className="content-measure space-y-6 md:space-y-8">
             <span className="eyebrow">{copy.qualificationEyebrow}</span>
-            <h2 className="section-title max-w-xl text-foreground">{copy.qualificationTitle}</h2>
-            <p className="max-w-xl text-lg leading-8 text-muted-foreground">
+            <h2 className="section-title content-measure-tight text-foreground">{copy.qualificationTitle}</h2>
+            <p className="content-measure-tight text-lg leading-8 text-muted-foreground">
               {copy.qualificationDescription}
             </p>
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {copy.qualificationPoints.map((point) => (
                 <div key={point} className="flex items-start gap-3">
                   <BadgeCheck className="mt-1 size-5 text-primary" />
@@ -594,16 +594,16 @@ export default async function HomePage() {
       </section>
 
       <section className="section-padding pt-0">
-        <div className="container-shell grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="container-shell grid gap-6 md:gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
           <Card className="section-card overflow-hidden p-0">
             <div className="grid gap-0 md:grid-cols-2">
               <div className="relative min-h-[320px]">
                 <Image src={siteImages.familyWaterfront.src} alt={siteImages.familyWaterfront.alt} fill className="object-cover" />
               </div>
-              <CardContent className="space-y-5 p-8">
+              <CardContent className="space-y-5 p-7 md:p-8">
                 <span className="eyebrow">{lowerCopy.trustEyebrow}</span>
-                <h3 className="card-title text-foreground">{lowerCopy.trustTitle}</h3>
-                <p className="text-base leading-8 text-muted-foreground">
+                <h3 className="card-title content-measure-tight text-foreground">{lowerCopy.trustTitle}</h3>
+                <p className="content-measure-tight text-base leading-8 text-muted-foreground">
                   {lowerCopy.trustDescription}
                 </p>
                 <Button variant="outline" asChild>
@@ -618,10 +618,10 @@ export default async function HomePage() {
               <Image src={siteImages.budapest.src} alt={siteImages.budapest.alt} fill className="object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/30 to-transparent" />
             </div>
-            <CardContent className="space-y-4 p-8">
+            <CardContent className="space-y-4 p-7 md:p-8">
               <span className="eyebrow">{lowerCopy.companiesEyebrow}</span>
-              <h3 className="card-title text-foreground">{lowerCopy.companiesTitle}</h3>
-              <p className="fine-print">
+              <h3 className="card-title max-w-[24rem] text-foreground">{lowerCopy.companiesTitle}</h3>
+              <p className="max-w-[30rem] text-sm leading-7 text-muted-foreground">
                 {lowerCopy.companiesDescription}
               </p>
               <Button asChild>

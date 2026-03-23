@@ -12,6 +12,7 @@ interface ContactInquiryTabsProps {
 
 export function ContactInquiryTabs({ locale = "en", defaultValue = "investor" }: ContactInquiryTabsProps) {
   const messages = getMessages(locale)
+  const isRtl = locale === "ar"
   const copy = {
     investorTitle: locale === "ar" ? "استفسار مستثمر" : locale === "ru" ? "Запрос инвестора" : "Investor enquiry",
     investorDescription:
@@ -34,7 +35,7 @@ export function ContactInquiryTabs({ locale = "en", defaultValue = "investor" }:
   }
 
   return (
-    <Tabs defaultValue={defaultValue}>
+    <Tabs defaultValue={defaultValue} dir={isRtl ? "rtl" : "ltr"} className={isRtl ? "text-right" : undefined}>
       <div className="mb-8 space-y-4">
         <span className="eyebrow">{messages.forms.tabsEyebrow}</span>
         <h3 className="text-2xl text-foreground md:text-3xl">{messages.forms.tabsTitle}</h3>

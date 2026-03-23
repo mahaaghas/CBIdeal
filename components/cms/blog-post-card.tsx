@@ -4,9 +4,10 @@ import { ArrowRight } from "lucide-react"
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { getRequestLocale } from "@/lib/i18n/request"
+import { getRequestDirection, getRequestLocale } from "@/lib/i18n/request"
 import { localizeHref } from "@/lib/i18n/routing"
 import type { CmsBlogPostSummary } from "@/lib/sanity/types"
+import { cn } from "@/lib/utils"
 
 interface BlogPostCardProps {
   post: CmsBlogPostSummary
@@ -15,12 +16,14 @@ interface BlogPostCardProps {
 
 export function BlogPostCard({ post, featured = false }: BlogPostCardProps) {
   const locale = getRequestLocale()
-  const readLabel = locale === "ar" ? "اقرأ المقال" : locale === "ru" ? "Читать статью" : "Read article"
-  const byLabel = locale === "ar" ? "بقلم" : locale === "ru" ? "Автор" : "By"
+  const direction = getRequestDirection()
+  const isRtl = direction === "rtl"
+  const readLabel = locale === "ar" ? "Ø§Ù‚Ø±Ø£ Ø§Ù„Ù…Ù‚Ø§Ù„" : locale === "ru" ? "Ð§Ð¸Ñ‚Ð°Ñ‚ÑŒ ÑÑ‚Ð°Ñ‚ÑŒÑŽ" : "Read article"
+  const byLabel = locale === "ar" ? "Ø¨Ù‚Ù„Ù…" : locale === "ru" ? "ÐÐ²Ñ‚Ð¾Ñ€" : "By"
 
   return (
     <Card className="section-card overflow-hidden p-0">
-      <div className={featured ? "grid gap-0 lg:grid-cols-[1.05fr_0.95fr]" : "grid gap-0"}>
+      <div dir={direction} className={cn(featured ? "grid gap-0 lg:grid-cols-[1.05fr_0.95fr]" : "grid gap-0", isRtl && "text-right")}>
         {post.featuredImage ? (
           <div className={featured ? "relative min-h-[320px]" : "relative h-60"}>
             <Image src={post.featuredImage.url} alt={post.featuredImage.alt} fill className="object-cover" />
@@ -28,7 +31,7 @@ export function BlogPostCard({ post, featured = false }: BlogPostCardProps) {
           </div>
         ) : null}
         <CardContent className="space-y-5 p-7 md:p-8">
-          <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+          <div className={cn("flex flex-wrap items-center gap-3 text-sm text-muted-foreground", isRtl && "flex-row-reverse justify-end")}>
             {post.category ? (
               <span className="rounded-full border border-border/70 px-3 py-1">{post.category.title}</span>
             ) : null}

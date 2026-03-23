@@ -8,6 +8,7 @@ import { CtaPanel } from "@/components/cta-panel"
 import { Button } from "@/components/ui/button"
 import type { Locale } from "@/lib/i18n/routing"
 import type { CmsBlogPostSummary } from "@/lib/sanity/types"
+import { cn } from "@/lib/utils"
 
 interface InsightLinkItem {
   label: string
@@ -63,6 +64,7 @@ export function InsightArticleLayout({
   internalLinks = [],
   cta,
 }: InsightArticleLayoutProps) {
+  const isRtl = locale === "ar"
   const backLabel =
     locale === "ar" ? "العودة إلى المقالات" : locale === "ru" ? "Назад к статьям" : "Back to insights"
   const relatedEyebrow =
@@ -85,7 +87,7 @@ export function InsightArticleLayout({
       <section className="section-padding pb-10 md:pb-14">
         <div className="container-shell">
           <div className="hero-panel overflow-hidden px-6 py-10 md:px-12 md:py-14">
-            <div className="relative space-y-6">
+            <div className={cn("relative space-y-6", isRtl && "text-right")} dir={isRtl ? "rtl" : "ltr"}>
               <Button
                 variant="outline"
                 className="border-white/20 bg-transparent text-primary-foreground hover:bg-white/10"
@@ -113,8 +115,11 @@ export function InsightArticleLayout({
       </section>
 
       <section className="section-padding pt-0">
-        <div className="container-shell grid gap-10 lg:grid-cols-[1fr_320px] lg:items-start">
-          <article className="section-card space-y-10 p-6 md:p-10">
+        <div
+          className={cn("container-shell grid gap-10 lg:grid-cols-[1fr_320px] lg:items-start", isRtl && "lg:grid-cols-[320px_1fr]")}
+          dir={isRtl ? "rtl" : "ltr"}
+        >
+          <article className={cn("section-card space-y-10 p-6 md:p-10", isRtl && "text-right")}>
             <div className="relative overflow-hidden rounded-[28px] border border-border/70">
               <Image
                 src={heroImage.src}
@@ -137,7 +142,7 @@ export function InsightArticleLayout({
             />
           </article>
 
-          <aside className="space-y-6">
+          <aside className={cn("space-y-6", isRtl && "text-right")}>
             <div className="section-card p-6">
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">{keyTakeawayLabel}</p>
               <div className="mt-4 space-y-3 text-base leading-8 text-muted-foreground">
@@ -158,7 +163,10 @@ export function InsightArticleLayout({
                       href={item.href}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex items-center justify-between rounded-2xl border border-border/70 px-4 py-3 text-sm leading-6 text-foreground transition-colors hover:border-primary/30 hover:text-primary"
+                      className={cn(
+                        "flex items-center justify-between rounded-2xl border border-border/70 px-4 py-3 text-sm leading-6 text-foreground transition-colors hover:border-primary/30 hover:text-primary",
+                        isRtl && "flex-row-reverse",
+                      )}
                     >
                       <span>{item.label}</span>
                       <ArrowRight className="size-4" />
@@ -176,7 +184,10 @@ export function InsightArticleLayout({
                     <Link
                       key={item.href}
                       href={item.href}
-                      className="flex items-center justify-between rounded-2xl border border-border/70 px-4 py-3 text-sm leading-6 text-foreground transition-colors hover:border-primary/30 hover:text-primary"
+                      className={cn(
+                        "flex items-center justify-between rounded-2xl border border-border/70 px-4 py-3 text-sm leading-6 text-foreground transition-colors hover:border-primary/30 hover:text-primary",
+                        isRtl && "flex-row-reverse",
+                      )}
                     >
                       <span>{item.label}</span>
                       <ArrowRight className="size-4" />
@@ -192,7 +203,7 @@ export function InsightArticleLayout({
       {relatedPosts.length ? (
         <section className="section-padding pt-0">
           <div className="container-shell space-y-6">
-            <div className="max-w-2xl space-y-3">
+            <div className={cn("max-w-2xl space-y-3", isRtl && "text-right")}>
               <span className="eyebrow">{relatedEyebrow}</span>
               <h2 className="section-title text-foreground">{relatedTitle}</h2>
             </div>

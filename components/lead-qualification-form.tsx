@@ -30,6 +30,7 @@ import {
   leadFormDefaults,
   netlifyFormNames,
 } from "@/lib/forms"
+import { trackFormSubmit } from "@/lib/analytics"
 import type { Locale } from "@/lib/i18n/routing"
 import { contactDetails } from "@/lib/site"
 import { cn } from "@/lib/utils"
@@ -93,6 +94,7 @@ export function LeadQualificationForm({
   const [step, setStep] = useState(0)
   const copy = getLeadFormTypeCopy(locale, formType)
   const isInvestor = formType === "investor"
+  const isRtl = locale === "ar"
 
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(buildLeadFormSchema(formType)),
@@ -126,6 +128,11 @@ export function LeadQualificationForm({
       }
 
       setReferenceId(result.referenceId)
+      trackFormSubmit({
+        form_type: formType,
+        source_page: source,
+        language: locale === "ar" ? "AR" : "EN",
+      })
       form.reset(leadFormDefaults(formType))
       setStep(0)
     })
@@ -137,7 +144,7 @@ export function LeadQualificationForm({
   }
 
   return (
-    <div className="section-card p-6 md:p-10">
+    <div dir={isRtl ? "rtl" : "ltr"} className={cn("section-card p-6 md:p-10", isRtl && "text-right")}>
       <div className="mb-8 space-y-3">
         <span className="eyebrow">{copy.eyebrow}</span>
         <h3 className="text-2xl text-foreground md:text-3xl">{title}</h3>
@@ -146,7 +153,7 @@ export function LeadQualificationForm({
 
       {referenceId ? (
         <div className="mb-6 rounded-2xl border border-primary/20 bg-primary/5 p-4 text-sm text-foreground md:p-5">
-          <div className="flex items-start gap-3">
+          <div className={cn("flex items-start gap-3", isRtl && "flex-row-reverse text-right")}>
             <CheckCircle2 className="mt-0.5 size-5 text-primary" />
             <div className="space-y-1">
               <p className="font-semibold">{copy.successMessage}</p>
@@ -166,13 +173,13 @@ export function LeadQualificationForm({
 
       {isInvestor ? (
         <div className="mb-6 rounded-[24px] border border-border/70 bg-background/80 p-4">
-          <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className={cn("mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between", isRtl && "sm:flex-row-reverse")}>
             <p className="text-sm font-medium text-foreground">Step {step + 1} of 2</p>
             <p className="text-sm text-muted-foreground">{step === 0 ? "Contact and residence" : "Program fit and notes"}</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className={cn("flex items-center gap-3", isRtl && "flex-row-reverse")}>
             {[0, 1].map((stepIndex) => (
-              <div key={stepIndex} className="flex flex-1 items-center gap-3">
+              <div key={stepIndex} className={cn("flex flex-1 items-center gap-3", isRtl && "flex-row-reverse")}>
                 <div
                   className={cn(
                     "flex size-8 shrink-0 items-center justify-center rounded-full border text-sm font-semibold transition",
@@ -229,7 +236,7 @@ export function LeadQualificationForm({
                           <FormItem>
                             <FormLabel>{copy.emailLabel}</FormLabel>
                             <FormControl>
-                              <Input type="email" placeholder="name@email.com" {...field} />
+                              <Input type="email" dir={isRtl ? "ltr" : undefined} className={cn(isRtl && "text-left")} placeholder="name@email.com" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -244,7 +251,7 @@ export function LeadQualificationForm({
                         <FormItem>
                           <FormLabel>Phone or WhatsApp</FormLabel>
                           <FormControl>
-                            <Input placeholder={contactDetails.whatsapp} {...field} />
+                            <Input dir={isRtl ? "ltr" : undefined} className={cn(isRtl && "text-left")} placeholder={contactDetails.whatsapp} {...field} />
                           </FormControl>
                           <FormDescription>Use the number you prefer for a direct follow-up.</FormDescription>
                           <FormMessage />
@@ -302,7 +309,7 @@ export function LeadQualificationForm({
                             <FormLabel>Do you need citizenship or residency?</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
                                   <SelectValue placeholder="Select one" />
                                 </SelectTrigger>
                               </FormControl>
@@ -324,7 +331,7 @@ export function LeadQualificationForm({
                             <FormLabel>Is this for you or your family?</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
                                   <SelectValue placeholder="Select one" />
                                 </SelectTrigger>
                               </FormControl>
@@ -362,7 +369,7 @@ export function LeadQualificationForm({
                             <FormLabel>Budget range</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
                                   <SelectValue placeholder="Select budget" />
                                 </SelectTrigger>
                               </FormControl>
@@ -386,7 +393,7 @@ export function LeadQualificationForm({
                             <FormLabel>Timeframe</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
-                                <SelectTrigger className="w-full">
+                                <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
                                   <SelectValue placeholder="Select timeframe" />
                                 </SelectTrigger>
                               </FormControl>
@@ -416,7 +423,7 @@ export function LeadQualificationForm({
                         <FormItem>
                           <FormLabel>Additional notes</FormLabel>
                           <FormControl>
-                            <Textarea rows={5} placeholder={copy.notesPlaceholder} {...field} />
+                            <Textarea rows={5} className={cn(isRtl && "text-right")} placeholder={copy.notesPlaceholder} {...field} />
                           </FormControl>
                           <FormDescription>{copy.notesHelp}</FormDescription>
                           <FormMessage />
@@ -429,7 +436,7 @@ export function LeadQualificationForm({
                       name="consent"
                       render={({ field }) => (
                         <FormItem className="rounded-2xl border border-border/70 bg-background/80 p-4">
-                          <div className="flex items-start gap-3">
+                          <div className={cn("flex items-start gap-3", isRtl && "flex-row-reverse text-right")}>
                             <FormControl>
                               <Checkbox checked={field.value} onCheckedChange={(checked) => field.onChange(Boolean(checked))} />
                             </FormControl>
@@ -491,7 +498,7 @@ export function LeadQualificationForm({
                       <FormItem>
                         <FormLabel>{copy.emailLabel}</FormLabel>
                         <FormControl>
-                          <Input type="email" placeholder="name@company.com" {...field} />
+                          <Input type="email" dir={isRtl ? "ltr" : undefined} className={cn(isRtl && "text-left")} placeholder="name@company.com" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -504,7 +511,7 @@ export function LeadQualificationForm({
                       <FormItem>
                         <FormLabel>Phone or WhatsApp</FormLabel>
                         <FormControl>
-                          <Input placeholder={contactDetails.whatsapp} {...field} />
+                          <Input dir={isRtl ? "ltr" : undefined} className={cn(isRtl && "text-left")} placeholder={contactDetails.whatsapp} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -539,7 +546,7 @@ export function LeadQualificationForm({
                         <FormLabel>Number of team members</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
                               <SelectValue placeholder="Select team size" />
                             </SelectTrigger>
                           </FormControl>
@@ -563,7 +570,7 @@ export function LeadQualificationForm({
                         <FormLabel>Desired rollout timing</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
                               <SelectValue placeholder="Select timeframe" />
                             </SelectTrigger>
                           </FormControl>
@@ -594,7 +601,7 @@ export function LeadQualificationForm({
                       <FormLabel>Interested in CRM, leads, or both?</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger className="w-full">
+                          <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
                             <SelectValue placeholder="Select one" />
                           </SelectTrigger>
                         </FormControl>
@@ -617,7 +624,7 @@ export function LeadQualificationForm({
                     <FormItem>
                       <FormLabel>Message</FormLabel>
                       <FormControl>
-                        <Textarea rows={5} placeholder={copy.notesPlaceholder} {...field} />
+                        <Textarea rows={5} className={cn(isRtl && "text-right")} placeholder={copy.notesPlaceholder} {...field} />
                       </FormControl>
                       <FormDescription>{copy.notesHelp}</FormDescription>
                       <FormMessage />
@@ -630,7 +637,7 @@ export function LeadQualificationForm({
                   name="consent"
                   render={({ field }) => (
                     <FormItem className="rounded-2xl border border-border/70 bg-background/80 p-4">
-                      <div className="flex items-start gap-3">
+                      <div className={cn("flex items-start gap-3", isRtl && "flex-row-reverse text-right")}>
                         <FormControl>
                           <Checkbox checked={field.value} onCheckedChange={(checked) => field.onChange(Boolean(checked))} />
                         </FormControl>
@@ -649,7 +656,7 @@ export function LeadQualificationForm({
             </div>
           )}
 
-          <div className="flex flex-col gap-3 border-t border-border/70 pt-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className={cn("flex flex-col gap-3 border-t border-border/70 pt-5 sm:flex-row sm:items-center sm:justify-between", isRtl && "sm:flex-row-reverse")}>
             {isInvestor && step === 1 ? (
               <button
                 type="button"

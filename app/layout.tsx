@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Cormorant_Garamond, Manrope } from "next/font/google"
+import { GoogleAnalytics } from "@/components/analytics/google-analytics"
 import { getRequestDirection, getRequestLocale } from "@/lib/i18n/request"
 import { siteConfig } from "@/lib/site-config"
 import { getResolvedSiteSettings } from "@/lib/sanity/content"
@@ -82,7 +83,10 @@ export default function RootLayout({
 
   return (
     <html lang={locale} dir={direction}>
-      <body className={`${manrope.variable} ${cormorant.variable} font-sans antialiased`}>{children}</body>
+      <body className={`${manrope.variable} ${cormorant.variable} font-sans antialiased`}>
+        <GoogleAnalytics />
+        {children}
+      </body>
     </html>
   )
 }

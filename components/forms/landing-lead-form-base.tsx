@@ -28,6 +28,7 @@ import {
   type LandingLeadFormValues,
   type LandingLeadSourceCategory,
 } from "@/lib/landing-form"
+import { trackFormSubmit } from "@/lib/analytics"
 import { stripLocalePrefix } from "@/lib/i18n/routing"
 import { cn } from "@/lib/utils"
 
@@ -128,6 +129,12 @@ export function LandingLeadFormBase({
       }
 
       setReferenceId(result.referenceId)
+      trackFormSubmit({
+        form_type: "landing_lead",
+        source_page: resolvedSourcePage,
+        source_category: sourceCategory,
+        language,
+      })
       form.reset({
         ...landingLeadFormDefaults,
         sourcePage: resolvedSourcePage,
@@ -171,7 +178,7 @@ export function LandingLeadFormBase({
           name={landingLeadFormName}
           method="POST"
           action="/__forms.html"
-          className="space-y-5"
+          className={cn("space-y-5", isRtl && "text-right")}
           onSubmit={onSubmit}
         >
           <input type="hidden" name="form-name" value={landingLeadFormName} />
@@ -185,8 +192,8 @@ export function LandingLeadFormBase({
               control={form.control}
               name="fullName"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{copy.fullNameLabel}</FormLabel>
+                <FormItem className={cn(isRtl && "text-right")}>
+                  <FormLabel className={cn(isRtl && "text-right")}>{copy.fullNameLabel}</FormLabel>
                   <FormControl>
                     <Input placeholder={copy.fullNamePlaceholder} {...field} />
                   </FormControl>
@@ -198,8 +205,8 @@ export function LandingLeadFormBase({
               control={form.control}
               name="nationality"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{copy.nationalityLabel}</FormLabel>
+                <FormItem className={cn(isRtl && "text-right")}>
+                  <FormLabel className={cn(isRtl && "text-right")}>{copy.nationalityLabel}</FormLabel>
                   <FormControl>
                     <Input placeholder={copy.nationalityPlaceholder} {...field} />
                   </FormControl>
@@ -214,8 +221,8 @@ export function LandingLeadFormBase({
               control={form.control}
               name="currentResidence"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{copy.currentResidenceLabel}</FormLabel>
+                <FormItem className={cn(isRtl && "text-right")}>
+                  <FormLabel className={cn(isRtl && "text-right")}>{copy.currentResidenceLabel}</FormLabel>
                   <FormControl>
                     <Input placeholder={copy.currentResidencePlaceholder} {...field} />
                   </FormControl>
@@ -227,8 +234,8 @@ export function LandingLeadFormBase({
               control={form.control}
               name="budgetRange"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{copy.budgetRangeLabel}</FormLabel>
+                <FormItem className={cn(isRtl && "text-right")}>
+                  <FormLabel className={cn(isRtl && "text-right")}>{copy.budgetRangeLabel}</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
@@ -254,8 +261,8 @@ export function LandingLeadFormBase({
               control={form.control}
               name="whatsapp"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{copy.whatsappLabel}</FormLabel>
+                <FormItem className={cn(isRtl && "text-right")}>
+                  <FormLabel className={cn(isRtl && "text-right")}>{copy.whatsappLabel}</FormLabel>
                   <FormControl>
                     <Input dir="ltr" className="text-left" placeholder={copy.whatsappPlaceholder} {...field} />
                   </FormControl>
@@ -267,7 +274,7 @@ export function LandingLeadFormBase({
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className={cn(isRtl && "text-right")}>
                   <FormLabel>
                     {copy.emailLabel} <span className="text-muted-foreground">({copy.optionalLabel})</span>
                   </FormLabel>
@@ -292,7 +299,7 @@ export function LandingLeadFormBase({
               control={form.control}
               name="timeline"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className={cn(isRtl && "text-right")}>
                   <FormLabel>
                     {copy.timelineLabel} <span className="text-muted-foreground">({copy.optionalLabel})</span>
                   </FormLabel>
@@ -321,7 +328,7 @@ export function LandingLeadFormBase({
             control={form.control}
             name="notes"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className={cn(isRtl && "text-right")}>
                 <FormLabel>
                   {copy.notesLabel} <span className="text-muted-foreground">({copy.optionalLabel})</span>
                 </FormLabel>

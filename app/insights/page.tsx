@@ -177,6 +177,7 @@ export default async function InsightsPage() {
         description={copy.heroDescription}
         primaryAction={{ href: ctaLinks.checkEligibility, label: copy.heroPrimary }}
         secondaryAction={{ href: ctaLinks.requestDemo, label: copy.heroSecondary }}
+        compact
         stats={[
           { value: copy.statInvestor, label: copy.statInvestorLabel },
           { value: copy.statB2B, label: copy.statB2BLabel },

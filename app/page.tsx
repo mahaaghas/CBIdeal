@@ -592,22 +592,22 @@ export default async function HomePage() {
       <section className="section-padding">
         <div className="container-shell">
           <SectionHeading
-            eyebrow={copy.howEyebrow}
-            title={copy.howTitle}
-            description={copy.howDescription}
+            eyebrow={copy.programsEyebrow}
+            title={copy.programsTitle}
+            description={copy.programsDescription}
           />
-          <ProcessSteps steps={localizedHowItWorks} />
+          <ProgramGrid items={localizedPrograms} />
         </div>
       </section>
 
       <section className="section-padding pt-0">
         <div className="container-shell">
           <SectionHeading
-            eyebrow={copy.programsEyebrow}
-            title={copy.programsTitle}
-            description={copy.programsDescription}
+            eyebrow={copy.howEyebrow}
+            title={copy.howTitle}
+            description={copy.howDescription}
           />
-          <ProgramGrid items={localizedPrograms} />
+          <ProcessSteps steps={localizedHowItWorks} />
         </div>
       </section>
 

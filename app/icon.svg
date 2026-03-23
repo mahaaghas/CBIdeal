@@ -1,7 +1,19 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="512" height="512" rx="132" fill="#293246"/>
-  <rect x="44" y="44" width="424" height="424" rx="108" stroke="#D6BB83" stroke-opacity="0.35" stroke-width="8"/>
-  <circle cx="256" cy="256" r="126" fill="#D6BB83" fill-opacity="0.14"/>
-  <path d="M182 320V192H241C266.405 192 282 205.787 282 227.939C282 243.002 274.054 253.578 261.012 258.564L291 320H257.71L231.789 265.018H214.213V320H182ZM214.213 240.803H236.514C248.48 240.803 255.783 235.492 255.783 226.641C255.783 217.611 248.48 212.477 236.514 212.477H214.213V240.803Z" fill="#F6F1E5"/>
-  <path d="M311 319.5V191.5H375V214.3H338.92V242.585H372.415V264.595H338.92V296.7H375V319.5H311Z" fill="#F6F1E5"/>
+  <rect width="512" height="512" fill="transparent"/>
+  <circle cx="256" cy="262" r="196" fill="#0F1522" fill-opacity="0.12"/>
+  <circle cx="256" cy="256" r="188" fill="#293246"/>
+  <circle cx="256" cy="256" r="176" stroke="#D6BB83" stroke-opacity="0.55" stroke-width="8"/>
+  <path d="M123 256C123 183 179 129 256 129C333 129 389 183 389 256C389 329 333 383 256 383C179 383 123 329 123 256Z" fill="#D6BB83" fill-opacity="0.08"/>
+  <text
+    x="256"
+    y="272"
+    text-anchor="middle"
+    fill="#F6F1E5"
+    font-family="Manrope, Arial, sans-serif"
+    font-size="102"
+    font-weight="800"
+    letter-spacing="2"
+  >
+    CBI
+  </text>
 </svg>

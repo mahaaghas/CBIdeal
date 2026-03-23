@@ -153,6 +153,7 @@ export default function CitizenshipByInvestmentPage() {
                 src={siteImages.businessStreet.src}
                 alt={siteImages.businessStreet.alt}
                 fill
+                sizes="(min-width: 1280px) 1180px, 100vw"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(33,42,66,0.9),rgba(33,42,66,0.78)_34%,rgba(33,42,66,0.62)_100%)]" />

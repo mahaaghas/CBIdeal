@@ -229,7 +229,13 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           <Card className="section-card overflow-hidden p-0">
             <div className="grid gap-0 md:grid-cols-2">
               <div className="relative min-h-[300px]">
-                <Image src={siteImages.passportHandoff.src} alt={siteImages.passportHandoff.alt} fill className="object-cover" />
+                <Image
+                  src={siteImages.passportHandoff.src}
+                  alt={siteImages.passportHandoff.alt}
+                  fill
+                  sizes="(min-width: 1024px) 34vw, 100vw"
+                  className="object-cover"
+                />
               </div>
               <CardContent className="space-y-5 p-8">
                 <span className="eyebrow">{detailCopy.reachEyebrow}</span>
@@ -257,7 +263,13 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
 
           <Card className="section-card overflow-hidden p-0">
             <div className="relative min-h-[300px]">
-              <Image src={siteImages.coastalCafe.src} alt={siteImages.coastalCafe.alt} fill className="object-cover" />
+              <Image
+                src={siteImages.coastalCafe.src}
+                alt={siteImages.coastalCafe.alt}
+                fill
+                sizes="(min-width: 1024px) 30vw, 100vw"
+                className="object-cover"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/25 to-transparent" />
             </div>
             <CardContent className="space-y-4 p-8">

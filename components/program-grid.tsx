@@ -18,7 +18,13 @@ export function ProgramGrid({ items }: ProgramGridProps) {
       {items.map((item) => (
         <Card key={item.title} className="section-card overflow-hidden p-0">
           <div className="relative h-56 md:h-60">
-            <Image src={item.image} alt={item.alt ?? item.title} fill className="object-cover" />
+            <Image
+              src={item.image}
+              alt={item.alt ?? item.title}
+              fill
+              sizes="(min-width: 1024px) 30vw, 100vw"
+              className="object-cover"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
           </div>
           <CardContent className="space-y-3 p-7">

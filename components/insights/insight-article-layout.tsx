@@ -126,6 +126,7 @@ export function InsightArticleLayout({
                 alt={heroImage.alt}
                 width={1600}
                 height={960}
+                sizes="(min-width: 1280px) 880px, (min-width: 1024px) calc(100vw - 420px), 100vw"
                 className="h-auto w-full object-cover"
                 priority
               />

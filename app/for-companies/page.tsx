@@ -433,7 +433,13 @@ export default async function ForCompaniesPage() {
           </Card>
           <Card className="section-card overflow-hidden p-0">
             <div className="relative h-52">
-              <Image src={siteImages.businessStreet.src} alt={siteImages.businessStreet.alt} fill className="object-cover" />
+              <Image
+                src={siteImages.businessStreet.src}
+                alt={siteImages.businessStreet.alt}
+                fill
+                sizes="(min-width: 1024px) 30vw, 100vw"
+                className="object-cover"
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent" />
             </div>
             <CardContent className="space-y-4 p-8">

@@ -41,14 +41,14 @@ export function PageHero({
   return (
     <section className="section-padding pb-12 md:pb-16">
       <div className="container-shell">
-        <div className="hero-panel relative overflow-hidden px-7 py-9 sm:px-9 sm:py-11 md:px-12 md:py-12 lg:px-16 lg:py-15">
+        <div className="hero-panel relative overflow-hidden px-7 py-9 sm:px-9 sm:py-11 md:px-12 md:py-12 lg:px-[4.5rem] lg:py-[4.35rem]">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(214,187,131,0.14),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_34%)]" />
           <div
             dir={direction}
             className={cn(
               "page-hero-grid relative grid gap-9 md:gap-11",
               children
-                ? "lg:grid-cols-[minmax(0,1.02fr)_minmax(22rem,0.86fr)] lg:items-start lg:gap-14"
+                ? "lg:grid-cols-[minmax(0,1.14fr)_minmax(21.5rem,0.86fr)] lg:items-start lg:gap-12"
                 : "content-measure",
             )}
           >
@@ -59,7 +59,7 @@ export function PageHero({
                   className={cn(
                     "text-primary-foreground",
                     children
-                      ? "max-w-[11ch] text-[clamp(2.75rem,5vw,4.55rem)] leading-[1.04] tracking-[-0.038em]"
+                      ? "max-w-[13ch] text-[clamp(2.7rem,4.45vw,4.1rem)] leading-[1.07] tracking-[-0.034em]"
                       : "display-title max-w-[42rem]",
                   )}
                 >
@@ -69,7 +69,7 @@ export function PageHero({
                   className={cn(
                     "text-primary-foreground/76",
                     children
-                      ? "max-w-[35rem] text-[1rem] leading-8 md:text-[1.05rem]"
+                      ? "max-w-[34rem] text-[0.98rem] leading-[1.95] md:text-[1.02rem] md:leading-8"
                       : "max-w-[40rem] text-base leading-7 md:text-lg md:leading-8",
                   )}
                 >
@@ -120,7 +120,7 @@ export function PageHero({
             {children ? (
               <div
                 className={cn(
-                  "page-hero-aside w-full max-w-[26.5rem] self-start",
+                  "page-hero-aside w-full max-w-[24.75rem] self-start",
                   isRtl ? "lg:justify-self-start" : "lg:justify-self-end",
                 )}
               >

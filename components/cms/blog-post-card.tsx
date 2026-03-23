@@ -26,7 +26,13 @@ export function BlogPostCard({ post, featured = false }: BlogPostCardProps) {
       <div dir={direction} className={cn(featured ? "grid gap-0 lg:grid-cols-[1.05fr_0.95fr]" : "grid gap-0", isRtl && "text-right")}>
         {post.featuredImage ? (
           <div className={featured ? "relative min-h-[320px]" : "relative h-60"}>
-            <Image src={post.featuredImage.url} alt={post.featuredImage.alt} fill className="object-cover" />
+            <Image
+              src={post.featuredImage.url}
+              alt={post.featuredImage.alt}
+              fill
+              sizes={featured ? "(min-width: 1024px) 52vw, 100vw" : "(min-width: 1024px) 33vw, 100vw"}
+              className="object-cover"
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/10 to-transparent" />
           </div>
         ) : null}

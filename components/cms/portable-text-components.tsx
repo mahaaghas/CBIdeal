@@ -50,6 +50,7 @@ export const portableTextComponents: PortableTextReactComponents = {
               alt={image.alt ?? ""}
               width={1400}
               height={840}
+              sizes="(min-width: 1280px) 880px, (min-width: 1024px) calc(100vw - 420px), 100vw"
               className="h-auto w-full object-cover"
             />
           </div>

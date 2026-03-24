@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Cormorant_Garamond, Manrope } from "next/font/google"
+import { ConsentBanner } from "@/components/analytics/consent-banner"
 import { GoogleAnalytics } from "@/components/analytics/google-analytics"
 import { getRequestDirection, getRequestLocale } from "@/lib/i18n/request"
 import { siteConfig } from "@/lib/site-config"
@@ -92,6 +93,7 @@ export default function RootLayout({
       <body className={`${manrope.variable} ${cormorant.variable} font-sans antialiased`}>
         <GoogleAnalytics />
         {children}
+        <ConsentBanner locale={locale} direction={direction} />
       </body>
     </html>
   )

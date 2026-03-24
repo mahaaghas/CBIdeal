@@ -1,6 +1,7 @@
 import { stripLocalePrefix } from "@/lib/i18n/routing"
 
 export const GA_MEASUREMENT_ID = "G-9KX85B0FMX"
+export const GOOGLE_ADS_ID = "AW-18036841344"
 
 type AnalyticsValue = string | number | boolean | undefined
 type AnalyticsParams = Record<string, AnalyticsValue>

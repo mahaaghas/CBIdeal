@@ -3,8 +3,10 @@
 import { useEffect } from "react"
 import Script from "next/script"
 import { usePathname, useSearchParams } from "next/navigation"
+import { CONSENT_STORAGE_KEY } from "@/lib/consent"
 import {
   GA_MEASUREMENT_ID,
+  GOOGLE_ADS_ID,
   getLanguageCode,
   getNormalizedPath,
   getSourcePageFromPath,
@@ -106,7 +108,47 @@ function AnalyticsListeners() {
 export function GoogleAnalytics() {
   return (
     <>
-      <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} strategy="afterInteractive" />
+      <Script id="google-consent-defaults" strategy="beforeInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          window.gtag = gtag;
+          gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            personalization_storage: 'denied',
+            functionality_storage: 'granted',
+            security_storage: 'granted',
+            wait_for_update: 500
+          });
+          gtag('set', 'ads_data_redaction', true);
+          gtag('set', 'url_passthrough', true);
+          try {
+            const storedConsent = window.localStorage.getItem('${CONSENT_STORAGE_KEY}');
+            if (storedConsent) {
+              const parsed = JSON.parse(storedConsent);
+              const analyticsGranted = parsed.analytics === true ? 'granted' : 'denied';
+              const adsGranted = parsed.ads === true ? 'granted' : 'denied';
+              gtag('consent', 'update', {
+                analytics_storage: analyticsGranted,
+                ad_storage: adsGranted,
+                ad_user_data: adsGranted,
+                ad_personalization: adsGranted,
+                personalization_storage: adsGranted,
+                functionality_storage: 'granted',
+                security_storage: 'granted'
+              });
+              gtag('set', 'ads_data_redaction', parsed.ads !== true);
+            }
+          } catch (error) {}
+        `}
+      </Script>
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+        strategy="afterInteractive"
+      />
       <Script id="google-analytics" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
@@ -114,6 +156,7 @@ export function GoogleAnalytics() {
           window.gtag = gtag;
           gtag('js', new Date());
           gtag('config', '${GA_MEASUREMENT_ID}', { send_page_view: false });
+          gtag('config', '${GOOGLE_ADS_ID}');
         `}
       </Script>
       <AnalyticsListeners />

@@ -17,6 +17,7 @@ const corePaths = [
   siteConfig.links.routes.contact,
   siteConfig.links.routes.demo,
   siteConfig.links.routes.dataProtection,
+  siteConfig.links.routes.privacyPolicy,
   siteConfig.links.routes.partners,
 ] as const
 
@@ -32,6 +33,7 @@ const excludedDynamicSlugs = new Set([
   "insights",
   "partners",
   "pricing",
+  "privacy-policy",
   "privacy",
   "studio",
 ])

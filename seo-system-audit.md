@@ -15,17 +15,18 @@ Current live public structure:
   - `/caribbean-cbi-comparison`
   - `/book-a-cbi-consultation`
   - `/for-companies`
-  - `/pricing`
-  - `/contact`
-  - `/demo`
-  - `/data-protection`
-  - `/partners`
+- `/pricing`
+- `/contact`
+- `/demo`
+- `/data-protection`
+- `/privacy-policy`
+- `/partners`
 - Insights hub
   - `/insights`
   - `/insights/[slug]`
 - Redirect aliases
   - `/crm` -> `/for-companies`
-  - `/privacy` -> `/data-protection`
+  - `/privacy` -> `/privacy-policy`
 - CMS-driven future landing route
   - `/<slug>` via `app/[slug]/page.tsx`
 

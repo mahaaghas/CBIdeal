@@ -9,6 +9,7 @@ const routeLinks = {
   contact: "/contact",
   demo: "/demo",
   dataProtection: "/data-protection",
+  privacyPolicy: "/privacy-policy",
   privacy: "/privacy",
   partners: "/partners",
 } as const
@@ -159,6 +160,7 @@ export const siteConfig = {
     ],
     legalLinks: [
       { href: routeLinks.dataProtection, label: "Data protection" },
+      { href: routeLinks.privacyPolicy, label: "Privacy policy" },
       { href: routeLinks.contact, label: "Contact" },
     ],
     companyFocusItems: [

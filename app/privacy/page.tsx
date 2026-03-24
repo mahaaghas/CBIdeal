@@ -7,9 +7,9 @@ import { buildPageMetadata } from "@/lib/metadata"
 export async function generateMetadata(): Promise<Metadata> {
   const locale = getRequestLocale()
   return buildPageMetadata({
-    title: "Privacy and Data Protection",
+    title: "Privacy Policy",
     description:
-      "Redirecting to the data protection page covering confidentiality, responsible handling of enquiries, and privacy-aware workflows.",
+      "Redirecting to the privacy policy page covering cookies, analytics, advertising disclosures, and responsible handling of personal data.",
     path: localizeHref(locale, "/privacy"),
     locale,
   })
@@ -17,5 +17,5 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function PrivacyAliasPage() {
   const locale = getRequestLocale()
-  redirect(localizeHref(locale, "/data-protection"))
+  redirect(localizeHref(locale, "/privacy-policy"))
 }

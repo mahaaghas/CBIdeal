@@ -5,6 +5,7 @@ import {
   getLocalizedFooterCompanyFocus,
   getLocalizedFooterLegalLinks,
   getLocalizedFooterNavLinks,
+  getLocalizedRouteLinks,
 } from "@/lib/site"
 import { getRequestLocale } from "@/lib/i18n/request"
 import { getRequestDirection } from "@/lib/i18n/request"
@@ -18,8 +19,12 @@ export async function SiteFooter() {
   const isRtl = direction === "rtl"
   const messages = getMessages(locale)
   const settings = await getResolvedSiteSettings()
+  const localizedRoutes = getLocalizedRouteLinks(locale)
   const footerNavLinks = getLocalizedFooterNavLinks(locale)
-  const footerLegalLinks = getLocalizedFooterLegalLinks(locale)
+  const footerLegalLinks = [
+    ...getLocalizedFooterLegalLinks(locale),
+    { href: localizedRoutes.privacyPolicy, label: "Privacy policy" },
+  ].filter((link, index, collection) => collection.findIndex((item) => item.href === link.href) === index)
   const footerCompanyFocus = getLocalizedFooterCompanyFocus(locale)
   const socialItems = [
     { href: settings.socialLinks.linkedin, label: "LinkedIn", icon: Linkedin },

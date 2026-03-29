@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title:
       locale === "ar"
         ? "اطلب استشارة خاصة: مراجعة أولية هادئة ومدروسة"
-        : "Request a Private Consultation: A Structured First Conversation",
+        : "Request a Private Consultation",
     description:
       locale === "ar"
         ? "ابدأ بطلب استشارة خاصة لفهم مدى ملاءمة المسار، والأولويات العائلية، والتوقيت، وما إذا كان من المناسب الاستمرار في مراجعة أوسع."
@@ -48,7 +48,7 @@ const trustItems = [
       "The aim is to establish whether a route appears suitable, not to create artificial certainty or push a quick decision before the context is properly understood.",
   },
   {
-    title: "Structured, not hurried",
+    title: "Measured from the outset",
     description:
       "The first step is intended to clarify priorities, household context, and timing before any more detailed route discussion is treated as worthwhile.",
   },
@@ -176,7 +176,7 @@ export default function BookConsultationPage() {
         title={copy?.heroTitle ?? "Request a private consultation"}
         description={
           copy?.heroDescription ??
-          "This initial conversation allows us to understand your situation, priorities, and timeline, and to determine whether there is a sensible basis for a more detailed discussion. The page is designed to clarify what this first step covers before you decide whether to request it."
+          "This page explains what a private consultation is for, what the first exchange tends to cover, and when it makes sense to request it. The initial conversation itself allows us to understand your situation, priorities, and timeline, and to determine whether there is a sensible basis for a more detailed discussion."
         }
         primaryAction={{ href: "#consultation-form", label: copy?.heroPrimary ?? "Request a consultation" }}
         secondaryAction={{ href: routes.programs, label: copy?.heroSecondary ?? "Explore your options" }}
@@ -193,7 +193,7 @@ export default function BookConsultationPage() {
             title={copy?.formTitle ?? "Request a private consultation"}
             description={
               copy?.formDescription ??
-              "Share the essentials below and we will review whether a more detailed conversation would be appropriate, and which questions deserve attention first."
+              "Share the essentials below if you would like the first conversation to begin with the right context. The form is intended to help clarify what should be discussed first, and whether a more detailed exchange appears appropriate."
             }
           submitLabel={copy?.heroPrimary ?? "Request a consultation"}
             sourceCategory="consultation"
@@ -262,7 +262,7 @@ export default function BookConsultationPage() {
             title={copy?.prepTitle ?? "If you would prefer to read a little more first, begin with the pages below."}
             description={
               copy?.prepDescription ??
-              "These pages often help visitors arrive at the first conversation with clearer questions and more realistic expectations."
+              "These pages are here for visitors who want a little more context before requesting a conversation. They often help narrow the route and make the first exchange more focused."
             }
           />
           <LandingLinkGrid
@@ -297,20 +297,20 @@ export default function BookConsultationPage() {
         title={copy?.faqTitle ?? "Common questions before requesting a private consultation."}
         description={
           copy?.faqDescription ??
-          "Short answers intended to keep the process clear, measured, and grounded in realistic expectations."
+          "These short answers are intended to explain the role of this first step, how to approach it, and what it should help clarify."
         }
         items={copy?.faqs ?? faqs}
       />
 
       <LandingCtaSection
         eyebrow={copy?.ctaEyebrow ?? "Prefer a more discreet approach?"}
-        title={copy?.ctaTitle ?? "If you would prefer a written introduction first, request call-back instead."}
+        title={copy?.ctaTitle ?? "If you would prefer to begin in writing, request call-back instead."}
         description={
           copy?.ctaDescription ??
           "Use the contact page if you would rather begin in writing before moving into a direct conversation."
         }
         primaryAction={{ href: routes.contact, label: copy?.ctaPrimary ?? "Request call-back" }}
-        secondaryAction={{ href: routes.programs, label: copy?.ctaSecondary ?? "Back to investor overview" }}
+        secondaryAction={{ href: routes.programs, label: copy?.ctaSecondary ?? "Return to pathways" }}
       />
     </SiteShell>
   )

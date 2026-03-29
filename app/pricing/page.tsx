@@ -55,13 +55,13 @@ export default function PricingPage() {
       eyebrow: "Engagement options",
       title: "Clear engagement options for professional firms.",
       description:
-        "The structure is intended to be clear enough for an informed first decision, while leaving room for tailored arrangements where needed. This page is designed to explain the broad commercial shape of the platform without making the pricing itself feel over-produced.",
+        "This page is intended to explain the broad engagement structure in a straightforward way. It should give firms enough context for an informed first view, while leaving room for a more tailored discussion where that proves appropriate.",
       primary: "Request a private overview",
       secondary: "Contact us directly",
       plansEyebrow: "Plans",
       plansTitle: "Three clear structures are enough for a calm and credible pricing page.",
       plansDescription:
-        "The figures are intended to support careful decisions without feeling either disposable or overstated. They should give firms enough context to understand the broad structure before deciding whether a more detailed discussion is worthwhile.",
+        "The figures below are there to provide orientation rather than pressure. They should help firms understand the broad structure, compare the main options, and decide whether a more detailed conversation would be useful.",
       enterpriseTitle: "Need a wider structure or a more tailored arrangement?",
       enterpriseDescription:
         "Wider arrangements can include tailored access, implementation planning, and a more bespoke way of working. This final section is intended to show where the standard structures end and where a more tailored conversation may begin.",
@@ -129,7 +129,7 @@ export default function PricingPage() {
           <MeetingSchedulerCard
             compact
             title={locale === "ar" ? "هل تفضل مراجعة الأسعار في محادثة مباشرة؟" : "Would you prefer to review the engagement options together?"}
-            description={locale === "ar" ? "استخدم هذا القسم إذا كنت تريد مناقشة حجم الفريق أو النطاق أو الهيكل الأنسب للتعامل." : "Use this section if you would like to discuss team size, scope, or the most suitable engagement structure."}
+            description={locale === "ar" ? "استخدم هذا القسم إذا كنت تريد مناقشة حجم الفريق أو النطاق أو الهيكل الأنسب للتعامل." : "Use this section if you would like to discuss team size, scope, or which engagement structure appears most suitable before moving further."}
           />
         </div>
       </section>

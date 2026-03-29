@@ -117,7 +117,7 @@ export default function DataProtectionPage() {
         ? "تمنح هذه الصفحة المستثمرين والشركات شرحًا نظيفًا وموثوقًا لكيفية التعامل مع المعلومات المرسلة دون تعقيد قانوني غير ضروري."
         : locale === "ru"
           ? "Эта страница дает инвесторам и компаниям понятное и убедительное объяснение того, как обрабатывается отправленная информация без лишнего юридического шума."
-          : "This gives investors and companies a clean, credible explanation of how submitted information is handled, what standards shape that approach, and where to look if a more detailed privacy question arises.",
+          : "This page explains how submitted information is handled, why confidentiality is treated seriously, and where to look if a more detailed privacy question arises. It is intended to give both investors and professional firms a clearer understanding of the platform's approach.",
     primary: locale === "ar" ? "تواصل معنا بخصوص الخصوصية" : locale === "ru" ? "Связаться по вопросам приватности" : "Raise a privacy question",
     secondary: locale === "ar" ? "العودة إلى الصفحة الرئيسية" : locale === "ru" ? "Назад на главную" : "Return home",
     overviewEyebrow: locale === "ar" ? "نظرة عامة" : locale === "ru" ? "Обзор" : "Overview",
@@ -132,7 +132,7 @@ export default function DataProtectionPage() {
         ? "هذا شرح موجز يعزز الثقة حول كيفية تعامل المنصة مع الاستفسارات السرية والبيانات المرتبطة بها."
         : locale === "ru"
           ? "Это краткое и спокойное объяснение того, как платформа обращается с конфиденциальными обращениями и связанными с ними данными."
-      : "This page explains, in straightforward terms, how confidential enquiries and related information are handled, so visitors can understand the essentials without having to work through unnecessary legal language.",
+      : "The section below sets out the main principles in straightforward terms, so visitors can understand the essentials without having to work through unnecessary legal language.",
     ctaEyebrow: locale === "ar" ? "الخطوة التالية" : locale === "ru" ? "Следующий шаг" : "Next step",
     ctaTitle:
       locale === "ar"
@@ -146,7 +146,7 @@ export default function DataProtectionPage() {
         : locale === "ru"
           ? "Используйте контактную страницу, если хотите поднять вопрос приватности или продолжить разговор напрямую."
           : "Use the contact page if you would like to raise a privacy question or continue the discussion directly.",
-    goContact: locale === "ar" ? "اذهب إلى التواصل" : locale === "ru" ? "Перейти к контактам" : "Go to contact",
+    goContact: locale === "ar" ? "تواصل معنا" : locale === "ru" ? "Связаться с нами" : "Contact us",
   }
   return (
     <SiteShell>

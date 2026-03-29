@@ -35,7 +35,7 @@ const enMessages = {
     tabsDescription:
       "Each path is framed differently so investor discussions and professional enquiries begin with the right level of context.",
     investorTab: "Investor",
-    companyTab: "Professional enquiry",
+    companyTab: "Professional discussion",
   },
   notFound: {
     title: "We could not find that page.",

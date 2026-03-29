@@ -354,7 +354,7 @@ function getHomeCopy(locale: Locale) {
       eyebrow: "Positioning",
       title: "A more considered approach to international mobility",
       description:
-        "Citizenship and residency decisions require more than programme comparisons. They require context, structure, and a clear understanding of the legal, practical, and long-term implications that different routes create. This section explains the lens through which those decisions are approached on the platform.",
+        "Citizenship and residency decisions require more than programme comparisons. They require context, structure, and a clear understanding of the legal, practical, and long-term implications that different routes create. This section sets out the perspective behind the platform and the lens through which those decisions are approached.",
       items: [
         {
           title: "Independent perspective",
@@ -397,7 +397,7 @@ function getHomeCopy(locale: Locale) {
       eyebrow: "Investor pathways",
       title: "The main routes clients usually compare",
       description:
-        "Different objectives call for different structures. Some cases point towards direct citizenship, others towards residency planning or wider international repositioning. The routes below are intended as starting points for orientation rather than as a list of interchangeable products.",
+        "Different objectives call for different structures. Some cases point towards direct citizenship, others towards residency planning or wider international repositioning. The routes below are intended to help visitors orient themselves before narrowing into a specific programme, jurisdiction, or next step.",
       items: [
         {
           title: "Citizenship by Investment",
@@ -422,7 +422,7 @@ function getHomeCopy(locale: Locale) {
     insights: {
       eyebrow: "Insights",
       title: "Insights for more informed decisions",
-      description: "Editorial analysis on programmes, jurisdictions, due diligence, and the planning considerations that shape serious cross-border decisions. It is intended to help visitors understand the landscape more fully before narrowing their options.",
+      description: "Editorial analysis on programmes, jurisdictions, due diligence, and the planning considerations that shape serious cross-border decisions. It is intended to help visitors understand the landscape more fully, and to decide which questions or routes deserve closer attention.",
       cta: "View insights",
     },
     consultation: {
@@ -435,7 +435,7 @@ function getHomeCopy(locale: Locale) {
     },
     scarcity: {
       title: "We work with a limited number of cases at any one time.",
-      description: "Priority is given to applicants with clear objectives, serious intent, and a considered approach to citizenship, residency, or wider international planning.",
+      description: "This final note clarifies how access is approached. Priority is given to applicants with clear objectives, serious intent, and a considered approach to citizenship, residency, or wider international planning.",
     },
   }
 }

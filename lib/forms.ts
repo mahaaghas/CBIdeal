@@ -59,7 +59,7 @@ const optionLabels = {
       "family-office": "لحالة عائلية أو عبر مكتب خاص",
     },
     businessInterest: {
-      crm: "مراجعة تشغيلية",
+      crm: "مراجعة مهنية منظمة",
       leads: "نقاش مهني أولي",
       both: "نقاش مهني أوسع",
       "white-label": "ترتيب مؤسسي أو شراكة خاصة",
@@ -126,8 +126,8 @@ export function getApplicantScopeOptions(locale: Locale) {
 
 export function getBusinessInterestOptions(locale: Locale) {
   const base = [
-    { value: "crm", label: "Operational review" },
-    { value: "leads", label: "Referral discussion" },
+    { value: "crm", label: "Structured professional review" },
+    { value: "leads", label: "Initial professional discussion" },
     { value: "both", label: "Wider professional discussion" },
     { value: "white-label", label: "Institutional or white-label arrangement" },
   ] as const
@@ -274,7 +274,7 @@ const leadFormTypeCopyByLocale: Record<
 > = {
   en: {
     investor: {
-      eyebrow: "Private review",
+      eyebrow: "Private consultation",
       contactLabel: "Full name",
       emailLabel: "Email",
       successMessage:
@@ -285,24 +285,24 @@ const leadFormTypeCopyByLocale: Record<
       submitIdleLabel: "Request a consultation",
     },
     company: {
-      eyebrow: "Professional enquiry",
+      eyebrow: "Professional discussion",
       contactLabel: "Contact person",
       emailLabel: "Work email",
       successMessage: "Thank you. We will review your enquiry and return in the most suitable format.",
       notesPlaceholder:
-        "Tell us about your current structure, what you are reviewing, and the kind of professional discussion you would like to arrange.",
-      notesHelp: "Use this field for operating context, timing, or any particular sensitivities around the discussion.",
-      submitIdleLabel: "Request a reply",
+        "Outline your current structure, what you are reviewing, and the kind of professional discussion you would like to arrange.",
+      notesHelp: "Use this field for timing, context, or any sensitivities that should shape the discussion.",
+      submitIdleLabel: "Request a discussion",
     },
     partner: {
-      eyebrow: "Professional enquiry",
+      eyebrow: "Professional discussion",
       contactLabel: "Contact person",
       emailLabel: "Work email",
       successMessage: "Thank you. We will review your enquiry and reply in the most appropriate format.",
       notesPlaceholder:
-        "Describe the jurisdictions you cover, the profile of the work involved, and the kind of professional relationship you are exploring.",
-      notesHelp: "This helps us decide what kind of response would be most appropriate.",
-      submitIdleLabel: "Send enquiry",
+        "Describe the jurisdictions you cover, the profile of the work involved, and the kind of professional context you are exploring.",
+      notesHelp: "This helps us judge the most appropriate way to continue the conversation.",
+      submitIdleLabel: "Send request",
     },
   },
   ar: {
@@ -323,7 +323,7 @@ const leadFormTypeCopyByLocale: Record<
       successMessage: "شكرًا لك. سنراجع طلبك ونتواصل معك بالصيغة الأنسب لفريقك ومرحلة العمل الحالية.",
       notesPlaceholder:
         "أخبرنا عن السياق الحالي لفريقك، وما الذي ترغب في مناقشته، وأي اعتبارات مهنية تراها مهمة.",
-      notesHelp: "يمكنك استخدام هذا الحقل لتوضيح ما إذا كنت تبحث عن مراجعة تشغيلية أو نقاش مؤسسي أوسع أو عرض خاص أكثر هدوءاً.",
+      notesHelp: "يمكنك استخدام هذا الحقل لتوضيح ما إذا كنت تبحث عن مراجعة مهنية منظمة أو نقاش مؤسسي أوسع أو عرض خاص أكثر هدوءاً.",
       submitIdleLabel: "ابدأ محادثة للشركة",
     },
     partner: {
@@ -356,7 +356,7 @@ const leadFormTypeCopyByLocale: Record<
       successMessage: "Спасибо. Мы рассмотрим ваш запрос и вернёмся в наиболее уместном формате для вашей команды.",
       notesPlaceholder:
         "Опишите текущий контекст команды, что именно вы хотели бы обсудить и какие профессиональные соображения важны в первую очередь.",
-      notesHelp: "Это поле можно использовать, чтобы пояснить, нужен ли вам операционный обзор, более широкий профессиональный разговор или частный обзор.",
+      notesHelp: "Это поле можно использовать, чтобы пояснить, нужен ли вам более структурированный профессиональный обзор, более широкий профессиональный разговор или частный обзор.",
       submitIdleLabel: "Начать профессиональный разговор",
     },
     partner: {

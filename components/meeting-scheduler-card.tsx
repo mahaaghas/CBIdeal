@@ -66,13 +66,13 @@ export async function MeetingSchedulerCard({
             suitability: "Useful where a clearer first view is needed before any more committed step is taken.",
             duration: "A first discussion is usually comfortably covered in 20 to 30 minutes.",
             discretion: "Handled in a private and structured format, without any obligation to continue.",
-            cardTitle: "What this conversation is for",
+            cardTitle: "Purpose of the first conversation",
             cardBody:
               "It helps bring structure to the broader picture, clarify priorities, and decide whether a more detailed next step would be appropriate.",
             note:
               "We work with a limited number of cases and prioritise serious enquiries that benefit from a more considered first exchange.",
             primary: "Request a consultation",
-            secondary: "Contact us directly",
+            secondary: "Request call-back",
           }
 
   const resolvedTitle = title ?? copy.defaultTitle

@@ -330,7 +330,7 @@ export default function CaribbeanComparisonPage() {
           <SectionHeading
             eyebrow={copy?.compareEyebrow ?? "Comparison matrix"}
             title={copy?.compareTitle ?? "The practical differences usually sit in fit, economics, and positioning."}
-            description={copy?.compareDescription ?? "This is the comparison frame we would use in a first advisory conversation before matters move towards formal review or country-specific next steps. It is intended to show what deserves comparison first, and what can safely be left out of the early noise."}
+            description={copy?.compareDescription ?? "Use this matrix as a first reading of where the programmes genuinely diverge in practice. It is designed to show what deserves comparison first, and what can safely be left out of the early noise."}
           />
           <LandingComparisonTable
             columns={[
@@ -386,7 +386,7 @@ export default function CaribbeanComparisonPage() {
           <SectionHeading
             eyebrow={copy?.processEyebrow ?? "How to use this page"}
             title={copy?.processTitle ?? "A better comparison starts with the right shortlist and the right questions."}
-            description={copy?.processDescription ?? "Do not use this page to chase a winner. Use it to narrow the route that deserves a more serious consultation, and to understand where the real distinctions actually sit. The section below is there to help you read the comparison properly, not only scan it."}
+            description={copy?.processDescription ?? "This section is here to help you interpret the page properly, not simply scan it. Use it to narrow the route that deserves closer attention and to understand which distinctions matter once the comparison becomes more serious."}
           />
           <ProcessSteps steps={localizedProcessSteps} />
         </div>
@@ -397,7 +397,7 @@ export default function CaribbeanComparisonPage() {
           <SectionHeading
             eyebrow={copy?.missesEyebrow ?? "What investors often miss"}
             title={copy?.missesTitle ?? "The strongest route is often the one that feels most coherent once your real profile is on the table."}
-            description={copy?.missesDescription ?? "That means budget is only one part of the conversation. Family inclusion, residence history, documentation readiness, business structure, and how much weight you place on programme reputation all matter. This section highlights the considerations that often reshape the shortlist once the case becomes more real."}
+            description={copy?.missesDescription ?? "Budget is only one part of the conversation. This section highlights the considerations that often reshape the shortlist once the case becomes more real, including family inclusion, residence history, documentation readiness, business structure, and programme reputation."}
           />
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {localizedMisses.map((item) => (
@@ -419,7 +419,7 @@ export default function CaribbeanComparisonPage() {
         <div className="container-shell grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
           <div className="space-y-6">
             <span className="eyebrow">{copy?.reviewEyebrow ?? "Need help deciding?"}</span>
-            <h2 className="section-title max-w-xl text-foreground">{copy?.reviewTitle ?? "Use a private review if the comparison already feels close."}</h2>
+          <h2 className="section-title max-w-xl text-foreground">{copy?.reviewTitle ?? "Request a private consultation if the comparison already feels close."}</h2>
             <p className="max-w-xl text-lg leading-8 text-muted-foreground">
               {copy?.reviewDescription ?? "This is especially useful if you are comparing routes for a family, a GCC-based residence situation, or a business-owner profile where the trade-offs are less obvious. At that point, a shorter and better-framed list tends to matter more than another broad comparison."}
             </p>
@@ -446,7 +446,7 @@ export default function CaribbeanComparisonPage() {
           <LocalizedLandingLeadForm
             locale={locale}
             title={copy?.formTitle ?? "Request a comparison review"}
-          description={copy?.formDescription ?? "Tell us a little about your profile and we will help you understand which Caribbean route appears strongest before attention narrows to a specific jurisdiction."}
+          description={copy?.formDescription ?? "Use the form if the comparison has narrowed your options and you would like a more considered view of which Caribbean route appears strongest for your profile before attention moves to a single jurisdiction."}
             submitLabel={copy?.formSubmit ?? "Request a consultation"}
             sourceCategory="comparison"
             sourcePage="caribbean-cbi-comparison"

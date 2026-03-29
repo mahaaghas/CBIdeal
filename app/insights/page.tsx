@@ -164,7 +164,7 @@ export default async function InsightsPage() {
             categoriesEyebrow: "Editorial focus",
             categoriesTitle: "An editorial library for more informed decisions.",
             categoriesDescription:
-              "The material here is intended to clarify practical comparisons, jurisdiction differences, and the broader considerations that shape a serious decision before any route is treated as obvious. The categories below are designed to make that library easier to navigate.",
+              "The material here is organised to help readers move from broad understanding into narrower questions. These categories clarify where to start, depending on whether you are comparing programmes, studying jurisdictions, or weighing wider planning considerations.",
             categories: [
               {
                 title: "Program comparisons",
@@ -186,10 +186,10 @@ export default async function InsightsPage() {
             emptyDescription: "New analysis will appear here as it is published.",
             latestEyebrow: "Latest analysis",
             latestTitle: "Further reading from the editorial library",
-            latestDescription: "Additional analysis covering programme comparisons, route differences, and the considerations that usually matter once the enquiry becomes more serious. Readers can use this section to continue into narrower topics after the broader editorial framing above.",
+            latestDescription: "Use this section to continue from the broader editorial framing above into more specific comparisons, route differences, and planning questions that often shape a serious enquiry.",
             ctaEyebrow: "Next step",
             ctaTitle: "Once the picture is clearer, move to the page or conversation that best suits your situation.",
-      ctaDescription: "The purpose of these articles is to support clearer thinking before you decide how, or whether, to proceed with a more detailed discussion.",
+      ctaDescription: "The purpose of these articles is to support clearer thinking before you decide how, or whether, to proceed with a more detailed discussion. Once the subject is better defined, the next step usually becomes easier to choose.",
             ctaPrimary: "Explore your options",
             ctaSecondary: "Request a private consultation",
           }

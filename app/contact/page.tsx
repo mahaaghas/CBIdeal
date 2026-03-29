@@ -82,7 +82,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
       title: "A discreet contact point for private consultations and professional enquiries.",
       description:
         "Whether you are exploring your options personally or writing on behalf of a firm, this page is intended to show the most appropriate way to get in touch and what kind of first exchange each route is designed for.",
-      openForm: "Open contact form",
+      openForm: "Write to us",
       viewPrivacy: "View data protection",
     },
     ar: {
@@ -179,7 +179,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         ? "تمنحك النماذج المخصصة بداية أوضح: المستثمر يبدأ من المقارنة والملف، والشركة تبدأ من الاحتياج التشغيلي."
         : locale === "ru"
           ? "Специализированные формы дают более релевантный опыт для инвесторов и компаний, чем одна общая контактная форма."
-          : "Separate forms allow the first exchange to remain more relevant and more measured. They also make it easier to understand which information matters at the outset, depending on who is writing.",
+          : "This section helps you choose the right contact route before you begin. Separate forms keep the first exchange more relevant and make it easier to see which information matters at the outset, depending on who is writing.",
     faqEyebrow: locale === "ar" ? "الأسئلة الشائعة" : locale === "ru" ? "FAQ" : "FAQ",
     faqTitle:
       locale === "ar"
@@ -192,21 +192,21 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         ? "إجابات قصيرة تساعد في ضبط التوقعات وتعزيز الثقة."
         : locale === "ru"
           ? "Короткие ответы, которые помогают настроить ожидания и усилить доверие."
-          : "Short answers that help set expectations, reduce unnecessary uncertainty, and make the contact process easier to read before you begin.",
+          : "These short answers are intended to clarify how the page works, what each contact route is for, and what you should expect from the first exchange.",
     ctaEyebrow: locale === "ar" ? "ما زلت تقرر؟" : locale === "ru" ? "Еще решаете?" : "Still deciding?",
     ctaTitle:
       locale === "ar"
         ? "هل تريد الاطلاع على الأسعار أو العرض الإرشادي قبل التواصل؟"
         : locale === "ru"
-          ? "Нужны тарифы или guided walkthrough до обращения?"
-          : "Would you prefer to review the pathways and insights first?",
+          ? "Хотите сначала посмотреть направления и материалы?"
+          : "Would you prefer to review the pathways and editorial material first?",
     ctaDescription:
       locale === "ar"
         ? "يمكنك الانتقال إلى العرض الإرشادي أو صفحة الأسعار أولًا، ثم العودة إلى التواصل عندما تصبح الصورة أوضح."
         : locale === "ru"
           ? "Вы можете перейти к демо или тарифам, а затем вернуться к контакту, когда будете готовы."
-          : "You may prefer to review the main pathways or editorial insights first, then return when the picture is clearer. This is often the better route if your questions are still broad rather than case-specific.",
-    ctaPrimary: locale === "ar" ? "انتقل إلى العرض الإرشادي" : locale === "ru" ? "Перейти к guided demo" : "View investor pathways",
+          : "You may prefer to review the main pathways or editorial insights first, then return when the picture is clearer. This is often the better route if your questions are still broad and you are not yet ready for a case-specific exchange.",
+    ctaPrimary: locale === "ar" ? "استكشف المسارات" : locale === "ru" ? "Смотреть направления" : "View pathways",
   }
 
   return (
@@ -218,7 +218,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         primaryAction={{ href: "#contact-form", label: copy.openForm }}
         secondaryAction={{ href: ctaLinks.viewDataProtection, label: copy.viewPrivacy }}
         stats={[
-          { value: settings.salesEmail, label: "private email" },
+          { value: settings.salesEmail, label: "private correspondence" },
           { value: settings.phone, label: "telephone" },
           { value: settings.whatsapp, label: "WhatsApp" },
         ]}
@@ -338,8 +338,8 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
             eyebrow={detailCopy.ctaEyebrow}
             title={detailCopy.ctaTitle}
             description={detailCopy.ctaDescription}
-            primaryAction={{ href: ctaLinks.explorePrograms, label: "View investor pathways" }}
-            secondaryAction={{ href: ctaLinks.viewPricing, label: locale === "ar" ? "اطلع على الأسعار" : "View pricing" }}
+            primaryAction={{ href: ctaLinks.explorePrograms, label: "Explore pathways" }}
+            secondaryAction={{ href: ctaLinks.viewPricing, label: locale === "ar" ? "اطلع على الخيارات" : "Review options" }}
           />
         </div>
       </section>

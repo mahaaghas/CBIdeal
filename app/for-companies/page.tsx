@@ -109,8 +109,8 @@ const features = [
   },
   {
     icon: BarChart3,
-    title: "Management visibility",
-    description: "Give leadership a simple view of volume, ownership, and progress without making reporting the centre of the experience.",
+    title: "Management clarity",
+    description: "Give leadership a clearer view of activity, ownership, and continuity without letting reporting become the centre of the experience.",
   },
 ]
 
@@ -138,24 +138,24 @@ export default async function ForCompaniesPage() {
         ? "استخدم هذه الصفحة إذا كنت تمثل جهة مهنية وتبحث عن نقاش خاص وأكثر تنظيماً حول الملاءمة وطبيعة العلاقة المهنية المحتملة."
         : locale === "ru"
           ? "Используйте эту страницу, если вы представляете фирму и хотите начать более частный и структурированный разговор о профессиональной пригодности и формате возможного взаимодействия."
-          : "Use this section if you represent a firm and would like a more private discussion around structure, professional fit, and how a relationship might be approached. It is designed as an entry point for serious firms that want a clearer sense of the platform before taking the conversation further.",
+          : "This page is intended for firms that want to understand the professional context before any more specific discussion begins. Use it to review the broader platform, the working tone, and the kinds of conversations that may be appropriate for a serious firm.",
     bookMeeting: locale === "ar" ? "رتّب محادثة خاصة" : locale === "ru" ? "Договориться о частном обсуждении" : "Arrange a private discussion",
     requestDemo: locale === "ar" ? "اطلب عرضًا خاصًا" : locale === "ru" ? "Запросить частный обзор" : "Request a private overview",
     whatFirms: locale === "ar" ? "كيف يُستخدم هذا القسم" : locale === "ru" ? "Как используется эта страница" : "How firms use this section",
-    crmSaas: locale === "ar" ? "نظرة مهنية منظمة" : locale === "ru" ? "Профессиональный обзор" : "Working overview",
+    crmSaas: locale === "ar" ? "نظرة مهنية منظمة" : locale === "ru" ? "Профессиональный обзор" : "Platform overview",
     crmSaasDesc:
       locale === "ar"
         ? "هذه الصفحة تمنحك قراءة أوضح لطبيعة المنصة، والنبرة المهنية، وكيف يمكن أن يبدأ النقاش بشكل أكثر هدوءاً."
         : locale === "ru"
           ? "Эта страница помогает спокойно понять характер платформы, профессиональный тон и то, как может начаться дальнейший разговор."
-          : "Review how enquiries, client context, internal notes, and continuity can sit within a more orderly working environment.",
-    qualifiedLeads: locale === "ar" ? "محادثة مهنية أوسع" : locale === "ru" ? "Более широкое профессиональное обсуждение" : "Professional relationship",
+          : "Review how enquiries, client context, internal notes, and continuity can sit within a more orderly professional environment.",
+    qualifiedLeads: locale === "ar" ? "محادثة مهنية أوسع" : locale === "ru" ? "Более широкое профессиональное обсуждение" : "Professional context",
     qualifiedLeadsDesc:
       locale === "ar"
         ? "قد تستخدم بعض الجهات هذا القسم لفهم ما إذا كانت هناك أرضية مناسبة لنقاش مهني أوسع ضمن إطار أكثر تحفظاً."
         : locale === "ru"
           ? "Некоторые фирмы используют эту страницу, чтобы понять, есть ли спокойная и уместная основа для более широкого профессионального разговора."
-          : "Use the page to begin a more thoughtful discussion around structure, presentation, and the kind of relationship that may be worth exploring.",
+          : "Use the page to begin a more thoughtful discussion around structure, presentation, and the kind of professional fit that may be worth exploring.",
     productEyebrow: locale === "ar" ? "نظرة عامة" : locale === "ru" ? "Обзор" : "Overview",
     productTitle:
       locale === "ar"
@@ -168,37 +168,37 @@ export default async function ForCompaniesPage() {
         ? "يركز العرض على ما يهم الفرق المهنية فعلاً: وضوح الحالة، وسياق العميل، وتماسك العمل داخل الفريق."
         : locale === "ru"
           ? "Обзор остаётся близким к тому, что действительно важно профессиональным командам: ясность по статусу, контекст клиента и согласованность внутренней работы."
-          : "The overview remains close to day-to-day realities: incoming enquiries, adviser responsibility, client context, and continuity of follow-up. It is intended to show what the platform actually helps a specialist team keep in order.",
-    partnershipEyebrow: locale === "ar" ? "علاقات مهنية" : locale === "ru" ? "Профессиональные отношения" : "Professional relationships",
+          : "This section gives a practical view of what the platform is designed to help a specialist team keep in order. The emphasis stays close to day-to-day realities: client context, adviser responsibility, and continuity of follow-up.",
+    partnershipEyebrow: locale === "ar" ? "سياق مهني" : locale === "ru" ? "Профессиональный контекст" : "Professional context",
     partnershipTitle:
       locale === "ar"
         ? "تبدأ بعض الجهات من هنا لفهم ما إذا كان هناك أساس مناسب لعلاقة مهنية أوسع."
         : locale === "ru"
           ? "Некоторые фирмы начинают здесь, чтобы понять, уместен ли более широкий профессиональный формат."
-          : "Some firms begin here when exploring a wider professional relationship.",
+          : "Some firms begin here when exploring whether a wider professional context is worth discussing.",
     partnershipDescription:
       locale === "ar"
         ? "المقصود ليس فتح مسار تجاري صريح، بل معرفة ما إذا كانت هناك مناسبة مهنية حقيقية لنقاش أكثر تحديداً."
         : locale === "ru"
           ? "Речь не о прямой коммерческой подаче, а о понимании того, есть ли реальная профессиональная уместность для более предметного разговора."
-          : "The wider platform can support a more structured conversation around presentation, working methods, and how introductions may be handled where appropriate. This section is there to explain that broader context without forcing it into a sales narrative.",
-    companyFormEyebrow: locale === "ar" ? "نموذج استفسار الشركات" : locale === "ru" ? "Форма запроса компании" : "Professional enquiry form",
+          : "The wider platform can support a more structured conversation around presentation, working methods, and how introductions may be handled where appropriate. Read this section as context for the type of professional discussion that may follow, rather than as a direct commercial pitch.",
+    companyFormEyebrow: locale === "ar" ? "نموذج للشركات" : locale === "ru" ? "Форма для профессионального обсуждения" : "Professional discussion form",
     companyFormTitle:
-      locale === "ar" ? "أخبرنا بما تحتاجه شركتك الآن." : locale === "ru" ? "Расскажите, что нужно вашей фирме." : "Tell us what your firm needs.",
+      locale === "ar" ? "شاركنا بما تنظر فيه شركتك الآن." : locale === "ru" ? "Поделитесь тем, что ваша фирма рассматривает сейчас." : "Outline what your firm is considering.",
     companyFormDescription:
       locale === "ar"
         ? "استخدم النموذج إذا كنت ترغب في مشاركة السياق الحالي لفريقك وبدء نقاش مهني أكثر هدوءاً."
         : locale === "ru"
           ? "Используйте форму, если хотите описать текущий контекст своей команды и начать более спокойный профессиональный разговор."
-          : "Use the form for a professional enquiry about structure, fit, or the most suitable next discussion. It gives your firm a clear way to describe what it wants to review before the conversation begins.",
-    formTitle: locale === "ar" ? "اطلب محادثة مهنية" : locale === "ru" ? "Запросить профессиональное обсуждение" : "Request a professional discussion",
+          : "Use the form if your firm would like to outline the context before a private discussion begins. It is designed to help you describe what you would like to review, and why it matters, in a more orderly way.",
+    formTitle: locale === "ar" ? "اطلب مناقشة خاصة" : locale === "ru" ? "Запросить частное профессиональное обсуждение" : "Request a private discussion",
     formDescription:
       locale === "ar"
         ? "شارك وضع فريقك الحالي وسنعود إليك بالصورة أو الإعداد الأقرب لاحتياجك."
         : locale === "ru"
           ? "Поделитесь профилем своей команды, и мы вернемся с наиболее релевантной конфигурацией."
-          : "Share a little context and we will return in the most suitable format. The aim is to make the response more relevant from the first exchange rather than relying on a generic reply.",
-    submit: locale === "ar" ? "اطلب محادثة" : locale === "ru" ? "Запросить обсуждение" : "Request discussion",
+          : "Share a little context so the first reply can be shaped around the right professional frame. The aim is to make the opening exchange more relevant, more measured, and easier to continue.",
+    submit: locale === "ar" ? "اطلب مناقشة خاصة" : locale === "ru" ? "Запросить обсуждение" : "Request a discussion",
   }
   const localizedTrustItems =
     locale === "ar"
@@ -380,7 +380,7 @@ export default async function ForCompaniesPage() {
                 ))}
               </div>
               <Button variant="outline" asChild>
-                  <Link href={routeLinks.partners}>{locale === "ar" ? "استكشف العلاقات المهنية" : "Explore professional relationships"}</Link>
+                  <Link href={routeLinks.partners}>{locale === "ar" ? "استكشف السياق المهني" : "Explore professional context"}</Link>
               </Button>
             </CardContent>
           </Card>
@@ -479,7 +479,7 @@ export default async function ForCompaniesPage() {
             eyebrow={locale === "ar" ? "الخطوة التالية" : "Next step"}
             title={locale === "ar" ? "هل تريد الاطلاع على الأسعار أو طلب عرض خاص أو قراءة حماية البيانات؟" : "Would you prefer to review the engagement options, request a private overview, or read about data protection?"}
             description={locale === "ar" ? "يمكنك الانتقال إلى الأسعار أو العرض الخاص أو تفاصيل حماية البيانات من دون مغادرة نفس التجربة المتماسكة." : "You can move into the engagement options, a private overview, or data protection detail without leaving the same coherent experience."}
-            primaryAction={{ href: ctaLinks.viewPricing, label: locale === "ar" ? "اطلع على الأسعار" : "View pricing" }}
+            primaryAction={{ href: ctaLinks.viewPricing, label: locale === "ar" ? "اطلع على الخيارات" : "Review options" }}
             secondaryAction={{ href: ctaLinks.requestDemo, label: locale === "ar" ? "اطلب عرضًا خاصًا" : "Request a private overview" }}
           />
         </div>

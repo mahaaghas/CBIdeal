@@ -19,7 +19,7 @@ export function ContactInquiryTabs({ locale = "en", defaultValue = "investor" }:
         ? "مراجعة للمستثمر"
         : locale === "ru"
           ? "Запрос инвестора"
-          : "Investor review",
+          : "Private consultation",
     investorDescription:
       locale === "ar"
         ? "شارك وضعك الحالي وما الذي تحاول الوصول إليه، حتى نتمكن من اقتراح الخطوة الأنسب بهدوء."
@@ -31,25 +31,25 @@ export function ContactInquiryTabs({ locale = "en", defaultValue = "investor" }:
         ? "اطلب المراجعة"
         : locale === "ru"
           ? "Запросить рассмотрение"
-          : "Request a private review",
+          : "Request a consultation",
     companyTitle:
       locale === "ar"
         ? "محادثة مهنية"
         : locale === "ru"
           ? "Профессиональный запрос"
-          : "Professional enquiry",
+          : "Professional discussion",
     companyDescription:
       locale === "ar"
         ? "إذا كنت تمثل جهة مهنية أو استشارية، أخبرنا بطبيعة النقاش الذي تريد ترتيبه."
         : locale === "ru"
           ? "Если вы представляете профессиональную или консультативную фирму, сообщите, какой разговор вы хотели бы организовать."
-          : "If you represent a professional or advisory firm, tell us what kind of discussion you would value arranging.",
+          : "If you represent a professional or advisory firm, indicate the kind of discussion you would find useful.",
     companySubmit:
       locale === "ar"
         ? "اطلب معاودة الاتصال"
         : locale === "ru"
           ? "Запросить обратный звонок"
-          : "Request a reply",
+          : "Request a discussion",
   }
 
   return (

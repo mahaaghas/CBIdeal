@@ -75,7 +75,7 @@ export default function DemoPage() {
       description:
         "A short private overview can be the clearest way to understand whether the structure, working style, and level of support are right for your team. This page explains what that discussion covers and how to request it in a more measured way.",
       requestDemo: "Arrange a private overview",
-      seePricing: "View pricing first",
+      seePricing: "Review options first",
     },
     ar: {
       eyebrow: "عرض خاص",
@@ -115,7 +115,7 @@ export default function DemoPage() {
           <SectionHeading
             eyebrow="What the discussion includes"
             title="A structured overview, not a rushed presentation."
-            description="The overview is designed to clarify fit and context, not to overwhelm teams with unnecessary detail. It should give enough substance for an informed first judgement without turning into a full operational review."
+              description="The overview is designed to clarify fit and context, not to overwhelm teams with unnecessary detail. It should give enough substance for an informed first judgement without turning into an exhaustive technical discussion."
           />
           <ProcessSteps steps={demoSteps} />
         </div>
@@ -134,7 +134,7 @@ export default function DemoPage() {
         <div className="container-shell grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
           <div className="space-y-6">
             <span className="eyebrow">Private overview</span>
-            <h2 className="section-title max-w-xl text-foreground">Tell us what you would like to discuss.</h2>
+            <h2 className="section-title max-w-xl text-foreground">Outline what you would like to discuss.</h2>
             <p className="max-w-xl text-lg leading-8 text-muted-foreground">
               Share a little context about your firm and the areas you would like to review. That helps ensure the first conversation begins with the right emphasis rather than a generic walkthrough.
             </p>
@@ -149,7 +149,7 @@ export default function DemoPage() {
             locale={locale}
             formType="company"
             title="Request a private overview"
-            description="Tell us what would be most useful to cover."
+            description="Indicate what would be most useful to cover."
             submitLabel="Request a private overview"
             source="demo"
           />
@@ -160,9 +160,9 @@ export default function DemoPage() {
         <div className="container-shell">
           <CtaPanel
             eyebrow="Need more context first?"
-            title="Review pricing or return to the professional overview before getting in touch."
+            title="Review the wider options first, or return to the professional overview before getting in touch."
             description="You can read a little more first, then return when you are ready for a private discussion. For some teams, that additional context makes the first exchange materially more useful."
-            primaryAction={{ href: ctaLinks.viewPricing, label: "View pricing" }}
+            primaryAction={{ href: ctaLinks.viewPricing, label: "Review options" }}
             secondaryAction={{ href: routeLinks.forCompanies, label: "Back to professional overview" }}
           />
         </div>

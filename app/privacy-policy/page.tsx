@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
     title: "Privacy Policy",
     description:
-      "Read how CBI Deal collects, uses, stores, and protects personal data, including form submissions, cookies, analytics, and Google advertising-related disclosures.",
+      "Read how CBI Deal collects, uses, stores, and protects personal data, including consultation requests, cookies, analytics, and Google advertising-related disclosures.",
     path: localizeHref(locale, "/privacy-policy"),
     keywords: [
       "privacy policy",
@@ -49,9 +49,9 @@ const collectionItems = [
 
 const useCases = [
   "review and respond to enquiries",
-  "qualify requests and route them to the relevant internal team or licensed partner path",
+  "review requests and direct them to the most relevant internal team or, where appropriate, a licensed professional route",
   "improve website performance, usability, and security",
-  "measure page performance, lead submissions, and marketing effectiveness",
+  "measure page performance, consultation requests, and the usefulness of our communications",
   "comply with legal, regulatory, and compliance obligations",
 ] as const
 
@@ -63,12 +63,12 @@ const cookieItems = [
   {
     title: "Analytics technologies",
     body:
-      "Used to understand site usage and improve the experience. The website currently uses Google Analytics 4 to measure page views and selected engagement or conversion-related events.",
+      "Used to understand site usage and improve the experience. The website currently uses Google Analytics 4 to measure page views and selected engagement events related to consultations and contact.",
   },
   {
     title: "Advertising technologies",
     body:
-      "If enabled, these technologies may be used to measure advertising performance, understand audience behavior, support remarketing, and evaluate consultation-related conversion activity.",
+      "If enabled, these technologies may be used to measure advertising performance, understand audience behaviour, support remarketing, and evaluate consultation-related activity.",
   },
 ] as const
 
@@ -114,7 +114,7 @@ export default async function PrivacyPolicyPage() {
                 <div className="rounded-3xl border border-border/70 bg-muted/30 p-6">
                   <h3 className="text-xl text-foreground">Analytics</h3>
                   <p className="mt-3 text-sm leading-7 text-muted-foreground">
-We use analytics to understand site usage, improve performance, and measure enquiry activity.
+                    We use analytics to understand site usage, improve performance, and measure how visitors move towards contact or consultation.
                   </p>
                 </div>
                 <div className="rounded-3xl border border-border/70 bg-muted/30 p-6">
@@ -221,7 +221,7 @@ We use analytics to understand site usage, improve performance, and measure enqu
                 <h2 className="card-title text-foreground">Who may receive data</h2>
               </div>
               <p className="fine-print">
-                Personal data may be shared with service providers that help us operate the website, communications tools, analytics services, form processing, hosting providers, and, where relevant, licensed providers or authorized partners involved in a properly qualified enquiry path.
+                Personal data may be shared with service providers that help us operate the website, communications tools, analytics services, form processing, and hosting. Where relevant, information may also be shared with licensed providers or authorised partners involved in an enquiry that has been reviewed as appropriate for further discussion.
               </p>
               <p className="fine-print">
                 Data may also be disclosed where required by law, regulation, legal process, or to protect rights, safety, and platform integrity.
@@ -253,7 +253,7 @@ We use analytics to understand site usage, improve performance, and measure enqu
               <h3 className="text-2xl text-foreground">Important disclosures for Google Analytics and Google Ads-related features</h3>
               <div className="space-y-4 text-sm leading-7 text-muted-foreground">
                 <p>
-                  The website currently uses Google Analytics 4 to measure page views and selected engagement or lead-related events. This helps us understand which pages are useful and which routes generate qualified consultation intent.
+                  The website currently uses Google Analytics 4 to measure page views and selected engagement events. This helps us understand which pages are useful and which routes most often lead to serious consultation requests.
                 </p>
                 <p>
                   If Google Ads conversion tracking, remarketing, audience building, or similar Google advertising features are enabled, Google and its partners may use cookies, local storage, pixels, and similar technologies to measure ad performance, understand audience behavior, and support advertising or remarketing.
@@ -279,7 +279,7 @@ We use analytics to understand site usage, improve performance, and measure enqu
                 <h2 className="card-title text-foreground">How long data may be kept and where it may be processed</h2>
               </div>
               <p className="fine-print">
-                We keep data only for as long as reasonably necessary for the purposes described in this policy, including lead handling, follow-up, compliance review, record-keeping, analytics reporting, and legal obligations.
+                We keep data only for as long as reasonably necessary for the purposes described in this policy, including enquiry handling, follow-up, compliance review, record-keeping, analytics reporting, and legal obligations.
               </p>
               <p className="fine-print">
                 Because the website and some service providers operate internationally, personal data may be processed outside your country of residence. Where applicable, we aim to rely on appropriate safeguards for cross-border transfers.
@@ -312,7 +312,7 @@ We use analytics to understand site usage, improve performance, and measure enqu
             eyebrow="Next step"
             title="Need clarity on privacy, tracking, or how your enquiry is handled?"
             description="Use the contact page if you want to discuss privacy, confidentiality, consent, or how a consultation request is processed before any provider introduction."
-            primaryAction={{ href: routeLinks.contact, label: "Go to contact" }}
+            primaryAction={{ href: routeLinks.contact, label: "Contact us" }}
             secondaryAction={{ href: routeLinks.dataProtection, label: "View data protection notice" }}
           />
         </div>

@@ -20,10 +20,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import {
   buildLeadFormSchema,
-  companyTeamSizeOptions,
+  getApplicantScopeOptions,
+  getBusinessInterestOptions,
+  getCompanyTeamSizeOptions,
+  getInvestorBudgetOptions,
+  getInvestorTimeframeOptions,
   getLeadFormTypeCopy,
-  investorBudgetOptions,
-  investorTimeframeOptions,
+  getProgramInterestOptions,
   submitLeadForm,
   type LeadFormType,
   type LeadFormValues,
@@ -97,7 +100,7 @@ export function LeadQualificationForm({
   const isRtl = locale === "ar"
 
   const form = useForm<LeadFormValues>({
-    resolver: zodResolver(buildLeadFormSchema(formType)),
+    resolver: zodResolver(buildLeadFormSchema(formType, locale)),
     defaultValues: leadFormDefaults(formType),
   })
 
@@ -143,6 +146,123 @@ export function LeadQualificationForm({
     if (valid) setStep(1)
   }
 
+  const investorBudgetLabels = getInvestorBudgetOptions(locale)
+  const investorTimeframes = getInvestorTimeframeOptions(locale)
+  const companyTeamSizes = getCompanyTeamSizeOptions(locale)
+  const programInterestOptions = getProgramInterestOptions(locale)
+  const applicantScopeOptions = getApplicantScopeOptions(locale)
+  const businessInterestOptions = getBusinessInterestOptions(locale)
+  const uiCopy =
+    locale === "ar"
+      ? {
+          referenceLabel: "المرجع",
+          stepLabel: `الخطوة ${step + 1} من 2`,
+          stepOneName: "معلومات التواصل والإقامة",
+          stepTwoName: "التفضيلات والهدف من الطلب",
+          investorGroupOneTitle: "بيانات التواصل",
+          investorGroupOneDescription: "ابدأ بالبيانات الأساسية التي تساعد الجهة المناسبة على قراءة الطلب بسرعة ووضوح.",
+          phoneLabel: "الهاتف أو واتساب",
+          phoneHelp: "استخدم الرقم الأنسب للتواصل المباشر.",
+          investorGroupTwoTitle: "الوضع الحالي",
+          investorGroupTwoDescription: "هذه المعلومات تساعد على استبعاد المسارات غير الواقعية قبل أي تواصل تفصيلي.",
+          citizenshipLabel: "بلد الجنسية",
+          citizenshipPlaceholder: "الدولة الموجودة في جوازك الحالي",
+          residenceLabel: "بلد الإقامة الحالي",
+          residencePlaceholder: "أين تقيم الآن",
+          goalsGroupTitle: "ما الذي تبحث عنه",
+          goalsGroupDescription: "ساعدنا على فهم ما تقارنه فعليًا وما الذي يهمك في هذه المرحلة.",
+          programInterestLabel: "هل تبحث عن جنسية أم إقامة؟",
+          selectOne: "اختر الأنسب",
+          applicantScopeLabel: "هل الطلب لك وحدك أم للعائلة؟",
+          destinationLabel: "المنطقة أو الوجهة المفضلة",
+          destinationPlaceholder: "الكاريبي، أوروبا، تركيا، أو ما زلت منفتحًا",
+          budgetLabel: "نطاق الميزانية",
+          budgetPlaceholder: "اختر النطاق",
+          timeframeLabel: "الإطار الزمني",
+          timeframePlaceholder: "اختر التوقيت",
+          notesGroupTitle: "تفاصيل إضافية",
+          notesGroupDescription: "ملاحظة قصيرة تساعد في جعل المحادثة الأولى أكثر دقة وأقل عشوائية.",
+          notesLabel: "ملاحظات إضافية",
+          consentLabel: "أوافق على التواصل معي بخصوص هذا الطلب.",
+          consentDescription: "ستُراجع البيانات بشكل خاص، ولن تُشارك إلا مع الجهة المناسبة أو الفريق المسؤول عن متابعة الطلب.",
+          back: "رجوع",
+          continue: "الانتقال إلى المقارنة والتفضيلات",
+          footerReview: "سيتم النظر في الطلب أولاً قبل أي تواصل لاحق.",
+          companyPrimaryTitle: "بيانات جهة التواصل",
+          companyPrimaryDescription: "أخبرنا بمن يجب أن نتواصل داخل الشركة وما نوع الجهة التي تمثلها.",
+          companyNameLabel: "اسم الشركة",
+          companyNamePlaceholder: "اسم الشركة أو المكتب",
+          companyPhoneLabel: "الهاتف أو واتساب",
+          companyOpsTitle: "السياق التشغيلي",
+          companyOpsDescription: "تفاصيل بسيطة تساعدنا على تجهيز محادثة مهنية أكثر ملاءمة.",
+          regionLabel: "البلد أو المنطقة التي تخدمونها",
+          regionPlaceholder: "الخليج، أوروبا، الكاريبي، عالمي",
+          teamSizeLabel: "عدد أعضاء الفريق",
+          teamSizePlaceholder: "اختر حجم الفريق",
+          rolloutLabel: "الإطار الزمني المفضل",
+          rolloutPlaceholder: "اختر التوقيت",
+          businessTitle: "ما الذي تهتمون به",
+          businessDescription: "حدد نوع النقاش المهني الذي يبدو أكثر فائدة لفريقك في هذه المرحلة.",
+          businessInterestLabel: "ما نوع النقاش الذي تودون ترتيبه؟",
+          messageLabel: "رسالتك",
+          companyConsentLabel: "أوافق على التواصل معي بخصوص هذا الطلب.",
+          companyConsentDescription: "سنستخدم هذه البيانات فقط للرد على الطلب وترتيب الخطوة التالية المناسبة لفريقك.",
+        }
+      : {
+          referenceLabel: "Reference ID",
+          stepLabel: `Step ${step + 1} of 2`,
+          stepOneName: "Contact and background",
+          stepTwoName: "Options and notes",
+          investorGroupOneTitle: "Primary contact",
+          investorGroupOneDescription: "Start with the details needed for a calm and informed first exchange.",
+          phoneLabel: "Phone or WhatsApp",
+          phoneHelp: "Use the number you prefer for a direct reply.",
+          investorGroupTwoTitle: "Current profile",
+          investorGroupTwoDescription: "These details help narrow realistic routes before any next step is discussed.",
+          citizenshipLabel: "Country of citizenship",
+          citizenshipPlaceholder: "Current passport country",
+          residenceLabel: "Current country of residence",
+          residencePlaceholder: "Where you live now",
+          goalsGroupTitle: "Program goals",
+          goalsGroupDescription: "Help us understand the destination, scope, and timing that matter most in your case.",
+          programInterestLabel: "Do you need citizenship or residency?",
+          selectOne: "Select one",
+          applicantScopeLabel: "Is this for you or your family?",
+          destinationLabel: "Preferred destination or region",
+          destinationPlaceholder: "Caribbean, Europe, Turkey, or open",
+          budgetLabel: "Budget range",
+          budgetPlaceholder: "Select budget",
+          timeframeLabel: "Timeframe",
+          timeframePlaceholder: "Select timeframe",
+          notesGroupTitle: "Additional context",
+          notesGroupDescription: "A short note helps the first conversation start with more context.",
+          notesLabel: "Additional notes",
+          consentLabel: "I agree to be contacted about my enquiry.",
+          consentDescription: "Your details will be reviewed privately and shared only where appropriate for your request.",
+          back: "Back",
+          continue: "Continue to the next section",
+          footerReview: "Your details will be reviewed privately before any reply is arranged.",
+          companyPrimaryTitle: "Primary contact",
+          companyPrimaryDescription: "Tell us who we should correspond with and which firm or practice you represent.",
+          companyNameLabel: "Firm name",
+          companyNamePlaceholder: "Your firm or agency",
+          companyPhoneLabel: "Phone or WhatsApp",
+          companyOpsTitle: "Current context",
+          companyOpsDescription: "A few details help us prepare a more relevant professional discussion.",
+          regionLabel: "Country or region served",
+          regionPlaceholder: "EU, Caribbean, GCC, global",
+          teamSizeLabel: "Number of team members",
+          teamSizePlaceholder: "Select team size",
+          rolloutLabel: "Preferred timing",
+          rolloutPlaceholder: "Select timeframe",
+          businessTitle: "What you are interested in",
+          businessDescription: "Tell us what kind of institutional or operational discussion would be most useful.",
+          businessInterestLabel: "What kind of discussion would you like to arrange?",
+          messageLabel: "Message",
+          companyConsentLabel: "I agree to be contacted about this enquiry.",
+          companyConsentDescription: "We will use these details only to respond to your request and arrange the most suitable next step.",
+        }
+
   return (
     <div dir={isRtl ? "rtl" : "ltr"} className={cn("section-card p-7 md:p-9", isRtl && "text-right")}>
       <div className="mb-8 space-y-4">
@@ -158,7 +278,7 @@ export function LeadQualificationForm({
             <div className="space-y-1">
               <p className="font-semibold">{copy.successMessage}</p>
               <p className="text-muted-foreground">
-                Reference ID: <span className="font-medium text-foreground">{referenceId}</span>
+                {uiCopy.referenceLabel}: <span className="font-medium text-foreground">{referenceId}</span>
               </p>
             </div>
           </div>
@@ -174,8 +294,8 @@ export function LeadQualificationForm({
       {isInvestor ? (
         <div className="mb-7 rounded-[26px] border border-border/70 bg-background/80 p-5">
           <div className={cn("mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between", isRtl && "sm:flex-row-reverse")}>
-            <p className="text-sm font-medium text-foreground">Step {step + 1} of 2</p>
-            <p className="text-sm text-muted-foreground">{step === 0 ? "Contact and residence" : "Program fit and notes"}</p>
+            <p className="text-sm font-medium text-foreground">{uiCopy.stepLabel}</p>
+            <p className="text-sm text-muted-foreground">{step === 0 ? uiCopy.stepOneName : uiCopy.stepTwoName}</p>
           </div>
           <div className={cn("flex items-center gap-3", isRtl && "flex-row-reverse")}>
             {[0, 1].map((stepIndex) => (
@@ -215,8 +335,8 @@ export function LeadQualificationForm({
               {step === 0 ? (
                 <div className="space-y-6">
                   <FormGroup
-                    title="Primary contact"
-                    description="Start with the details a provider needs to review your enquiry quickly."
+                    title={uiCopy.investorGroupOneTitle}
+                    description={uiCopy.investorGroupOneDescription}
                   >
                     <div className="grid gap-4 md:grid-cols-2">
                       <FormField
@@ -226,7 +346,7 @@ export function LeadQualificationForm({
                           <FormItem>
                             <FormLabel>{copy.contactLabel}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Your full name" {...field} />
+                              <Input placeholder={locale === "ar" ? "الاسم الكامل" : "Your full name"} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -252,11 +372,11 @@ export function LeadQualificationForm({
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Phone or WhatsApp</FormLabel>
+                            <FormLabel>{uiCopy.phoneLabel}</FormLabel>
                           <FormControl>
                             <Input dir={isRtl ? "ltr" : undefined} className={cn(isRtl && "text-left")} placeholder={contactDetails.whatsapp} {...field} />
                           </FormControl>
-                          <FormDescription>Use the number you prefer for a direct follow-up.</FormDescription>
+                          <FormDescription>{uiCopy.phoneHelp}</FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -264,8 +384,8 @@ export function LeadQualificationForm({
                   </FormGroup>
 
                   <FormGroup
-                    title="Current profile"
-                    description="These details help narrow realistic routes before a provider gets in touch."
+                    title={uiCopy.investorGroupTwoTitle}
+                    description={uiCopy.investorGroupTwoDescription}
                   >
                     <div className="grid gap-4 md:grid-cols-2">
                       <FormField
@@ -273,9 +393,9 @@ export function LeadQualificationForm({
                         name="countryOfCitizenship"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Country of citizenship</FormLabel>
+                            <FormLabel>{uiCopy.citizenshipLabel}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Current passport country" {...field} />
+                              <Input placeholder={uiCopy.citizenshipPlaceholder} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -286,9 +406,9 @@ export function LeadQualificationForm({
                         name="currentResidence"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Current country of residence</FormLabel>
+                            <FormLabel>{uiCopy.residenceLabel}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Where you live now" {...field} />
+                              <Input placeholder={uiCopy.residencePlaceholder} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -300,8 +420,8 @@ export function LeadQualificationForm({
               ) : (
                 <div className="space-y-6">
                   <FormGroup
-                    title="Program goals"
-                    description="Help us understand the destination, scope, and timing that matter most."
+                    title={uiCopy.goalsGroupTitle}
+                    description={uiCopy.goalsGroupDescription}
                   >
                     <div className="grid gap-4 md:grid-cols-2">
                       <FormField
@@ -309,17 +429,19 @@ export function LeadQualificationForm({
                         name="programInterest"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Do you need citizenship or residency?</FormLabel>
+                            <FormLabel>{uiCopy.programInterestLabel}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
                                 <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
-                                  <SelectValue placeholder="Select one" />
+                                  <SelectValue placeholder={uiCopy.selectOne} />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="citizenship">Citizenship</SelectItem>
-                                <SelectItem value="residency">Residency</SelectItem>
-                                <SelectItem value="open-to-both">Open to both</SelectItem>
+                                {programInterestOptions.map((option) => (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -331,17 +453,19 @@ export function LeadQualificationForm({
                         name="applicantScope"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Is this for you or your family?</FormLabel>
+                            <FormLabel>{uiCopy.applicantScopeLabel}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
                                 <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
-                                  <SelectValue placeholder="Select one" />
+                                  <SelectValue placeholder={uiCopy.selectOne} />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="just-me">For me</SelectItem>
-                                <SelectItem value="me-and-family">For me and my family</SelectItem>
-                                <SelectItem value="family-office">For a family office or adviser-led case</SelectItem>
+                                {applicantScopeOptions.map((option) => (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -356,9 +480,9 @@ export function LeadQualificationForm({
                         name="preferredDestination"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Preferred destination or region</FormLabel>
+                            <FormLabel>{uiCopy.destinationLabel}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Caribbean, Europe, Turkey, or open" {...field} />
+                              <Input placeholder={uiCopy.destinationPlaceholder} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -369,15 +493,15 @@ export function LeadQualificationForm({
                         name="budgetRange"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Budget range</FormLabel>
+                            <FormLabel>{uiCopy.budgetLabel}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
                                 <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
-                                  <SelectValue placeholder="Select budget" />
+                                  <SelectValue placeholder={uiCopy.budgetPlaceholder} />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {investorBudgetOptions.map((option) => (
+                                {investorBudgetLabels.map((option) => (
                                   <SelectItem key={option.value} value={option.value}>
                                     {option.label}
                                   </SelectItem>
@@ -393,15 +517,15 @@ export function LeadQualificationForm({
                         name="timeframe"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Timeframe</FormLabel>
+                            <FormLabel>{uiCopy.timeframeLabel}</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
                                 <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
-                                  <SelectValue placeholder="Select timeframe" />
+                                  <SelectValue placeholder={uiCopy.timeframePlaceholder} />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {investorTimeframeOptions.map((option) => (
+                                {investorTimeframes.map((option) => (
                                   <SelectItem key={option.value} value={option.value}>
                                     {option.label}
                                   </SelectItem>
@@ -416,15 +540,15 @@ export function LeadQualificationForm({
                   </FormGroup>
 
                   <FormGroup
-                    title="Additional context"
-                    description="A short note helps the first provider conversation feel more prepared."
+                    title={uiCopy.notesGroupTitle}
+                    description={uiCopy.notesGroupDescription}
                   >
                     <FormField
                       control={form.control}
                       name="notes"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Additional notes</FormLabel>
+                          <FormLabel>{uiCopy.notesLabel}</FormLabel>
                           <FormControl>
                             <Textarea rows={5} className={cn(isRtl && "text-right")} placeholder={copy.notesPlaceholder} {...field} />
                           </FormControl>
@@ -444,9 +568,9 @@ export function LeadQualificationForm({
                               <Checkbox checked={field.value} onCheckedChange={(checked) => field.onChange(Boolean(checked))} />
                             </FormControl>
                             <div className="space-y-1">
-                              <FormLabel className="text-sm">I agree to be contacted about my enquiry.</FormLabel>
+                              <FormLabel className="text-sm">{uiCopy.consentLabel}</FormLabel>
                               <FormDescription>
-                                Your details will be reviewed and shared only with a suitable provider or the team handling your request.
+                                {uiCopy.consentDescription}
                               </FormDescription>
                               <FormMessage />
                             </div>
@@ -461,8 +585,8 @@ export function LeadQualificationForm({
           ) : (
             <div className="space-y-6">
               <FormGroup
-                title="Primary contact"
-                description="Tell us who we should coordinate with and which firm or desk you represent."
+                title={uiCopy.companyPrimaryTitle}
+                description={uiCopy.companyPrimaryDescription}
               >
                 <div className="grid gap-4 md:grid-cols-2">
                   <FormField
@@ -483,9 +607,9 @@ export function LeadQualificationForm({
                     name="companyName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Company name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Your firm or agency" {...field} />
+                          <FormLabel>{uiCopy.companyNameLabel}</FormLabel>
+                          <FormControl>
+                            <Input placeholder={uiCopy.companyNamePlaceholder} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -512,7 +636,7 @@ export function LeadQualificationForm({
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Phone or WhatsApp</FormLabel>
+                        <FormLabel>{uiCopy.companyPhoneLabel}</FormLabel>
                         <FormControl>
                           <Input dir={isRtl ? "ltr" : undefined} className={cn(isRtl && "text-left")} placeholder={contactDetails.whatsapp} {...field} />
                         </FormControl>
@@ -524,8 +648,8 @@ export function LeadQualificationForm({
               </FormGroup>
 
               <FormGroup
-                title="Operational context"
-                description="A few details help us prepare the right CRM, demo, or lead partnership conversation."
+                title={uiCopy.companyOpsTitle}
+                description={uiCopy.companyOpsDescription}
               >
                 <div className="grid gap-4 md:grid-cols-3">
                   <FormField
@@ -533,9 +657,9 @@ export function LeadQualificationForm({
                     name="regionServed"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Country or region served</FormLabel>
-                        <FormControl>
-                          <Input placeholder="EU, Caribbean, GCC, global" {...field} />
+                          <FormLabel>{uiCopy.regionLabel}</FormLabel>
+                          <FormControl>
+                            <Input placeholder={uiCopy.regionPlaceholder} {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -546,18 +670,18 @@ export function LeadQualificationForm({
                     name="teamSize"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Number of team members</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
-                              <SelectValue placeholder="Select team size" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {companyTeamSizeOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
+                          <FormLabel>{uiCopy.teamSizeLabel}</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
+                                <SelectValue placeholder={uiCopy.teamSizePlaceholder} />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {companyTeamSizes.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  {option.label}
+                                </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
@@ -570,18 +694,18 @@ export function LeadQualificationForm({
                     name="timeframe"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Desired rollout timing</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
-                              <SelectValue placeholder="Select timeframe" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {investorTimeframeOptions.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                              </SelectItem>
+                          <FormLabel>{uiCopy.rolloutLabel}</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
+                                <SelectValue placeholder={uiCopy.rolloutPlaceholder} />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {investorTimeframes.map((option) => (
+                                <SelectItem key={option.value} value={option.value}>
+                                  {option.label}
+                                </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
@@ -593,26 +717,27 @@ export function LeadQualificationForm({
               </FormGroup>
 
               <FormGroup
-                title="What you are interested in"
-                description="Tell us whether the conversation is about software, lead supply, or a broader commercial setup."
+                title={uiCopy.businessTitle}
+                description={uiCopy.businessDescription}
               >
                 <FormField
                   control={form.control}
                   name="businessInterest"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Interested in CRM, leads, or both?</FormLabel>
+                      <FormLabel>{uiCopy.businessInterestLabel}</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger className={cn("w-full", isRtl && "text-right")}>
-                            <SelectValue placeholder="Select one" />
+                            <SelectValue placeholder={uiCopy.selectOne} />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="crm">CRM only</SelectItem>
-                          <SelectItem value="leads">Qualified leads only</SelectItem>
-                          <SelectItem value="both">CRM and qualified leads</SelectItem>
-                          <SelectItem value="white-label">White-label or partner model</SelectItem>
+                          {businessInterestOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -625,7 +750,7 @@ export function LeadQualificationForm({
                   name="notes"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Message</FormLabel>
+                      <FormLabel>{uiCopy.messageLabel}</FormLabel>
                       <FormControl>
                         <Textarea rows={5} className={cn(isRtl && "text-right")} placeholder={copy.notesPlaceholder} {...field} />
                       </FormControl>
@@ -645,9 +770,9 @@ export function LeadQualificationForm({
                           <Checkbox checked={field.value} onCheckedChange={(checked) => field.onChange(Boolean(checked))} />
                         </FormControl>
                         <div className="space-y-1">
-                          <FormLabel className="text-sm">I agree to be contacted about this enquiry.</FormLabel>
+                          <FormLabel className="text-sm">{uiCopy.companyConsentLabel}</FormLabel>
                           <FormDescription>
-                            We will use these details only to respond to your request and coordinate the right next step for your team.
+                            {uiCopy.companyConsentDescription}
                           </FormDescription>
                           <FormMessage />
                         </div>
@@ -666,11 +791,11 @@ export function LeadQualificationForm({
                 onClick={() => setStep(0)}
                 className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full border border-border bg-background px-5 text-sm font-semibold text-foreground transition hover:bg-muted sm:w-auto"
               >
-                <ChevronLeft className="size-4" />
-                Back
+                {isRtl ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
+                {uiCopy.back}
               </button>
             ) : (
-              <p className="text-sm leading-6 text-muted-foreground">A suitable team will review your details before following up.</p>
+              <p className="text-sm leading-6 text-muted-foreground">{uiCopy.footerReview}</p>
             )}
 
             {isInvestor && step === 0 ? (
@@ -679,8 +804,8 @@ export function LeadQualificationForm({
                 onClick={goToInvestorStepTwo}
                 className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 sm:w-auto"
               >
-                Continue to program fit
-                <ChevronRight className="size-4" />
+                {uiCopy.continue}
+                {isRtl ? <ChevronLeft className="size-4" /> : <ChevronRight className="size-4" />}
               </button>
             ) : (
               <button

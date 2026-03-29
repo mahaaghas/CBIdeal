@@ -48,14 +48,14 @@ export function StKittsVsAntiguaArticle({
       internalLinks={[
         { label: "Citizenship by investment overview", href: links.programs },
         { label: "Caribbean comparison page", href: links.comparison },
-        { label: "Book a private consultation", href: links.consultation },
+    { label: "Arrange a private consultation", href: links.consultation },
       ]}
       cta={{
         eyebrow: "Profile fit",
         title: "Need help deciding whether prestige or family fit should carry more weight in your case?",
         description: "This comparison becomes easier once the application is modeled for the actual household instead of a generic applicant.",
-        primaryAction: { href: links.consultation, label: "Request a private consultation" },
-        secondaryAction: { href: links.contact, label: "Contact the advisory team" },
+    primaryAction: { href: links.consultation, label: "Request a consultation" },
+    secondaryAction: { href: links.contact, label: "Arrange a written introduction" },
       }}
     >
       <ArticleHighlight eyebrow="Short answer" title="St. Kitts is often the premium route. Antigua is often the family-value route.">

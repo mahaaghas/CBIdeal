@@ -114,7 +114,7 @@ export default async function PrivacyPolicyPage() {
                 <div className="rounded-3xl border border-border/70 bg-muted/30 p-6">
                   <h3 className="text-xl text-foreground">Analytics</h3>
                   <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                    We use analytics to understand site usage, improve performance, and measure lead-generation activity.
+We use analytics to understand site usage, improve performance, and measure enquiry activity.
                   </p>
                 </div>
                 <div className="rounded-3xl border border-border/70 bg-muted/30 p-6">

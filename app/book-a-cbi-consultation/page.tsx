@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import { LockKeyhole, MessageSquareQuote, ShieldCheck, TimerReset } from "lucide-react"
-import { CalendlyInlineEmbed } from "@/components/calendly-inline-embed"
 import { LocalizedLandingLeadForm } from "@/components/forms/localized-landing-lead-form"
 import { LandingCtaSection } from "@/components/landing/landing-cta-section"
 import { LandingFaqSection } from "@/components/landing/landing-faq-section"
@@ -13,20 +12,25 @@ import { Card, CardContent } from "@/components/ui/card"
 import { getRequestLocale } from "@/lib/i18n/request"
 import { localizeHref } from "@/lib/i18n/routing"
 import { buildPageMetadata } from "@/lib/metadata"
-import { getLocalizedRouteLinks, schedulerConfig } from "@/lib/site"
+import { getLocalizedRouteLinks } from "@/lib/site"
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = getRequestLocale()
 
   return buildPageMetadata({
-    title: "Book a CBI Consultation: Private, Structured, and Realistic",
+    title:
+      locale === "ar"
+        ? "اطلب استشارة خاصة: مراجعة أولية هادئة ومدروسة"
+        : "Request a Private Consultation: A Structured First Conversation",
     description:
-      "Request a private citizenship by investment consultation to review route fit, family planning, documentation readiness, and realistic next steps.",
+      locale === "ar"
+        ? "ابدأ بطلب استشارة خاصة لفهم مدى ملاءمة المسار، والأولويات العائلية، والتوقيت، وما إذا كان من المناسب الاستمرار في مراجعة أوسع."
+        : "Request a private consultation to review route suitability, family priorities, timing, and whether a more detailed discussion would be appropriate.",
     path: localizeHref(locale, "/book-a-cbi-consultation"),
     keywords: [
-      "citizenship by investment consultation",
-      "private cbi consultation",
-      "second citizenship advisory call",
+      "private citizenship by investment consultation",
+      "citizenship advisory consultation",
+      "residency by investment private consultation",
     ],
     locale,
   })
@@ -34,73 +38,164 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const trustItems = [
   {
-    title: "Confidential by default",
+    title: "Private by design",
     description:
-      "The consultation is designed for private, high-trust conversations where family and documentation issues can be discussed realistically.",
+      "Conversations are framed for discretion from the outset, especially where family considerations, timing, or profile sensitivity matter.",
   },
   {
-    title: "No guaranteed-outcome language",
+    title: "Grounded in suitability",
     description:
-      "The purpose of the call is to improve clarity, not to create false certainty around eligibility or approval.",
+      "The aim is to establish whether a route appears suitable, not to create artificial certainty or push a quick decision.",
   },
   {
-    title: "Useful for complex profiles",
+    title: "Structured, not hurried",
     description:
-      "Family structures, GCC residence histories, and business-owner cases usually benefit from a more tailored conversation.",
-  },
-  {
-    title: "Built to lead somewhere practical",
-    description:
-      "If the fit is real, the next step is a licensed-provider introduction or a cleaner route shortlist.",
+      "The first step is intended to clarify priorities and outline whether a more detailed discussion would be worthwhile.",
   },
 ]
 
 const faqs = [
   {
-    question: "What does the consultation usually cover?",
+    question: "What is this first consultation for?",
     answer:
-      "The conversation usually covers route fit, timing, family implications, budget framing, documentation readiness, and whether a licensed-provider introduction makes sense.",
+      "It is intended to understand your broader situation, priorities, and timing, and to determine whether there is a sensible basis for further discussion.",
   },
   {
-    question: "Is this a sales call?",
+    question: "Do I need to have chosen a programme already?",
     answer:
-      "The goal is advisory clarity first. If the fit is real, commercial next steps can follow in a more structured way.",
+      "No. Many visitors use the first conversation to narrow the field and understand which direction is worth considering more seriously.",
   },
   {
-    question: "Should I submit the form or book the meeting link?",
+    question: "Can I start in writing instead?",
     answer:
-      "If you want written context reviewed first, use the form. If you are ready for a scheduled conversation, use the booking link. Some people do both.",
+      "Yes. If you would prefer a more discreet written introduction first, you can use the contact page and keep the initial exchange more measured.",
   },
   {
-    question: "Can this help if I am still early in the process?",
+    question: "Is every enquiry taken forward?",
     answer:
-      "Yes, especially if you want to avoid spending time on the wrong route or relying on generic internet comparisons.",
+      "No. We work with a limited number of cases and prioritise enquiries where the objectives, timing, and wider circumstances appear serious and coherent.",
   },
 ]
 
 export default function BookConsultationPage() {
   const locale = getRequestLocale()
   const routes = getLocalizedRouteLinks(locale)
+  const copy =
+    locale === "ar"
+      ? {
+          heroEyebrow: "استشارة خاصة",
+          heroTitle: "اطلب استشارة خاصة",
+          heroDescription:
+            "تتيح لنا هذه المحادثة الأولية فهم وضعك الحالي وأولوياتك وتوقيتك، وتحديد ما إذا كان من المناسب أن ندعم حالتك في مرحلة لاحقة.",
+          heroPrimary: "اطلب الاستشارة",
+          heroSecondary: "استكشف الخيارات",
+          stats: [
+            { value: "خاصة", label: "تبدأ بسرية وهدوء منذ أول تواصل" },
+            { value: "مدروسة", label: "تركز على الملاءمة لا على الانطباعات السريعة" },
+            { value: "واضحة", label: "تمنحك تصوراً أنضج للخطوة التالية" },
+          ],
+          formTitle: "اطلب استشارة خاصة",
+          formDescription: "شارك المعلومات الأساسية التي تساعدنا على فهم مسارك بشكل أولي وأكثر دقة.",
+          trustItems: [
+            {
+              title: "خصوصية منذ البداية",
+              description: "تتم المحادثات في إطار خاص يراعي حساسية الحالة، سواء تعلقت بالعائلة أو التوقيت أو طبيعة الملف.",
+            },
+            {
+              title: "تركيز على الملاءمة",
+              description: "الهدف هو فهم ما إذا كان المسار مناسباً، لا خلق انطباع سريع أو وعود غير واقعية.",
+            },
+            {
+              title: "إيقاع أكثر هدوءاً",
+              description: "الخطوة الأولى مصممة لتوضيح الصورة العامة وتحديد ما إذا كان من المناسب الاستمرار في نقاش أوسع.",
+            },
+          ],
+          valueEyebrow: "ما الذي تغطيه هذه الخطوة؟",
+          valueTitle: "محادثة أولى أكثر هدوءاً، لفهم الصورة قبل أي التزام أوسع.",
+          valueDescription:
+            "نراجع فيها ما يهم فعلاً: نوع المسار، درجة الاستعداد، اعتبارات العائلة، وما إذا كانت الخطوة التالية تبدو مناسبة.",
+          valueCards: [
+            { icon: MessageSquareQuote, title: "مجال الاهتمام", text: "هل الأولوية للجنسية عن طريق الاستثمار، أم للإقامة، أم لمسار انتقال أكثر اتساعاً." },
+            { icon: TimerReset, title: "عامل التوقيت", text: "هل هناك حاجة فعلية للتحرك الآن، أم أن القرار يحتاج إلى مزيد من التروي." },
+            { icon: ShieldCheck, title: "الملاءمة العامة", text: "ما إذا كان الاتجاه الذي تفكر فيه يبدو متسقاً مع وضعك الحالي وأهدافك." },
+            { icon: LockKeyhole, title: "الخطوة اللاحقة", text: "هل الأفضل متابعة النقاش، أو البدء برسالة خاصة، أو الاكتفاء بالمراجعة الحالية." },
+          ],
+          prepEyebrow: "إذا رغبت في الاطلاع أولاً",
+          prepTitle: "يمكنك البدء بهذه الصفحات قبل طلب الاستشارة.",
+          prepDescription: "تساعد هذه الصفحات كثيراً من الزوار على الوصول إلى المحادثة الأولى وهم أكثر وضوحاً واطلاعاً.",
+          prepLinks: [
+            {
+              title: "الجنسية عن طريق الاستثمار",
+              description: "ابدأ بالصفحة الأساسية إذا كنت تريد فهماً أوسع لطبيعة هذا المسار.",
+              href: routes.programs,
+            },
+            {
+              title: "مقارنة برامج الكاريبي",
+              description: "استخدم صفحة المقارنة إذا كنت تقارن بالفعل بين أكثر من خيار عملي.",
+              href: routes.caribbeanComparison,
+            },
+            {
+              title: "قسم المقالات",
+              description: "اقرأ التحليلات إذا كنت تريد فهماً أعمق للكلفة، والعناية الواجبة، واعتبارات التخطيط الدولي.",
+              href: routes.insights,
+            },
+          ],
+          faqEyebrow: "أسئلة شائعة",
+          faqTitle: "ما الذي ينبغي توقعه من هذه الخطوة الأولى؟",
+          faqDescription: "إجابات مختصرة تساعد على إبقاء العملية واضحة وهادئة منذ البداية.",
+          faqs: [
+            {
+              question: "ما الهدف من هذه الاستشارة الأولى؟",
+              answer: "هدفها فهم وضعك الحالي وأولوياتك وتوقيتك، وتحديد ما إذا كان هناك أساس مناسب للانتقال إلى نقاش أوسع.",
+            },
+            {
+              question: "هل يجب أن أكون قد اخترت البرنامج مسبقاً؟",
+              answer: "لا. كثير من الزوار يستخدمون هذه الخطوة لتضييق الخيارات وفهم أي اتجاه يستحق دراسة أكثر جدية.",
+            },
+            {
+              question: "هل يمكن أن أبدأ برسالة مكتوبة بدلاً من المحادثة؟",
+              answer: "نعم. إذا كنت تفضل بداية أكثر تحفظاً، يمكنك استخدام صفحة التواصل والبدء برسالة خاصة أولاً.",
+            },
+            {
+              question: "هل تتم متابعة كل الطلبات؟",
+              answer: "لا. نعمل مع عدد محدود من الحالات ونمنح الأولوية للطلبات الجادة والواضحة من حيث الهدف والتوقيت والظروف العامة.",
+            },
+          ],
+          ctaEyebrow: "تفضل خطوة أكثر تحفظاً؟",
+          ctaTitle: "إذا رغبت في بداية مكتوبة أولاً، يمكنك طلب معاودة الاتصال.",
+          ctaDescription: "استخدم صفحة التواصل إذا كنت تفضل أن يبدأ التبادل الأولي برسالة خاصة قبل أي محادثة مباشرة.",
+          ctaPrimary: "اطلب معاودة الاتصال",
+          ctaSecondary: "العودة إلى خيارات المستثمرين",
+        }
+      : null
 
   return (
     <SiteShell>
       <LandingHero
-        eyebrow="Private consultation"
-        title="Book a citizenship by investment consultation built around your real profile."
-        description="If you are comparing routes seriously, the best next step is often a private conversation that clarifies fit, timing, family implications, and whether your case is ready for a licensed-provider introduction."
-        primaryAction={{ href: "#consultation-form", label: "Request a private consultation" }}
-        secondaryAction={{ href: routes.programs, label: "Review investor options" }}
-        stats={[
-          { value: "Private", label: "handled discreetly from the first interaction" },
-          { value: "Structured", label: "focused on fit, not generic selling" },
-          { value: "Practical", label: "designed to lead to a clear next step" },
-        ]}
+        eyebrow={copy?.heroEyebrow ?? "Private consultation"}
+        title={copy?.heroTitle ?? "Request a private consultation"}
+        description={
+          copy?.heroDescription ??
+          "This initial conversation allows us to understand your situation, priorities, and timeline, and to determine whether we can support your case."
+        }
+        primaryAction={{ href: "#consultation-form", label: copy?.heroPrimary ?? "Request consultation" }}
+        secondaryAction={{ href: routes.programs, label: copy?.heroSecondary ?? "Explore your options" }}
+        stats={
+          copy?.stats ?? [
+            { value: "Private", label: "handled with discretion from the outset" },
+            { value: "Measured", label: "focused on suitability rather than speed" },
+            { value: "Clear", label: "designed to bring structure to the next step" },
+          ]
+        }
         aside={
           <LocalizedLandingLeadForm
             locale={locale}
-            title="Request a private consultation"
-            description="Share the essentials below so the first conversation starts with enough context to be useful."
-            submitLabel="Request a private consultation"
+            title={copy?.formTitle ?? "Request a private consultation"}
+            description={
+              copy?.formDescription ??
+              "Share the essentials below and we will review whether a more detailed conversation would be appropriate."
+            }
+            submitLabel={copy?.heroPrimary ?? "Request consultation"}
             sourceCategory="consultation"
             sourcePage="book-a-cbi-consultation"
           />
@@ -109,68 +204,53 @@ export default function BookConsultationPage() {
 
       <section className="section-padding pt-0">
         <div className="container-shell">
-          <TrustGrid items={trustItems} />
+          <TrustGrid items={copy?.trustItems ?? trustItems} />
         </div>
       </section>
 
-      <section className="section-padding bg-muted/30">
-        <div className="container-shell grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {[
-            {
-              icon: MessageSquareQuote,
-              title: "Route fit",
-              text: "Which citizenship or residency route appears most relevant once the real profile is clear.",
-            },
-            {
-              icon: TimerReset,
-              title: "Timing pressure",
-              text: "Whether urgency is real, manageable, or being overstated by the wider market conversation.",
-            },
-            {
-              icon: ShieldCheck,
-              title: "Due diligence readiness",
-              text: "Where the documentation story looks strong and where it may need more discipline first.",
-            },
-            {
-              icon: LockKeyhole,
-              title: "Confidential next steps",
-              text: "Whether the enquiry should move toward provider review, further comparison, or a pause for preparation.",
-            },
-          ].map((item) => (
-            <Card key={item.title} className="section-card h-full">
-              <CardContent className="space-y-4 p-6 md:p-7">
-                <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                  <item.icon className="size-6" />
-                </div>
-                <h2 className="text-xl leading-tight text-foreground">{item.title}</h2>
-                <p className="text-sm leading-7 text-muted-foreground">{item.text}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      <section id="consultation-form" className="section-padding">
+      <section id="consultation-form" className="section-padding bg-muted/30">
         <div className="container-shell space-y-10">
           <SectionHeading
-            eyebrow="Choose a time directly"
-            title="Select a suitable consultation slot in a cleaner, more direct format."
-            description="If you are ready for a scheduled conversation, use the live booking calendar below to choose a convenient time without leaving the advisory flow."
+            eyebrow={copy?.valueEyebrow ?? "What this first step is for"}
+            title={copy?.valueTitle ?? "A more considered first exchange, before anything more involved is discussed."}
+            description={
+              copy?.valueDescription ??
+              "The purpose is to clarify the broader picture: route preference, readiness, family considerations, and whether a more detailed next step makes sense."
+            }
           />
-          <div className="section-card overflow-hidden p-5 md:p-8">
-            <div className="mx-auto max-w-[42rem] space-y-4 pb-6 md:pb-8">
-              <h3 className="card-title text-foreground">Book a private consultation</h3>
-              <p className="text-base leading-8 text-muted-foreground">
-                Choose a suitable time for a short, structured discussion about route fit, timing, and the most realistic next step for your profile.
-              </p>
-              <p className="text-sm leading-7 text-muted-foreground">
-                Your booking is private, there is no obligation to proceed, and the call is intended to clarify options before any formal provider introduction.
-              </p>
-            </div>
-
-            <div className="overflow-hidden rounded-[28px] border border-border/70 bg-background/70 p-2 md:p-3">
-              <CalendlyInlineEmbed url={schedulerConfig.bookingUrl} />
-            </div>
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {(copy?.valueCards ?? [
+              {
+                icon: MessageSquareQuote,
+                title: "Area of interest",
+                text: "Whether the stronger fit appears to be citizenship by investment, residency by investment, or a wider relocation strategy.",
+              },
+              {
+                icon: TimerReset,
+                title: "Timing",
+                text: "Whether there is a genuine need to move now, or whether a more measured pace would be wiser.",
+              },
+              {
+                icon: ShieldCheck,
+                title: "Suitability",
+                text: "Whether the direction under consideration appears coherent with your current position and wider objectives.",
+              },
+              {
+                icon: LockKeyhole,
+                title: "Next step",
+                text: "Whether a more detailed discussion, a written introduction, or a pause for reflection would be more appropriate.",
+              },
+            ]).map((item) => (
+              <Card key={item.title} className="section-card h-full">
+                <CardContent className="space-y-4 p-6 md:p-7">
+                  <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                    <item.icon className="size-6" />
+                  </div>
+                  <h2 className="text-xl leading-tight text-foreground">{item.title}</h2>
+                  <p className="text-sm leading-7 text-muted-foreground">{item.text}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
@@ -178,45 +258,56 @@ export default function BookConsultationPage() {
       <section className="section-padding pt-0">
         <div className="container-shell">
           <SectionHeading
-            eyebrow="Useful before the call"
-            title="If you want to prepare more before booking, start with the pages below."
-            description="These pages usually help visitors arrive at the consultation with better questions and more realistic expectations."
+            eyebrow={copy?.prepEyebrow ?? "Useful before you proceed"}
+            title={copy?.prepTitle ?? "If you would prefer to read a little more first, begin with the pages below."}
+            description={
+              copy?.prepDescription ??
+              "These pages often help visitors arrive at the first conversation with clearer questions and more realistic expectations."
+            }
           />
           <LandingLinkGrid
-            items={[
-              {
-                title: "Citizenship by investment pillar page",
-                description: "Use the main investor page if you want the broader framework first.",
-                href: routes.programs,
-              },
-              {
-                title: "Caribbean CBI comparison",
-                description: "Use the comparison page if you are already narrowing a practical shortlist.",
-                href: routes.caribbeanComparison,
-              },
-              {
-                title: "Insights hub",
-                description: "Use the insights hub if you want deeper thinking on cost, due diligence, and GCC-specific issues.",
-                href: routes.insights,
-              },
-            ]}
+            items={
+              copy?.prepLinks ?? [
+                {
+                  title: "Citizenship by investment",
+                  description: "Begin with the main page if you would like a clearer overview of the broader route first.",
+                  href: routes.programs,
+                },
+                {
+                  title: "Caribbean CBI comparison",
+                  description: "Use the comparison page if you are already narrowing the field between practical programme options.",
+                  href: routes.caribbeanComparison,
+                },
+                {
+                  title: "Insights",
+                  description: "Read further analysis on programme comparisons, due diligence, and wider international planning considerations.",
+                  href: routes.insights,
+                },
+              ]
+            }
           />
         </div>
       </section>
 
       <LandingFaqSection
-        eyebrow="FAQ"
-        title="Common questions before booking a private consultation."
-        description="These answers are meant to keep the process calm, clear, and grounded in realistic expectations."
-        items={faqs}
+        eyebrow={copy?.faqEyebrow ?? "FAQ"}
+        title={copy?.faqTitle ?? "Common questions before requesting a private consultation."}
+        description={
+          copy?.faqDescription ??
+          "Short answers intended to keep the process clear, measured, and grounded in realistic expectations."
+        }
+        items={copy?.faqs ?? faqs}
       />
 
       <LandingCtaSection
-        eyebrow="Need a lighter first step?"
-        title="If you prefer not to schedule yet, you can still submit your profile privately."
-        description="Use the contact page if you want a softer written start before moving into a scheduled consultation."
-        primaryAction={{ href: routes.contact, label: "Contact the advisory team" }}
-        secondaryAction={{ href: routes.programs, label: "Back to investor overview" }}
+        eyebrow={copy?.ctaEyebrow ?? "Prefer a more discreet approach?"}
+        title={copy?.ctaTitle ?? "If you would prefer a written introduction first, request call-back instead."}
+        description={
+          copy?.ctaDescription ??
+          "Use the contact page if you would rather begin in writing before moving into a direct conversation."
+        }
+        primaryAction={{ href: routes.contact, label: copy?.ctaPrimary ?? "Request call-back" }}
+        secondaryAction={{ href: routes.programs, label: copy?.ctaSecondary ?? "Back to investor overview" }}
       />
     </SiteShell>
   )

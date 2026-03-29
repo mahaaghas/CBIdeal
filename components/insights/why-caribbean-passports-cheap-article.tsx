@@ -43,14 +43,14 @@ export function WhyCaribbeanPassportsCheapArticle({
       internalLinks={[
         { label: "Citizenship by investment overview", href: links.programs },
         { label: "Caribbean comparison page", href: links.comparison },
-        { label: "Book a private consultation", href: links.consultation },
+    { label: "Arrange a private consultation", href: links.consultation },
       ]}
       cta={{
         eyebrow: "Pricing clarity",
         title: "Need help understanding whether the lower entry point actually fits your decision?",
         description: "A lower threshold can be a rational advantage, but only if the route still matches your objective, family structure, and risk tolerance.",
-        primaryAction: { href: links.consultation, label: "Request a private consultation" },
-        secondaryAction: { href: links.contact, label: "Contact the advisory team" },
+    primaryAction: { href: links.consultation, label: "Request a consultation" },
+    secondaryAction: { href: links.contact, label: "Arrange a written introduction" },
       }}
     >
       <ArticleHighlight eyebrow="Short answer" title="The lower price reflects route structure, not a lack of legitimacy.">

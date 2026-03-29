@@ -20,8 +20,8 @@ const defaultKeywords = [
   "citizenship by investment",
   "residency by investment",
   "second passport",
-  "immigration CRM",
-  "passport company software",
+  "international mobility planning",
+  "private citizenship advisory",
 ]
 
 export function buildPageMetadata({

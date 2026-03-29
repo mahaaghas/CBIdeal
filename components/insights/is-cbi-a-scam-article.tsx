@@ -42,15 +42,15 @@ export function IsCbiAScamArticle({
       }}
       internalLinks={[
         { label: "Citizenship by investment overview", href: links.programs },
-        { label: "Book a private consultation", href: links.consultation },
+    { label: "Arrange a private consultation", href: links.consultation },
         { label: "Data protection and compliance page", href: links.dataProtection },
       ]}
       cta={{
         eyebrow: "Trust check",
         title: "Want a calmer, more credible way to evaluate the market?",
         description: "A serious first review should clarify how official programs work, what a provider actually does, and where expectations need to stay realistic.",
-        primaryAction: { href: links.consultation, label: "Request a private consultation" },
-        secondaryAction: { href: links.contact, label: "Contact the advisory team" },
+    primaryAction: { href: links.consultation, label: "Request a consultation" },
+    secondaryAction: { href: links.contact, label: "Arrange a written introduction" },
       }}
     >
       <ArticleHighlight eyebrow="Short answer" title="The programs are real. The market language is where investors need to be careful.">

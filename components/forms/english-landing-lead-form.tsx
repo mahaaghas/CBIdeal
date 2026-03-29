@@ -14,8 +14,8 @@ export function EnglishLandingLeadForm({
   sourceCategory,
   sourcePage,
   title = "Request a private consultation",
-  description = "Share the essentials below and we will review your profile discreetly before suggesting the most suitable next step.",
-  submitLabel = "Request a private consultation",
+  description = "Share a concise outline of your situation so the first conversation can begin with the right level of context and discretion.",
+  submitLabel = "Request consultation",
   className,
 }: EnglishLandingLeadFormProps) {
   return (
@@ -25,29 +25,33 @@ export function EnglishLandingLeadForm({
       language="EN"
       className={className}
       copy={{
-        eyebrow: "Private consultation form",
+        eyebrow: "Private consultation",
         title,
         description,
-        confidentialityNote: "Confidential review. Designed for fast completion and realistic first-step qualification.",
+        confidentialityNote:
+          "All enquiries are reviewed discreetly. We work with a limited number of cases and prioritise serious, well-considered requests.",
+        areaOfInterestLabel: "Area of interest",
+        areaOfInterestPlaceholder: "Select an area",
+        applicationScopeLabel: "Application type",
+        applicationScopePlaceholder: "Who is included",
+        regionOfInterestLabel: "Region of interest",
+        regionOfInterestPlaceholder: "Select a region",
         fullNameLabel: "Full name",
         fullNamePlaceholder: "Your full name",
-        nationalityLabel: "Nationality",
-        nationalityPlaceholder: "Current passport nationality",
-        currentResidenceLabel: "Current country of residence",
-        currentResidencePlaceholder: "Where you live now",
-        budgetRangeLabel: "Investment budget range",
-        budgetRangePlaceholder: "Select budget range",
-        timelineLabel: "Timeline",
-        timelinePlaceholder: "Select timeline",
+        budgetRangeLabel: "Investment range",
+        budgetRangePlaceholder: "Select range",
+        timelineLabel: "Preferred timeline",
+        timelinePlaceholder: "Select preferred timing",
         whatsappLabel: "WhatsApp number",
         whatsappPlaceholder: "+971 ...",
         emailLabel: "Email",
         emailPlaceholder: "name@email.com",
-        notesLabel: "Notes",
-        notesPlaceholder: "Add anything useful for context: family members, travel goals, timing, or jurisdictions already under consideration.",
+        notesLabel: "Additional context",
+        notesPlaceholder:
+          "Share anything useful for context, such as family considerations, timing, or jurisdictions already under review.",
         optionalLabel: "optional",
         successMessage:
-          "Thank you. Your request has been received and will be reviewed privately before the next step is recommended.",
+          "Thank you. Your request has been received and will be reviewed privately before we return with the most appropriate next step.",
         submitLabel,
       }}
     />

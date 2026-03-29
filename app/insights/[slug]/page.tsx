@@ -5,6 +5,7 @@ import { PortableText } from "@portabletext/react"
 import { format } from "date-fns"
 import { ArrowLeft } from "lucide-react"
 import { BlogPostCard } from "@/components/cms/blog-post-card"
+import { InlineArticleCta } from "@/components/conversion/inline-article-cta"
 import { BestCbiPrograms2026Article } from "@/components/insights/best-cbi-programs-2026-article"
 import { CanYouLoseCbiArticle } from "@/components/insights/can-you-lose-cbi-article"
 import { CaribbeanVsPortugalArticle } from "@/components/insights/caribbean-vs-portugal-article"
@@ -146,7 +147,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         ? "مقالات أخرى من نفس مركز المحتوى."
         : locale === "ru"
           ? "Другие статьи из этого же контент-хаба."
-          : "More articles from the same content hub.",
+          : "Further reading from the editorial library.",
   }
 
   if (!post && !fallbackPost) {
@@ -293,6 +294,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const relatedPosts = (explicitRelatedPosts.length ? explicitRelatedPosts : fallbackRelatedPosts).slice(0, 3)
   const relatedPages = post.relatedPages?.length ? post.relatedPages : getFallbackRelatedPages(locale)
+  const bodyBlocks = Array.isArray(post.body) ? post.body : []
+  const firstBreakIndex = Math.min(2, bodyBlocks.length)
+  const middleBreakIndex = bodyBlocks.length > 4 ? Math.ceil(bodyBlocks.length / 2) : bodyBlocks.length
+  const firstBlocks = bodyBlocks.slice(0, firstBreakIndex)
+  const middleBlocks = bodyBlocks.slice(firstBreakIndex, middleBreakIndex)
+  const finalBlocks = bodyBlocks.slice(middleBreakIndex)
   const articleUrl = new URL(localizeHref(locale, `/insights/${post.slug}`), settings.siteUrl).toString()
   const articleStructuredData = {
     "@context": "https://schema.org",
@@ -388,7 +395,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               </div>
             ) : null}
             <div className="prose prose-neutral max-w-none space-y-6">
-              <PortableText value={post.body} components={portableTextComponents} />
+              <PortableText value={firstBlocks} components={portableTextComponents} />
+              {bodyBlocks.length > 2 ? <InlineArticleCta locale={locale} /> : null}
+              <PortableText value={middleBlocks} components={portableTextComponents} />
+              {finalBlocks.length ? <InlineArticleCta locale={locale} /> : null}
+              <PortableText value={finalBlocks} components={portableTextComponents} />
             </div>
           </article>
 

@@ -48,14 +48,14 @@ export function DominicaVsStLuciaArticle({
       internalLinks={[
         { label: "Citizenship by investment overview", href: links.programs },
         { label: "Caribbean comparison page", href: links.comparison },
-        { label: "Book a private consultation", href: links.consultation },
+    { label: "Arrange a private consultation", href: links.consultation },
       ]}
       cta={{
         eyebrow: "Route comparison",
         title: "Need help deciding whether Dominica or Saint Lucia fits your file more cleanly?",
         description: "A close comparison usually becomes clearer once budget, family structure, and document readiness are reviewed together.",
-        primaryAction: { href: links.consultation, label: "Request a private consultation" },
-        secondaryAction: { href: links.contact, label: "Contact the advisory team" },
+    primaryAction: { href: links.consultation, label: "Request a consultation" },
+    secondaryAction: { href: links.contact, label: "Arrange a written introduction" },
       }}
     >
       <ArticleHighlight eyebrow="Short answer" title="Dominica is often the practical route. Saint Lucia is often the more flexible route.">

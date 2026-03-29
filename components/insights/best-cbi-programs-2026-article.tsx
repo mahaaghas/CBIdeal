@@ -66,7 +66,7 @@ export function BestCbiPrograms2026Article({
       ? "مقالات إضافية من نفس مركز المحتوى."
       : locale === "ru"
         ? "Другие материалы из этого же контент-хаба."
-        : "More articles from the same advisory content hub."
+        : "Further reading from the editorial library."
 
   const internalLinks = {
     citizenship: localizeHref(locale, "/citizenship-by-investment"),
@@ -455,7 +455,7 @@ export function BestCbiPrograms2026Article({
                 is usually not the safer choice.
               </p>
               <p className="text-base leading-8 text-muted-foreground">
-                This is also why we position the site as a structured advisory and lead-qualification platform, not a
+This is also why we position the site as a structured advisory platform, not a
                 “passport seller.” The right next step is matching a qualified investor to a licensed provider who can
                 assess eligibility properly. If you want to see how this logic compares with European residence routes,
                 the{" "}
@@ -467,7 +467,7 @@ export function BestCbiPrograms2026Article({
                 <Link href={internalLinks.companies} className="text-primary underline underline-offset-4">
                   company page
                 </Link>{" "}
-                explains how the CRM and qualified-lead side is structured.
+                gives a quieter view of the professional side of the platform.
               </p>
             </div>
 
@@ -629,7 +629,7 @@ export function BestCbiPrograms2026Article({
                 {[
                   { label: "Citizenship by investment overview", href: internalLinks.citizenship },
                   { label: "Caribbean vs Portugal comparison", href: internalLinks.comparison },
-                  { label: "Contact the advisory team", href: internalLinks.contact },
+    { label: "Arrange a written introduction", href: internalLinks.contact },
                   { label: "Insights hub", href: internalLinks.insights },
                   { label: "For companies", href: internalLinks.companies },
                 ].map((item) => (

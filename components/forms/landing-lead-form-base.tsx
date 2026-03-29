@@ -17,14 +17,16 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import {
+  landingLeadApplicationScopeOptions,
   landingLeadBudgetOptions,
   landingLeadFormDefaults,
   landingLeadFormName,
   landingLeadFormSchema,
+  landingLeadInterestOptions,
+  landingLeadRegionOptions,
   landingLeadTimelineOptions,
   submitLandingLeadForm,
   type LandingLeadFormField,
-  type LandingLeadFormFieldErrors,
   type LandingLeadFormValues,
   type LandingLeadSourceCategory,
 } from "@/lib/landing-form"
@@ -37,12 +39,14 @@ interface LandingLeadFormCopy {
   title: string
   description: string
   confidentialityNote: string
+  areaOfInterestLabel: string
+  areaOfInterestPlaceholder: string
+  applicationScopeLabel: string
+  applicationScopePlaceholder: string
+  regionOfInterestLabel: string
+  regionOfInterestPlaceholder: string
   fullNameLabel: string
   fullNamePlaceholder: string
-  nationalityLabel: string
-  nationalityPlaceholder: string
-  currentResidenceLabel: string
-  currentResidencePlaceholder: string
   budgetRangeLabel: string
   budgetRangePlaceholder: string
   timelineLabel: string
@@ -148,8 +152,14 @@ export function LandingLeadFormBase({
   const labelClass = cn("text-[0.78rem] font-medium tracking-[0.01em] text-foreground/72", isRtl && "text-right")
   const controlClass =
     "h-11 rounded-2xl border-border/80 bg-white/75 px-3.5 text-sm shadow-none placeholder:text-muted-foreground/80 focus-visible:ring-[2px]"
-  const selectTriggerClass = cn("h-11 w-full rounded-2xl border-border/80 bg-white/75 px-3.5 text-sm shadow-none", isRtl && "text-right")
-  const textareaClass = cn("min-h-[104px] rounded-2xl border-border/80 bg-white/75 px-3.5 py-3 text-sm shadow-none placeholder:text-muted-foreground/80 focus-visible:ring-[2px]", isRtl && "text-right")
+  const selectTriggerClass = cn(
+    "h-11 w-full rounded-2xl border-border/80 bg-white/75 px-3.5 text-sm shadow-none",
+    isRtl && "text-right",
+  )
+  const textareaClass = cn(
+    "min-h-[120px] rounded-2xl border-border/80 bg-white/75 px-3.5 py-3 text-sm shadow-none placeholder:text-muted-foreground/80 focus-visible:ring-[2px]",
+    isRtl && "text-right",
+  )
 
   return (
     <div
@@ -164,7 +174,9 @@ export function LandingLeadFormBase({
         <span className="eyebrow border-border/70 bg-white/70 text-muted-foreground">{copy.eyebrow}</span>
         <div className="space-y-3">
           <h3 className="max-w-[17ch] text-[1.78rem] leading-[1.14] text-foreground md:text-[2rem]">{copy.title}</h3>
-          <p className="max-w-[29rem] text-sm leading-7 text-muted-foreground md:text-[0.97rem] md:leading-8">{copy.description}</p>
+          <p className="max-w-[29rem] text-sm leading-7 text-muted-foreground md:text-[0.97rem] md:leading-8">
+            {copy.description}
+          </p>
         </div>
         <p className="rounded-2xl border border-border/60 bg-white/45 px-4 py-3 text-[0.82rem] leading-6 text-muted-foreground">
           {copy.confidentialityNote}
@@ -175,12 +187,7 @@ export function LandingLeadFormBase({
         <div className="mb-5 rounded-2xl border border-primary/20 bg-primary/5 p-4 text-sm text-foreground">
           <div className={cn("flex items-start gap-3", isRtl && "flex-row-reverse text-right")}>
             <CheckCircle2 className="mt-0.5 size-5 text-primary" />
-            <div className="space-y-1">
-              <p className="font-semibold">{copy.successMessage}</p>
-              <p className="text-muted-foreground">
-                Reference ID: <span className="font-medium text-foreground">{referenceId}</span>
-              </p>
-            </div>
+            <p className="font-semibold">{copy.successMessage}</p>
           </div>
         </div>
       ) : null}
@@ -211,6 +218,58 @@ export function LandingLeadFormBase({
           <div className="grid gap-[1.125rem] md:grid-cols-2">
             <FormField
               control={form.control}
+              name="areaOfInterest"
+              render={({ field }) => (
+                <FormItem className={fieldShellClass}>
+                  <FormLabel className={labelClass}>{copy.areaOfInterestLabel}</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className={selectTriggerClass}>
+                        <SelectValue placeholder={copy.areaOfInterestPlaceholder} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {landingLeadInterestOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {language === "AR" ? option.labelAr : option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="applicationScope"
+              render={({ field }) => (
+                <FormItem className={fieldShellClass}>
+                  <FormLabel className={labelClass}>{copy.applicationScopeLabel}</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className={selectTriggerClass}>
+                        <SelectValue placeholder={copy.applicationScopePlaceholder} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {landingLeadApplicationScopeOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {language === "AR" ? option.labelAr : option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="grid gap-[1.125rem] md:grid-cols-2">
+            <FormField
+              control={form.control}
               name="fullName"
               render={({ field }) => (
                 <FormItem className={fieldShellClass}>
@@ -222,15 +281,27 @@ export function LandingLeadFormBase({
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
-              name="nationality"
+              name="regionOfInterest"
               render={({ field }) => (
                 <FormItem className={fieldShellClass}>
-                  <FormLabel className={labelClass}>{copy.nationalityLabel}</FormLabel>
-                  <FormControl>
-                    <Input className={controlClass} placeholder={copy.nationalityPlaceholder} {...field} />
-                  </FormControl>
+                  <FormLabel className={labelClass}>{copy.regionOfInterestLabel}</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className={selectTriggerClass}>
+                        <SelectValue placeholder={copy.regionOfInterestPlaceholder} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {landingLeadRegionOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {language === "AR" ? option.labelAr : option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -240,24 +311,13 @@ export function LandingLeadFormBase({
           <div className="grid gap-[1.125rem] md:grid-cols-2">
             <FormField
               control={form.control}
-              name="currentResidence"
-              render={({ field }) => (
-                <FormItem className={fieldShellClass}>
-                  <FormLabel className={labelClass}>{copy.currentResidenceLabel}</FormLabel>
-                  <FormControl>
-                    <Input className={controlClass} placeholder={copy.currentResidencePlaceholder} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="budgetRange"
               render={({ field }) => (
                 <FormItem className={fieldShellClass}>
-                  <FormLabel className={labelClass}>{copy.budgetRangeLabel}</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
+                  <FormLabel className={labelClass}>
+                    {copy.budgetRangeLabel} <span className="text-muted-foreground">({copy.optionalLabel})</span>
+                  </FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value || undefined}>
                     <FormControl>
                       <SelectTrigger className={selectTriggerClass}>
                         <SelectValue placeholder={copy.budgetRangePlaceholder} />
@@ -265,6 +325,33 @@ export function LandingLeadFormBase({
                     </FormControl>
                     <SelectContent>
                       {landingLeadBudgetOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {language === "AR" ? option.labelAr : option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="timeline"
+              render={({ field }) => (
+                <FormItem className={fieldShellClass}>
+                  <FormLabel className={labelClass}>
+                    {copy.timelineLabel} <span className="text-muted-foreground">({copy.optionalLabel})</span>
+                  </FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value || undefined}>
+                    <FormControl>
+                      <SelectTrigger className={selectTriggerClass}>
+                        <SelectValue placeholder={copy.timelinePlaceholder} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {landingLeadTimelineOptions.map((option) => (
                         <SelectItem key={option.value} value={option.value}>
                           {language === "AR" ? option.labelAr : option.label}
                         </SelectItem>
@@ -296,6 +383,7 @@ export function LandingLeadFormBase({
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="email"
@@ -318,36 +406,6 @@ export function LandingLeadFormBase({
                 </FormItem>
               )}
             />
-          </div>
-
-          <div className="grid gap-[1.125rem] md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="timeline"
-              render={({ field }) => (
-                <FormItem className={fieldShellClass}>
-                  <FormLabel className={labelClass}>
-                    {copy.timelineLabel} <span className="text-muted-foreground">({copy.optionalLabel})</span>
-                  </FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value || undefined}>
-                    <FormControl>
-                      <SelectTrigger className={selectTriggerClass}>
-                        <SelectValue placeholder={copy.timelinePlaceholder} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {landingLeadTimelineOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {language === "AR" ? option.labelAr : option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="hidden md:block" />
           </div>
 
           <FormField

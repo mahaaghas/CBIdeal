@@ -27,26 +27,120 @@ export const companyTeamSizeOptions = [
   { value: "26-plus", label: "26+ team members" },
 ] as const
 
-const optionalTextField = z.string().trim().optional()
+const optionLabels = {
+  ar: {
+    investorBudget: {
+      "under-150k": "أقل من 150 ألف يورو",
+      "150k-300k": "من 150 ألف إلى 300 ألف يورو",
+      "300k-500k": "من 300 ألف إلى 500 ألف يورو",
+      "500k-1m": "من 500 ألف إلى مليون يورو",
+      "1m-plus": "أكثر من مليون يورو",
+    },
+    timeframe: {
+      "within-30-days": "خلال 30 يومًا",
+      "this-quarter": "خلال هذا الربع",
+      "within-6-months": "خلال 6 أشهر",
+      researching: "ما زلت في مرحلة المقارنة",
+    },
+    teamSize: {
+      "1-3": "من 1 إلى 3 أعضاء",
+      "4-10": "من 4 إلى 10 أعضاء",
+      "11-25": "من 11 إلى 25 عضوًا",
+      "26-plus": "أكثر من 26 عضوًا",
+    },
+    programInterest: {
+      citizenship: "الجنسية",
+      residency: "الإقامة",
+      "open-to-both": "أقارن بين الاثنين",
+    },
+    applicantScope: {
+      "just-me": "لي فقط",
+      "me-and-family": "لي ولعائلتي",
+      "family-office": "لحالة عائلية أو عبر مكتب خاص",
+    },
+    businessInterest: {
+      crm: "مراجعة تشغيلية",
+      leads: "نقاش مهني أولي",
+      both: "نقاش مهني أوسع",
+      "white-label": "ترتيب مؤسسي أو شراكة خاصة",
+    },
+  },
+} as const
 
-const leadFormSchema = z.object({
-  fullName: z.string().trim().min(2, "Please enter the contact name."),
-  email: z.string().trim().email("Please enter a valid email address."),
-  phone: z.string().trim().min(7, "Please enter a valid phone or WhatsApp number."),
-  companyName: optionalTextField,
-  countryOfCitizenship: optionalTextField,
-  currentResidence: optionalTextField,
-  preferredDestination: optionalTextField,
-  budgetRange: z.enum(["under-150k", "150k-300k", "300k-500k", "500k-1m", "1m-plus"]).optional(),
-  timeframe: z.enum(["within-30-days", "this-quarter", "within-6-months", "researching"]).optional(),
-  applicantScope: z.enum(["just-me", "me-and-family", "family-office"]).optional(),
-  programInterest: z.enum(["citizenship", "residency", "open-to-both"]).optional(),
-  regionServed: optionalTextField,
-  teamSize: z.enum(["1-3", "4-10", "11-25", "26-plus"]).optional(),
-  businessInterest: z.enum(["crm", "leads", "both", "white-label"]).optional(),
-  notes: z.string().trim().max(1200, "Please keep your message under 1200 characters.").default(""),
-  consent: z.boolean(),
-})
+export function getInvestorBudgetOptions(locale: Locale) {
+  if (locale !== "ar") return investorBudgetOptions
+
+  return investorBudgetOptions.map((option) => ({
+    ...option,
+    label: optionLabels.ar.investorBudget[option.value],
+  }))
+}
+
+export function getInvestorTimeframeOptions(locale: Locale) {
+  if (locale !== "ar") return investorTimeframeOptions
+
+  return investorTimeframeOptions.map((option) => ({
+    ...option,
+    label: optionLabels.ar.timeframe[option.value],
+  }))
+}
+
+export function getCompanyTeamSizeOptions(locale: Locale) {
+  if (locale !== "ar") return companyTeamSizeOptions
+
+  return companyTeamSizeOptions.map((option) => ({
+    ...option,
+    label: optionLabels.ar.teamSize[option.value],
+  }))
+}
+
+export function getProgramInterestOptions(locale: Locale) {
+  const base = [
+    { value: "citizenship", label: "Citizenship" },
+    { value: "residency", label: "Residency" },
+    { value: "open-to-both", label: "Open to both" },
+  ] as const
+
+  if (locale !== "ar") return base
+
+  return base.map((option) => ({
+    ...option,
+    label: optionLabels.ar.programInterest[option.value],
+  }))
+}
+
+export function getApplicantScopeOptions(locale: Locale) {
+  const base = [
+    { value: "just-me", label: "For me" },
+    { value: "me-and-family", label: "For me and my family" },
+    { value: "family-office", label: "For a family office or adviser-led case" },
+  ] as const
+
+  if (locale !== "ar") return base
+
+  return base.map((option) => ({
+    ...option,
+    label: optionLabels.ar.applicantScope[option.value],
+  }))
+}
+
+export function getBusinessInterestOptions(locale: Locale) {
+  const base = [
+    { value: "crm", label: "Operational review" },
+    { value: "leads", label: "Referral discussion" },
+    { value: "both", label: "Wider professional discussion" },
+    { value: "white-label", label: "Institutional or white-label arrangement" },
+  ] as const
+
+  if (locale !== "ar") return base
+
+  return base.map((option) => ({
+    ...option,
+    label: optionLabels.ar.businessInterest[option.value],
+  }))
+}
+
+const optionalTextField = z.string().trim().optional()
 
 export type LeadFormValues = z.infer<typeof leadFormSchema>
 export type LeadFormField = keyof LeadFormValues
@@ -67,13 +161,55 @@ export const netlifyFormNames: Record<LeadFormType, string> = {
   partner: "partner-inquiry",
 }
 
-export function buildLeadFormSchema(formType: LeadFormType) {
+function getFormValidationCopy(locale: Locale) {
+  if (locale === "ar") {
+    return {
+      nameRequired: "يرجى إدخال الاسم الكامل.",
+      emailInvalid: "يرجى إدخال بريد إلكتروني صحيح.",
+      phoneInvalid: "يرجى إدخال رقم هاتف أو واتساب صحيح.",
+      notesTooLong: "يرجى إبقاء الرسالة تحت 1200 حرف.",
+      consentRequired: "الموافقة مطلوبة قبل الإرسال.",
+      fieldRequired: "هذا الحقل مطلوب.",
+    }
+  }
+
+  return {
+    nameRequired: "Please enter the contact name.",
+    emailInvalid: "Please enter a valid email address.",
+    phoneInvalid: "Please enter a valid phone or WhatsApp number.",
+    notesTooLong: "Please keep your message under 1200 characters.",
+    consentRequired: "Consent is required before submitting.",
+    fieldRequired: "This field is required.",
+  }
+}
+
+export function buildLeadFormSchema(formType: LeadFormType, locale: Locale = "en") {
+  const messages = getFormValidationCopy(locale)
+  const leadFormSchema = z.object({
+    fullName: z.string().trim().min(2, messages.nameRequired),
+    email: z.string().trim().email(messages.emailInvalid),
+    phone: z.string().trim().min(7, messages.phoneInvalid),
+    companyName: optionalTextField,
+    countryOfCitizenship: optionalTextField,
+    currentResidence: optionalTextField,
+    preferredDestination: optionalTextField,
+    budgetRange: z.enum(["under-150k", "150k-300k", "300k-500k", "500k-1m", "1m-plus"]).optional(),
+    timeframe: z.enum(["within-30-days", "this-quarter", "within-6-months", "researching"]).optional(),
+    applicantScope: z.enum(["just-me", "me-and-family", "family-office"]).optional(),
+    programInterest: z.enum(["citizenship", "residency", "open-to-both"]).optional(),
+    regionServed: optionalTextField,
+    teamSize: z.enum(["1-3", "4-10", "11-25", "26-plus"]).optional(),
+    businessInterest: z.enum(["crm", "leads", "both", "white-label"]).optional(),
+    notes: z.string().trim().max(1200, messages.notesTooLong).default(""),
+    consent: z.boolean(),
+  })
+
   return leadFormSchema.superRefine((values, ctx) => {
     if (!values.consent) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["consent"],
-        message: "Consent is required before submitting.",
+        message: messages.consentRequired,
       })
     }
 
@@ -93,7 +229,7 @@ export function buildLeadFormSchema(formType: LeadFormType) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             path: [field],
-            message: "This field is required.",
+            message: messages.fieldRequired,
           })
         }
       })
@@ -113,7 +249,7 @@ export function buildLeadFormSchema(formType: LeadFormType) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             path: [field],
-            message: "This field is required.",
+            message: messages.fieldRequired,
           })
         }
       })
@@ -138,34 +274,34 @@ const leadFormTypeCopyByLocale: Record<
 > = {
   en: {
     investor: {
-      eyebrow: "Investor qualification",
+      eyebrow: "Private review",
       contactLabel: "Full name",
       emailLabel: "Email",
       successMessage:
-        "Thank you. One of our partner providers will review your details and contact you with the best available offer.",
+        "Thank you. Your request has been received and will be reviewed privately before we reply.",
       notesPlaceholder:
-        "Add anything that matters for matching: family members, mobility goals, tax concerns, urgency, or countries already under consideration.",
-      notesHelp: "The more precise your profile, the easier it is to match you with the right provider and price point.",
-      submitIdleLabel: "Get best offer",
+        "Add anything that matters for context: family members, mobility goals, timing, or jurisdictions already under consideration.",
+      notesHelp: "A clearer picture makes it easier to indicate the most suitable next step.",
+      submitIdleLabel: "Request consultation",
     },
     company: {
-      eyebrow: "Company enquiry",
+      eyebrow: "Professional enquiry",
       contactLabel: "Contact person",
       emailLabel: "Work email",
-      successMessage: "Thank you. We will contact you to discuss the best setup for your team.",
+      successMessage: "Thank you. We will review your enquiry and return in the most suitable format.",
       notesPlaceholder:
-        "Tell us about your current workflow, lead volume, product needs, and whether you are interested in CRM, qualified leads, or both.",
-      notesHelp: "Use this field for CRM scope, lead supply questions, rollout timing, or demo priorities.",
-      submitIdleLabel: "Contact sales",
+        "Tell us about your current structure, what you are reviewing, and the kind of professional discussion you would like to arrange.",
+      notesHelp: "Use this field for operating context, timing, or any particular sensitivities around the discussion.",
+      submitIdleLabel: "Request a private reply",
     },
     partner: {
-      eyebrow: "Lead partnership enquiry",
+      eyebrow: "Professional enquiry",
       contactLabel: "Contact person",
       emailLabel: "Work email",
-      successMessage: "Thank you. We will review your enquiry and contact you to discuss the best partnership structure.",
+      successMessage: "Thank you. We will review your enquiry and reply in the most appropriate format.",
       notesPlaceholder:
-        "Describe the jurisdictions you cover, your client profile, and whether you are exploring referrals, white-label work, or software plus leads.",
-      notesHelp: "This helps us decide whether the best next step is CRM, lead supply, or a broader commercial partnership.",
+        "Describe the jurisdictions you cover, the profile of the work involved, and the kind of professional relationship you are exploring.",
+      notesHelp: "This helps us decide what kind of response would be most appropriate.",
       submitIdleLabel: "Submit enquiry",
     },
   },
@@ -174,31 +310,31 @@ const leadFormTypeCopyByLocale: Record<
       eyebrow: "تأهيل المستثمر",
       contactLabel: "الاسم الكامل",
       emailLabel: "البريد الإلكتروني",
-      successMessage: "شكراً لك. سيقوم أحد مزودي الخدمات الشركاء بمراجعة بياناتك والتواصل معك بأفضل عرض متاح.",
+      successMessage: "شكرًا لك. وصلنا طلبك، وسيتم التعامل معه بشكل خاص قبل تحديد الصيغة الأنسب للمتابعة.",
       notesPlaceholder:
-        "أضف أي معلومات مهمة للمطابقة: عدد أفراد العائلة، أهداف التنقل، الجوانب الضريبية، عامل الوقت، أو الدول التي تدرسها بالفعل.",
-      notesHelp: "كلما كانت المعلومات أوضح، كان من الأسهل توجيهك إلى المزود والسعر الأنسب.",
-      submitIdleLabel: "احصل على أفضل عرض",
+        "اذكر أي تفاصيل مهمة مثل عدد أفراد العائلة، الهدف من الطلب، البلدان التي تقارن بينها، أو أي عامل زمني يجب أخذه في الاعتبار.",
+      notesHelp: "كلما كانت الصورة أوضح، أصبح من الأسهل قراءة المسار الأنسب لك بهدوء ومنهجية.",
+      submitIdleLabel: "اطلب مراجعة أولية",
     },
     company: {
       eyebrow: "استفسار شركة",
       contactLabel: "الشخص المسؤول",
       emailLabel: "بريد العمل",
-      successMessage: "شكراً لك. سنتواصل معك لمناقشة أفضل إعداد مناسب لفريقك.",
+      successMessage: "شكرًا لك. سنراجع طلبك ونتواصل معك بالصيغة الأنسب لفريقك ومرحلة العمل الحالية.",
       notesPlaceholder:
-        "أخبرنا عن سير العمل الحالي، حجم العملاء المحتملين، احتياجات المنتج، وما إذا كنت مهتماً بالـ CRM أو بالعملاء المحتملين المؤهلين أو بكليهما.",
-      notesHelp: "استخدم هذا الحقل لشرح نطاق الـ CRM أو متطلبات العملاء المحتملين أو توقيت الإطلاق أو أولويات العرض التوضيحي.",
-      submitIdleLabel: "تواصل مع المبيعات",
+        "أخبرنا عن السياق الحالي لفريقك، وما الذي ترغب في مناقشته، وأي اعتبارات مهنية تراها مهمة.",
+      notesHelp: "يمكنك استخدام هذا الحقل لتوضيح ما إذا كنت تبحث عن مراجعة تشغيلية أو نقاش مؤسسي أوسع أو عرض خاص أكثر هدوءاً.",
+      submitIdleLabel: "ابدأ محادثة للشركة",
     },
     partner: {
       eyebrow: "استفسار شراكة",
       contactLabel: "الشخص المسؤول",
       emailLabel: "بريد العمل",
-      successMessage: "شكراً لك. سنراجع طلبك ونتواصل معك لمناقشة أفضل هيكل للشراكة.",
+      successMessage: "شكرًا لك. سنراجع طلب الشراكة ونتواصل معك بصيغة تبدو مناسبة لنموذج العمل والجهات التي تخدمها.",
       notesPlaceholder:
-        "اشرح الولايات القضائية التي تغطيها، ونوعية عملائك، وما إذا كنت تستكشف الإحالات أو العمل بالعلامة البيضاء أو البرمجيات مع العملاء المحتملين.",
-      notesHelp: "يساعدنا ذلك على تحديد ما إذا كانت الخطوة التالية الأنسب هي الـ CRM أو العملاء المحتملون أو شراكة تجارية أوسع.",
-      submitIdleLabel: "إرسال الطلب",
+        "اشرح الأسواق أو البرامج التي تغطيها، ونوعية العملاء، ونوع العلاقة المهنية التي ترى أنها قد تكون مناسبة.",
+      notesHelp: "يساعدنا ذلك على فهم ما إذا كانت الخطوة التالية الأنسب هي محادثة أولية أكثر تحفظاً أو نقاش مؤسسي أوسع.",
+      submitIdleLabel: "إرسال طلب الشراكة",
     },
   },
   ru: {
@@ -207,30 +343,30 @@ const leadFormTypeCopyByLocale: Record<
       contactLabel: "Полное имя",
       emailLabel: "Электронная почта",
       successMessage:
-        "Спасибо. Один из наших партнёрских провайдеров рассмотрит ваши данные и свяжется с вами с наиболее подходящим предложением.",
+        "Спасибо. Ваш запрос будет рассмотрен в более частном порядке, после чего мы определим наиболее уместный формат дальнейшего общения.",
       notesPlaceholder:
         "Укажите всё важное для подбора: состав семьи, цели по мобильности, налоговые вопросы, срочность или страны, которые вы уже рассматриваете.",
-      notesHelp: "Чем точнее ваш профиль, тем проще подобрать подходящего провайдера и ценовой диапазон.",
-      submitIdleLabel: "Получить лучшее предложение",
+      notesHelp: "Чем точнее ваш профиль, тем легче подойти к решению спокойнее, яснее и с большей пригодностью.",
+      submitIdleLabel: "Запросить первичный обзор",
     },
     company: {
       eyebrow: "Запрос компании",
       contactLabel: "Контактное лицо",
       emailLabel: "Рабочий email",
-      successMessage: "Спасибо. Мы свяжемся с вами, чтобы обсудить оптимальную конфигурацию для вашей команды.",
+      successMessage: "Спасибо. Мы рассмотрим ваш запрос и вернёмся в наиболее уместном формате для вашей команды.",
       notesPlaceholder:
-        "Расскажите о текущем процессе, объёме лидов, потребностях в продукте и интересует ли вас CRM, квалифицированные лиды или оба направления.",
-      notesHelp: "Используйте это поле для описания CRM, лидогенерации, сроков внедрения или приоритетов для демо.",
-      submitIdleLabel: "Связаться с продажами",
+        "Опишите текущий контекст команды, что именно вы хотели бы обсудить и какие профессиональные соображения важны в первую очередь.",
+      notesHelp: "Это поле можно использовать, чтобы пояснить, нужен ли вам операционный обзор, более широкий профессиональный разговор или частный обзор.",
+      submitIdleLabel: "Начать профессиональный разговор",
     },
     partner: {
       eyebrow: "Партнёрский запрос",
       contactLabel: "Контактное лицо",
       emailLabel: "Рабочий email",
-      successMessage: "Спасибо. Мы рассмотрим ваш запрос и свяжемся с вами для обсуждения оптимальной структуры партнёрства.",
+      successMessage: "Спасибо. Мы рассмотрим ваш запрос и вернёмся в формате, который покажется наиболее уместным для дальнейшего разговора.",
       notesPlaceholder:
-        "Опишите юрисдикции, с которыми вы работаете, ваш клиентский профиль и интерес к рефералам, white-label сотрудничеству или программному продукту с лидами.",
-      notesHelp: "Это помогает понять, что логичнее обсудить дальше: CRM, лиды или более широкую коммерческую модель.",
+        "Опишите юрисдикции, с которыми вы работаете, профиль клиентов и какой формат профессионального взаимодействия выглядит для вас уместным.",
+      notesHelp: "Это помогает понять, уместнее ли спокойный первый разговор или более широкий институциональный формат.",
       submitIdleLabel: "Отправить запрос",
     },
   },

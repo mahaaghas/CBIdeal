@@ -14,26 +14,26 @@ export async function generateMetadata(): Promise<Metadata> {
   const locale = getRequestLocale()
   const localized = {
     en: {
-      title: "CRM Pricing for Immigration Firms",
+      title: "Engagement Options for Professional Firms",
       description:
-        "Review clear per-user pricing for the immigration CRM, including guided demo access, annual savings, and custom options for larger passport companies.",
+        "Review clear engagement options for professional firms, including indicative structures and tailored arrangements for larger teams.",
       keywords: [
-        "immigration CRM pricing",
-        "passport company software pricing",
-        "citizenship by investment CRM cost",
+        "professional engagement options",
+        "private advisory pricing",
+        "licensed firm consultation",
       ],
     },
     ar: {
-      title: "أسعار CRM لشركات الهجرة",
+      title: "خيارات التعامل للمكاتب المتخصصة",
       description:
-        "راجع تسعيراً واضحاً لكل مستخدم لنظام CRM الخاص بشركات الهجرة، مع العرض التوضيحي والتوفير السنوي وخيارات مخصصة للفرق الأكبر.",
-      keywords: ["أسعار CRM الهجرة", "أسعار برنامج شركات الجوازات", "تكلفة CRM الجنسية عن طريق الاستثمار"],
+        "راجع خيارات تعامل واضحة للمكاتب المتخصصة، مع هياكل إرشادية وترتيبات أوسع عند الحاجة.",
+      keywords: ["خيارات التعامل للمكاتب المتخصصة", "الاستشارة الخاصة للشركات", "الترتيبات المهنية"],
     },
     ru: {
-      title: "Тарифы CRM для иммиграционных фирм",
+      title: "Форматы взаимодействия для профессиональных фирм",
       description:
-        "Изучите понятные тарифы за пользователя для иммиграционной CRM, включая демо, экономию при годовой оплате и кастомные опции для крупных команд.",
-      keywords: ["тарифы CRM для иммиграции", "цены на ПО для паспортных компаний", "стоимость CRM для CBI"],
+        "Изучите понятные форматы взаимодействия для профессиональных фирм, включая ориентиры и более широкие индивидуальные структуры.",
+      keywords: ["форматы взаимодействия для фирм", "частная консультация для практик", "профессиональные структуры"],
     },
   }[locale]
 
@@ -52,49 +52,49 @@ export default function PricingPage() {
   const routeLinks = getLocalizedRouteLinks(locale)
   const copy = {
     en: {
-      eyebrow: "SaaS pricing",
-      title: "Pricing designed for a specialized immigration CRM.",
+      eyebrow: "Engagement options",
+      title: "Clear engagement options for professional firms.",
       description:
-        "Starter works for smaller teams, Growth suits firms that need stronger visibility, and Enterprise covers custom rollout or lead partnership setups.",
-      primary: "Try guided demo",
-      secondary: "Contact sales",
+        "The structure is intended to be clear enough for an informed first decision, while leaving room for tailored arrangements where needed.",
+      primary: "Request a private overview",
+      secondary: "Write to us instead",
       plansEyebrow: "Plans",
-      plansTitle: "Three plans are enough for a credible early-stage B2B offer.",
+      plansTitle: "Three clear structures are enough for a calm and credible pricing page.",
       plansDescription:
-        "The pricing stays realistic for a niche SaaS: not too cheap to feel disposable, and not so aggressive that it breaks trust.",
-      enterpriseTitle: "Need multi-office rollout, lead partnership pricing, or custom workflows?",
+        "The figures are intended to support careful decisions without feeling either disposable or overstated.",
+      enterpriseTitle: "Need a wider structure or a more tailored arrangement?",
       enterpriseDescription:
-        "Enterprise setup can include implementation planning, white-label positioning, and commercial terms for qualified lead delivery.",
+        "Wider arrangements can include tailored access, implementation planning, and a more bespoke way of working.",
     },
     ar: {
-      eyebrow: "أسعار SaaS",
-      title: "تسعير مصمم لنظام CRM متخصص للهجرة.",
+      eyebrow: "خيارات التعامل",
+      title: "خيارات واضحة وهادئة للمكاتب المتخصصة.",
       description:
-        "خطة Starter مناسبة للفرق الصغيرة، وخطة Growth للفرق التي تحتاج رؤية أقوى، بينما تغطي Enterprise الإطلاقات المخصصة وشراكات العملاء المحتملين.",
-      primary: "جرّب العرض التوضيحي",
-      secondary: "تواصل مع المبيعات",
+        "صُممت البنية لتكون واضحة بما يكفي لاتخاذ قرار أولي، مع ترك مساحة لترتيبات أوسع عندما يكون ذلك منطقياً.",
+      primary: "اطلب عرضاً خاصاً",
+      secondary: "اكتب إلينا بدلاً من ذلك",
       plansEyebrow: "الخطط",
-      plansTitle: "ثلاث خطط تكفي لتقديم عرض B2B مبكر وموثوق.",
+      plansTitle: "عدد محدود من الخيارات يكفي لشرح الهيكل بوضوح.",
       plansDescription:
-        "يحافظ التسعير على منطقية مناسبة لبرمجيات متخصصة: ليس منخفضاً لدرجة فقدان الجدية ولا مرتفعاً بشكل يضعف الثقة.",
-      enterpriseTitle: "هل تحتاج إلى إطلاق متعدد المكاتب أو تسعير شراكات أو مهام مخصصة؟",
+        "الأرقام هنا موضوعة لتدعم قراراً أولياً هادئاً من دون مبالغة أو عرض استعراضي.",
+      enterpriseTitle: "هل تحتاج إلى ترتيب أوسع أو صيغة أكثر تخصيصاً؟",
       enterpriseDescription:
-        "يمكن أن يشمل إعداد Enterprise تخطيط التنفيذ والتموضع بالعلامة البيضاء والشروط التجارية لتسليم العملاء المحتملين المؤهلين.",
+        "يمكن أن تشمل الترتيبات الأوسع نطاقاً أكثر خصوصية أو تخطيطاً أدق أو طريقة عمل مصممة حول احتياج الفريق.",
     },
     ru: {
-      eyebrow: "Тарифы SaaS",
-      title: "Тарифы для специализированной иммиграционной CRM.",
+      eyebrow: "Форматы взаимодействия",
+      title: "Понятные варианты для специализированных практик.",
       description:
-        "Starter подходит небольшим командам, Growth — фирмам с потребностью в большей прозрачности, а Enterprise закрывает кастомные внедрения и лид-партнёрства.",
-      primary: "Попробовать демо",
-      secondary: "Связаться с продажами",
+        "Структура задумана так, чтобы дать ясную основу для первого решения и оставить пространство для более индивидуальных форматов при необходимости.",
+      primary: "Запросить частный обзор",
+      secondary: "Написать нам",
       plansEyebrow: "Тарифы",
-      plansTitle: "Трёх тарифов достаточно для убедительного раннего B2B-предложения.",
+      plansTitle: "Небольшого числа вариантов достаточно для ясного первого обзора.",
       plansDescription:
-        "Цены выглядят реалистично для нишевого SaaS: не слишком низко, чтобы обесценить продукт, и не слишком агрессивно, чтобы подорвать доверие.",
-      enterpriseTitle: "Нужен multi-office rollout, цены на лид-партнёрство или кастомные процессы?",
+        "Цифры здесь нужны для спокойного первого решения, без излишней агрессии и без ощущения шаблонной продуктовой страницы.",
+      enterpriseTitle: "Нужен более широкий формат или более индивидуальная структура?",
       enterpriseDescription:
-        "Enterprise может включать план внедрения, white-label позиционирование и коммерческие условия по квалифицированным лидам.",
+        "Более широкие форматы могут включать индивидуальный объём доступа, более подробное планирование и более адаптированный способ работы.",
     },
   }[locale]
 
@@ -107,9 +107,9 @@ export default function PricingPage() {
         primaryAction={{ href: ctaLinks.requestDemo, label: copy.primary }}
         secondaryAction={{ href: ctaLinks.contactSales, label: copy.secondary }}
         stats={[
-          { value: "Per user", label: "pricing for software seats" },
-          { value: "Annual savings", label: "with yearly billing" },
-          { value: "Enterprise", label: "for custom rollout" },
+          { value: locale === "ar" ? "لكل مستخدم" : "Per user", label: locale === "ar" ? "تسعير واضح للمقاعد" : "clear seat-based pricing" },
+          { value: locale === "ar" ? "توفير سنوي" : "Annual savings", label: locale === "ar" ? "عند اختيار الفوترة السنوية" : "with yearly billing" },
+          { value: "Enterprise", label: locale === "ar" ? "للهياكل الأوسع أو الاحتياجات المخصصة" : "for broader custom structures" },
         ]}
       />
 
@@ -128,8 +128,8 @@ export default function PricingPage() {
         <div className="container-shell">
           <MeetingSchedulerCard
             compact
-            title="Prefer to walk through pricing live?"
-            description="Use a booking slot for team sizing, rollout scoping, or lead partnership pricing questions."
+            title={locale === "ar" ? "هل تفضل مراجعة الأسعار في محادثة مباشرة؟" : "Would you prefer to review the engagement options together?"}
+            description={locale === "ar" ? "استخدم هذا القسم إذا كنت تريد مناقشة حجم الفريق أو النطاق أو الهيكل الأنسب للتعامل." : "Use this section if you would like to discuss team size, scope, or the most suitable engagement structure."}
           />
         </div>
       </section>
@@ -137,7 +137,7 @@ export default function PricingPage() {
       <section className="section-padding pt-0">
         <div className="container-shell">
           <CtaPanel
-            eyebrow="Enterprise note"
+            eyebrow={locale === "ar" ? "ملاحظة حول Enterprise" : "Enterprise note"}
             title={copy.enterpriseTitle}
             description={copy.enterpriseDescription}
             primaryAction={{ href: ctaLinks.contactSales, label: copy.secondary }}

@@ -22,9 +22,14 @@ export async function generateMetadata(): Promise<Metadata> {
   const locale = getRequestLocale()
 
   return buildPageMetadata({
-    title: "Citizenship by Investment: A Structured Advisory Route for Global Investors",
+    title:
+      locale === "ar"
+        ? "الجنسية عن طريق الاستثمار: كيف تختار المسار الأنسب بوضوح أكبر"
+        : "Citizenship by Investment: A Structured Advisory Route for Global Investors",
     description:
-      "Understand citizenship by investment from a realistic advisory perspective, including who it suits, what to compare, how the process works, and when to request a private consultation.",
+      locale === "ar"
+        ? "افهم الجنسية عن طريق الاستثمار من منظور عملي يساعدك على المقارنة بين المسارات، وتحديد ما يناسب ملفك، ومعرفة متى تحتاج إلى استشارة خاصة."
+        : "Understand citizenship by investment from a realistic advisory perspective, including who it suits, what to compare, how the process works, and when a private consultation becomes useful.",
     path: localizeHref(locale, "/citizenship-by-investment"),
     keywords: [
       "citizenship by investment",
@@ -40,7 +45,7 @@ const trustItems = [
   {
     title: "Confidential first review",
     description:
-      "Every enquiry is framed around profile fit, documentation readiness, and realistic next steps before a provider is introduced.",
+      "Every enquiry is framed around profile fit, documentation readiness, and realistic next steps before the discussion becomes more formal.",
   },
   {
     title: "Designed for real decision-making",
@@ -48,9 +53,9 @@ const trustItems = [
       "We help clients compare suitability, family fit, and trade-offs rather than pushing one route on every profile.",
   },
   {
-    title: "Licensed-provider introductions",
+    title: "Relevant introductions",
     description:
-      "Our role is to qualify and structure the enquiry before it reaches a licensed provider or authorized partner.",
+      "Our role is to structure the enquiry before it moves towards licensed and appropriate parties.",
   },
   {
     title: "Compliance-aware from the start",
@@ -62,7 +67,7 @@ const trustItems = [
 const processSteps = [
   {
     icon: Compass,
-    title: "1. Private qualification",
+    title: "1. Private review",
     description:
       "We review your citizenship, residence, budget, family structure, and what you are actually trying to solve.",
   },
@@ -74,9 +79,9 @@ const processSteps = [
   },
   {
     icon: FileCheck2,
-    title: "3. Provider handoff",
+    title: "3. Formal introduction",
     description:
-      "A licensed provider or authorized partner reviews the case and outlines the formal next steps if the fit is real.",
+      "Where appropriate, a licensed provider or authorised party reviews the case and outlines the formal next steps.",
   },
   {
     icon: ShieldCheck,
@@ -95,7 +100,7 @@ const faqs = [
   {
     question: "Do you guarantee that a route will be suitable?",
     answer:
-      "No. The purpose of qualification is to test fit before expectations become unrealistic. Final suitability depends on your profile, documentation, and the rules of the official program involved.",
+      "No. The purpose of the first review is to test fit before expectations become unrealistic. Final suitability depends on your profile, documentation, and the rules of the official programme involved.",
   },
   {
     question: "Is this only relevant for Caribbean programs?",
@@ -105,34 +110,176 @@ const faqs = [
   {
     question: "What happens after I submit the form?",
     answer:
-      "Your enquiry is reviewed privately and, where appropriate, matched to a licensed provider or authorized partner for a more formal conversation.",
+      "Your enquiry is reviewed privately and, where appropriate, moved towards a more formal conversation with the right licensed party.",
   },
 ]
 
 export default function CitizenshipByInvestmentPage() {
   const locale = getRequestLocale()
   const routes = getLocalizedRouteLinks(locale)
+  const copy =
+    locale === "ar"
+      ? {
+          heroEyebrow: "الجنسية عن طريق الاستثمار",
+          heroTitle: "هذه الصفحة مخصصة لمن يريد أن يفهم الخيار الأنسب، لا أن يختار أسرع برنامج بشكل عشوائي.",
+          heroDescription:
+            "إذا كنت تقارن بين برامج الجنسية الثانية بجدية، فالمطلوب غالبًا ليس جمع أسماء برامج، بل فهم أي مسار يبدو أنسب لملفك وعائلتك وهدفك الفعلي.",
+          heroPrimary: "اعرف الخيار الأنسب لك",
+          heroSecondary: "اطلب استشارة خاصة",
+          stats: [
+            { value: "مراجعة خاصة", label: "تبدأ من الملف والهدف لا من خطاب البيع" },
+            { value: "قرار أوضح", label: "مبني على الملاءمة لا على التصنيف فقط" },
+            { value: "إحالة مناسبة", label: "تتم بعد تضييق المسارات المحتملة" },
+          ],
+          leadTitle: "ابدأ المراجعة الأولية",
+          leadDescription:
+            "شارك الأساسيات، وسنساعدك على فهم أي مسار يبدو أقرب لملفك قبل الانتقال إلى محادثة مع جهة مرخصة.",
+          trustEyebrow: "ما الذي يميز هذا المسار",
+          trustTitle: "قيمة الجنسية الثانية تظهر عندما يكون الهدف واضحًا من البداية.",
+          trustDescription:
+            "أقوى الحالات تبدأ عادة بهدف عملي: حرية تنقل أفضل، تخطيط عائلي، خيار احتياطي طويل المدى، أو حضور دولي أكثر مرونة.",
+          trustCards: [
+            { icon: Globe2, title: "حرية تنقل", text: "مفيدة عندما يصبح السفر جزءًا من القرار العائلي أو العملي وليس مجرد امتياز إضافي." },
+            { icon: Users, title: "مرونة للعائلة", text: "مهمة للحالات التي ترتبط بالأبناء أو المعالين أو التفكير في انتقال مستقبلي." },
+            { icon: CircleDollarSign, title: "تخطيط بعيد المدى", text: "الأفضل فهمها كجزء من رؤية أوسع، لا كشراء سريع بدافع القلق." },
+            { icon: BadgeCheck, title: "تنفيذ منظم", text: "نجاح المسار يعتمد أيضًا على جودة الملف والجاهزية للعناية الواجبة واختيار الجهة المناسبة." },
+          ],
+          processEyebrow: "كيف تسير العملية",
+          processTitle: "أول محادثة جادة تبدأ من تأهيل أنظف وأوضح.",
+          processDescription:
+            "هذه الصفحة مصممة لتقودك من المقارنة الأولى إلى إحالة أكثر دقة، من دون استعجال أو وعود مبالغ فيها.",
+          shortlistEyebrow: "منطق المقارنة",
+          shortlistTitle: "معظم المستثمرين لا يقارنون عشرات النتائج المختلفة، بل بضعة مسارات تبدو معقولة لملفهم.",
+          shortlistDescription:
+            "الفرق الحقيقي غالبًا لا يكون في أرقام التصنيف فقط، بل في البنية المالية، وملاءمة العائلة، وسمعة البرنامج، والاستخدام الاستراتيجي على المدى الطويل.",
+          compareRows: [
+            { factor: "التموضع العام", values: ["أكثر رسوخًا واهتمامًا بالسمعة", "عملي ويميل إلى القيمة", "غالبًا مناسب للعائلات", "أكثر استخدامًا في التفكير الاستراتيجي"] },
+            { factor: "من يناسبه غالبًا", values: ["من يضع السمعة في أولوية القرار", "من يبحث عن كلفة أوضح", "من يقارن على مستوى العائلة كاملة", "أصحاب الأعمال والحالات الأبعد أفقًا"] },
+            { factor: "ما الذي يجب مقارنته بدقة", values: ["هل تستحق المكانة كلفة أعلى؟", "هل القيمة أهم من الانطباع العام؟", "كيف يتغير القرار عند إضافة أفراد العائلة؟", "هل تحتاج فعلًا إلى مزايا استراتيجية أوسع؟"] },
+          ],
+          nextEyebrow: "إلى أين بعد ذلك",
+          nextTitle: "اختر الصفحة التالية بحسب نوع القرار الذي تحاول حسمه.",
+          nextDescription:
+            "بعض الزوار يحتاج إلى مقارنة أوسع، وآخرون يحتاجون إلى استشارة خاصة منذ البداية. النظام هنا مصمم لخدمة الحالتين بهدوء.",
+          links: [
+            {
+              title: "قارن بين البرامج الكاريبية الرئيسية",
+              description: "انتقل إلى صفحة المقارنة إذا كنت تريد فهم الفروق العملية بين الخيارات الكاريبية الرئيسية.",
+              href: routes.caribbeanComparison,
+            },
+            {
+              title: "احجز استشارة خاصة",
+              description: "اختر صفحة الاستشارة إذا كان لديك ملف عائلي أو ضغط زمني أو تريد نقاشًا أكثر دقة.",
+              href: routes.bookConsultation,
+            },
+            {
+              title: "اطلع على المقالات المتخصصة",
+              description: "استخدم قسم المقالات إذا كنت لا تزال تبني الصورة حول الكلفة أو العناية الواجبة أو المقارنات الإقليمية.",
+              href: routes.insights,
+            },
+          ],
+          faqEyebrow: "الأسئلة الشائعة",
+          faqTitle: "أسئلة شائعة من المستثمرين في هذه المرحلة.",
+          faqDescription: "إجابات قصيرة تساعد على ضبط التوقعات قبل الانتقال إلى خطوة أكثر جدية.",
+          ctaEyebrow: "استشارة خاصة",
+          ctaTitle: "هل تريد مناقشة حالتك ضمن إطار أكثر هدوءًا ووضوحًا؟",
+          ctaDescription: "اطلب استشارة خاصة إذا كنت تريد تحويل البحث العام إلى محادثة مبنية على الملف والهدف والخطوة التالية الواقعية.",
+          ctaPrimary: "اطلب استشارة خاصة",
+          ctaSecondary: "تواصل مع فريقنا",
+        }
+      : null
+  const localizedTrustItems =
+    locale === "ar"
+      ? [
+          {
+            title: "مراجعة خاصة من البداية",
+            description: "يتم النظر إلى كل طلب من زاوية الملاءمة والوثائق والخطوة المنطقية التالية قبل إحالة الملف إلى جهة خارجية.",
+          },
+          {
+            title: "مقارنة مبنية على القرار",
+            description: "نساعدك على المفاضلة بين المسارات بحسب وضعك والعائلة والهدف، لا بحسب خطاب تسويقي موحد.",
+          },
+          {
+            title: "إحالات إلى جهات مرخصة",
+            description: "دورنا هو تنظيم الطلب وتضييق الخيارات قبل الانتقال إلى مزود مرخص أو شريك معتمد.",
+          },
+          {
+            title: "وعي بالامتثال من البداية",
+            description: "العناية الواجبة ومصدر الأموال والجاهزية الوثائقية ليست تفاصيل جانبية، بل جزء من القرار نفسه.",
+          },
+        ]
+      : trustItems
+  const localizedProcessSteps =
+    locale === "ar"
+      ? [
+          {
+            icon: Compass,
+            title: "1. مراجعة خاصة للملف",
+            description: "نراجع الجنسية الحالية، والإقامة، والميزانية، وسياق العائلة، وما الذي تحاول حله فعليًا.",
+          },
+          {
+            icon: Globe2,
+            title: "2. تضييق المقارنة",
+            description: "نحصر الحديث في البرامج التي تبدو مناسبة تجاريًا وعمليًا بدل الإبقاء على مقارنة واسعة ومرهقة.",
+          },
+          {
+            icon: FileCheck2,
+            title: "3. إحالة إلى الجهة المناسبة",
+            description: "إذا اتضحت الملاءمة، تنتقل الحالة إلى مزود مرخص أو شريك معتمد لشرح الخطوات الرسمية التالية.",
+          },
+          {
+            icon: ShieldCheck,
+            title: "4. العناية الواجبة والتقديم",
+            description: "بعد ذلك فقط تبدأ المراجعة الرسمية، وجمع الوثائق، والتقديم عبر الهياكل الحكومية والجهات المخولة.",
+          },
+        ]
+      : processSteps
+  const localizedFaqs =
+    locale === "ar"
+      ? [
+          {
+            question: "من الذي يفكر عادة في الجنسية عن طريق الاستثمار بشكل جاد؟",
+            answer:
+              "غالبًا ما يكونون أشخاصًا يخططون لمرونة في التنقل، أو ترتيب عائلي بعيد المدى، أو حضور دولي أكثر استقرارًا، لا مجرد من يبحث عن جواز إضافي بشكل سريع.",
+          },
+          {
+            question: "هل يعني ذلك أن كل ملف سيكون مناسبًا؟",
+            answer:
+              "لا. وظيفة المراجعة الأولية هي اختبار الملاءمة قبل خلق توقعات غير واقعية. النتيجة النهائية تعتمد على الملف والوثائق وقواعد البرنامج الرسمي نفسه.",
+          },
+          {
+            question: "هل هذه الصفحة مخصصة للكاريبي فقط؟",
+            answer:
+              "لا. هذه الصفحة تشرح الفكرة العامة للجنسية عن طريق الاستثمار، بينما تساعدك الصفحات المقارنة على تضييق الخيارات الكاريبية أو المقارنة بين الجنسية والإقامة.",
+          },
+          {
+            question: "ماذا يحدث بعد إرسال النموذج؟",
+            answer:
+              "يتم النظر في الطلب بشكل خاص أولًا، ثم تتم إحالة الحالات المناسبة إلى مزود مرخص أو شريك معتمد لخطوة أكثر رسمية.",
+          },
+        ]
+      : faqs
 
   return (
     <SiteShell>
       <LandingHero
-        eyebrow="Citizenship by investment"
-        title="Citizenship by investment for investors who want a clearer, more structured route."
-        description="We help qualified clients compare official citizenship by investment programs, understand the trade-offs honestly, and speak with licensed providers that fit the profile."
-        primaryAction={{ href: "#qualification", label: "See your best-fit route" }}
-        secondaryAction={{ href: routes.bookConsultation, label: "Request a private consultation" }}
-        stats={[
+        eyebrow={copy?.heroEyebrow ?? "Citizenship by investment"}
+        title={copy?.heroTitle ?? "Citizenship by investment for investors who want a clearer, more structured route."}
+        description={copy?.heroDescription ?? "We help clients compare official citizenship by investment programmes, understand the trade-offs honestly, and move towards the route that best suits the profile."}
+        primaryAction={{ href: "#qualification", label: copy?.heroPrimary ?? "Explore your options" }}
+        secondaryAction={{ href: routes.bookConsultation, label: copy?.heroSecondary ?? "Request a consultation" }}
+        stats={copy?.stats ?? [
           { value: "Private review", label: "handled discreetly from the first step" },
           { value: "Profile-led", label: "built around fit, not generic rankings" },
-          { value: "Provider match", label: "qualified before any introduction" },
+          { value: "Measured access", label: "formal introductions only where the fit appears real" },
         ]}
-        highlightsLabel="Why investors use this page"
+        highlightsLabel={locale === "ar" ? "لماذا يستخدم المستثمرون هذه الصفحة" : "Why investors use this page"}
         aside={
           <LocalizedLandingLeadForm
             locale={locale}
-            title="Start your qualification"
-            description="Share the essentials and we will help you understand which route appears most suitable before a provider conversation begins."
-            submitLabel="See your best-fit option"
+            title={copy?.leadTitle ?? "Request a private review"}
+            description={copy?.leadDescription ?? "Share the essentials and we will help you understand which route appears most suitable before the discussion becomes more formal."}
+            submitLabel={locale === "ar" ? "اعرف الخيار الأنسب لك" : "Explore your options"}
             sourceCategory="pillar"
             sourcePage="citizenship-by-investment"
           />
@@ -141,7 +288,7 @@ export default function CitizenshipByInvestmentPage() {
 
       <section className="section-padding pt-0">
         <div className="container-shell">
-          <TrustGrid items={trustItems} />
+          <TrustGrid items={localizedTrustItems} />
         </div>
       </section>
 
@@ -161,17 +308,17 @@ export default function CitizenshipByInvestmentPage() {
             <div className="relative space-y-10">
               <div className="max-w-[42rem] space-y-4">
                 <span className="eyebrow border-white/20 bg-white/10 text-primary-foreground/80">
-                  What this route is really for
+                  {copy?.trustEyebrow ?? "What this route is really for"}
                 </span>
                 <h2 className="section-title max-w-[40rem] text-primary-foreground">
-                  A second citizenship can be valuable, but only when the objective is clear.
+                  {copy?.trustTitle ?? "A second citizenship can be valuable, but only when the objective is clear."}
                 </h2>
                 <p className="max-w-[40rem] text-base leading-8 text-primary-foreground/80 md:text-lg">
-                  The strongest cases usually begin with a practical goal: smoother travel, family planning, contingency options, or long-term international flexibility.
+                  {copy?.trustDescription ?? "The strongest cases usually begin with a practical goal: smoother travel, family planning, contingency options, or long-term international flexibility."}
                 </p>
               </div>
               <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-                {[
+                {(copy?.trustCards ?? [
                   {
                     icon: Globe2,
                     title: "Mobility",
@@ -190,9 +337,9 @@ export default function CitizenshipByInvestmentPage() {
                   {
                     icon: BadgeCheck,
                     title: "Structured execution",
-                    text: "The right route depends on documentation quality, due diligence readiness, and provider fit.",
+                    text: "The right route depends on documentation quality, due diligence readiness, and the strength of the overall fit.",
                   },
-                ].map((item) => (
+                ]).map((item) => (
                   <Card key={item.title} className="h-full border border-white/12 bg-white/92 shadow-[0_24px_80px_rgba(13,18,31,0.12)] backdrop-blur-sm">
                     <CardContent className="space-y-4 p-6 md:p-7">
                       <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
@@ -215,17 +362,16 @@ export default function CitizenshipByInvestmentPage() {
             <div className="space-y-10">
               <div className="max-w-[42rem] space-y-4">
                 <span className="eyebrow border-white/20 bg-white/10 text-primary-foreground/80">
-                  How the process works
+                  {copy?.processEyebrow ?? "How the process works"}
                 </span>
                 <h2 className="section-title max-w-[40rem] text-primary-foreground">
-                  A serious first conversation starts with cleaner qualification.
+                  {copy?.processTitle ?? "A serious first conversation starts with a clearer review."}
                 </h2>
                 <p className="max-w-[38rem] text-base leading-8 text-primary-foreground/80 md:text-lg">
-                  This route is designed to move from enquiry to provider handoff in a way that
-                  feels selective, structured, and easier to trust.
+                  {copy?.processDescription ?? "This route is designed to move from initial enquiry to a more formal next step in a way that feels selective, structured, and easier to trust."}
                 </p>
               </div>
-              <ProcessSteps steps={processSteps} />
+              <ProcessSteps steps={localizedProcessSteps} />
             </div>
           </div>
         </div>
@@ -234,9 +380,9 @@ export default function CitizenshipByInvestmentPage() {
       <section className="section-padding">
         <div className="container-shell space-y-10">
           <SectionHeading
-            eyebrow="Shortlist logic"
-            title="Most investors are comparing a few practical route types, not dozens of completely different outcomes."
-            description="The strongest comparison is usually not about tiny ranking differences. It is about fit: cost structure, family inclusion, reputation, and strategic use."
+            eyebrow={copy?.shortlistEyebrow ?? "Shortlist logic"}
+            title={copy?.shortlistTitle ?? "Most investors are comparing a few practical route types, not dozens of completely different outcomes."}
+            description={copy?.shortlistDescription ?? "The strongest comparison is usually not about tiny ranking differences. It is about fit: cost structure, family inclusion, reputation, and strategic use."}
           />
           <LandingComparisonTable
             columns={[
@@ -245,7 +391,7 @@ export default function CitizenshipByInvestmentPage() {
               { key: "antigua", label: "Antigua & Barbuda" },
               { key: "grenada", label: "Grenada" },
             ]}
-            rows={[
+            rows={copy?.compareRows ?? [
               {
                 factor: "General positioning",
                 values: [
@@ -281,12 +427,12 @@ export default function CitizenshipByInvestmentPage() {
       <section id="qualification" className="section-padding pt-0">
         <div className="container-shell space-y-10">
           <SectionHeading
-            eyebrow="Where to go next"
-            title="Choose the next page based on the kind of decision you are making."
-            description="Some visitors need a broad comparison, others need a private consultation. This system is meant to support both without forcing a rushed decision."
+            eyebrow={copy?.nextEyebrow ?? "Where to go next"}
+            title={copy?.nextTitle ?? "Choose the next page based on the kind of decision you are making."}
+            description={copy?.nextDescription ?? "Some visitors need a broad comparison, others need a private consultation. This system is meant to support both without forcing a rushed decision."}
           />
           <LandingLinkGrid
-            items={[
+            items={copy?.links ?? [
               {
                 title: "Compare the main Caribbean routes",
                 description:
@@ -294,7 +440,7 @@ export default function CitizenshipByInvestmentPage() {
                 href: routes.caribbeanComparison,
               },
               {
-                title: "Book a private consultation",
+                title: "Arrange a private consultation",
                 description:
                   "Use the consultation page if you already have a profile, timing pressure, or a family-specific question.",
                 href: routes.bookConsultation,
@@ -311,18 +457,18 @@ export default function CitizenshipByInvestmentPage() {
       </section>
 
       <LandingFaqSection
-        eyebrow="FAQ"
-        title="Common questions from investor-side enquiries."
-        description="These answers keep expectations realistic while helping serious enquirers understand what the process is designed to do."
-        items={faqs}
+        eyebrow={copy?.faqEyebrow ?? "FAQ"}
+        title={copy?.faqTitle ?? "Common questions from investor-side enquiries."}
+        description={copy?.faqDescription ?? "These answers keep expectations realistic while helping serious enquirers understand what the process is designed to do."}
+        items={localizedFaqs}
       />
 
       <LandingCtaSection
-        eyebrow="Private consultation"
-        title="Ready to discuss your case in a more structured setting?"
-        description="Request a private consultation if you want to move from broad research into a profile-led conversation with realistic next steps."
-        primaryAction={{ href: routes.bookConsultation, label: "Request a private consultation" }}
-        secondaryAction={{ href: routes.contact, label: "Contact the advisory team" }}
+        eyebrow={copy?.ctaEyebrow ?? "Private consultation"}
+        title={copy?.ctaTitle ?? "Ready to discuss your case in a more structured setting?"}
+          description={copy?.ctaDescription ?? "Request a consultation if you want to move from broad research into a more considered conversation with realistic next steps."}
+        primaryAction={{ href: routes.bookConsultation, label: copy?.ctaPrimary ?? "Request a consultation" }}
+        secondaryAction={{ href: routes.contact, label: copy?.ctaSecondary ?? "Arrange a written introduction" }}
       />
     </SiteShell>
   )

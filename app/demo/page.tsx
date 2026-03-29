@@ -17,19 +17,19 @@ export async function generateMetadata(): Promise<Metadata> {
   const locale = getRequestLocale()
   const localized = {
     en: {
-      title: "Guided CRM Demo for Immigration Firms",
+      title: "Private Platform Overview for Professional Firms",
       description:
-        "Request a guided CRM demo for passport companies and immigration firms, with a focused walkthrough of lead handling, follow-up, visibility, and next-step planning.",
+        "Request a private overview for licensed firms and advisory practices, with a structured conversation around fit, working style, and whether a broader discussion would be worthwhile.",
     },
     ar: {
-      title: "عرض CRM إرشادي لشركات الهجرة",
+      title: "عرض خاص للمكاتب المتخصصة",
       description:
-        "اطلب عرضاً إرشادياً لنظام CRM المخصص لشركات الجوازات والهجرة مع شرح واضح لإدارة العملاء المحتملين والمتابعة والخطوات التالية.",
+        "اطلب عرضاً خاصاً للمكاتب المتخصصة، مع محادثة أوضح حول الملاءمة وأسلوب العمل وما إذا كان من المناسب الاستمرار.",
     },
     ru: {
-      title: "Проводимое демо CRM для иммиграционных фирм",
+      title: "Частный обзор для специализированных фирм",
       description:
-        "Запросите guided demo CRM для паспортных и иммиграционных компаний с фокусом на лидах, сопровождении и следующих шагах.",
+        "Запросите частный обзор для специализированных фирм с более ясным разговором о пригодности, стиле работы и том, есть ли смысл продолжать.",
     },
   }[locale]
 
@@ -38,9 +38,9 @@ export async function generateMetadata(): Promise<Metadata> {
     description: localized.description,
     path: localizeHref(locale, "/demo"),
     keywords: [
-      "immigration CRM demo",
-      "passport company software demo",
-      "guided CRM walkthrough",
+      "private platform overview",
+      "professional advisory overview",
+      "licensed firm consultation",
     ],
     locale,
   })
@@ -49,18 +49,18 @@ export async function generateMetadata(): Promise<Metadata> {
 const demoSteps = [
   {
     icon: Compass,
-    title: "Tell us what you want to see",
-    description: "We tailor the walkthrough around lead pipeline, case handling, reporting, or the qualified lead partnership model.",
+    title: "Set the agenda",
+    description: "We shape the discussion around the questions and priorities that matter most to your team.",
   },
   {
     icon: MonitorPlay,
-    title: "Guided product walkthrough",
-    description: "We show the CRM structure, explain what is live now, and frame what can be expanded later without overpromising.",
+    title: "Private overview",
+    description: "We review the structure calmly and directly, focusing on what is relevant rather than trying to show everything at once.",
   },
   {
     icon: Users,
-    title: "Decide next steps",
-    description: "If there is a fit, the next step is pricing, rollout scope, and whether your team also wants qualified leads.",
+    title: "Consider the next step",
+    description: "If the fit appears genuine, the conversation can move towards scope, timing, and the most suitable way to continue.",
   },
 ]
 
@@ -70,27 +70,27 @@ export default function DemoPage() {
   const routeLinks = getLocalizedRouteLinks(locale)
   const copy = {
     en: {
-      eyebrow: "Guided demo",
-      title: "Request a guided demo of the CRM and lead workflow.",
+      eyebrow: "Private overview",
+      title: "Request a private overview for your firm.",
       description:
-        "A guided demo gives passport companies and immigration firms a clearer way to evaluate the CRM, the lead workflow, and the right next step for their team.",
-      requestDemo: "Request guided demo",
-      seePricing: "See pricing first",
+        "A short private overview can be the clearest way to understand whether the structure, working style, and level of support are right for your team.",
+      requestDemo: "Arrange a private overview",
+      seePricing: "View pricing first",
     },
     ar: {
-      eyebrow: "عرض إرشادي",
-      title: "اطلب عرضاً إرشادياً لنظام CRM ومسار العملاء المحتملين.",
+      eyebrow: "عرض خاص",
+      title: "اطلب عرضاً خاصاً لجهتك.",
       description:
-        "يوفر العرض الإرشادي لشركات الجوازات والهجرة طريقة أوضح لتقييم النظام ومسار العملاء والخطوة التالية المناسبة للفريق.",
-      requestDemo: "اطلب عرضاً إرشادياً",
+        "يمكن أن يكون العرض الخاص أقرب طريقة لفهم ما إذا كانت البنية وأسلوب العمل ومستوى الدعم مناسبة لفريقك.",
+      requestDemo: "اطلب عرضاً خاصاً",
       seePricing: "اطلع على الأسعار أولاً",
     },
     ru: {
-      eyebrow: "Guided demo",
-      title: "Запросите guided demo CRM и процесса работы с лидами.",
+      eyebrow: "Частный обзор",
+      title: "Запросите частный обзор для вашей фирмы.",
       description:
-        "Guided demo помогает паспортным и иммиграционным компаниям понятнее оценить CRM, процесс работы с лидами и следующий шаг для команды.",
-      requestDemo: "Запросить guided demo",
+        "Короткий частный обзор часто оказывается самым ясным способом понять, подходят ли структура, стиль работы и уровень поддержки вашей команде.",
+      requestDemo: "Запросить частный обзор",
       seePricing: "Сначала посмотреть тарифы",
     },
   }[locale]
@@ -104,18 +104,18 @@ export default function DemoPage() {
         primaryAction={{ href: "#demo-form", label: copy.requestDemo }}
         secondaryAction={{ href: ctaLinks.viewPricing, label: copy.seePricing }}
         stats={[
-          { value: "Walkthrough", label: "tailored to your workflow" },
-          { value: "Realistic scope", label: "without product fluff" },
-          { value: "Next steps", label: "for CRM, leads, or both" },
+          { value: "Private", label: "tailored to your priorities" },
+          { value: "Measured", label: "focused on what matters" },
+          { value: "Next step", label: "only where the fit appears genuine" },
         ]}
       />
 
       <section className="section-padding pt-0">
         <div className="container-shell">
           <SectionHeading
-            eyebrow="What the demo includes"
-            title="A serious product conversation, not a vague sales tour."
-            description="The guided demo is built to show workflow fit, not to overwhelm teams with irrelevant features."
+            eyebrow="What the discussion includes"
+            title="A structured overview, not a rushed presentation."
+            description="The overview is designed to clarify fit and context, not to overwhelm teams with unnecessary detail."
           />
           <ProcessSteps steps={demoSteps} />
         </div>
@@ -124,8 +124,8 @@ export default function DemoPage() {
       <section className="section-padding bg-muted/30">
         <div className="container-shell">
           <MeetingSchedulerCard
-            title="Book a guided demo slot"
-            description="Use this booking section if you want to move directly to a product walkthrough or a CRM plus leads discussion."
+            title="Arrange a private overview"
+            description="Use this section if you would prefer to move directly to a structured conversation."
           />
         </div>
       </section>
@@ -133,24 +133,24 @@ export default function DemoPage() {
       <section id="demo-form" className="section-padding">
         <div className="container-shell grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
           <div className="space-y-6">
-            <span className="eyebrow">Demo request</span>
-            <h2 className="section-title max-w-xl text-foreground">Request a guided walkthrough for your team.</h2>
+            <span className="eyebrow">Private overview</span>
+            <h2 className="section-title max-w-xl text-foreground">Tell us what you would like to discuss.</h2>
             <p className="max-w-xl text-lg leading-8 text-muted-foreground">
-              Share your company profile, team size, and what you want to evaluate. We will tailor the conversation around the use case that matters most.
+              Share a little context about your firm and the areas you would like to review. We will shape the discussion accordingly.
             </p>
             <Card className="section-card">
               <CardContent className="space-y-3 p-8">
-                <h3 className="card-title text-foreground">Typical demo focus areas</h3>
-                <p className="fine-print">Lead pipeline setup, client records, follow-up process, management visibility, and lead partnership fit.</p>
+                <h3 className="card-title text-foreground">Typical discussion areas</h3>
+                <p className="fine-print">Working method, team coordination, internal visibility, client handling, and the shape of a possible engagement.</p>
               </CardContent>
             </Card>
           </div>
           <LeadQualificationForm
             locale={locale}
             formType="company"
-            title="Request guided demo"
-            description="Tell us what your team wants to see."
-            submitLabel="Request demo"
+            title="Request a private overview"
+            description="Tell us what would be most useful to cover."
+            submitLabel="Request a private overview"
             source="demo"
           />
         </div>
@@ -159,11 +159,11 @@ export default function DemoPage() {
       <section className="section-padding pt-0">
         <div className="container-shell">
           <CtaPanel
-            eyebrow="Need commercial detail?"
-            title="If you want pricing or the full company positioning first, we have both ready."
-            description="Use pricing for plan detail or return to the company overview for CRM, qualified leads, and data protection messaging."
+            eyebrow="Need more context first?"
+            title="Review pricing or return to the professional overview before getting in touch."
+            description="You can read a little more first, then return when you are ready for a private discussion."
             primaryAction={{ href: ctaLinks.viewPricing, label: "View pricing" }}
-            secondaryAction={{ href: routeLinks.forCompanies, label: "Back to company overview" }}
+            secondaryAction={{ href: routeLinks.forCompanies, label: "Back to professional overview" }}
           />
         </div>
       </section>

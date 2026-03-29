@@ -32,7 +32,7 @@ export function GccCbiStrategyArticle({
       ? "مقالات إضافية من نفس مركز المحتوى."
       : locale === "ru"
         ? "Другие материалы из этого же контент-хаба."
-        : "More articles from the same advisory content hub."
+        : "Further reading from the editorial library."
 
   const internalLinks = {
     citizenship: localizeHref(locale, "/citizenship-by-investment"),
@@ -324,7 +324,7 @@ export function GccCbiStrategyArticle({
                   { label: "Citizenship by investment overview", href: internalLinks.citizenship },
                   { label: "GCC passport comparison", href: internalLinks.gccComparison },
                   { label: "Best CBI programs in 2026", href: internalLinks.bestPrograms },
-                  { label: "Contact the advisory team", href: internalLinks.contact },
+    { label: "Arrange a written introduction", href: internalLinks.contact },
                 ].map((item) => (
                   <Link
                     key={item.href}

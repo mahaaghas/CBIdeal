@@ -8,6 +8,7 @@ type SitemapEntry = MetadataRoute.Sitemap[number]
 
 const corePaths = [
   "/",
+  siteConfig.links.routes.about,
   siteConfig.links.routes.programs,
   siteConfig.links.routes.caribbeanComparison,
   siteConfig.links.routes.bookConsultation,
@@ -24,6 +25,7 @@ const corePaths = [
 const excludedDynamicSlugs = new Set([
   "caribbean-cbi-comparison",
   "book-a-cbi-consultation",
+  "about",
   "citizenship-by-investment",
   "contact",
   "crm",

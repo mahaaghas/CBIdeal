@@ -1,7 +1,8 @@
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Compass } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { getRequestDirection } from "@/lib/i18n/request"
+import { getRequestDirection, getRequestLocale } from "@/lib/i18n/request"
+import { getConversionCtaCopy, getConversionGuideHref } from "@/lib/conversion"
 import { cn } from "@/lib/utils"
 
 interface Action {
@@ -15,11 +16,22 @@ interface CtaPanelProps {
   description: string
   primaryAction: Action
   secondaryAction?: Action
+  showGuideLink?: boolean
 }
 
-export function CtaPanel({ eyebrow, title, description, primaryAction, secondaryAction }: CtaPanelProps) {
+export function CtaPanel({
+  eyebrow,
+  title,
+  description,
+  primaryAction,
+  secondaryAction,
+  showGuideLink = true,
+}: CtaPanelProps) {
+  const locale = getRequestLocale()
   const direction = getRequestDirection()
   const isRtl = direction === "rtl"
+  const conversionCopy = getConversionCtaCopy(locale)
+  const guideHref = getConversionGuideHref(locale)
 
   return (
     <div className="hero-panel overflow-hidden px-6 py-8 sm:px-8 md:px-12 md:py-11">
@@ -38,21 +50,20 @@ export function CtaPanel({ eyebrow, title, description, primaryAction, secondary
             isRtl && "sm:flex-row-reverse lg:items-start",
           )}
         >
-          <Button size="lg" variant="secondary" className="h-12 w-full rounded-full px-6 text-sm font-semibold sm:w-auto" asChild>
+          <Button size="lg" variant="secondary" data-cta-kind="primary" className="conversion-primary-button w-full sm:w-auto" asChild>
             <Link href={primaryAction.href}>
+              <Compass className="size-4" />
               {primaryAction.label}
-              <ArrowRight className="size-4" />
             </Link>
           </Button>
-          {secondaryAction ? (
-            <Button
-              size="lg"
-              variant="outline"
-              className="h-12 w-full rounded-full border-white/20 bg-transparent px-6 text-sm font-semibold text-primary-foreground hover:bg-white/10 sm:w-auto"
-              asChild
-            >
-              <Link href={secondaryAction.href}>{secondaryAction.label}</Link>
-            </Button>
+          <Link href={secondaryAction?.href ?? primaryAction.href} className="conversion-secondary-button w-full sm:w-auto">
+            {secondaryAction?.label ?? conversionCopy.secondary}
+            <ArrowRight className="size-4" />
+          </Link>
+          {showGuideLink ? (
+            <Link href={guideHref} className="conversion-tertiary-link">
+              {conversionCopy.tertiary}
+            </Link>
           ) : null}
         </div>
       </div>

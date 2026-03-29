@@ -33,9 +33,9 @@ export async function generateMetadata(): Promise<Metadata> {
       description: cmsPage.seo.description || settings.siteDescription,
       path: localizeHref(locale, "/for-companies"),
       keywords: cmsPage.seo.keywords ?? [
-        "immigration CRM",
-        "passport company CRM",
-        "citizenship by investment software",
+        "licensed firms",
+        "professional immigration enquiries",
+        "advisory practice overview",
       ],
       image: cmsPage.seo.openGraphImage?.url,
       openGraphTitle: cmsPage.seo.openGraphTitle,
@@ -50,21 +50,21 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
     title:
       locale === "ar"
-        ? "CRM لشركات الجوازات ومكاتب الهجرة"
+        ? "للمكاتب المرخصة والممارسات الاستشارية"
         : locale === "ru"
-          ? "CRM для паспортных компаний и иммиграционных фирм"
-          : "CRM for Passport Companies and Immigration Firms",
+          ? "Для лицензированных фирм и консультативных практик"
+          : "For Licensed Firms and Advisory Practices",
     description:
       locale === "ar"
-        ? "استكشف نظام CRM مصمم لشركات الجوازات والهجرة مع العروض التوضيحية والأسعار وحماية البيانات وشراكات العملاء المحتملين."
+        ? "مدخل مهني أكثر هدوءاً للمكاتب المرخصة والممارسات الاستشارية التي ترغب في مناقشة مناسبة ومحددة."
         : locale === "ru"
-          ? "Изучите CRM для паспортных и иммиграционных фирм с демо, тарифами, позицией по защите данных и партнёрствами по лидам."
-          : "Explore a CRM built for passport companies and immigration firms, with guided demos, pricing, data protection positioning, and qualified lead partnerships.",
+          ? "Более спокойная профессиональная точка входа для лицензированных фирм и консультативных практик."
+          : "Explore a structured entry point for licensed firms and advisory practices seeking a more private professional discussion.",
     path: localizeHref(locale, "/for-companies"),
     keywords: [
-      "immigration CRM",
-      "passport company CRM",
-      "citizenship by investment software",
+        "licensed firms",
+        "advisory practices",
+        "professional immigration enquiries",
     ],
     siteName: settings.siteName,
     siteUrl: settings.siteUrl,
@@ -74,16 +74,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const trustItems = [
   {
-    title: "Built for immigration workflows",
-    description: "Built for passport companies, CBI agencies, and immigration firms that need a CRM aligned with their actual sales and case process.",
+    title: "Structured for specialist firms",
+    description: "Designed for licensed practices and specialist teams that value clarity, order, and a more considered professional tone.",
   },
   {
-    title: "CRM and lead partnerships",
-    description: "Companies can adopt the CRM, receive qualified investor leads, or structure a combined commercial setup.",
+    title: "Private professional discussions",
+    description: "The page is designed for serious conversations around working methods, institutional fit, and longer-term relationships.",
   },
   {
-    title: "Sales-ready and credible",
-    description: "The product story stays premium, specific, and credible for firms making a serious buying decision.",
+    title: "Credible and well positioned",
+    description: "The presentation remains premium, specific, and credible for firms making careful decisions.",
   },
   {
     title: "Privacy-aware by design",
@@ -94,30 +94,30 @@ const trustItems = [
 const features = [
   {
     icon: Building2,
-    title: "Lead pipeline management",
-    description: "Track every enquiry from first contact to consultation, proposal, and retained case without losing ownership across the team.",
+    title: "Structured enquiry oversight",
+    description: "Maintain a clearer view of incoming enquiries, ownership, and internal continuity across the team.",
   },
   {
     icon: FileCheck2,
-    title: "Client profiles and case tracking",
-    description: "Store client notes, categorize programs, and keep onboarding or case status visible across advisers and operations.",
+    title: "Client records and case continuity",
+    description: "Keep client notes, jurisdictional context, and case status visible in a way that supports calmer internal coordination.",
   },
   {
     icon: MessagesSquare,
-    title: "Follow-ups and team coordination",
-    description: "Keep reminders, follow-up responsibility, and next actions organized for a sales cycle that rarely closes in one call.",
+    title: "Internal coordination",
+    description: "Keep responsibilities, reminders, and next actions organised across a process that often develops over time.",
   },
   {
     icon: BarChart3,
-    title: "Basic reporting visibility",
-    description: "Give leadership a simple view of volume, ownership, and progress without a heavy reporting implementation.",
+    title: "Management visibility",
+    description: "Give leadership a simple view of volume, ownership, and progress without making reporting the centre of the experience.",
   },
 ]
 
 const proofBlocks = [
-  "Built around the workflow of immigration teams, not generic SaaS templates.",
-  "Designed for lead handling, handoff clarity, and follow-up discipline.",
-  "Positioned to support CRM rollout, qualified leads, or both together.",
+  "Built around the working rhythm of specialist immigration teams, not generic off-the-shelf structures.",
+  "Designed for continuity, discretion, and a more orderly internal process.",
+  "Suitable for firms seeking a calmer and more structured way to organise professional discussions.",
 ]
 
 export default async function ForCompaniesPage() {
@@ -126,108 +126,108 @@ export default async function ForCompaniesPage() {
   const routeLinks = getLocalizedRouteLinks(locale)
   const cmsPage = await getLandingPageBySlug("for-companies")
   const copy = {
-    heroEyebrow: locale === "ar" ? "CRM وشراكات العملاء المحتملين" : locale === "ru" ? "CRM и лид-партнерства" : "CRM and lead partnerships",
+    heroEyebrow: locale === "ar" ? "للشركات والمكاتب المتخصصة" : locale === "ru" ? "Для фирм и профессиональных практик" : "For licensed firms and advisory practices",
     heroTitle:
       locale === "ar"
-        ? "CRM مبني لشركات الجوازات ومكاتب الهجرة."
+        ? "مدخل مهني أكثر هدوءاً للمكاتب المرخصة والممارسات الاستشارية."
         : locale === "ru"
-          ? "CRM для паспортных компаний и иммиграционных фирм."
-          : "CRM built for passport companies and immigration firms.",
+          ? "Более спокойная профессиональная точка входа для лицензированных фирм и консультативных практик."
+          : "A more considered entry point for licensed firms and advisory practices.",
     heroDescription:
       locale === "ar"
-        ? "أدر العملاء المحتملين وسجلات العملاء والمتابعات في مكان واحد مع منح شركتك أيضًا طريقًا واضحًا للحصول على طلب مستثمرين مؤهلين من صفحاتنا."
+        ? "استخدم هذه الصفحة إذا كنت تمثل جهة مهنية وتبحث عن نقاش خاص وأكثر تنظيماً حول الملاءمة وطبيعة العلاقة المهنية المحتملة."
         : locale === "ru"
-          ? "Управляйте лидами, карточками клиентов и follow-up в одном месте, а также получайте понятный путь к квалифицированному инвесторскому спросу с наших лендингов."
-          : "Manage leads, client records, and follow-ups in one place while also giving your firm a clear path to receive qualified investor demand from our landing pages.",
-    bookMeeting: locale === "ar" ? "احجز اجتماعًا" : locale === "ru" ? "Забронировать встречу" : "Book a meeting",
-    requestDemo: locale === "ar" ? "اطلب عرضًا إرشاديًا" : locale === "ru" ? "Запросить guided demo" : "Request a guided demo",
-    whatFirms: locale === "ar" ? "ما الذي يمكن للشركات فعله هنا" : locale === "ru" ? "Что компания может сделать здесь" : "What firms can do here",
-    crmSaas: locale === "ar" ? "CRM للشركات" : locale === "ru" ? "CRM SaaS" : "CRM SaaS",
+          ? "Используйте эту страницу, если вы представляете фирму и хотите начать более частный и структурированный разговор о профессиональной пригодности и формате возможного взаимодействия."
+          : "Use this section if you represent a firm and would like a more private discussion around structure, professional fit, and how a relationship might be approached.",
+    bookMeeting: locale === "ar" ? "رتّب محادثة خاصة" : locale === "ru" ? "Договориться о частном обсуждении" : "Arrange a private discussion",
+    requestDemo: locale === "ar" ? "اطلب عرضًا خاصًا" : locale === "ru" ? "Запросить частный обзор" : "Request a private overview",
+    whatFirms: locale === "ar" ? "كيف يُستخدم هذا القسم" : locale === "ru" ? "Как используется эта страница" : "How firms use this section",
+    crmSaas: locale === "ar" ? "نظرة مهنية منظمة" : locale === "ru" ? "Профессиональный обзор" : "Working overview",
     crmSaasDesc:
       locale === "ar"
-        ? "نظّم العملاء المحتملين وملفات العملاء والملاحظات ومراحل القضايا ومسارات المتابعة في أداة مبنية لفرق الهجرة."
+        ? "هذه الصفحة تمنحك قراءة أوضح لطبيعة المنصة، والنبرة المهنية، وكيف يمكن أن يبدأ النقاش بشكل أكثر هدوءاً."
         : locale === "ru"
-          ? "Организуйте лиды, профили клиентов, заметки, этапы кейсов и follow-up-процессы в системе, созданной для иммиграционных команд."
-          : "Organize leads, client profiles, notes, case stages, and follow-up workflows in a tool built for immigration teams.",
-    qualifiedLeads: locale === "ar" ? "خيار العملاء المؤهلين" : locale === "ru" ? "Опция квалифицированных лидов" : "Qualified lead option",
+          ? "Эта страница помогает спокойно понять характер платформы, профессиональный тон и то, как может начаться дальнейший разговор."
+          : "Review how enquiries, client context, internal notes, and continuity can sit within a more orderly working environment.",
+    qualifiedLeads: locale === "ar" ? "محادثة مهنية أوسع" : locale === "ru" ? "Более широкое профессиональное обсуждение" : "Professional relationship",
     qualifiedLeadsDesc:
       locale === "ar"
-        ? "اعمل معنا على طلب مستثمرين دافئ يتم جمعه عبر نماذج تأهيل ومطابقة مع المزود المناسب."
+        ? "قد تستخدم بعض الجهات هذا القسم لفهم ما إذا كانت هناك أرضية مناسبة لنقاش مهني أوسع ضمن إطار أكثر تحفظاً."
         : locale === "ru"
-          ? "Работайте с нами по теплому инвесторскому спросу, собранному через квалификационные формы и логику подбора провайдера."
-          : "Work with us on warm investor demand captured through profile-based intake forms and provider matching logic.",
-    productEyebrow: locale === "ar" ? "عرض المنتج" : locale === "ru" ? "Продукт" : "Product showcase",
+          ? "Некоторые фирмы используют эту страницу, чтобы понять, есть ли спокойная и уместная основа для более широкого профессионального разговора."
+          : "Use the page to begin a more thoughtful discussion around structure, presentation, and the kind of relationship that may be worth exploring.",
+    productEyebrow: locale === "ar" ? "نظرة عامة" : locale === "ru" ? "Обзор" : "Overview",
     productTitle:
       locale === "ar"
-        ? "قصة CRM مركزة لفرق الجوازات والهجرة."
+        ? "عرض أقرب إلى واقع الفرق المتخصصة."
         : locale === "ru"
-          ? "Сфокусированная CRM-история для паспортных и иммиграционных команд."
-          : "A focused CRM story for passport and immigration teams.",
+          ? "Более сфокусированный обзор для специализированных команд."
+          : "A clearer professional view for specialist firms.",
     productDescription:
       locale === "ar"
-        ? "تبقى قصة المنتج قريبة من سلوك الفرق الحقيقي: الاستفسارات الواردة وملكية المستشار وملفات العملاء وتصنيف القضايا وانضباط المتابعة."
+        ? "يركز العرض على ما يهم الفرق المهنية فعلاً: وضوح الحالة، وسياق العميل، وتماسك العمل داخل الفريق."
         : locale === "ru"
-          ? "Продуктовая история привязана к реальному поведению команд: входящие запросы, ownership консультанта, профили клиентов, категоризация кейсов и follow-up discipline."
-          : "The product story stays close to real team behavior: incoming enquiries, adviser ownership, client profiles, case categorization, and follow-up discipline.",
-    partnershipEyebrow: locale === "ar" ? "شراكة العملاء المحتملين" : locale === "ru" ? "Лид-партнерство" : "Lead partnership",
+          ? "Обзор остаётся близким к тому, что действительно важно профессиональным командам: ясность по статусу, контекст клиента и согласованность внутренней работы."
+          : "The overview remains close to day-to-day realities: incoming enquiries, adviser responsibility, client context, and continuity of follow-up.",
+    partnershipEyebrow: locale === "ar" ? "علاقات مهنية" : locale === "ru" ? "Профессиональные отношения" : "Professional relationships",
     partnershipTitle:
       locale === "ar"
-        ? "نساعد الشركات أيضًا على تلقي عملاء مستثمرين مؤهلين."
+        ? "تبدأ بعض الجهات من هنا لفهم ما إذا كان هناك أساس مناسب لعلاقة مهنية أوسع."
         : locale === "ru"
-          ? "Мы также помогаем компаниям получать квалифицированных инвесторских лидов."
-          : "We also help firms receive qualified investor leads.",
+          ? "Некоторые фирмы начинают здесь, чтобы понять, уместен ли более широкий профессиональный формат."
+          : "Some firms begin here when exploring a wider professional relationship.",
     partnershipDescription:
       locale === "ar"
-        ? "تجمع صفحاتنا الموجهة للمستثمرين طلبًا مؤهلًا عبر أسئلة إدخال منظمة. نقوم بالتصفية بحسب الملف والميزانية والأهداف، ثم نربط الطلب بالمزود المناسب."
+        ? "المقصود ليس فتح مسار تجاري صريح، بل معرفة ما إذا كانت هناك مناسبة مهنية حقيقية لنقاش أكثر تحديداً."
         : locale === "ru"
-          ? "Наши investor-facing страницы собирают квалифицированный спрос через структурированные intake-вопросы. Мы фильтруем по профилю, бюджету и целям, а затем соединяем запрос с релевантным провайдером."
-          : "Our investor-facing pages collect qualified demand through structured intake questions. We filter for profile, budget, and goals, then connect matching leads to relevant providers.",
-    companyFormEyebrow: locale === "ar" ? "نموذج استفسار الشركات" : locale === "ru" ? "Форма запроса компании" : "Company enquiry form",
+          ? "Речь не о прямой коммерческой подаче, а о понимании того, есть ли реальная профессиональная уместность для более предметного разговора."
+          : "The wider platform can support a more structured conversation around presentation, working methods, and how introductions may be handled where appropriate.",
+    companyFormEyebrow: locale === "ar" ? "نموذج استفسار الشركات" : locale === "ru" ? "Форма запроса компании" : "Professional enquiry form",
     companyFormTitle:
-      locale === "ar" ? "أخبرنا بما تحتاجه شركتك." : locale === "ru" ? "Расскажите, что нужно вашей фирме." : "Tell us what your firm needs.",
+      locale === "ar" ? "أخبرنا بما تحتاجه شركتك الآن." : locale === "ru" ? "Расскажите, что нужно вашей фирме." : "Tell us what your firm needs.",
     companyFormDescription:
       locale === "ar"
-        ? "استخدم النموذج لأسئلة CRM أو مناقشات العملاء المؤهلين أو محادثة مشتركة حول المنتج وتوليد الطلب."
+        ? "استخدم النموذج إذا كنت ترغب في مشاركة السياق الحالي لفريقك وبدء نقاش مهني أكثر هدوءاً."
         : locale === "ru"
-          ? "Используйте форму для вопросов по CRM, обсуждения квалифицированных лидов или комбинированного разговора о продукте и генерации спроса."
-          : "Use the form for CRM questions, qualified lead discussions, or a combined conversation about product and demand generation.",
-    formTitle: locale === "ar" ? "اطلب محادثة للشركة" : locale === "ru" ? "Запросить разговор для компании" : "Request a company conversation",
+          ? "Используйте форму, если хотите описать текущий контекст своей команды и начать более спокойный профессиональный разговор."
+          : "Use the form for a professional enquiry about structure, fit, or the most suitable next discussion.",
+    formTitle: locale === "ar" ? "اطلب محادثة مهنية" : locale === "ru" ? "Запросить профессиональное обсуждение" : "Request a professional discussion",
     formDescription:
       locale === "ar"
-        ? "شارك ملف فريقك وسنعود إليك بالإعداد الأكثر ملاءمة."
+        ? "شارك وضع فريقك الحالي وسنعود إليك بالصورة أو الإعداد الأقرب لاحتياجك."
         : locale === "ru"
           ? "Поделитесь профилем своей команды, и мы вернемся с наиболее релевантной конфигурацией."
-          : "Share your team profile and we will come back with the most relevant setup.",
-    submit: locale === "ar" ? "تواصل مع فريقنا" : locale === "ru" ? "Связаться с нашей командой" : "Contact our team",
+          : "Share a little context and we will return in the most suitable format.",
+    submit: locale === "ar" ? "اطلب محادثة" : locale === "ru" ? "Запросить обсуждение" : "Request discussion",
   }
   const localizedTrustItems =
     locale === "ar"
       ? [
-          { title: "مبني لسير عمل الهجرة", description: "مصمم لشركات الجوازات ووكالات CBI ومكاتب الهجرة التي تحتاج إلى CRM منسجم مع عملية البيع والقضية الفعلية." },
-          { title: "CRM وشراكات العملاء المحتملين", description: "يمكن للشركات اعتماد الـ CRM أو استلام عملاء مؤهلين أو هيكلة نموذج تجاري يجمع بين الاثنين." },
-          { title: "جاهز للبيع وموثوق", description: "تبقى قصة المنتج فاخرة ومحددة وموثوقة للشركات التي تتخذ قرار شراء جاد." },
-          { title: "يراعي الخصوصية من الأساس", description: "يطمئن الهيكل الشركات بشأن السرية والوصول الداخلي والتعامل المسؤول مع البيانات." },
+          { title: "مصمم للمكاتب المتخصصة", description: "مهيأ للجهات المرخصة والفرق المتخصصة التي تفضل الوضوح والنظام ونبرة مهنية أكثر هدوءاً." },
+          { title: "نقاشات مهنية خاصة", description: "تمنح الصفحة مساحة مناسبة لمحادثات جادة حول الملاءمة المؤسسية وطبيعة العلاقة المهنية." },
+          { title: "عرض موثوق ومتماسك", description: "يبقى التقديم محدداً وهادئاً وملائماً للجهات التي تتخذ قراراتها بعناية." },
+          { title: "يراعي الخصوصية من البداية", description: "تم تصميم البنية بما يطمئن الفرق المهنية بشأن السرية والوصول المنظم والتعامل المسؤول مع البيانات." },
         ]
       : locale === "ru"
         ? [
-            { title: "Создан для иммиграционных процессов", description: "Подходит паспортным компаниям, CBI-агентствам и иммиграционным фирмам, которым нужен CRM под реальный процесс продаж и кейсов." },
-            { title: "CRM и лид-партнерства", description: "Фирмы могут внедрить CRM, получать квалифицированные лиды или обсуждать комбинированную коммерческую модель." },
-            { title: "Готово к продажам и выглядит убедительно", description: "История продукта остается премиальной, конкретной и убедительной для серьезного B2B-решения." },
-            { title: "Privacy-aware по дизайну", description: "Структура с самого начала успокаивает компании насчет конфиденциальности, внутреннего доступа и ответственной работы с данными." },
+            { title: "Для специализированных практик", description: "Подходит лицензированным фирмам и профессиональным командам, которым важны ясность, порядок и более сдержанный тон." },
+            { title: "Частные профессиональные разговоры", description: "Страница создаёт пространство для серьёзных разговоров об институциональной пригодности и формате взаимодействия." },
+            { title: "Убедительно и сдержанно", description: "Подача остаётся премиальной, конкретной и уместной для фирм, принимающих взвешенные решения." },
+            { title: "Приватность с самого начала", description: "Структура изначально подчёркивает конфиденциальность, организованный доступ и ответственное обращение с данными." },
           ]
         : trustItems
   const localizedProofBlocks =
     locale === "ar"
       ? [
-          "مبني حول سير عمل فرق الهجرة لا قوالب SaaS العامة.",
-          "مصمم لمعالجة العملاء المحتملين ووضوح الإحالة وانضباط المتابعة.",
-          "مهيأ ليدعم إطلاق الـ CRM أو العملاء المؤهلين أو كليهما معًا.",
+          "يعرض المنصة بصيغة أقرب إلى واقع الجهات المتخصصة، لا إلى قوالب عامة أو مبالغ فيها.",
+          "يعطي انطباعاً أكثر هدوءاً وتنظيماً حول الطريقة التي يمكن أن تبدأ بها العلاقة المهنية.",
+          "يفيد الجهات التي تفضل الوضوح والخصوصية قبل أي خطوة أكثر تحديداً.",
         ]
       : locale === "ru"
         ? [
-            "Построено вокруг процессов иммиграционных команд, а не вокруг универсальных SaaS-шаблонов.",
-            "Спроектировано для обработки лидов, ясной передачи и дисциплины follow-up.",
-            "Позиционируется для rollout CRM, квалифицированных лидов или обеих моделей сразу.",
+            "Показывает платформу ближе к реальности специализированных практик, а не к шаблонным продуктовым обещаниям.",
+            "Создаёт более спокойное и структурированное впечатление о том, как может начаться профессиональный диалог.",
+            "Полезно для фирм, которым важны ясность и приватность до более предметного следующего шага.",
           ]
         : proofBlocks
 
@@ -248,9 +248,9 @@ export default async function ForCompaniesPage() {
         primaryAction={{ href: "#meeting", label: copy.bookMeeting }}
         secondaryAction={{ href: ctaLinks.requestDemo, label: copy.requestDemo }}
         stats={[
-          { value: "CRM", label: "for specialized immigration workflows" },
-          { value: "Leads", label: "for matched investor demand" },
-          { value: "Pricing", label: "built for niche B2B rollout" },
+          { value: "Structure", label: locale === "ar" ? "لعرض تشغيلي أكثر وضوحًا" : "for a clearer operating view" },
+          { value: "Discretion", label: locale === "ar" ? "للنقاشات المهنية المدروسة" : "for measured professional discussions" },
+          { value: "Fit", label: locale === "ar" ? "لتقدير الملاءمة بشكل أهدأ" : "for calmer fit assessment" },
         ]}
       >
         <div className="space-y-4 rounded-[28px] border border-white/10 bg-white/10 p-6 backdrop-blur">
@@ -301,33 +301,37 @@ export default async function ForCompaniesPage() {
             </div>
             <Card className="section-card overflow-hidden">
               <CardContent className="space-y-6 p-8">
-                <span className="eyebrow">Product view</span>
-                <h3 className="card-title text-foreground">A clearer view of the workflow your team would manage every day.</h3>
+                <span className="eyebrow">{locale === "ar" ? "نظرة عامة" : "Overview"}</span>
+                <h3 className="card-title text-foreground">{locale === "ar" ? "رؤية أوضح لبيئة العمل التي يعتمد عليها فريقك يوميًا." : "A clearer view of the environment your team would work within day to day."}</h3>
                 <p className="fine-print">
-                  The preview focuses on the parts buyers care about first: lead ownership, case status, follow-up control, and team visibility.
+                  {locale === "ar"
+                    ? "يركز هذا العرض على ما يهم المشتري أولًا: ملكية الطلب، وحالة الملف، وانضباط المتابعة، ووضوح العمل داخل الفريق."
+                    : "The overview focuses on the areas teams usually care about first: ownership, status clarity, internal continuity, and visibility."}
                 </p>
                 <div className="rounded-[28px] border border-border/70 bg-primary p-6 text-primary-foreground shadow-[0_24px_60px_rgba(20,26,42,0.22)]">
                   <div className="grid gap-4">
                     <div className="rounded-2xl border border-white/10 bg-white/8 p-4">
                       <div className="mb-2 flex items-center justify-between text-sm text-primary-foreground/70">
-                        <span>Lead board</span>
-                        <span>12 active enquiries</span>
+                        <span>{locale === "ar" ? "المشهد العام" : "General overview"}</span>
+                        <span>{locale === "ar" ? "12 ملفاً نشطاً" : "12 active matters"}</span>
                       </div>
                       <div className="space-y-3">
-                        {["New investor call", "Malta follow-up", "Portugal family review"].map((row) => (
+                        {locale === "ar"
+                          ? ["مراجعة حالة جديدة", "مراجعة مالطا", "ملف عائلي للبرتغال"].map((row) => (
+                              <div key={row} className="rounded-xl border border-white/10 bg-black/10 px-4 py-3 text-sm">
+                                {row}
+                              </div>
+                            ))
+                          : ["New enquiry note", "Malta review", "Portugal family case"].map((row) => (
                           <div key={row} className="rounded-xl border border-white/10 bg-black/10 px-4 py-3 text-sm">
                             {row}
                           </div>
-                        ))}
+                            ))}
                       </div>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="rounded-2xl border border-white/10 bg-black/10 p-4 text-sm">
-                        Client notes, status, and adviser ownership
-                      </div>
-                      <div className="rounded-2xl border border-white/10 bg-black/10 p-4 text-sm">
-                        Team visibility and next-step reminders
-                      </div>
+                      <div className="rounded-2xl border border-white/10 bg-black/10 p-4 text-sm">{locale === "ar" ? "ملاحظات العميل، والحالة الحالية، وملكية المستشار" : "Client notes, status, and adviser ownership"}</div>
+                      <div className="rounded-2xl border border-white/10 bg-black/10 p-4 text-sm">{locale === "ar" ? "رؤية أوضح للفريق وتذكيرات بالخطوات التالية" : "Team visibility and next-step reminders"}</div>
                     </div>
                   </div>
                 </div>
@@ -346,10 +350,16 @@ export default async function ForCompaniesPage() {
               {copy.partnershipDescription}
             </p>
             <div className="space-y-4">
-              {[
-                "We collect demand from end clients looking for citizenship or residency options.",
-                "We qualify against budget, timeframe, and destination interest before handoff.",
-                "We can discuss CRM only, leads only, or a combined commercial model.",
+              {[ 
+                locale === "ar"
+                  ? "تبدأ هذه الصفحة من نقاش مهني منظم بدلاً من انتقال سريع إلى خطوات غير مناسبة."
+                  : "We begin with a structured professional discussion rather than a rushed introduction.",
+                locale === "ar"
+                  ? "ننظر أولاً إلى السياق العام والتوقيت والأهداف قبل اقتراح أي خطوة لاحقة."
+                  : "We consider context, timing, and objectives before suggesting any next step.",
+                locale === "ar"
+                  ? "إذا بدت الملاءمة حقيقية، يمكن عندها الانتقال إلى نقاش أكثر تحديداً."
+                  : "If the fit appears genuine, the discussion can then move into a more defined format.",
               ].map((point) => (
                 <div key={point} className="flex items-start gap-3">
                   <ShieldCheck className="mt-1 size-5 text-primary" />
@@ -360,8 +370,8 @@ export default async function ForCompaniesPage() {
           </div>
           <Card className="section-card">
             <CardContent className="space-y-4 p-8">
-              <span className="eyebrow">Why firms engage</span>
-              <h3 className="card-title text-foreground">Built for the workflow of specialized immigration teams.</h3>
+              <span className="eyebrow">{locale === "ar" ? "لماذا تدخل الشركات هذا المسار" : "Why firms begin here"}</span>
+              <h3 className="card-title text-foreground">{locale === "ar" ? "التجربة مبنية حول الجدية والتنظيم." : "The experience is built around seriousness, structure, and fit."}</h3>
               <div className="space-y-3">
                 {localizedProofBlocks.map((block) => (
                   <div key={block} className="rounded-2xl border border-border/70 bg-muted/30 px-4 py-4 text-sm leading-7 text-muted-foreground">
@@ -370,7 +380,7 @@ export default async function ForCompaniesPage() {
                 ))}
               </div>
               <Button variant="outline" asChild>
-                <Link href={routeLinks.partners}>Explore partnerships</Link>
+                  <Link href={routeLinks.partners}>{locale === "ar" ? "استكشف العلاقات المهنية" : "Explore professional relationships"}</Link>
               </Button>
             </CardContent>
           </Card>
@@ -380,8 +390,8 @@ export default async function ForCompaniesPage() {
       <section id="meeting" className="section-padding">
         <div className="container-shell">
           <MeetingSchedulerCard
-            title="Book a CRM, lead, or rollout conversation"
-            description="Schedule a first conversation to discuss CRM fit, qualified lead delivery, or the right rollout approach for your team."
+            title="Arrange a private discussion"
+            description="Use this section if you would like to arrange an introductory private discussion."
           />
         </div>
       </section>
@@ -409,9 +419,9 @@ export default async function ForCompaniesPage() {
       <section className="section-padding bg-muted/30">
         <div className="container-shell">
           <SectionHeading
-            eyebrow="Pricing preview"
-            title="Simple, credible pricing for a specialized B2B SaaS."
-            description="Pricing is structured per user and leaves room for enterprise rollout and lead partnership pricing where required."
+            eyebrow="Engagement options"
+            title={locale === "ar" ? "تسعير واضح وموثوق لهيكل التعامل." : "Clear, credible options for a structured engagement."}
+            description={locale === "ar" ? "الأسعار مصاغة بشكل واضح، مع مرونة للنطاق الأوسع عندما يكون ذلك منطقيًا." : "The options are presented clearly, with room for broader arrangements where that proves sensible."}
           />
           <PricingSection locale={locale} preview />
         </div>
@@ -421,13 +431,15 @@ export default async function ForCompaniesPage() {
         <div className="container-shell grid gap-6 lg:grid-cols-2">
           <Card className="section-card">
             <CardContent className="space-y-4 p-8">
-              <span className="eyebrow">Data protection</span>
-              <h3 className="card-title text-foreground">Built to support confidential client handling.</h3>
+              <span className="eyebrow">{locale === "ar" ? "حماية البيانات" : "Data protection"}</span>
+              <h3 className="card-title text-foreground">{locale === "ar" ? "مصمم لدعم التعامل السري مع بيانات العملاء." : "Designed to support confidential client handling."}</h3>
               <p className="fine-print">
-                We position the CRM and lead process around responsible handling of investor and company data, structured access, and privacy-aware internal workflows.
+                {locale === "ar"
+                  ? "تم تأطير التجربة بما يحترم خصوصية بيانات المستثمرين والشركات، ويعتمد على وصول منظم وتعامل داخلي مسؤول."
+                  : "The wider structure is framed around responsible handling of investor and company information, restricted access, and a privacy-aware way of working."}
               </p>
               <Button variant="outline" asChild>
-                <Link href={routeLinks.dataProtection}>Read data protection</Link>
+                <Link href={routeLinks.dataProtection}>{locale === "ar" ? "اقرأ سياسة حماية البيانات" : "Read data protection"}</Link>
               </Button>
             </CardContent>
           </Card>
@@ -443,14 +455,16 @@ export default async function ForCompaniesPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent" />
             </div>
             <CardContent className="space-y-4 p-8">
-              <span className="eyebrow">Guided demo</span>
-              <h3 className="card-title text-foreground">Not ready for a product login? Start with a guided walkthrough.</h3>
+              <span className="eyebrow">{locale === "ar" ? "عرض خاص" : "Private overview"}</span>
+              <h3 className="card-title text-foreground">{locale === "ar" ? "إذا لم تكن تريد التواصل مباشرة بعد، ابدأ بعرض خاص." : "If you would prefer a calmer first step, begin with a private overview."}</h3>
               <p className="fine-print">
-                The guided demo gives teams a clearer buying experience when a self-serve trial is not the right first step.
+                {locale === "ar"
+                  ? "العرض الإرشادي يمنح الفريق تجربة شراء أوضح عندما لا تكون التجربة الذاتية هي الخطوة الأولى المناسبة."
+                  : "A private overview often gives firms a clearer first impression when a direct introduction would feel too abrupt."}
               </p>
               <Button asChild>
                 <Link href={ctaLinks.requestDemo}>
-                  Request guided demo
+                  {locale === "ar" ? "اطلب عرضًا خاصًا" : "Request a private overview"}
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
@@ -462,11 +476,11 @@ export default async function ForCompaniesPage() {
       <section className="section-padding pt-0">
         <div className="container-shell">
           <CtaPanel
-            eyebrow="Next step"
-            title="Want to see pricing, book a demo, or ask about lead partnerships?"
-            description="Move deeper into pricing, guided demo, or data protection details without leaving the same premium brand environment."
-            primaryAction={{ href: ctaLinks.viewPricing, label: "View pricing" }}
-            secondaryAction={{ href: ctaLinks.requestDemo, label: "Request demo" }}
+            eyebrow={locale === "ar" ? "الخطوة التالية" : "Next step"}
+            title={locale === "ar" ? "هل تريد الاطلاع على الأسعار أو طلب عرض خاص أو قراءة حماية البيانات؟" : "Would you prefer to review the engagement options, request a private overview, or read about data protection?"}
+            description={locale === "ar" ? "يمكنك الانتقال إلى الأسعار أو العرض الخاص أو تفاصيل حماية البيانات من دون مغادرة نفس التجربة المتماسكة." : "You can move into the engagement options, a private overview, or data protection detail without leaving the same coherent experience."}
+            primaryAction={{ href: ctaLinks.viewPricing, label: locale === "ar" ? "اطلع على الأسعار" : "View pricing" }}
+            secondaryAction={{ href: ctaLinks.requestDemo, label: locale === "ar" ? "اطلب عرضًا خاصًا" : "Request a private overview" }}
           />
         </div>
       </section>

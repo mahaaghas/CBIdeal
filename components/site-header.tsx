@@ -1,10 +1,11 @@
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Compass } from "lucide-react"
 import { BrandMark } from "@/components/brand-mark"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { getRequestDirection, getRequestLocale } from "@/lib/i18n/request"
+import { getConversionCtaCopy } from "@/lib/conversion"
 import { getMessages } from "@/lib/i18n/messages"
-import { getLocalizedCtaLinks, getLocalizedMainNavLinks } from "@/lib/site"
+import { getLocalizedMainNavLinks, getLocalizedRouteLinks } from "@/lib/site"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -13,8 +14,9 @@ export function SiteHeader() {
   const direction = getRequestDirection()
   const isRtl = direction === "rtl"
   const messages = getMessages(locale)
-  const ctaLinks = getLocalizedCtaLinks(locale)
   const mainNavLinks = getLocalizedMainNavLinks(locale)
+  const routeLinks = getLocalizedRouteLinks(locale)
+  const conversionCopy = getConversionCtaCopy(locale)
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-xl">
@@ -36,15 +38,20 @@ export function SiteHeader() {
 
             <div className={cn("hidden items-center gap-2 md:flex", isRtl && "md:flex-row-reverse")}>
               <LanguageSwitcher locale={locale} />
-              <Button variant="outline" asChild>
-                <Link href={ctaLinks.bookCompanyCall}>{messages.ctas.bookCompanyCall}</Link>
-              </Button>
-              <Button asChild>
-                <Link href={ctaLinks.checkEligibility}>
-                  {messages.ctas.checkEligibility}
-                  <ArrowRight className="size-4" />
+              <Button variant="outline" className="conversion-header-secondary" asChild>
+                <Link href={routeLinks.programs}>
+                  {conversionCopy.secondary}
                 </Link>
               </Button>
+              <Button className="conversion-primary-button" data-cta-kind="primary" asChild>
+                <Link href={routeLinks.bookConsultation}>
+                  <Compass className="size-4" />
+                  {conversionCopy.primary}
+                </Link>
+              </Button>
+              <Link href={routeLinks.insights} className="conversion-tertiary-link hidden xl:inline-flex">
+                {conversionCopy.tertiary}
+              </Link>
             </div>
           </div>
 
@@ -67,13 +74,13 @@ export function SiteHeader() {
           </div>
 
           <div className={cn("flex flex-col gap-2.5 sm:flex-row md:hidden", isRtl && "sm:flex-row-reverse")}>
-            <Button variant="outline" className="w-full sm:flex-1" asChild>
-              <Link href={ctaLinks.bookCompanyCall}>{messages.ctas.bookCompanyCall}</Link>
+            <Button variant="outline" className="conversion-header-secondary w-full sm:flex-1" asChild>
+              <Link href={routeLinks.programs}>{conversionCopy.secondary}</Link>
             </Button>
-            <Button className="w-full sm:flex-1" asChild>
-              <Link href={ctaLinks.checkEligibility}>
-                {messages.ctas.checkEligibility}
-                <ArrowRight className="size-4" />
+            <Button className="conversion-primary-button w-full sm:flex-1" data-cta-kind="primary" asChild>
+              <Link href={routeLinks.bookConsultation}>
+                <Compass className="size-4" />
+                {conversionCopy.primary}
               </Link>
             </Button>
           </div>

@@ -18,12 +18,18 @@ export function BlogPostCard({ post, featured = false }: BlogPostCardProps) {
   const locale = getRequestLocale()
   const direction = getRequestDirection()
   const isRtl = direction === "rtl"
-  const readLabel = locale === "ar" ? "Ø§Ù‚Ø±Ø£ Ø§Ù„Ù…Ù‚Ø§Ù„" : locale === "ru" ? "Ð§Ð¸Ñ‚Ð°Ñ‚ÑŒ ÑÑ‚Ð°Ñ‚ÑŒÑŽ" : "Read article"
-  const byLabel = locale === "ar" ? "Ø¨Ù‚Ù„Ù…" : locale === "ru" ? "ÐÐ²Ñ‚Ð¾Ñ€" : "By"
+  const readLabel = locale === "ar" ? "اقرأ التحليل" : locale === "ru" ? "Читать материал" : "Read analysis"
+  const byLabel = locale === "ar" ? "بقلم" : locale === "ru" ? "Автор" : "By"
 
   return (
     <Card className="section-card overflow-hidden p-0">
-      <div dir={direction} className={cn(featured ? "grid gap-0 lg:grid-cols-[1.05fr_0.95fr]" : "grid gap-0", isRtl && "text-right")}>
+      <div
+        dir={direction}
+        className={cn(
+          featured ? "grid gap-0 lg:grid-cols-[1.05fr_0.95fr]" : "grid gap-0",
+          isRtl && "text-right",
+        )}
+      >
         {post.featuredImage ? (
           <div className={featured ? "relative min-h-[320px]" : "relative h-60"}>
             <Image
@@ -37,14 +43,25 @@ export function BlogPostCard({ post, featured = false }: BlogPostCardProps) {
           </div>
         ) : null}
         <CardContent className="card-stack justify-center p-7 md:p-8">
-          <div className={cn("flex flex-wrap items-center gap-3 text-sm text-muted-foreground", isRtl && "flex-row-reverse justify-end")}>
+          <div
+            className={cn(
+              "flex flex-wrap items-center gap-3 text-sm text-muted-foreground",
+              isRtl && "flex-row-reverse justify-end",
+            )}
+          >
             {post.category ? (
               <span className="rounded-full border border-border/70 px-3 py-1">{post.category.title}</span>
             ) : null}
             <span>{format(new Date(post.publishedAt), "d MMM yyyy")}</span>
           </div>
           <div className="section-stack">
-            <h3 className={featured ? "max-w-[16ch] text-[2rem] leading-[1.1] text-foreground md:text-[2.55rem]" : "max-w-[18ch] text-[1.75rem] leading-[1.15] text-foreground"}>
+            <h3
+              className={
+                featured
+                  ? "max-w-[16ch] text-[2rem] leading-[1.1] text-foreground md:text-[2.55rem]"
+                  : "max-w-[18ch] text-[1.75rem] leading-[1.15] text-foreground"
+              }
+            >
               {post.title}
             </h3>
             <p className="fine-print">{post.excerpt}</p>

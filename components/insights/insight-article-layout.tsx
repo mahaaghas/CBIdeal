@@ -4,6 +4,7 @@ import Link from "next/link"
 import { format } from "date-fns"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { BlogPostCard } from "@/components/cms/blog-post-card"
+import { InlineArticleCta } from "@/components/conversion/inline-article-cta"
 import { CtaPanel } from "@/components/cta-panel"
 import { Button } from "@/components/ui/button"
 import type { Locale } from "@/lib/i18n/routing"
@@ -65,22 +66,17 @@ export function InsightArticleLayout({
   cta,
 }: InsightArticleLayoutProps) {
   const isRtl = locale === "ar"
-  const backLabel =
-    locale === "ar" ? "العودة إلى المقالات" : locale === "ru" ? "Назад к статьям" : "Back to insights"
-  const relatedEyebrow =
-    locale === "ar" ? "قراءة مرتبطة" : locale === "ru" ? "Похожие материалы" : "Related reading"
+  const backLabel = locale === "ar" ? "العودة إلى المقالات" : locale === "ru" ? "Назад к статьям" : "Back to insights"
+  const relatedEyebrow = locale === "ar" ? "قراءة مرتبطة" : locale === "ru" ? "Похожие материалы" : "Related reading"
   const relatedTitle =
     locale === "ar"
-      ? "مقالات إضافية من نفس مركز المحتوى."
+      ? "قراءات أخرى من المكتبة التحريرية."
       : locale === "ru"
-        ? "Другие материалы из этого же контент-хаба."
-        : "More articles from the same advisory content hub."
-  const keyTakeawayLabel =
-    locale === "ar" ? "الخلاصة" : locale === "ru" ? "Ключевой вывод" : "Key takeaway"
-  const externalLabel =
-    locale === "ar" ? "مصادر خارجية" : locale === "ru" ? "Внешние источники" : "External sources"
-  const internalLabel =
-    locale === "ar" ? "روابط داخلية" : locale === "ru" ? "Внутренние ссылки" : "Internal links"
+        ? "Другие материалы из редакционной библиотеки."
+        : "Further reading from the editorial library."
+  const keyTakeawayLabel = locale === "ar" ? "الخلاصة" : locale === "ru" ? "Ключевой вывод" : "Key takeaway"
+  const externalLabel = locale === "ar" ? "مصادر خارجية" : locale === "ru" ? "Внешние источники" : "External sources"
+  const internalLabel = locale === "ar" ? "روابط داخلية" : locale === "ru" ? "Внутренние ссылки" : "Internal links"
 
   return (
     <>
@@ -116,7 +112,10 @@ export function InsightArticleLayout({
 
       <section className="section-padding pt-0">
         <div
-          className={cn("container-shell grid gap-10 lg:grid-cols-[1fr_320px] lg:items-start", isRtl && "lg:grid-cols-[320px_1fr]")}
+          className={cn(
+            "container-shell grid gap-10 lg:grid-cols-[1fr_320px] lg:items-start",
+            isRtl && "lg:grid-cols-[320px_1fr]",
+          )}
           dir={isRtl ? "rtl" : "ltr"}
         >
           <article className={cn("section-card space-y-10 p-6 md:p-10", isRtl && "text-right")}>
@@ -132,7 +131,11 @@ export function InsightArticleLayout({
               />
             </div>
 
+            <InlineArticleCta locale={locale} />
+
             {children}
+
+            <InlineArticleCta locale={locale} />
 
             <CtaPanel
               eyebrow={cta.eyebrow}

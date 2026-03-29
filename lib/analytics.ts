@@ -54,6 +54,22 @@ export function trackBookingCtaClick(params: AnalyticsParams = {}) {
   trackEvent("booking_cta_click", params)
 }
 
+export function trackPrimaryCtaClick(params: AnalyticsParams = {}) {
+  trackEvent("cta_click_primary", params)
+}
+
+export function trackQuizStarted(params: AnalyticsParams = {}) {
+  trackEvent("quiz_started", params)
+}
+
+export function trackQuizCompleted(params: AnalyticsParams = {}) {
+  trackEvent("quiz_completed", params)
+}
+
+export function trackLeadGenerated(params: AnalyticsParams = {}) {
+  trackEvent("lead_generated", params)
+}
+
 export function getLanguageCode(lang: string | null | undefined) {
   const normalized = (lang || "en").toLowerCase()
   if (normalized.startsWith("ar")) return "AR"

@@ -1,5 +1,6 @@
 const routeLinks = {
   home: "/",
+  about: "/about",
   programs: "/citizenship-by-investment",
   caribbeanComparison: "/caribbean-cbi-comparison",
   bookConsultation: "/book-a-cbi-consultation",
@@ -37,63 +38,63 @@ const ctaLinks = {
 
 const pricingPlans = [
   {
-    name: "Starter",
+    name: "Private desks",
     monthlyPrice: 39,
     yearlyPrice: 31,
     description:
-      "For small immigration desks that need lead intake, follow-up structure, and a clean starting workflow.",
+      "For smaller advisory desks that want a more orderly way to oversee enquiries, notes, and internal coordination.",
     seats: "Up to 3 users",
-    ctaLabel: "Try guided demo",
+    ctaLabel: "Arrange a private discussion",
     ctaHref: ctaLinks.requestDemo,
-    secondaryLabel: "Contact sales",
+    secondaryLabel: "Write to us instead",
     secondaryHref: ctaLinks.contactSales,
     featured: false,
     features: [
-      "Lead pipeline and enquiry capture",
-      "Client records and internal notes",
-      "Basic follow-up reminders",
-      "Program and case categorization",
-      "Email support during rollout",
+      "Confidential enquiry overview",
+      "Structured internal notes",
+      "Continuity reminders",
+      "Case and jurisdiction grouping",
+      "Guided onboarding support",
     ],
   },
   {
-    name: "Growth",
+    name: "Advisory teams",
     monthlyPrice: 69,
     yearlyPrice: 55,
     description:
-      "For firms that want deeper visibility across teams, stronger reporting, and lead partnership readiness.",
+      "For established firms that need stronger oversight across advisers, cases, and internal handovers.",
     seats: "Up to 10 users",
-    ctaLabel: "Book a demo",
+    ctaLabel: "Arrange a private discussion",
     ctaHref: ctaLinks.requestDemo,
-    secondaryLabel: "View full pricing",
+    secondaryLabel: "View engagement options",
     secondaryHref: ctaLinks.viewPricing,
     featured: true,
     features: [
-      "Everything in Starter",
-      "Multi-user pipeline ownership",
-      "Reporting visibility and workload tracking",
-      "Partner and referrer management",
+      "Everything in Private desks",
+      "Shared ownership across teams",
+      "Management visibility",
+      "Counterparty and referrer records",
       "Priority onboarding guidance",
     ],
   },
   {
-    name: "Enterprise",
+    name: "Institutional",
     monthlyPrice: null,
     yearlyPrice: null,
     description:
-      "For larger passport companies, multi-office firms, or teams combining CRM rollout with qualified lead partnerships.",
-    seats: "Custom rollout",
-    ctaLabel: "Contact sales",
+      "For larger firms that require tailored access, broader operational structure, or a more bespoke engagement format.",
+    seats: "Custom structure",
+    ctaLabel: "Write to us instead",
     ctaHref: ctaLinks.contactSales,
-    secondaryLabel: "Book a strategy call",
+    secondaryLabel: "Arrange a private discussion",
     secondaryHref: ctaLinks.bookCompanyCall,
     featured: false,
     features: [
-      "Custom workflows and access structure",
-      "White-label and partner options",
-      "Lead partnership commercial setup",
-      "Guided migration planning",
-      "Custom support and rollout design",
+      "Custom access structure",
+      "Bespoke operating workflows",
+      "Partner and referrer coordination",
+      "Migration planning",
+      "Dedicated support design",
     ],
   },
 ] as const
@@ -106,10 +107,10 @@ export const siteConfig = {
   },
   metadata: {
     siteUrl: "https://www.cbideal.com",
-    defaultTitle: "CBI Deal | Citizenship Advisory and Immigration CRM",
+    defaultTitle: "CBI Deal | Private Citizenship and Residency Advisory",
     titleTemplate: "%s | CBI Deal",
     description:
-      "CBI Deal helps investors evaluate citizenship and residency by investment programs while giving immigration firms a serious CRM built for compliant intake, case management, and partner growth.",
+      "CBI Deal offers a structured, discreet starting point for investors and internationally mobile families exploring citizenship and residency by investment options.",
     defaultOgImage: "/hero-bg.png",
   },
   contact: {
@@ -119,10 +120,10 @@ export const siteConfig = {
     whatsapp: "+357 99 245 120",
   },
   scheduling: {
-    provider: "Calendly",
+    provider: "Private consultation requests",
     bookingUrl: calendlyBookingUrl,
     helperText:
-      "Calendly opens in a new tab for a short introduction call focused on CRM rollout, qualified leads, or both.",
+      "You can request a suitable time for a private conversation in a more discreet format.",
   },
   demo: {
     requestUrl: ctaLinks.requestDemo,
@@ -142,21 +143,22 @@ export const siteConfig = {
   legal: {
     companyName: "CBI Deal",
     location:
-      "Cyprus with provider and partner coverage across Europe, the Caribbean, and the Middle East",
+      "Cyprus with coverage across Europe, the Caribbean, the Gulf, and other internationally relevant jurisdictions",
     footerSummary:
-      "CBI Deal helps investors compare suitable citizenship and residency options while giving immigration firms a cleaner way to manage leads, demos, and follow-up.",
+      "CBI Deal is a structured advisory gateway for investors and internationally mobile families considering citizenship or residency by investment.",
     footerBottomPrimary:
-      "CBI Deal brings investor enquiries, company pages, demos, and specialist immigration workflows together under one domain.",
+      "The platform is designed around clarity, discretion, and suitability rather than promotional urgency.",
     footerBottomSecondary:
-      "All enquiries are handled with a privacy-aware approach designed for sensitive investor and company conversations.",
+      "All enquiries are handled with a privacy-aware approach appropriate for sensitive cross-border decisions.",
   },
   footer: {
     exploreLinks: [
       { href: routeLinks.home, label: "Home" },
+      { href: routeLinks.about, label: "Our approach" },
       { href: routeLinks.programs, label: "Citizenship by investment" },
-      { href: routeLinks.forCompanies, label: "For companies" },
+      { href: routeLinks.forCompanies, label: "Professional counterparts" },
       { href: routeLinks.insights, label: "Insights" },
-      { href: routeLinks.pricing, label: "Pricing" },
+      { href: routeLinks.pricing, label: "Engagement options" },
     ],
     legalLinks: [
       { href: routeLinks.dataProtection, label: "Data protection" },
@@ -164,10 +166,10 @@ export const siteConfig = {
       { href: routeLinks.contact, label: "Contact" },
     ],
     companyFocusItems: [
-      "Warm investor lead qualification",
-      "CRM software for immigration firms",
-      "Qualified lead partnerships",
-      "Privacy-aware workflow positioning",
+      "Discreet first review",
+      "Internationally minded guidance",
+      "Private contact routes",
+      "Privacy-aware handling",
     ],
   },
   futureLandingExamples: [

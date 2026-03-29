@@ -1,8 +1,9 @@
 import type { ReactNode } from "react"
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Compass } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { getRequestDirection } from "@/lib/i18n/request"
+import { getRequestDirection, getRequestLocale } from "@/lib/i18n/request"
+import { getConversionCtaCopy, getConversionGuideHref } from "@/lib/conversion"
 import { cn } from "@/lib/utils"
 
 interface HeroAction {
@@ -25,6 +26,9 @@ interface PageHeroProps {
   children?: ReactNode
   compact?: boolean
   sectionClassName?: string
+  useConversionLabels?: boolean
+  secondaryActionStyle?: "button" | "text"
+  showGuideLink?: boolean
 }
 
 export function PageHero({
@@ -37,12 +41,18 @@ export function PageHero({
   children,
   compact = false,
   sectionClassName,
+  useConversionLabels = false,
+  secondaryActionStyle = "button",
+  showGuideLink = true,
 }: PageHeroProps) {
+  const locale = getRequestLocale()
   const direction = getRequestDirection()
   const isRtl = direction === "rtl"
   const hasAside = Boolean(children)
   const renderStatsInPrimaryColumn = Boolean(hasAside && stats.length)
   const renderStandaloneStats = Boolean(!hasAside && stats.length)
+  const conversionCopy = getConversionCtaCopy(locale)
+  const guideHref = getConversionGuideHref(locale)
 
   return (
     <section className={cn("section-padding pb-10 md:pb-14", compact && "py-14 md:py-16", sectionClassName)}>
@@ -102,28 +112,29 @@ export function PageHero({
                   isRtl && "sm:flex-row-reverse",
                 )}
               >
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="h-12 w-full rounded-full px-6 text-sm font-semibold sm:w-auto"
-                  asChild
-                >
+                <Button size="lg" variant="secondary" data-cta-kind="primary" className="conversion-primary-button w-full sm:w-auto" asChild>
                   <Link href={primaryAction.href}>
-                    {primaryAction.label}
-                    <ArrowRight className="size-4" />
+                    <Compass className="size-4" />
+                    {useConversionLabels ? conversionCopy.primary : primaryAction.label}
                   </Link>
                 </Button>
-                {secondaryAction ? (
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="h-12 w-full rounded-full border-white/18 bg-white/[0.02] px-6 text-sm font-semibold text-primary-foreground hover:bg-white/10 sm:w-auto"
-                    asChild
-                  >
-                    <Link href={secondaryAction.href}>{secondaryAction.label}</Link>
-                  </Button>
-                ) : null}
+                <Link
+                  href={secondaryAction?.href ?? primaryAction.href}
+                  className={
+                    secondaryActionStyle === "text"
+                      ? "inline-flex items-center gap-2 text-sm font-medium text-primary-foreground/80 underline-offset-4 hover:text-primary-foreground hover:underline"
+                      : "conversion-secondary-button w-full sm:w-auto"
+                  }
+                >
+                  {useConversionLabels ? conversionCopy.secondary : secondaryAction?.label ?? conversionCopy.secondary}
+                  <ArrowRight className="size-4" />
+                </Link>
               </div>
+              {showGuideLink ? (
+                <Link href={guideHref} className={cn("conversion-tertiary-link", isRtl && "self-start")}>
+                  {conversionCopy.tertiary}
+                </Link>
+              ) : null}
               {renderStatsInPrimaryColumn ? (
                 <div
                   className={cn(

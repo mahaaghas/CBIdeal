@@ -13,6 +13,7 @@ import {
   trackBookingCtaClick,
   trackCalendlyOpen,
   trackConsultationCtaClick,
+  trackPrimaryCtaClick,
   trackPageView,
 } from "@/lib/analytics"
 import { siteConfig } from "@/lib/site-config"
@@ -32,15 +33,25 @@ function AnalyticsListeners() {
       const target = event.target
       if (!(target instanceof Element)) return
 
-      const anchor = target.closest("a")
+      const actionElement = target.closest("a, button")
+      if (!(actionElement instanceof HTMLElement)) return
+
+      const sourcePage = getSourcePageFromPath(pathname || "/")
+      const language = getLanguageCode(document.documentElement.lang)
+      const ctaKind = actionElement.getAttribute("data-cta-kind")
+
+      if (ctaKind === "primary") {
+        trackPrimaryCtaClick({
+          source_page: sourcePage,
+          language,
+        })
+      }
+
+      const anchor = actionElement.closest("a")
       if (!(anchor instanceof HTMLAnchorElement)) return
 
       const href = anchor.getAttribute("href")
       if (!href) return
-
-      const currentPath = pathname || "/"
-      const sourcePage = getSourcePageFromPath(currentPath)
-      const language = getLanguageCode(document.documentElement.lang)
 
       if (href === "#consultation-form") {
         trackConsultationCtaClick({

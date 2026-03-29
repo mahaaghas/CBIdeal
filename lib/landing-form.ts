@@ -12,6 +12,26 @@ export const landingLeadSourceCategories = [
 
 export type LandingLeadSourceCategory = (typeof landingLeadSourceCategories)[number]
 
+export const landingLeadInterestOptions = [
+  { value: "citizenship-by-investment", label: "Citizenship by investment", labelAr: "الجنسية عن طريق الاستثمار" },
+  { value: "residency-by-investment", label: "Residency by investment", labelAr: "الإقامة عن طريق الاستثمار" },
+  { value: "strategic-relocation", label: "Strategic relocation", labelAr: "الانتقال الاستراتيجي" },
+  { value: "still-comparing", label: "Still comparing options", labelAr: "ما زلت أقارن بين الخيارات" },
+] as const
+
+export const landingLeadApplicationScopeOptions = [
+  { value: "individual", label: "Individual application", labelAr: "طلب فردي" },
+  { value: "couple", label: "Couple", labelAr: "زوجان" },
+  { value: "family", label: "Family application", labelAr: "طلب عائلي" },
+] as const
+
+export const landingLeadRegionOptions = [
+  { value: "caribbean", label: "Caribbean", labelAr: "الكاريبي" },
+  { value: "southern-europe", label: "Southern Europe", labelAr: "جنوب أوروبا" },
+  { value: "wider-europe", label: "Wider Europe", labelAr: "أوروبا بشكل أوسع" },
+  { value: "still-open", label: "Still open", labelAr: "لم أحدد بعد" },
+] as const
+
 export const landingLeadBudgetOptions = [
   { value: "under-150k", label: "Under EUR 150k", labelAr: "أقل من 150 ألف يورو" },
   { value: "150k-300k", label: "EUR 150k to EUR 300k", labelAr: "من 150 ألف إلى 300 ألف يورو" },
@@ -21,10 +41,10 @@ export const landingLeadBudgetOptions = [
 ] as const
 
 export const landingLeadTimelineOptions = [
-  { value: "within-30-days", label: "Within 30 days", labelAr: "خلال 30 يوما" },
+  { value: "within-30-days", label: "Within 30 days", labelAr: "خلال 30 يوماً" },
   { value: "this-quarter", label: "This quarter", labelAr: "خلال هذا الربع" },
   { value: "within-6-months", label: "Within 6 months", labelAr: "خلال 6 أشهر" },
-  { value: "researching", label: "Still researching", labelAr: "ما زلت في مرحلة الدراسة" },
+  { value: "researching", label: "Still considering timing", labelAr: "ما زلت أدرس التوقيت" },
 ] as const
 
 const emailField = z
@@ -40,13 +60,24 @@ const optionalTimelineField = z
   .optional()
   .or(z.literal(""))
 
+const optionalBudgetField = z
+  .enum(["under-150k", "150k-300k", "300k-500k", "500k-1m", "1m-plus"])
+  .optional()
+  .or(z.literal(""))
+
 export const landingLeadFormSchema = z.object({
   fullName: z.string().trim().min(2, "Please enter your full name."),
-  nationality: z.string().trim().min(2, "Please enter your nationality."),
-  currentResidence: z.string().trim().min(2, "Please enter your current country of residence."),
-  budgetRange: z.enum(["under-150k", "150k-300k", "300k-500k", "500k-1m", "1m-plus"], {
-    message: "Please select your budget range.",
+  areaOfInterest: z.enum(
+    ["citizenship-by-investment", "residency-by-investment", "strategic-relocation", "still-comparing"],
+    { message: "Please select your area of interest." },
+  ),
+  applicationScope: z.enum(["individual", "couple", "family"], {
+    message: "Please select who is included.",
   }),
+  regionOfInterest: z.enum(["caribbean", "southern-europe", "wider-europe", "still-open"], {
+    message: "Please select your region of interest.",
+  }),
+  budgetRange: optionalBudgetField,
   timeline: optionalTimelineField,
   whatsapp: z.string().trim().min(7, "Please enter a valid WhatsApp number."),
   email: emailField,
@@ -58,7 +89,7 @@ export const landingLeadFormSchema = z.object({
 
 export type LandingLeadFormValues = z.infer<typeof landingLeadFormSchema>
 export type LandingLeadFormField = keyof LandingLeadFormValues
-export type LandingLeadFormFieldErrors = Partial<Record<LandingLeadFormField, string[]>> 
+export type LandingLeadFormFieldErrors = Partial<Record<LandingLeadFormField, string[]>>
 
 export type LandingLeadSubmissionResult =
   | { ok: true; referenceId: string }
@@ -66,12 +97,21 @@ export type LandingLeadSubmissionResult =
 
 export const landingLeadFormDefaults: Pick<
   LandingLeadFormValues,
-  "fullName" | "nationality" | "currentResidence" | "budgetRange" | "timeline" | "whatsapp" | "email" | "notes"
+  | "fullName"
+  | "areaOfInterest"
+  | "applicationScope"
+  | "regionOfInterest"
+  | "budgetRange"
+  | "timeline"
+  | "whatsapp"
+  | "email"
+  | "notes"
 > = {
   fullName: "",
-  nationality: "",
-  currentResidence: "",
-  budgetRange: "300k-500k",
+  areaOfInterest: "citizenship-by-investment",
+  applicationScope: "individual",
+  regionOfInterest: "still-open",
+  budgetRange: "",
   timeline: "",
   whatsapp: "",
   email: "",
@@ -88,8 +128,13 @@ export function normalizeOptionalLandingValue(value: string | undefined) {
   return normalized ? normalized : null
 }
 
-export function buildLandingLeadNotes(values: Pick<LandingLeadFormValues, "notes" | "sourceCategory" | "language">) {
-  const trackingLine = `[Tracking] source_category=${values.sourceCategory}; language=${values.language}`
+export function buildLandingLeadNotes(
+  values: Pick<
+    LandingLeadFormValues,
+    "notes" | "sourceCategory" | "language" | "areaOfInterest" | "applicationScope" | "regionOfInterest"
+  >,
+) {
+  const trackingLine = `[Tracking] source_category=${values.sourceCategory}; language=${values.language}; area_of_interest=${values.areaOfInterest}; application_scope=${values.applicationScope}; region_of_interest=${values.regionOfInterest}`
   const note = normalizeOptionalLandingValue(values.notes ?? undefined)
 
   return note ? `${note}\n\n${trackingLine}` : trackingLine
@@ -98,9 +143,10 @@ export function buildLandingLeadNotes(values: Pick<LandingLeadFormValues, "notes
 function buildLandingLeadFormPayload(values: LandingLeadFormValues) {
   return {
     full_name: values.fullName,
-    nationality: values.nationality,
-    residence_country: values.currentResidence,
-    budget_range: values.budgetRange,
+    area_of_interest: values.areaOfInterest,
+    application_scope: values.applicationScope,
+    region_of_interest: values.regionOfInterest,
+    budget_range: values.budgetRange ?? "",
     timeline: values.timeline ?? "",
     phone_whatsapp: values.whatsapp,
     email: values.email ?? "",

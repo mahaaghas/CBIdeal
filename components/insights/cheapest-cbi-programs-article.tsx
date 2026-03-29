@@ -53,14 +53,14 @@ export function CheapestCbiProgramsArticle({
       internalLinks={[
         { label: "Citizenship by investment overview", href: links.programs },
         { label: "Caribbean comparison page", href: links.comparison },
-        { label: "Book a private consultation", href: links.consultation },
+    { label: "Arrange a private consultation", href: links.consultation },
       ]}
       cta={{
         eyebrow: "Private review",
         title: "Need the cheapest realistic route for your actual household, not just the brochure headline?",
-        description: "Submit your profile and we will help you understand where the total economics look strongest before you move to a provider conversation.",
-        primaryAction: { href: links.consultation, label: "Request a private consultation" },
-        secondaryAction: { href: links.contact, label: "Contact the advisory team" },
+    description: "Share your profile and we will help you understand where the overall economics look strongest before any more formal next step is considered.",
+    primaryAction: { href: links.consultation, label: "Request a consultation" },
+    secondaryAction: { href: links.contact, label: "Arrange a written introduction" },
       }}
     >
       <div className="space-y-6 text-base leading-8 text-muted-foreground">

@@ -41,15 +41,15 @@ export function CanYouLoseCbiArticle({
       }}
       internalLinks={[
         { label: "Citizenship by investment overview", href: links.programs },
-        { label: "Book a private consultation", href: links.consultation },
-        { label: "Contact the advisory team", href: links.contact },
+    { label: "Arrange a private consultation", href: links.consultation },
+    { label: "Arrange a written introduction", href: links.contact },
       ]}
       cta={{
         eyebrow: "Compliance review",
         title: "Need help making sure the route is approached cleanly from the start?",
         description: "A well-structured file and a realistic provider process reduce the chance of avoidable future problems materially.",
-        primaryAction: { href: links.consultation, label: "Request a private consultation" },
-        secondaryAction: { href: links.contact, label: "Contact the advisory team" },
+    primaryAction: { href: links.consultation, label: "Request a consultation" },
+    secondaryAction: { href: links.contact, label: "Arrange a written introduction" },
       }}
     >
       <ArticleHighlight eyebrow="Short answer" title="The best protection is a clean file, honest disclosure, and a serious provider.">

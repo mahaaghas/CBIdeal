@@ -35,10 +35,10 @@ export function PricingSection({ locale = "en", preview = false }: PricingSectio
       <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl space-y-2.5">
           <p className="text-sm leading-7 text-muted-foreground">
-            Pricing is per user for software seats. Lead partnership setup is scoped separately depending on geography, volume, and qualification rules.
+            Fees are presented clearly so firms can assess suitability without lengthy back-and-forth from the outset.
           </p>
           <p className="text-sm leading-7 text-muted-foreground">
-            Annual billing reflects roughly two months saved versus monthly billing.
+            Broader arrangements are discussed separately where structure, geography, or operating requirements call for something more tailored.
           </p>
         </div>
         <div className="space-y-2">
@@ -97,16 +97,16 @@ export function PricingSection({ locale = "en", preview = false }: PricingSectio
                     <>
                       <div className="flex items-end gap-2">
                         <span className="text-4xl text-foreground">EUR {price}</span>
-                        <span className="pb-1 text-sm text-muted-foreground">per user / month</span>
+                        <span className="pb-1 text-sm text-muted-foreground">per seat / month</span>
                       </div>
                       <p className="mt-2 text-sm text-muted-foreground">
-                        {billingMode === "yearly" ? "Billed annually" : "Flexible monthly billing"}
+                        {billingMode === "yearly" ? "Annual arrangement" : "Monthly arrangement"}
                       </p>
                     </>
                   ) : (
                     <>
                       <div className="text-4xl text-foreground">Custom</div>
-                      <p className="mt-2 text-sm text-muted-foreground">Enterprise teams, custom workflows, and lead partnership options.</p>
+                      <p className="mt-2 text-sm text-muted-foreground">For wider structures, tailored access, and more bespoke working arrangements.</p>
                     </>
                   )}
                 </div>

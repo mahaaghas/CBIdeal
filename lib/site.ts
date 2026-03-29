@@ -29,9 +29,9 @@ export const schedulerConfig = {
 export const mainNavLinks = [
   { href: routeLinks.home, label: "Home" },
   { href: routeLinks.programs, label: "Programs" },
-  { href: routeLinks.forCompanies, label: "For Companies" },
+  { href: routeLinks.forCompanies, label: "Professional counterparts" },
   { href: routeLinks.insights, label: "Insights" },
-  { href: routeLinks.pricing, label: "Pricing" },
+  { href: routeLinks.pricing, label: "Engagement" },
   { href: routeLinks.contact, label: "Contact" },
 ]
 
@@ -74,6 +74,10 @@ export function getLocalizedFooterNavLinks(locale: Locale) {
 
   return [
     { href: localizedRoutes.home, label: messages.nav.home },
+    {
+      href: localizedRoutes.about,
+      label: locale === "ar" ? "نهجنا" : locale === "ru" ? "Наш подход" : "Our approach",
+    },
     { href: localizedRoutes.programs, label: messages.nav.programs },
     { href: localizedRoutes.forCompanies, label: messages.nav.forCompanies },
     { href: localizedRoutes.insights, label: messages.nav.insights },
@@ -95,17 +99,17 @@ export function getLocalizedFooterLegalLinks(locale: Locale) {
 export function getLocalizedFooterCompanyFocus(locale: Locale) {
   if (locale === "ar") {
     return [
-      "مطابقة العملاء المستثمرين",
-      "CRM لشركات الجوازات والهجرة",
-      "شراكات العملاء المحتملين المؤهلين",
+      "مراجعة أولية هادئة",
+      "توجيه دولي واضح",
+      "تواصل خاص ومنظم",
     ]
   }
 
   if (locale === "ru") {
     return [
-      "Подбор инвесторских лидов",
-      "CRM для паспортных и иммиграционных компаний",
-      "Партнерства по квалифицированным лидам",
+      "Спокойная первичная оценка",
+      "Международно ориентированный подход",
+      "Частный и структурированный контакт",
     ]
   }
 

@@ -44,14 +44,14 @@ export function IsCbiWorthItArticle({
       internalLinks={[
         { label: "Citizenship by investment overview", href: links.programs },
         { label: "Caribbean comparison page", href: links.comparison },
-        { label: "Book a private consultation", href: links.consultation },
+    { label: "Arrange a private consultation", href: links.consultation },
       ]}
       cta={{
         eyebrow: "Suitability review",
         title: "Need to decide whether a second citizenship is actually worth doing in your case?",
         description: "The right answer usually becomes clearer once the objective, timeline, and household context are stated honestly.",
-        primaryAction: { href: links.consultation, label: "Request a private consultation" },
-        secondaryAction: { href: links.contact, label: "Contact the advisory team" },
+    primaryAction: { href: links.consultation, label: "Request a consultation" },
+    secondaryAction: { href: links.contact, label: "Arrange a written introduction" },
       }}
     >
       <ArticleHighlight eyebrow="Worth it or not?" title="The route becomes valuable only when the use case is real.">

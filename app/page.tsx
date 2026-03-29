@@ -1,9 +1,8 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, BadgeCheck, Globe2, HandCoins, ShieldCheck } from "lucide-react"
+import { ArrowRight, Compass, Globe2, ShieldCheck } from "lucide-react"
+import { BlogPostCard } from "@/components/cms/blog-post-card"
 import { CtaPanel } from "@/components/cta-panel"
-import { LeadQualificationForm } from "@/components/lead-qualification-form"
 import { PageHero } from "@/components/page-hero"
 import { ProcessSteps } from "@/components/process-steps"
 import { ProgramGrid } from "@/components/program-grid"
@@ -12,13 +11,15 @@ import { SiteShell } from "@/components/site-shell"
 import { TrustGrid } from "@/components/trust-grid"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { LandingPageRenderer } from "@/components/cms/landing-page-renderer"
+import { fallbackInsightPosts } from "@/lib/insights/fallback-posts"
 import { getRequestLocale } from "@/lib/i18n/request"
-import { localizeHref } from "@/lib/i18n/routing"
+import { localizeHref, type Locale } from "@/lib/i18n/routing"
 import { buildPageMetadata } from "@/lib/metadata"
 import { siteImages } from "@/lib/site-images"
-import { getLocalizedCtaLinks, getLocalizedRouteLinks } from "@/lib/site"
-import { getHomepageLandingPage, getResolvedSiteSettings } from "@/lib/sanity/content"
+import { getLocalizedRouteLinks } from "@/lib/site"
+import { getBlogPosts, getHomepageLandingPage, getResolvedSiteSettings } from "@/lib/sanity/content"
+
+type HomeCopy = ReturnType<typeof getHomeCopy>
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = getRequestLocale()
@@ -30,9 +31,9 @@ export async function generateMetadata(): Promise<Metadata> {
       description: cmsPage.seo.description || settings.siteDescription,
       path: localizeHref(locale, "/"),
       keywords: cmsPage.seo.keywords ?? [
-        "citizenship by investment offers",
-        "residency by investment options",
-        "second passport advisory",
+        "citizenship by investment advisory",
+        "residency by investment planning",
+        "second citizenship guidance",
       ],
       image: cmsPage.seo.openGraphImage?.url,
       openGraphTitle: cmsPage.seo.openGraphTitle,
@@ -46,33 +47,33 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const localized = {
     en: {
-      title: "International Citizenship and Residency Solutions",
+      title: "Structured Guidance for Citizenship and Residency Decisions",
       description:
-        "Explore official citizenship-by-investment and residency-by-investment programs through a structured advisory and lead qualification process with licensed partners.",
+        "CBI Deal supports investors and internationally mobile families in navigating citizenship and residency pathways with clarity, discretion, and structured judgment.",
       keywords: [
-        "citizenship by investment offers",
-        "residency by investment options",
-        "second passport advisory",
+        "citizenship by investment advisory",
+        "residency by investment planning",
+        "second citizenship guidance",
       ],
     },
     ar: {
-      title: "حلول الجنسية والإقامة الدولية",
+      title: "توجيه منظم لقرارات الجنسية والإقامة",
       description:
-        "استكشف برامج الجنسية عن طريق الاستثمار والإقامة عن طريق الاستثمار من خلال مسار استشاري منظم وبالتعاون مع جهات مرخصة ومعتمدة.",
+        "تساعد CBI Deal المستثمرين والعائلات الدولية على فهم مسارات الجنسية والإقامة بوضوح وهدوء ومنهجية مدروسة.",
       keywords: [
         "الجنسية عن طريق الاستثمار",
         "الإقامة عن طريق الاستثمار",
-        "حرية التنقل الدولية",
+        "تخطيط التنقل الدولي",
       ],
     },
     ru: {
-      title: "Международные решения в области гражданства и резидентства",
+      title: "Структурированный подход к решениям о гражданстве и резидентстве",
       description:
-        "Изучайте официальные программы гражданства за инвестиции и резидентства за инвестиции через структурированный консультационный процесс и лицензированных партнеров.",
+        "CBI Deal помогает инвесторам и международно мобильным семьям разбираться в программах гражданства и резидентства спокойно, ясно и структурированно.",
       keywords: [
         "гражданство за инвестиции",
         "резидентство за инвестиции",
-        "международная мобильность",
+        "международное планирование",
       ],
     },
   }[locale]
@@ -88,593 +89,493 @@ export async function generateMetadata(): Promise<Metadata> {
   })
 }
 
-const trustItems = [
-  {
-    title: "We compare trusted providers",
-    description: "We help filter the market so you are not spending time with firms that do not match your profile, budget, or destination goals.",
-  },
-  {
-    title: "We qualify before we connect",
-    description: "The intake flow captures your citizenship, residence, family scope, timeframe, and budget before a provider reaches out.",
-  },
-  {
-    title: "We focus on relevant provider matches",
-    description: "The goal is not generic brochure advice. It is to connect you with a licensed provider or authorized partner suited to your profile and goals.",
-  },
-  {
-    title: "We keep the process clear",
-    description: "You get a cleaner, more selective first step that feels discreet, premium, and easier to trust for a high-value decision.",
-  },
-]
-
-const howItWorks = [
-  {
-    icon: Globe2,
-    title: "Submit your profile",
-    description: "Share your citizenship, current residence, budget, timeline, and whether the enquiry is for you alone or your family.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "We review your fit",
-    description: "We screen your requirements and remove bad-fit options before passing your enquiry to a suitable provider.",
-  },
-  {
-    icon: HandCoins,
-    title: "A provider contacts you",
-    description: "A matched provider comes back with the best-fit offer and next-step guidance for your case.",
-  },
-]
-
-const programs = [
-  {
-    title: "Caribbean citizenship by investment",
-    description: "For applicants prioritizing speed, mobility, and efficient family inclusion through established CBI programs.",
-    image: siteImages.stLuciaAerial.src,
-    alt: siteImages.stLuciaAerial.alt,
-  },
-  {
-    title: "European residency by investment",
-    description: "For families seeking long-term flexibility, optional relocation, and structured access into European markets.",
-    image: siteImages.coimbra.src,
-    alt: siteImages.coimbra.alt,
-  },
-  {
-    title: "Family and timing-sensitive cases",
-    description: "For cases where timing, dependants, or multi-jurisdiction planning matter as much as the underlying program itself.",
-    image: siteImages.ghent.src,
-    alt: siteImages.ghent.alt,
-  },
-]
-
-export default async function HomePage() {
-  const locale = getRequestLocale()
-  const routeLinks = getLocalizedRouteLinks(locale)
-  const ctaLinks = getLocalizedCtaLinks(locale)
-  const cmsPage = await getHomepageLandingPage()
-
-  const copy = {
-    en: {
-      heroEyebrow: "Structured advisory platform",
-      heroTitle: "International citizenship and residency solutions for global mobility and long-term planning.",
-      heroDescription:
-        "We help qualified individuals explore official programs through licensed partners, ensuring a structured, discreet, and compliant process from first qualification to provider introduction.",
-      primaryCta: "Start qualification",
-      secondaryCta: "Explore programs",
-      heroStats: [
-        { value: "Qualified profile", label: "reviewed before licensed provider matching" },
-        { value: "Structured process", label: "built for discretion and long-term planning" },
-        { value: "Licensed partners", label: "selected for relevance and compliance" },
-      ],
-      nextLabel: "What happens next",
-      nextItems: [
-        "You submit a structured qualification profile.",
-        "We review the case against budget, timing, destination preferences, and provider fit.",
-        "A licensed provider or authorized partner follows up with the relevant next step.",
-      ],
-      companyLabel: "Are you a company?",
-      companyTitle: "Passport company or immigration firm?",
-      companyDescription: "Explore the CRM, pricing, guided demo, and qualified lead partnership offer.",
-      companyCta: "Explore CRM and lead partnerships",
-      qualificationEyebrow: "Qualification form",
-      qualificationTitle: "Tell us what you need and let the right licensed provider come back to you.",
-      qualificationDescription:
-        "Share your profile, budget, and goals in a format that supports structured lead qualification and a more relevant first review.",
-      qualificationPoints: [
-        "Country of citizenship and current residence help filter realistic official pathways.",
-        "Budget and timeframe help licensed providers return a relevant next step more efficiently.",
-        "Family scope and program preference help avoid bad-fit conversations from the start.",
-      ],
-      formTitle: "Start your qualification",
-      formDescription: "Complete the qualification form and we will route your enquiry through the appropriate licensed partner path.",
-      finalEyebrow: "Final step",
-      finalTitle: "Ready to begin a structured review of the right program options for your case?",
-      finalDescription:
-        "Submit your qualification details and we will connect qualified enquiries with licensed providers aligned with your profile, budget, and long-term goals.",
-      finalPrimary: "Start qualification",
-      finalSecondary: "Company? Start here",
-      whyEyebrow: "Why work with us",
-      whyTitle: "We act as a structured lead qualification and advisory platform.",
-      whyDescription:
-        "The experience stays focused on qualification, provider matching, and compliant process clarity rather than exaggerated promises. That is what makes it feel trustworthy.",
-      howEyebrow: "Trust structure",
-      howTitle: "How the process works",
-      howDescription: "Each enquiry moves through a clear, compliant path designed to reinforce legitimacy and keep expectations grounded.",
-      programsEyebrow: "Programs and opportunities",
-      programsTitle: "Programs we regularly help clients compare.",
-      programsDescription: "The current mix covers the most common routes while leaving room for dedicated destination pages as the domain grows.",
-    },
-    ar: {
-      heroEyebrow: "منصة استشارية مستقلة",
-      heroTitle: "حلول الجنسية والإقامة الدولية لتعزيز حرية التنقل والتخطيط طويل المدى.",
-      heroDescription:
-        "نساعد الأفراد المؤهلين على استكشاف البرامج الرسمية عبر شركاء مرخصين ومعتمدين، ضمن مسار منظم وملتزم بالامتثال من مرحلة التقييم الأولي حتى المتابعة مع الجهة المناسبة.",
-      primaryCta: "احصل على عرض مخصص",
-      secondaryCta: "استكشف البرامج",
-      heroStats: [
-        { value: "حرية تنقل دولية", label: "في إطار منظم يدعم التخطيط الشخصي والعائلي" },
-        { value: "مسار منظم", label: "يراعي الامتثال والخصوصية منذ البداية" },
-        { value: "شركاء مرخصون", label: "للتعامل مع البرامج الرسمية وإجراءات التحقق" },
-      ],
-      nextLabel: "موقعنا ودورنا",
-      nextItems: [
-        "نعمل كمنصة استشارية مستقلة تربط العملاء بجهات مرخصة ومعتمدة وفقاً للملف والأهداف.",
-        "لا نصدر جوازات سفر ولا نتخذ قرارات قانونية أو سيادية، فجميع الطلبات تتم حصراً عبر البرامج الحكومية الرسمية.",
-        "يتم التعامل مع كل حالة من خلال مسار مهني واضح يراعي التقييم الأولي والامتثال ومتطلبات العناية الواجبة.",
-      ],
-      companyLabel: "هل تمثل شركة؟",
-      companyTitle: "شركة جوازات أو مكتب هجرة؟",
-      companyDescription: "اطلع على نظام الـ CRM والأسعار والعرض التوضيحي والشراكات الخاصة بالعملاء المحتملين.",
-      companyCta: "استكشف الـ CRM وشراكات العملاء المحتملين",
-      qualificationEyebrow: "التقييم الأولي",
-      qualificationTitle: "اترك بياناتك وسيقوم أحد شركائنا بالتواصل معك لتقديم أفضل الخيارات المناسبة لك",
-      qualificationDescription:
-        "نستخدم هذه الاستمارة لفهم ملفك بشكل منظم حتى يتمكن الشريك المناسب من العودة إليك بخيارات أكثر ملاءمة ووضوحاً.",
-      qualificationPoints: [
-        "تساعد الجنسية الحالية وبلد الإقامة على تحديد المسارات الرسمية الواقعية منذ البداية.",
-        "تسهم الميزانية والإطار الزمني في توجيه الحالة إلى الجهة المرخصة الأكثر ملاءمة.",
-        "يساعد نطاق العائلة ونوع البرنامج المطلوب على جعل التواصل الأول أكثر دقة وفائدة.",
-      ],
-      formTitle: "احصل على عرض مخصص",
-      formDescription: "اترك بياناتك وسيقوم أحد شركائنا بالتواصل معك لتقديم أفضل الخيارات المناسبة لك.",
-      finalEyebrow: "الخطوة الأخيرة",
-      finalTitle: "هل أنتم مستعدون لبدء مراجعة منظمة لخيارات الجنسية عن طريق الاستثمار أو الإقامة عن طريق الاستثمار؟",
-      finalDescription: "أرسلوا بياناتكم الأساسية وسنوجه الاستفسار إلى شركاء مرخصين ومعتمدين بما يتوافق مع الملف والأهداف والتخطيط طويل المدى.",
-      finalPrimary: "احصل على عرض مخصص",
-      finalSecondary: "هل تمثل شركة؟",
-      whyEyebrow: "التموضع المهني",
-      whyTitle: "نجمع بين النهج الاستشاري والخصوصية والتأهيل المنظم.",
-      whyDescription: "نركز على تقييم الحالة وربطها بالجهة المناسبة وشرح المسار بوضوح، بدلاً من الخطاب التسويقي المبالغ فيه أو الوعود غير الواقعية.",
-      howEyebrow: "هيكل العملية",
-      howTitle: "كيف تتم العملية",
-      howDescription: "تمر كل حالة بمسار واضح ومنظم يراعي الامتثال والمتطلبات الرسمية في كل مرحلة.",
-      programsEyebrow: "البرامج والمسارات",
-      programsTitle: "مسارات يدرسها كثير من المستثمرين الدوليين ضمن تخطيط طويل المدى.",
-      programsDescription: "نحافظ على عرض منظم لأهم الخيارات دون إثقال المرحلة الأولى بتفاصيل غير ضرورية.",
-    },
-    ru: {
-      heroEyebrow: "Структурированная консультационная платформа",
-      heroTitle: "Международные решения в области гражданства и резидентства для глобальной мобильности и долгосрочного планирования.",
-      heroDescription:
-        "Мы помогаем квалифицированным заявителям изучать официальные программы через лицензированных партнеров, сохраняя структурированный, сдержанный и комплаенс-ориентированный процесс на каждом этапе.",
-      primaryCta: "Получить индивидуальное предложение",
-      secondaryCta: "Смотреть программы",
-      heroStats: [
-        { value: "Глобальная мобильность", label: "для личного, семейного и делового планирования" },
-        { value: "Структурированный процесс", label: "с фокусом на комплаенс и конфиденциальность" },
-        { value: "Лицензированные партнеры", label: "для официальных программ и надлежащей проверки" },
-      ],
-      nextLabel: "Независимая консультационная платформа",
-      nextItems: [
-        "Мы работаем как независимая advisory-платформа и координируем первичную квалификацию заявок.",
-        "Мы соединяем клиентов с лицензированными провайдерами и авторизованными партнерами, подходящими под профиль и цели.",
-        "Мы не оформляем паспорта и не принимаем решений о гражданстве: все заявки проходят официальный государственный процесс.",
-      ],
-      companyLabel: "Вы представляете компанию?",
-      companyTitle: "Паспортная компания или иммиграционная фирма?",
-      companyDescription: "Изучите CRM, тарифы, персональную демонстрацию и партнерскую модель по квалифицированным лидам.",
-      companyCta: "Посмотреть CRM и партнерство по лидам",
-      qualificationEyebrow: "Первичная квалификация",
-      qualificationTitle: "Оставьте ваши данные, и один из наших партнеров свяжется с вами с индивидуальным предложением.",
-      qualificationDescription:
-        "Мы используем форму для структурированной первичной квалификации, чтобы лицензированный партнер мог вернуться с релевантным и персонализированным следующим шагом.",
-      qualificationPoints: [
-        "Гражданство и текущее резидентство помогают определить реалистичные официальные маршруты.",
-        "Бюджет и сроки позволяют подобрать релевантных лицензированных партнеров без лишнего шума.",
-        "Состав семьи и тип программы помогают сделать первый разговор более предметным и полезным.",
-      ],
-      formTitle: "Получить индивидуальное предложение",
-      formDescription: "Оставьте ваши данные, и один из наших партнеров свяжется с вами с индивидуальным предложением.",
-      finalEyebrow: "Следующий шаг",
-      finalTitle: "Готовы обсудить официальные программы гражданства за инвестиции и резидентства за инвестиции в более структурированном формате?",
-      finalDescription:
-        "Оставьте квалификационные данные, и мы направим ваш запрос лицензированным партнерам, которые соответствуют вашему профилю, целям и долгосрочному планированию.",
-      finalPrimary: "Получить индивидуальное предложение",
-      finalSecondary: "Вы представляете компанию?",
-      whyEyebrow: "Позиционирование",
-      whyTitle: "Мы объединяем консультационный подход, конфиденциальность и структурированную квалификацию.",
-      whyDescription:
-        "Мы работаем как независимая консультационная платформа: квалифицируем запросы, подбираем лицензированных партнеров и сохраняем ясную, профессиональную логику процесса без агрессивных обещаний.",
-      howEyebrow: "Структура процесса",
-      howTitle: "Как проходит процесс",
-      howDescription: "Каждый кейс проходит через понятную и комплаенс-ориентированную последовательность действий.",
-      programsEyebrow: "Программы и направления",
-      programsTitle: "Направления, которые чаще всего рассматривают международные инвесторы.",
-      programsDescription: "Мы сохраняем обзор на ключевые программы гражданства за инвестиции и резидентства за инвестиции, не перегружая первый этап лишними деталями.",
-    },
-  }[locale]
-  const localizedTrustItems =
-    locale === "ar"
-      ? [
+function getHomeCopy(locale: Locale) {
+  if (locale === "ar") {
+    return {
+      hero: {
+        eyebrow: "منصة استشارية خاصة",
+        title: "توجيه منظم لقرارات الجنسية والإقامة",
+        description:
+          "تدعم CBI Deal المستثمرين والعائلات الدولية في فهم الخيارات المعقدة بوضوح وخصوصية ومنهجية مدروسة.",
+        primary: "استكشف خياراتك",
+        secondary: "اطلب استشارة خاصة",
+        stats: [
+          { value: "وضوح أولاً", label: "الهدف هو فهم المسار المناسب قبل أي خطوة رسمية." },
+          { value: "منظور دولي", label: "نقارن بين برامج وجغرافيات مختلفة وفق وضعك الفعلي." },
+          { value: "نهج متزن", label: "القرار يبنى على الملاءمة، لا على الوعود السريعة." },
+        ],
+        asideEyebrow: "لمن صممت هذه البداية",
+        asideTitle: "للأفراد الذين يريدون قراراً أدق قبل الالتزام بأي مسار.",
+        asideDescription:
+          "هذه البداية مناسبة للمستثمرين والعائلات التي تحتاج إلى قراءة هادئة للخيارات قبل الانتقال إلى خطوة أكثر تحديداً.",
+        asidePoints: [
+          "اعتبارات عائلية وتخطيط طويل المدى.",
+          "مقارنة بين أكثر من دولة أو برنامج.",
+          "حاجة إلى وضوح أكبر حول التوقيت والكلفة والنتيجة.",
+        ],
+        noteTitle: "الخصوصية جزء من التجربة",
+        noteDescription:
+          "القرارات المتعلقة بالتنقل الدولي تتطلب قدراً أكبر من الهدوء والانضباط والسرية من البداية.",
+      },
+      positioning: {
+        eyebrow: "الموقع والدور",
+        title: "مقاربة أكثر وعياً للتخطيط الدولي",
+        description:
+          "قرارات الجنسية أو الإقامة لا تتعلق بمقارنة البرامج وحدها، بل بفهم الهدف والسياق والنتائج طويلة المدى.",
+        items: [
           {
-            title: "حرية تنقل دولية أوسع",
-            description: "تساعدك البرامج الرسمية المختارة بعناية على بناء مرونة أكبر في الحركة والتخطيط عبر الحدود ضمن إطار قانوني واضح.",
+            title: "منظور مستقل",
+            description: "التركيز هنا على ما يلائم وضعك، لا على دفعك إلى برنامج واحد بشكل مسبق.",
           },
           {
-            title: "استقرار طويل المدى لك ولعائلتك",
-            description: "ننظر إلى الحالة من زاوية شخصية وعائلية معاً حتى يكون المسار مناسباً للتخطيط طويل المدى وليس للقرار القصير فقط.",
+            title: "قراءة أوسع للقرار",
+            description: "نربط بين الميزانية والتوقيت والعائلة ونوع الوصول الذي تبحث عنه فعلاً.",
           },
           {
-            title: "تنويع الخيارات الاستثمارية",
-            description: "يتم تناول البرنامج كجزء من رؤية أوسع لإدارة الخيارات الاستثمارية والتنقل الدولي بصورة أكثر توازناً.",
+            title: "نبرة هادئة وواضحة",
+            description: "المطلوب هو فهم أفضل، لا استعجال غير مبرر ولا لغة مبيعات مباشرة.",
           },
-          {
-            title: "الوصول إلى فرص عالمية",
-            description: "قد تدعم البرامج المناسبة مرونة الأعمال والحضور الدولي والتخطيط العائلي ضمن مسار منظم وموثوق.",
-          },
-        ]
-      : locale === "ru"
-        ? [
-            {
-              title: "Международная мобильность",
-              description: "Структурированный доступ к официальным программам помогает выстраивать личную, семейную и деловую мобильность в долгосрочной перспективе.",
-            },
-            {
-              title: "Долгосрочное планирование для семьи",
-              description: "Профиль, сроки и семейный контекст оцениваются вместе, чтобы маршрут был реалистичным, устойчивым и понятным с первого шага.",
-            },
-            {
-              title: "Диверсификация активов",
-              description: "Инвестиционный маршрут рассматривается как часть более широкого долгосрочного планирования, а не как изолированное решение.",
-            },
-            {
-              title: "Доступ к глобальным возможностям",
-              description: "Подходящие программы могут поддерживать международную мобильность, деловое присутствие и трансграничное планирование в законной структуре.",
-            },
-          ]
-        : trustItems
-  const localizedHowItWorks =
-    locale === "ar"
-      ? [
-          {
-            icon: ShieldCheck,
-            title: "1. التقييم الأولي للحالة",
-            description: "نراجع الملف والميزانية والإطار الزمني والاحتياجات العائلية قبل أي إحالة إلى جهة خارجية.",
-          },
+        ],
+      },
+      approach: {
+        eyebrow: "المنهج",
+        title: "كيف تبدو البداية المنظمة",
+        description:
+          "نقدم إطاراً يساعد على توضيح المسار المناسب من دون كشف تفاصيل تشغيلية لا تخص الزائر.",
+        steps: [
           {
             icon: Globe2,
-            title: "2. ربطك بجهات مرخصة ومعتمدة",
-            description: "يتم توجيه الحالات المؤهلة إلى جهات مرخصة أو شركاء معتمدين بما يتناسب مع الملف والأهداف.",
+            title: "السياق الأولي",
+            description: "نبدأ بالأولوية الأساسية، وضع العائلة، الإطار الزمني، وما الذي تحاول حله فعلياً.",
           },
           {
-            icon: HandCoins,
-            title: "3. إجراءات التدقيق الحكومي (Due Diligence)",
-            description: "تخضع كل حالة لمتطلبات البرنامج الرسمية وإجراءات التحقق والعناية الواجبة لدى الجهات المختصة.",
+            icon: Compass,
+            title: "الاتجاه الاستراتيجي",
+            description: "ننظر في الولايات القضائية والهياكل التي تبدو منطقية لحالتك قبل أي التزام أعمق.",
           },
           {
-            icon: BadgeCheck,
-            title: "4. تقديم الطلب ومتابعته",
-            description: "يتم تقديم الطلب ومتابعته حصرياً من خلال البرامج الحكومية الرسمية والوكلاء أو الشركاء المعتمدين.",
+            icon: ShieldCheck,
+            title: "الوصول المناسب",
+            description: "عند الحاجة، يتم الانتقال إلى جهات مرخصة أو معتمدة بطريقة أكثر دقة وملاءمة.",
           },
-        ]
-      : locale === "ru"
-        ? [
-            {
-              icon: ShieldCheck,
-              title: "1. Первичная квалификация",
-              description: "Мы оцениваем профиль, бюджет, сроки и семейный контекст до любого внешнего представления кейса.",
-            },
-            {
-              icon: Globe2,
-              title: "2. Подбор лицензированных партнеров",
-              description: "Квалифицированные запросы направляются лицензированным провайдерам или авторизованным партнерам, релевантным профилю и целям.",
-            },
-            {
-              icon: HandCoins,
-              title: "3. Государственная проверка (Due Diligence)",
-              description: "Каждый кейс проходит официальные требования программы и строгие процедуры due diligence со стороны соответствующих органов и лицензированных участников.",
-            },
-            {
-              icon: BadgeCheck,
-              title: "4. Подача и рассмотрение заявки",
-              description: "Подача и окончательное решение осуществляются только через официальные государственные программы и авторизованных агентов.",
-            },
-          ]
-        : [
-            {
-              icon: ShieldCheck,
-              title: "1. Initial qualification",
-              description: "We review your profile, budget, timing, and family context before any external introduction is made.",
-            },
-            {
-              icon: Globe2,
-              title: "2. Matching with licensed providers",
-              description: "Qualified enquiries are directed to licensed providers or authorized partners suited to the case.",
-            },
-            {
-              icon: HandCoins,
-              title: "3. Government due diligence",
-              description: "Every case remains subject to the official due diligence requirements of the relevant government program.",
-            },
-            {
-              icon: BadgeCheck,
-              title: "4. Application and approval",
-              description: "Applications and final approvals are handled solely through official government programs and authorized agents.",
-            },
-          ]
-  const localizedPrograms =
-    locale === "ar"
-      ? [
+        ],
+      },
+      pathways: {
+        eyebrow: "المسارات الرئيسية",
+        title: "الطرق التي تبدأ منها أغلب المقارنات الجادة",
+        description:
+          "ليست كل الحالات تبحث عن النتيجة نفسها. بعض القرارات تتجه مباشرة إلى الجنسية، وبعضها إلى إقامة استراتيجية أو انتقال أوسع.",
+        items: [
           {
-            title: "برامج الجنسية عن طريق الاستثمار في الكاريبي",
-            description: "للراغبين في مسارات رسمية معروفة تدعم المرونة الدولية والتخطيط العائلي ضمن أطر واضحة.",
+            title: "الجنسية عن طريق الاستثمار",
+            description: "لمن يبحث عن جنسية ثانية مباشرة ضمن برامج رسمية واضحة المعايير.",
             image: siteImages.stLuciaAerial.src,
             alt: siteImages.stLuciaAerial.alt,
           },
           {
-            title: "الإقامة الأوروبية عن طريق الاستثمار",
-            description: "للعائلات وأصحاب الأعمال الذين يبحثون عن مرونة طويلة الأجل وحضور منظم في بيئات أوروبية.",
+            title: "الإقامة عن طريق الاستثمار",
+            description: "لمن يحتاج إلى وجود أوروبي أو مسار إقامة ينسجم مع التخطيط طويل المدى.",
             image: siteImages.coimbra.src,
             alt: siteImages.coimbra.alt,
           },
           {
-            title: "الحالات العائلية والمتعددة الاعتبارات",
-            description: "للحالات التي تتداخل فيها اعتبارات الأسرة والتوقيت والتخطيط متعدد الولايات القضائية ضمن قرار واحد.",
-            image: siteImages.ghent.src,
-            alt: siteImages.ghent.alt,
+            title: "الانتقال الاستراتيجي",
+            description: "للحالات التي تجمع بين التنقل، هيكلة الحياة العائلية، وإعادة التموضع الدولي.",
+            image: siteImages.budapest.src,
+            alt: siteImages.budapest.alt,
           },
-        ]
-      : locale === "ru"
-        ? [
-            {
-              title: "Карибские программы гражданства за инвестиции",
-              description: "Для заявителей, которым важны мобильность, гибкость структуры и семейное планирование в рамках официальных программ.",
-              image: siteImages.stLuciaAerial.src,
-              alt: siteImages.stLuciaAerial.alt,
-            },
-            {
-              title: "Европейское резидентство за инвестиции",
-              description: "Для семей и собственников бизнеса, которым нужна долгосрочная гибкость, структурированное присутствие и опциональность на будущее.",
-              image: siteImages.coimbra.src,
-              alt: siteImages.coimbra.alt,
-            },
-            {
-              title: "Семейные и многофакторные кейсы",
-              description: "Для ситуаций, где состав семьи, сроки и многопрофильное планирование так же важны, как и сама программа.",
-              image: siteImages.ghent.src,
-              alt: siteImages.ghent.alt,
-            },
-          ]
-        : programs
-  const lowerCopy = {
-    trustEyebrow: locale === "ar" ? "الامتثال والثقة" : locale === "ru" ? "Доверие и конфиденциальность" : "Trust and discretion",
-    trustTitle:
-      locale === "ar"
-        ? "الامتثال، ومكافحة غسيل الأموال، ومعرفة العميل جزء أساسي من العملية."
-        : locale === "ru"
-          ? "Комплаенс, AML, KYC и due diligence встроены в процесс с самого начала."
-          : "A cleaner way to approach citizenship and residency planning.",
-    trustDescription:
-      locale === "ar"
-        ? "نلتزم بالمتطلبات المعمول بها في الاتحاد الأوروبي، ومعايير مكافحة غسيل الأموال (AML)، وإجراءات معرفة العميل (KYC)، إلى جانب متطلبات التدقيق الإلزامي لكل حالة. الهدف هو الحفاظ على مسار مهني منظم وواضح يبعث على الثقة."
-        : locale === "ru"
-          ? "Мы придерживаемся применимых требований ЕС, стандартов AML/KYC и обязательной процедуры due diligence. Это не формальность, а неотъемлемая часть корректной и устойчивой структуры работы с заявками."
-          : "High-value immigration decisions require discretion, clear qualification, and a serious tone. The restrained visual language helps the experience feel credible to both investors and partner firms.",
-    speakToTeam: locale === "ar" ? "اطلع على حماية البيانات" : locale === "ru" ? "Подробнее о защите данных" : "Speak to our team",
-    companiesEyebrow: locale === "ar" ? "للشركات" : locale === "ru" ? "Для компаний" : "For companies",
-    companiesTitle:
-      locale === "ar"
-        ? "نساعد أيضًا شركات الجوازات ومكاتب الهجرة على النمو."
-        : locale === "ru"
-          ? "Мы также помогаем расти паспортным компаниям и иммиграционным фирмам."
-          : "We also help passport companies and immigration firms grow.",
-    companiesDescription:
-      locale === "ar"
-        ? "إذا كنت تدير شركة جوازات أو مكتب هجرة أو مكتب استشاري، فنحن نوفر تجربة CRM مخصصة ومسار عرض توضيحي وأسعارًا وشراكات للعملاء المحتملين تحت نفس النطاق."
-        : locale === "ru"
-          ? "Если вы управляете паспортной компанией, иммиграционной фирмой или консультационной практикой, мы предлагаем CRM, демо, тарифы и партнерство по квалифицированным лидам на том же домене."
-          : "If you run a passport company, immigration firm, or advisory desk, we offer a dedicated CRM experience, guided demo path, pricing, and qualified lead partnership flow under the same domain.",
-    visitCompany: locale === "ar" ? "انتقل إلى صفحة الشركات" : locale === "ru" ? "Перейти на страницу для компаний" : "Visit the company overview",
+        ],
+      },
+      insights: {
+        eyebrow: "المقالات",
+        title: "رؤى تساعد على اتخاذ قرار أكثر وعياً",
+        description: "تحليلات حول البرامج والولايات القضائية والاعتبارات العملية في التخطيط الدولي.",
+        cta: "عرض المقالات",
+      },
+      consultation: {
+        eyebrow: "الخطوة التالية",
+        title: "اطلب استشارة خاصة",
+        description:
+          "تستخدم المحادثات الأولية لفهم حالتك وتحديد ما إذا كان بإمكاننا دعم الملف بشكل مناسب.",
+        primary: "اطلب استشارة",
+        secondary: "استكشف خياراتك",
+      },
+      scarcity: {
+        title: "نعمل مع عدد محدود من الملفات في الوقت نفسه.",
+        description: "وتُعطى الأولوية للحالات ذات الأهداف الواضحة والنية الجادة والمسار القابل للتنفيذ.",
+      },
+    }
   }
 
-  if (cmsPage) {
-    return (
-      <SiteShell>
-        <LandingPageRenderer page={cmsPage} />
-      </SiteShell>
-    )
+  if (locale === "ru") {
+    return {
+      hero: {
+        eyebrow: "Частная консультативная платформа",
+        title: "Структурированный подход к решениям о гражданстве и резидентстве",
+        description:
+          "CBI Deal помогает инвесторам и международно мобильным семьям разбираться в сложных программах ясно, дискретно и в более структурированном формате.",
+        primary: "Изучить варианты",
+        secondary: "Запросить консультацию",
+        stats: [
+          { value: "Ясность в начале", label: "Сначала определяется правильное направление, а не навязывается готовый ответ." },
+          { value: "Международный взгляд", label: "Сравнение строится вокруг юрисдикций, сроков и реального профиля семьи." },
+          { value: "Сдержанный подход", label: "Речь идёт о пригодности маршрута, а не о рекламной подаче." },
+        ],
+        asideEyebrow: "Для кого это начало",
+        asideTitle: "Для инвесторов и семей, которым нужен более выверенный первый шаг.",
+        asideDescription:
+          "Эта отправная точка подходит тем, кто сравнивает несколько маршрутов и хочет понять картину до более формального движения дальше.",
+        asidePoints: [
+          "Семейное и долгосрочное планирование.",
+          "Выбор между несколькими странами или структурами.",
+          "Потребность в большей ясности по срокам, стоимости и результату.",
+        ],
+        noteTitle: "Дискретность не является дополнением",
+        noteDescription:
+          "Для международно чувствительных решений спокойный и контролируемый первый этап имеет такое же значение, как и сама программа.",
+      },
+      positioning: {
+        eyebrow: "Позиционирование",
+        title: "Более вдумчивый подход к международной мобильности",
+        description:
+          "Решения о гражданстве и резидентстве требуют не только сравнения программ, но и контекста, структуры и понимания долгосрочных последствий.",
+        items: [
+          {
+            title: "Независимый взгляд",
+            description: "Фокус на том, что действительно подходит профилю, а не на заранее выбранной стране.",
+          },
+          {
+            title: "Более широкая рамка решения",
+            description: "Во внимание принимаются бюджет, сроки, семья и практическая цель запроса.",
+          },
+          {
+            title: "Спокойный и точный тон",
+            description: "Здесь важнее ясность и дисциплина мышления, чем давление или шумный маркетинг.",
+          },
+        ],
+      },
+      approach: {
+        eyebrow: "Подход",
+        title: "Как выглядит структурированное начало",
+        description:
+          "Мы показываем понятную рамку работы без того, чтобы выносить на первый план внутреннюю механику процесса.",
+        steps: [
+          {
+            icon: Globe2,
+            title: "Первичный контекст",
+            description: "Уточняются приоритеты, семейная ситуация, сроки и то, какую задачу запрос должен решить.",
+          },
+          {
+            icon: Compass,
+            title: "Стратегическое направление",
+            description: "Рассматриваются юрисдикции и структуры маршрутов, которые выглядят уместно для конкретного случая.",
+          },
+          {
+            icon: ShieldCheck,
+            title: "Релевантный доступ",
+            description: "При необходимости следующий шаг выстраивается через лицензированных и надлежащим образом авторизованных участников.",
+          },
+        ],
+      },
+      pathways: {
+        eyebrow: "Ключевые маршруты",
+        title: "Основные направления, с которых обычно начинается сравнение",
+        description:
+          "Не каждый случай требует одного и того же исхода. Для одних важна вторая гражданская принадлежность, для других — резидентская структура или стратегическое перемещение.",
+        items: [
+          {
+            title: "Citizenship by Investment",
+            description: "Для тех, кто рассматривает прямой маршрут ко второму гражданству через официальные программы.",
+            image: siteImages.stLuciaAerial.src,
+            alt: siteImages.stLuciaAerial.alt,
+          },
+          {
+            title: "Residency by Investment",
+            description: "Для семей и инвесторов, которым нужен европейский или долгосрочный резидентский маршрут.",
+            image: siteImages.coimbra.src,
+            alt: siteImages.coimbra.alt,
+          },
+          {
+            title: "Strategic Relocation",
+            description: "Для случаев, где мобильность, семейная структура и международное переустройство рассматриваются вместе.",
+            image: siteImages.budapest.src,
+            alt: siteImages.budapest.alt,
+          },
+        ],
+      },
+      insights: {
+        eyebrow: "Insights",
+        title: "Материалы для более информированных решений",
+        description: "Аналитика по программам, юрисдикциям и международному планированию.",
+        cta: "Перейти к статьям",
+      },
+      consultation: {
+        eyebrow: "Следующий шаг",
+        title: "Запросить частную консультацию",
+        description:
+          "Первичные беседы используются для понимания вашей ситуации и оценки того, можем ли мы уместно сопровождать такой запрос.",
+        primary: "Запросить консультацию",
+        secondary: "Изучить варианты",
+      },
+      scarcity: {
+        title: "Одновременно мы работаем с ограниченным числом дел.",
+        description: "Приоритет получают случаи с ясной задачей, серьёзным намерением и реалистичной структурой дальнейшего движения.",
+      },
+    }
   }
+
+  return {
+    hero: {
+      eyebrow: "Private advisory platform",
+      title: "Structured guidance for citizenship and residency decisions",
+      description:
+        "CBI Deal supports investors and internationally mobile families in navigating complex programme options with clarity, discretion, and a structured approach.",
+      primary: "Explore your options",
+      secondary: "Request a consultation",
+      stats: [
+        { value: "Clearer first steps", label: "The emphasis is on understanding fit before movement becomes formal." },
+        { value: "International perspective", label: "Jurisdictions, timing, family context, and planning horizon are viewed together." },
+        { value: "Measured access", label: "Introductions are only relevant when the route itself appears genuinely suitable." },
+      ],
+      asideEyebrow: "Who this gateway is for",
+      asideTitle: "For investors and internationally mobile families seeking a more considered starting point.",
+      asideDescription:
+        "The homepage is designed to help visitors enter the process calmly, understand the shape of the decision, and move forward only where the fit appears real.",
+      asidePoints: [
+        "Family-led and long-horizon planning.",
+        "Cross-jurisdiction comparisons rather than single-country promotion.",
+        "A need for clarity on timing, cost, and strategic outcome.",
+      ],
+      noteTitle: "Discretion matters",
+      noteDescription:
+        "Citizenship and residency planning often sits alongside sensitive family, business, and mobility questions. The first step should reflect that reality.",
+    },
+    positioning: {
+      eyebrow: "Positioning",
+      title: "A more considered approach to international mobility",
+      description:
+        "Citizenship and residency decisions require more than programme comparisons. They require context, structure, and a clear understanding of long-term implications.",
+      items: [
+        {
+          title: "Independent perspective",
+          description: "The purpose is to understand what genuinely suits the case, not to steer every enquiry towards the same route.",
+        },
+        {
+          title: "Decision-making in context",
+          description: "Budget, timing, family structure, mobility aims, and practical constraints all shape what the right route looks like.",
+        },
+        {
+          title: "Calm and exacting tone",
+          description: "The experience should feel disciplined, discreet, and internationally minded rather than promotional or over-explained.",
+        },
+      ],
+    },
+    approach: {
+      eyebrow: "Approach",
+      title: "How the process is framed",
+      description:
+        "The structure is intended to clarify the right direction without exposing the visitor to unnecessary internal mechanics.",
+      steps: [
+        {
+          icon: Globe2,
+          title: "Initial context",
+          description: "The starting point is a clear view of priorities, family situation, timing, and what the decision is truly meant to solve.",
+        },
+        {
+          icon: Compass,
+          title: "Strategic direction",
+          description: "Suitable jurisdictions and pathway structures are explored before any route is treated as the answer by default.",
+        },
+        {
+          icon: ShieldCheck,
+          title: "Relevant access",
+          description: "Where appropriate, the next step can move towards licensed providers in a way that feels measured and proportionate.",
+        },
+      ],
+    },
+    pathways: {
+      eyebrow: "Investor pathways",
+      title: "The main routes clients usually compare",
+      description:
+        "Different objectives call for different structures. Some cases point towards direct citizenship, others towards residency planning or strategic relocation.",
+      items: [
+        {
+          title: "Citizenship by Investment",
+          description: "For those considering direct citizenship routes through established investment-led programmes.",
+          image: siteImages.stLuciaAerial.src,
+          alt: siteImages.stLuciaAerial.alt,
+        },
+        {
+          title: "Residency by Investment",
+          description: "For families and investors looking at residence-led structures with a longer planning horizon.",
+          image: siteImages.coimbra.src,
+          alt: siteImages.coimbra.alt,
+        },
+        {
+          title: "Strategic Relocation",
+          description: "For cases where mobility, residence, family planning, and international repositioning are considered together.",
+          image: siteImages.budapest.src,
+          alt: siteImages.budapest.alt,
+        },
+      ],
+    },
+    insights: {
+      eyebrow: "Insights",
+      title: "Insights for more informed decisions",
+      description: "Analysis on programmes, jurisdictions, and international planning considerations.",
+      cta: "View insights",
+    },
+    consultation: {
+      eyebrow: "Consultation",
+              title: "Request a consultation",
+      description:
+        "Initial conversations are used to understand your situation and determine whether we can support your case.",
+      primary: "Request consultation",
+      secondary: "Explore your options",
+    },
+    scarcity: {
+      title: "We work with a limited number of cases at any one time.",
+      description: "Priority is given to applicants with clear objectives, serious intent, and a considered approach to the decision.",
+    },
+  }
+}
+
+function getMergedInsightPosts() {
+  return fallbackInsightPosts
+}
+
+export default async function HomePage() {
+  const locale = getRequestLocale()
+  const routeLinks = getLocalizedRouteLinks(locale)
+  const copy = getHomeCopy(locale)
+  const cmsPosts = await getBlogPosts()
+
+  const mergedPosts = [...cmsPosts]
+
+  getMergedInsightPosts().forEach((fallbackPost) => {
+    if (!mergedPosts.some((post) => post.slug === fallbackPost.slug)) {
+      mergedPosts.push(fallbackPost)
+    }
+  })
+
+  const featuredInsights = mergedPosts
+    .sort((left, right) => new Date(right.publishedAt).getTime() - new Date(left.publishedAt).getTime())
+    .slice(0, 3)
 
   return (
     <SiteShell>
       <PageHero
-        eyebrow={copy.heroEyebrow}
-        title={copy.heroTitle}
-        description={copy.heroDescription}
-        primaryAction={{ href: ctaLinks.checkEligibility, label: copy.primaryCta }}
-        secondaryAction={{ href: routeLinks.programs, label: copy.secondaryCta }}
-        sectionClassName="pb-20 md:pb-24"
-        stats={copy.heroStats}
+        eyebrow={copy.hero.eyebrow}
+        title={copy.hero.title}
+        description={copy.hero.description}
+        primaryAction={{ href: routeLinks.programs, label: copy.hero.primary }}
+        secondaryAction={{ href: routeLinks.bookConsultation, label: copy.hero.secondary }}
+        showGuideLink={false}
+        stats={copy.hero.stats}
       >
-        <div className="space-y-[1.125rem] md:space-y-5">
-          <div className="rounded-[28px] border border-white/10 bg-white/[0.08] p-5 md:p-6 backdrop-blur-sm">
-            <p className="text-sm uppercase tracking-[0.2em] text-primary-foreground/70">{copy.nextLabel}</p>
-            <div className="mt-4 space-y-3.5 md:mt-5 md:space-y-4">
-              {copy.nextItems.map((item) => (
-                <div key={item} className="flex items-start gap-3">
-                  <BadgeCheck className="mt-0.5 size-5 text-secondary" />
-                  <p className="text-sm leading-7 text-primary-foreground/80">{item}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+        <div className="space-y-5">
+          <Card className="section-card border-white/10 bg-white/8 text-primary-foreground shadow-none">
+            <CardContent className="space-y-4 p-6 md:p-7">
+              <span className="eyebrow border-white/15 bg-white/10 text-primary-foreground/80">
+                {copy.hero.asideEyebrow}
+              </span>
+              <h2 className="text-[1.55rem] leading-[1.18] text-primary-foreground">{copy.hero.asideTitle}</h2>
+              <p className="text-sm leading-7 text-primary-foreground/72">{copy.hero.asideDescription}</p>
+              <div className="space-y-3 border-t border-white/10 pt-4">
+                {copy.hero.asidePoints.map((point) => (
+                  <div key={point} className="flex items-start gap-3 text-sm leading-6 text-primary-foreground/74">
+                    <span className="mt-2 size-1.5 rounded-full bg-[#d6bb83]" />
+                    <span>{point}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
-          <div className="rounded-[28px] border border-secondary/28 bg-background/95 p-5 text-foreground shadow-[0_16px_48px_rgba(19,24,38,0.14)] md:p-6">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">{copy.companyLabel}</p>
-            <h3 className="card-title mt-3 max-w-[22rem] text-foreground">{copy.companyTitle}</h3>
-            <p className="mt-3 max-w-[24rem] text-sm leading-7 text-muted-foreground">
-              {copy.companyDescription}
-            </p>
-            <Button asChild className="mt-4 h-11 w-full rounded-full px-5 text-sm sm:w-auto">
-              <Link href={routeLinks.forCompanies}>
-                {copy.companyCta}
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-          </div>
+          <Card className="section-card border-white/10 bg-primary-foreground/[0.04] text-primary-foreground shadow-none">
+            <CardContent className="space-y-3 p-6 md:p-7">
+              <p className="text-sm font-medium uppercase tracking-[0.22em] text-primary-foreground/62">
+                {copy.hero.noteTitle}
+              </p>
+              <p className="text-sm leading-7 text-primary-foreground/74">{copy.hero.noteDescription}</p>
+            </CardContent>
+          </Card>
         </div>
       </PageHero>
 
-      <section id="eligibility" className="section-flow">
-        <div className="container-shell grid gap-8 md:gap-10 lg:grid-cols-[minmax(0,0.94fr)_minmax(0,1.06fr)] lg:items-start">
-          <div className="content-measure space-y-5 md:space-y-6">
-            <span className="eyebrow">{copy.qualificationEyebrow}</span>
-            <h2 className="section-title content-measure-tight text-foreground">{copy.qualificationTitle}</h2>
-            <p className="content-measure-tight text-lg leading-8 text-muted-foreground">
-              {copy.qualificationDescription}
-            </p>
-            <div className="space-y-3 md:space-y-4">
-              {copy.qualificationPoints.map((point) => (
-                <div key={point} className="flex items-start gap-3">
-                  <BadgeCheck className="mt-1 size-5 text-primary" />
-                  <p className="fine-print">{point}</p>
-                </div>
-              ))}
-            </div>
-            <div className="section-card content-measure-tight overflow-hidden p-0">
-              <div className="relative h-[280px] sm:h-[320px]">
-                <Image
-                  src={siteImages.passportHandoff.src}
-                  alt={siteImages.passportHandoff.alt}
-                  fill
-                  sizes="(min-width: 1024px) 34vw, 100vw"
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-primary/10 to-transparent" />
-              </div>
-              <div className="space-y-2 p-5 md:p-6">
-                <p className="text-sm font-semibold text-foreground">Private, structured, and provider-led.</p>
-                <p className="fine-print">
-                  A clearer intake makes the first provider conversation feel more prepared, more relevant, and easier to trust.
-                </p>
-              </div>
-            </div>
-          </div>
-          <LeadQualificationForm
-            locale={locale}
-            formType="investor"
-            title={copy.formTitle}
-            description={copy.formDescription}
-            source="homepage-investor"
+      <section className="section-flow">
+        <div className="container-shell">
+          <SectionHeading
+            eyebrow={copy.positioning.eyebrow}
+            title={copy.positioning.title}
+            description={copy.positioning.description}
           />
+          <TrustGrid items={copy.positioning.items} />
         </div>
       </section>
 
       <section className="section-flow bg-muted/30">
         <div className="container-shell">
           <SectionHeading
-            eyebrow={copy.whyEyebrow}
-            title={copy.whyTitle}
-            description={copy.whyDescription}
+            eyebrow={copy.approach.eyebrow}
+            title={copy.approach.title}
+            description={copy.approach.description}
           />
-          <TrustGrid items={localizedTrustItems} />
+          <ProcessSteps steps={copy.approach.steps} />
         </div>
       </section>
 
       <section className="section-flow">
         <div className="container-shell">
           <SectionHeading
-            eyebrow={copy.programsEyebrow}
-            title={copy.programsTitle}
-            description={copy.programsDescription}
+            eyebrow={copy.pathways.eyebrow}
+            title={copy.pathways.title}
+            description={copy.pathways.description}
           />
-          <ProgramGrid items={localizedPrograms} />
+          <ProgramGrid items={copy.pathways.items} />
         </div>
       </section>
 
-      <section className="section-flow">
-        <div className="container-shell">
+      <section className="section-flow bg-muted/30">
+        <div className="container-shell space-y-8">
           <SectionHeading
-            eyebrow={copy.howEyebrow}
-            title={copy.howTitle}
-            description={copy.howDescription}
+            eyebrow={copy.insights.eyebrow}
+            title={copy.insights.title}
+            description={copy.insights.description}
           />
-          <ProcessSteps steps={localizedHowItWorks} />
+          <div className="grid gap-6 lg:grid-cols-3">
+            {featuredInsights.map((post) => (
+              <BlogPostCard key={post.slug} post={post} />
+            ))}
+          </div>
+          <div className="flex justify-start">
+            <Button asChild>
+              <Link href={routeLinks.insights}>
+                {copy.insights.cta}
+                <ArrowRight className="size-4" />
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
 
       <section className="section-flow">
-        <div className="container-shell grid gap-6 md:gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-          <Card className="section-card overflow-hidden p-0">
-            <div className="grid gap-0 md:grid-cols-2">
-              <div className="relative min-h-[320px]">
-                <Image
-                  src={siteImages.familyWaterfront.src}
-                  alt={siteImages.familyWaterfront.alt}
-                  fill
-                  sizes="(min-width: 1024px) 34vw, 100vw"
-                  className="object-cover"
-                />
-              </div>
-              <CardContent className="space-y-5 p-7 md:p-8">
-                <span className="eyebrow">{lowerCopy.trustEyebrow}</span>
-                <h3 className="card-title content-measure-tight text-foreground">{lowerCopy.trustTitle}</h3>
-                <p className="content-measure-tight text-base leading-8 text-muted-foreground">
-                  {lowerCopy.trustDescription}
-                </p>
-                <Button variant="outline" asChild>
-                  <Link href={locale === "ar" || locale === "ru" ? routeLinks.dataProtection : ctaLinks.speakToTeam}>{lowerCopy.speakToTeam}</Link>
-                </Button>
-              </CardContent>
-            </div>
-          </Card>
+        <div className="container-shell space-y-6">
+          <CtaPanel
+            eyebrow={copy.consultation.eyebrow}
+            title={copy.consultation.title}
+            description={copy.consultation.description}
+            primaryAction={{ href: routeLinks.bookConsultation, label: copy.consultation.primary }}
+            secondaryAction={{ href: routeLinks.programs, label: copy.consultation.secondary }}
+            showGuideLink={false}
+          />
 
-          <Card className="section-card overflow-hidden p-0">
-            <div className="relative min-h-[320px]">
-              <Image
-                src={siteImages.budapest.src}
-                alt={siteImages.budapest.alt}
-                fill
-                sizes="(min-width: 1024px) 30vw, 100vw"
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/85 via-primary/30 to-transparent" />
-            </div>
-            <CardContent className="space-y-4 p-7 md:p-8">
-              <span className="eyebrow">{lowerCopy.companiesEyebrow}</span>
-              <h3 className="card-title max-w-[24rem] text-foreground">{lowerCopy.companiesTitle}</h3>
-              <p className="max-w-[30rem] text-sm leading-7 text-muted-foreground">
-                {lowerCopy.companiesDescription}
-              </p>
-              <Button asChild>
-                <Link href={routeLinks.forCompanies}>
-                  {lowerCopy.visitCompany}
-                  <ArrowRight className="size-4" />
-                </Link>
-              </Button>
+          <Card className="section-card bg-muted/25">
+            <CardContent className="space-y-3 p-6 md:p-7">
+              <p className="text-[1.15rem] leading-7 text-foreground md:text-[1.28rem]">{copy.scarcity.title}</p>
+              <p className="max-w-[42rem] text-sm leading-7 text-muted-foreground">{copy.scarcity.description}</p>
             </CardContent>
           </Card>
-        </div>
-      </section>
-
-      <section className="section-flow">
-        <div className="container-shell">
-          <CtaPanel
-            eyebrow={copy.finalEyebrow ?? "Final step"}
-            title={copy.finalTitle}
-            description={copy.finalDescription}
-            primaryAction={{ href: ctaLinks.checkEligibility, label: copy.finalPrimary }}
-            secondaryAction={{ href: routeLinks.forCompanies, label: copy.finalSecondary }}
-          />
         </div>
       </section>
     </SiteShell>

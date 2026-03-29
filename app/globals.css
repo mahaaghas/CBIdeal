@@ -187,4 +187,47 @@
   .surface-muted {
     @apply rounded-[24px] border border-border/70 bg-muted/25;
   }
+
+  .conversion-primary-button {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(0,140,149,0.25)] transition-all hover:-translate-y-[1px];
+    background-color: #008c95;
+  }
+
+  .conversion-primary-button:hover {
+    background-color: #00777f;
+  }
+
+  .conversion-secondary-button {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/[0.04] px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-white/10;
+  }
+
+  .conversion-header-secondary {
+    @apply rounded-full border-border/70 bg-background/90 px-5 shadow-sm;
+  }
+
+  .conversion-tertiary-link {
+    @apply inline-flex items-center gap-2 text-sm font-medium text-primary-foreground/78 underline-offset-4 hover:text-primary-foreground hover:underline;
+  }
+
+  .conversion-choice {
+    @apply rounded-[22px] border border-border/80 bg-card px-5 py-4 text-left text-base leading-7 text-foreground shadow-[0_10px_28px_rgba(20,26,42,0.05)] transition-all hover:-translate-y-[1px] hover:border-[#008c95]/40 hover:shadow-[0_16px_30px_rgba(0,140,149,0.12)];
+  }
+
+  .conversion-sticky {
+    @apply fixed bottom-6 right-6 z-[60] items-center gap-2 rounded-full px-6 py-4 text-sm font-semibold text-white shadow-[0_20px_40px_rgba(0,140,149,0.3)];
+    background-color: #008c95;
+  }
+
+  html[dir="rtl"] .conversion-sticky {
+    @apply left-6 right-auto;
+  }
+
+  .conversion-mobile-bar {
+    @apply fixed inset-x-0 bottom-0 z-[60] border-t border-border/70 bg-background/94 px-4 py-3 backdrop-blur-xl;
+  }
+
+  .conversion-mobile-button {
+    @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full text-sm font-semibold text-white shadow-[0_14px_34px_rgba(0,140,149,0.25)];
+    background-color: #008c95;
+  }
 }

@@ -14,24 +14,24 @@ export function ContactInquiryTabs({ locale = "en", defaultValue = "investor" }:
   const messages = getMessages(locale)
   const isRtl = locale === "ar"
   const copy = {
-    investorTitle: locale === "ar" ? "استفسار مستثمر" : locale === "ru" ? "Запрос инвестора" : "Investor enquiry",
+    investorTitle: locale === "ar" ? "مراجعة للمستثمر" : locale === "ru" ? "Запрос инвестора" : "Investor review",
     investorDescription:
       locale === "ar"
-        ? "شارك ملفك وأهدافك ليعود مزود مناسب بخطوة تالية ملائمة."
+        ? "شارك وضعك الحالي وما الذي تحاول الوصول إليه، حتى نتمكن من اقتراح الخطوة الأنسب بهدوء."
         : locale === "ru"
-          ? "Поделитесь своим профилем и целями, чтобы подходящий провайдер вернулся с релевантным следующим шагом."
-          : "Share your profile and goals so a suitable provider can come back with a relevant next step.",
+          ? "Поделитесь своим профилем и целью, чтобы мы могли спокойно предложить наиболее уместный следующий шаг."
+          : "Share your current position and what you are trying to achieve so we can suggest the most suitable next step.",
     investorSubmit:
-      locale === "ar" ? "إرسال استفسار المستثمر" : locale === "ru" ? "Отправить запрос инвестора" : "Submit investor enquiry",
-    companyTitle: locale === "ar" ? "استفسار شركة" : locale === "ru" ? "Запрос компании" : "Company enquiry",
+      locale === "ar" ? "اطلب المراجعة" : locale === "ru" ? "Запросить рассмотрение" : "Request review",
+    companyTitle: locale === "ar" ? "محادثة مهنية" : locale === "ru" ? "Профессиональный запрос" : "Professional enquiry",
     companyDescription:
       locale === "ar"
-        ? "أخبرنا ما إذا كنت تقيّم الـ CRM أو العملاء المؤهلين أو إعدادًا مشتركًا."
+        ? "إذا كنت تمثل جهة مهنية أو استشارية، أخبرنا بطبيعة النقاش الذي تريد ترتيبه."
         : locale === "ru"
-          ? "Сообщите, оцениваете ли вы CRM, квалифицированные лиды или комбинированную модель."
-          : "Tell us whether you are evaluating the CRM, qualified leads, or a combined setup.",
+          ? "Если вы представляете профессиональную или консультативную фирму, сообщите, какой разговор вы хотели бы организовать."
+          : "If you represent a professional or advisory firm, tell us what kind of discussion you would like to arrange.",
     companySubmit:
-      locale === "ar" ? "إرسال استفسار الشركة" : locale === "ru" ? "Отправить запрос компании" : "Submit company enquiry",
+      locale === "ar" ? "اطلب معاودة الاتصال" : locale === "ru" ? "Запросить обратный звонок" : "Request a private reply",
   }
 
   return (

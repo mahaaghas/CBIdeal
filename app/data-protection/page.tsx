@@ -15,16 +15,16 @@ export async function generateMetadata(): Promise<Metadata> {
     en: {
       title: "Data Protection and Confidentiality",
       description:
-        "Read how investor enquiries and company CRM information are handled with confidentiality, structured access, and a privacy-aware approach.",
+        "Read how investor and professional enquiries are handled with confidentiality, structured access, and a privacy-aware approach.",
     },
     ar: {
       title: "حماية البيانات والسرية",
-      description: "تعرف على كيفية التعامل مع استفسارات المستثمرين وبيانات CRM الخاصة بالشركات بسرية وبنهج واعٍ بالخصوصية.",
+      description: "تعرف على كيفية التعامل مع استفسارات المستثمرين والاستفسارات المهنية بسرية وبنهج واعٍ بالخصوصية.",
     },
     ru: {
       title: "Защита данных и конфиденциальность",
       description:
-        "Узнайте, как запросы инвесторов и CRM-данные компаний обрабатываются конфиденциально и с учётом приватности.",
+        "Узнайте, как запросы инвесторов и профессиональные обращения обрабатываются конфиденциально и с учётом приватности.",
     },
   }[locale]
 
@@ -33,9 +33,9 @@ export async function generateMetadata(): Promise<Metadata> {
     description: localized.description,
     path: localizeHref(locale, "/data-protection"),
     keywords: [
-      "data protection immigration CRM",
+      "data protection advisory enquiries",
       "confidential investor enquiries",
-      "privacy immigration firm software",
+      "private consultation privacy",
     ],
     locale,
   })
@@ -44,15 +44,15 @@ export async function generateMetadata(): Promise<Metadata> {
 const sections = [
   {
     title: "Confidential investor enquiries",
-    body: "Investor submissions are intended to be reviewed only for qualification, provider matching, and appropriate follow-up. The goal is to keep sensitive immigration interest handled with care and relevance.",
+    body: "Investor submissions are reviewed only for the purpose of understanding the enquiry and deciding whether a further discussion would be appropriate.",
   },
   {
     title: "Responsible company data handling",
-    body: "Company and CRM enquiries are positioned around controlled internal use, structured access, and workflow clarity. The website language is designed to reassure buyers that client information should not be handled casually.",
+    body: "Professional enquiries are handled with restricted access and a measured internal review so that sensitive commercial information is treated with care.",
   },
   {
     title: "Limited use of submitted information",
-    body: "Submitted details are used to review requests, coordinate follow-up, and route enquiries to the relevant internal team or matched provider. Access is kept limited to the people involved in handling the request responsibly.",
+    body: "Submitted details are used only to review requests, respond appropriately, and maintain a clear record of the enquiry. Access is limited to the people involved in handling it responsibly.",
   },
   {
     title: "Questions and data concerns",
@@ -69,15 +69,15 @@ export default function DataProtectionPage() {
       ? [
           {
             title: "استفسارات المستثمرين السرية",
-            body: "تهدف طلبات المستثمرين إلى المراجعة لأغراض التأهيل ومطابقة المزود والمتابعة المناسبة فقط. الهدف هو التعامل مع الاهتمام ببرامج الهجرة الحساسة بعناية وملاءمة.",
+            body: "تتم مراجعة طلبات المستثمرين فقط من أجل فهم الاستفسار وتحديد ما إذا كانت هناك حاجة إلى نقاش لاحق أكثر تفصيلاً. الهدف هو التعامل مع هذا النوع من الاهتمام بعناية وملاءمة.",
           },
           {
             title: "التعامل المسؤول مع بيانات الشركات",
-            body: "تتمحور استفسارات الشركات وطلبات CRM حول الاستخدام الداخلي المنضبط والصلاحيات المنظمة ووضوح سير العمل. صياغة الموقع مصممة لطمأنة المشترين بأن بيانات العملاء لا تُدار بشكل عشوائي.",
+            body: "تُعامل الاستفسارات المهنية في إطار وصول منظم ومراجعة داخلية هادئة حتى تبقى المعلومات التجارية الحساسة مصونة ومحدودة التداول.",
           },
           {
             title: "استخدام محدود للمعلومات المرسلة",
-            body: "تُستخدم البيانات المرسلة لمراجعة الطلبات وتنسيق المتابعة وتوجيه الاستفسارات إلى الفريق الداخلي المناسب أو المزود المطابق. ويظل الوصول محصورًا في الأشخاص المعنيين بالتعامل المسؤول مع الطلب.",
+            body: "تُستخدم البيانات المرسلة فقط لمراجعة الطلبات والرد عليها والاحتفاظ بسجل واضح لها. ويظل الوصول محصوراً في الأشخاص المعنيين بالتعامل المسؤول مع الاستفسار.",
           },
           {
             title: "الأسئلة ومخاوف البيانات",
@@ -88,19 +88,19 @@ export default function DataProtectionPage() {
         ? [
             {
               title: "Конфиденциальные запросы инвесторов",
-              body: "Инвесторские заявки предназначены только для квалификации, подбора провайдера и корректного follow-up. Цель — бережно и релевантно работать с чувствительным интересом к иммиграционным программам.",
+              body: "Инвесторские обращения рассматриваются только для понимания сути запроса и оценки того, уместен ли более подробный следующий разговор. Цель — работать с таким интересом бережно и релевантно.",
             },
             {
               title: "Ответственное обращение с данными компаний",
-              body: "Запросы компаний и CRM-потоки строятся вокруг контролируемого внутреннего использования, структурированного доступа и понятного workflow. Формулировки сайта должны показывать, что клиентские данные не обрабатываются легкомысленно.",
+              body: "Профессиональные запросы обрабатываются в формате ограниченного доступа и спокойного внутреннего рассмотрения, чтобы чувствительная коммерческая информация оставалась защищённой.",
             },
             {
               title: "Ограниченное использование отправленной информации",
-              body: "Отправленные данные используются для рассмотрения запросов, координации follow-up и маршрутизации к соответствующей внутренней команде или подобранному провайдеру. Доступ ограничен людьми, которые действительно участвуют в обработке запроса.",
+              body: "Отправленные данные используются только для рассмотрения запросов, корректного ответа и сохранения понятной записи об обращении. Доступ ограничен теми, кто действительно участвует в его обработке.",
             },
             {
               title: "Вопросы и concerns по данным",
-              body: "У пользователей и партнерских компаний должен быть понятный способ поднимать privacy-вопросы. Эта страница сохраняет такой канал видимым до финального согласования юридического текста и данных операционной компании.",
+              body: "У пользователей и профессиональных контрагентов должен быть понятный способ поднимать вопросы приватности. Эта страница сохраняет такой канал видимым и понятным.",
             },
           ]
         : sections
@@ -111,41 +111,41 @@ export default function DataProtectionPage() {
         ? "السرية والتعامل المسؤول مع البيانات مهمان على جانبي النشاط."
         : locale === "ru"
           ? "Конфиденциальность и ответственная работа с данными важны для обеих сторон бизнеса."
-          : "Confidentiality and responsible data handling matter on both sides of the business.",
+      : "Confidentiality and responsible data handling are central to the platform.",
     heroDescription:
       locale === "ar"
         ? "تمنح هذه الصفحة المستثمرين والشركات شرحًا نظيفًا وموثوقًا لكيفية التعامل مع المعلومات المرسلة دون تعقيد قانوني غير ضروري."
         : locale === "ru"
           ? "Эта страница дает инвесторам и компаниям понятное и убедительное объяснение того, как обрабатывается отправленная информация без лишнего юридического шума."
           : "This gives investors and companies a clean, credible explanation of how submitted information is handled, without unnecessary legal jargon.",
-    primary: locale === "ar" ? "تواصل معنا بخصوص الخصوصية" : locale === "ru" ? "Связаться по вопросам приватности" : "Contact us about privacy",
-    secondary: locale === "ar" ? "العودة إلى صفحة الشركات" : locale === "ru" ? "Назад к странице для компаний" : "Back to company overview",
+    primary: locale === "ar" ? "تواصل معنا بخصوص الخصوصية" : locale === "ru" ? "Связаться по вопросам приватности" : "Raise a privacy question",
+    secondary: locale === "ar" ? "العودة إلى الصفحة الرئيسية" : locale === "ru" ? "Назад на главную" : "Return home",
     overviewEyebrow: locale === "ar" ? "نظرة عامة" : locale === "ru" ? "Обзор" : "Overview",
     overviewTitle:
       locale === "ar"
         ? "نهج واعٍ بالخصوصية تجاه معلومات المستثمرين والشركات."
         : locale === "ru"
           ? "Privacy-aware подход к данным инвесторов и компаний."
-          : "A privacy-aware approach to investor and company information.",
+      : "A privacy-aware approach to sensitive enquiries.",
     overviewDescription:
       locale === "ar"
-        ? "هذا شرح موجز يعزز الثقة حول كيفية تعامل النشاط مع الاستفسارات السرية والبيانات المرتبطة بالـ CRM."
+        ? "هذا شرح موجز يعزز الثقة حول كيفية تعامل المنصة مع الاستفسارات السرية والبيانات المرتبطة بها."
         : locale === "ru"
-          ? "Это краткое trust-building объяснение того, как бизнес обращается с конфиденциальными заявками и данными, связанными с CRM."
-          : "This is a concise, trust-building explanation of how the business handles confidential enquiries and CRM-related data.",
+          ? "Это краткое и спокойное объяснение того, как платформа обращается с конфиденциальными обращениями и связанными с ними данными."
+      : "This page explains, in straightforward terms, how confidential enquiries and related information are handled.",
     ctaEyebrow: locale === "ar" ? "الخطوة التالية" : locale === "ru" ? "Следующий шаг" : "Next step",
     ctaTitle:
       locale === "ar"
-        ? "هل تحتاج إلى مناقشة الخصوصية أو إطلاق CRM أو التعامل مع العملاء المحتملين بمزيد من التفصيل؟"
+        ? "هل تحتاج إلى مناقشة الخصوصية أو السرية بمزيد من التفصيل؟"
         : locale === "ru"
-          ? "Нужно подробнее обсудить privacy, rollout CRM или обработку инвесторских лидов?"
-          : "Need to discuss privacy, CRM rollout, or investor lead handling in more detail?",
+          ? "Нужно подробнее обсудить приватность или конфиденциальность?"
+      : "Need to discuss privacy or confidentiality in more detail?",
     ctaDescription:
       locale === "ar"
-        ? "استخدم صفحة التواصل لأسئلة الخصوصية أو استفسارات الشركات أو طلبات المستثمرين التي تحتاج إلى محادثة مباشرة."
+        ? "استخدم صفحة التواصل إذا كنت ترغب في طرح سؤال متعلق بالخصوصية أو متابعة النقاش بشكل مباشر."
         : locale === "ru"
-          ? "Используйте контактную страницу для privacy-вопросов, запросов компаний или инвесторских обращений, которым нужен прямой разговор."
-          : "Use contact for privacy questions, company enquiries, or investor requests that require a direct conversation.",
+          ? "Используйте контактную страницу, если хотите поднять вопрос приватности или продолжить разговор напрямую."
+          : "Use the contact page if you would like to raise a privacy question or continue the discussion directly.",
     goContact: locale === "ar" ? "اذهب إلى التواصل" : locale === "ru" ? "Перейти к контактам" : "Go to contact",
   }
   return (
@@ -188,7 +188,7 @@ export default function DataProtectionPage() {
           <Card className="section-card">
             <CardContent className="space-y-5 p-8 md:p-10">
               <p className="text-base leading-8 text-muted-foreground">
-                We operate as an independent advisory and lead-generation platform connecting prospective clients with licensed citizenship and residency by investment providers.
+We operate as an independent advisory platform connecting prospective clients with licensed citizenship and residency by investment providers.
               </p>
               <p className="text-base leading-8 text-muted-foreground">
                 We do not issue passports, provide legal nationality decisions, or act as a governmental authority. All applications are processed and approved solely by the respective official government programs and authorized agents.

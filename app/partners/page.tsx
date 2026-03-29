@@ -17,21 +17,21 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
     title:
       locale === "ar"
-        ? "شراكات للوكالات وشركات الجوازات"
+        ? "للمكاتب المتخصصة والجهات المهنية الموثوقة"
         : locale === "ru"
-          ? "Партнёрства для агентств и паспортных компаний"
-          : "Partnerships for Agencies and Passport Companies",
+          ? "Для специализированных практик и профессиональных партнёров"
+          : "For Specialist Practices and Professional Counterparts",
     description:
       locale === "ar"
-        ? "استكشف فرص الشراكات بالإحالة أو العلامة البيضاء أو CRM للوكالات وشركات الجوازات ومشغلي الهجرة الدوليين."
+        ? "مساحة أكثر هدوءاً لبدء نقاش مهني مع المكاتب المتخصصة والجهات الدولية التي تعمل في هذا المجال."
         : locale === "ru"
-          ? "Изучите реферальные, white-label и CRM-партнёрства для агентств, паспортных компаний и международных иммиграционных операторов."
-          : "Explore referral, white-label, and CRM partnership opportunities for agencies, passport companies, and cross-border immigration operators.",
+          ? "Более спокойная точка входа для профессионального разговора со специализированными практиками и международными участниками рынка."
+          : "A more discreet starting point for professional discussions with specialist practices and trusted international counterparts.",
     path: localizeHref(locale, "/partners"),
     keywords: [
-      "immigration firm partnerships",
-      "passport company partnerships",
-      "white label immigration CRM",
+      "professional advisory relationships",
+      "specialist immigration practices",
+      "trusted international counterparts",
     ],
     locale,
   })
@@ -39,45 +39,45 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const trustItems = [
   {
-    title: "For established operators",
-    description: "Built for agencies, introducers, and passport firms that need a serious commercial conversation, not affiliate-style fluff.",
+    title: "For established practices",
+    description: "Designed for specialist firms and trusted introducers that value privacy, seriousness, and a more measured first conversation.",
   },
   {
-    title: "Multi-model partnerships",
-    description: "Supports referral, implementation, co-branded, and white-label discussions in one place.",
+    title: "Structured professional dialogue",
+    description: "The page creates space for calm discussions around collaboration, suitability, and the right professional format.",
   },
   {
-    title: "Aligned with the CRM story",
-    description: "Partner conversations can naturally extend into software adoption, resale, or operational collaboration.",
+    title: "Aligned with the wider platform",
+    description: "These conversations sit naturally alongside the broader advisory platform without turning the public experience into a marketplace.",
   },
   {
-    title: "Reusable intake logic",
-    description: "The partner form follows the same structured intake approach used across investor and company enquiries for consistent review and follow-up.",
+    title: "Private by design",
+    description: "The initial exchange is intended to feel selective and discreet, particularly where reputation or client sensitivity matters.",
   },
 ]
 
 const models = [
   {
     icon: Handshake,
-    title: "Referral partnerships",
-    description: "For firms that want a trusted advisory or product partner without changing their own operating model.",
+    title: "Professional introductions",
+    description: "For firms that value a trusted counterpart and prefer a more selective basis for first conversations.",
   },
   {
     icon: Network,
-    title: "White-label collaboration",
-    description: "For agencies that want co-branded delivery, discreet backend support, or a more integrated commercial structure.",
+    title: "Coordinated collaboration",
+    description: "For practices exploring a more considered relationship where presentation, discretion, and fit all matter.",
   },
   {
     icon: Users2,
-    title: "Software and service bundling",
-    description: "For passport companies that want to pair a CRM rollout with stronger intake and client management workflows.",
+    title: "Institutional dialogue",
+    description: "For firms seeking a broader conversation about long-term alignment, case handling, or professional cooperation.",
   },
 ]
 
 const criteria = [
-  "Clear service scope, markets served, and the jurisdictions you actively work in.",
-  "A realistic view of compliance, client suitability, and documentation standards.",
-  "Commercial alignment on lead ownership, handoff expectations, and brand presentation.",
+  "A clear view of the jurisdictions, client profile, and scope of work you are actually focused on.",
+  "A realistic understanding of compliance, suitability, and documentation standards.",
+  "A measured basis for deciding whether a more detailed professional conversation is appropriate.",
 ]
 
 export default function PartnersPage() {
@@ -86,24 +86,24 @@ export default function PartnersPage() {
   return (
     <SiteShell>
       <PageHero
-        eyebrow="Agency and passport company partnerships"
-        title="Partnerships for agencies, passport companies, and cross-border immigration operators."
-        description="Open serious partnership conversations around referrals, white-label collaboration, CRM distribution, and shared case workflows. The tone is commercial, selective, and built to support trust."
-        primaryAction={{ href: "#partner-form", label: "Apply to partner" }}
-        secondaryAction={{ href: routeLinks.forCompanies, label: "View company overview" }}
+        eyebrow="For specialist practices"
+        title="Professional conversations for specialist practices and trusted counterparts."
+        description="Use this page where a more private discussion is needed around collaboration, institutional fit, or cross-border case context."
+        primaryAction={{ href: "#partner-form", label: "Request a professional discussion" }}
+        secondaryAction={{ href: routeLinks.forCompanies, label: "View professional overview" }}
         stats={[
-          { value: "Referral", label: "for channel relationships" },
-          { value: "White-label", label: "for co-branded delivery" },
-          { value: "Software", label: "for CRM expansion" },
+          { value: "Private", label: "for measured first conversations" },
+          { value: "Selective", label: "for cases where fit matters" },
+          { value: "Structured", label: "for calmer professional dialogue" },
         ]}
       >
         <div className="rounded-[28px] border border-white/10 bg-black/10 p-5 backdrop-blur">
           <p className="text-sm uppercase tracking-[0.18em] text-primary-foreground/70">Who this is for</p>
           <div className="mt-4 space-y-4">
             {[
-              "Immigration agencies seeking a structured partner desk.",
-              "Passport companies exploring product or service distribution.",
-              "Advisory firms that want a stronger operating layer across leads and cases.",
+              "Specialist practices seeking a calmer route into professional discussion.",
+              "International counterparts comparing how a relationship may be approached.",
+              "Advisory firms that value discretion before any more defined next step is discussed.",
             ].map((item) => (
               <div key={item} className="flex items-start gap-3">
                 <BadgeCheck className="mt-0.5 size-5 text-secondary" />
@@ -123,9 +123,9 @@ export default function PartnersPage() {
       <section className="section-padding pt-0">
         <div className="container-shell">
           <SectionHeading
-            eyebrow="Partner models"
-            title="Structured paths for commercial collaboration."
-            description="This makes it easy for agencies and passport companies to understand the type of relationship they can pursue without unnecessary complexity."
+            eyebrow="Professional context"
+            title="A clearer basis for professional collaboration."
+            description="The aim is to make the shape of a possible relationship easier to understand without turning the page into a transactional marketplace."
           />
           <div className="grid gap-6 lg:grid-cols-3">
             {models.map((model) => (
@@ -148,10 +148,10 @@ export default function PartnersPage() {
           <div className="space-y-6">
             <span className="eyebrow">Selection criteria</span>
             <h2 className="section-title max-w-xl text-foreground">
-              Partnerships work best when the operating model is clear.
+              Professional discussions work best when the context is clear.
             </h2>
             <p className="max-w-xl text-lg leading-8 text-muted-foreground">
-              This section replaces vague partner claims with practical criteria that make the business feel selective, serious, and easier to trust.
+              The page is intended to replace vague partnership language with a more grounded sense of suitability, seriousness, and institutional fit.
             </p>
             <div className="space-y-4">
               {criteria.map((criterion) => (
@@ -164,10 +164,10 @@ export default function PartnersPage() {
           </div>
           <Card className="section-card">
             <CardContent className="space-y-4 p-8">
-              <span className="eyebrow">Commercial note</span>
-              <h3 className="card-title text-foreground">One route for service partnerships and CRM channel growth.</h3>
+              <span className="eyebrow">Context</span>
+              <h3 className="card-title text-foreground">A quieter route into broader professional context.</h3>
               <p className="fine-print">
-                Keeping partnerships on the same domain creates a clean bridge between the advisory business and the SaaS offering. Agencies can discuss referrals, co-branded execution, or software adoption without leaving the site.
+                Keeping these conversations on the same domain makes it easier to understand the wider platform before deciding whether a more specific professional dialogue should continue.
               </p>
             </CardContent>
           </Card>
@@ -177,18 +177,18 @@ export default function PartnersPage() {
       <section id="partner-form" className="section-padding">
         <div className="container-shell grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
           <div className="space-y-6">
-            <span className="eyebrow">Partner application</span>
-            <h2 className="section-title max-w-xl text-foreground">Start a partner conversation.</h2>
+            <span className="eyebrow">Professional enquiry</span>
+            <h2 className="section-title max-w-xl text-foreground">Request a private professional discussion.</h2>
             <p className="max-w-xl text-lg leading-8 text-muted-foreground">
-              Use the form to describe your business, markets, and preferred partnership model. We will review the enquiry and suggest the most relevant next step.
+              Use the form to share the outline of your practice, the jurisdictions you cover, and the kind of discussion that would be most useful.
             </p>
           </div>
           <LeadQualificationForm
             locale={locale}
             formType="partner"
-            title="Apply as a partner"
-            description="Tell us where you operate and the relationship you want to explore."
-            submitLabel="Submit partner enquiry"
+            title="Request a professional discussion"
+            description="Tell us where you operate and what kind of professional context you would like to explore."
+            submitLabel="Request discussion"
             source="partners"
           />
         </div>
@@ -197,11 +197,11 @@ export default function PartnersPage() {
       <section className="section-padding pt-0">
         <div className="container-shell">
           <CtaPanel
-            eyebrow="Product path"
-            title="Need to evaluate the software before discussing distribution?"
-            description="Move to the company overview for a clearer product narrative aimed at operational teams, owners, and commercial decision-makers."
-            primaryAction={{ href: routeLinks.forCompanies, label: "Go to company overview" }}
-            secondaryAction={{ href: routeLinks.programs, label: "Go to investor section" }}
+            eyebrow="Further context"
+            title="Would you prefer a broader overview before taking the conversation further?"
+            description="Move to the professional overview for a clearer sense of the wider platform and its tone."
+            primaryAction={{ href: routeLinks.forCompanies, label: "View professional overview" }}
+            secondaryAction={{ href: routeLinks.programs, label: "Go to investor pathways" }}
           />
         </div>
       </section>

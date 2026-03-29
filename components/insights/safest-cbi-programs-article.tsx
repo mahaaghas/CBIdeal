@@ -51,14 +51,14 @@ export function SafestCbiProgramsArticle({
       internalLinks={[
         { label: "Citizenship by investment overview", href: links.programs },
         { label: "Caribbean comparison page", href: links.comparison },
-        { label: "Book a private consultation", href: links.consultation },
+    { label: "Arrange a private consultation", href: links.consultation },
       ]}
       cta={{
         eyebrow: "Risk-led review",
         title: "Need help choosing the route that feels safest for your profile and planning horizon?",
         description: "A safer route is usually the one that remains credible after cost, compliance, and long-term use are weighed together.",
-        primaryAction: { href: links.consultation, label: "Request a private consultation" },
-        secondaryAction: { href: links.contact, label: "Contact the advisory team" },
+    primaryAction: { href: links.consultation, label: "Request a consultation" },
+    secondaryAction: { href: links.contact, label: "Arrange a written introduction" },
       }}
     >
       <div className="space-y-6 text-base leading-8 text-muted-foreground">

@@ -49,14 +49,14 @@ export function FastestCbiProgramsArticle({
       internalLinks={[
         { label: "Citizenship by investment overview", href: links.programs },
         { label: "Caribbean comparison page", href: links.comparison },
-        { label: "Book a private consultation", href: links.consultation },
+    { label: "Arrange a private consultation", href: links.consultation },
       ]}
       cta={{
         eyebrow: "Timing review",
         title: "Need to understand which route can move fastest for your profile?",
         description: "A realistic timing answer starts with the program, but it depends even more on how prepared your file is from day one.",
-        primaryAction: { href: links.consultation, label: "Request a private consultation" },
-        secondaryAction: { href: links.contact, label: "Contact the advisory team" },
+    primaryAction: { href: links.consultation, label: "Request a consultation" },
+    secondaryAction: { href: links.contact, label: "Arrange a written introduction" },
       }}
     >
       <div className="space-y-6 text-base leading-8 text-muted-foreground">

@@ -48,14 +48,14 @@ export function CbiVsRbiArticle({
       internalLinks={[
         { label: "Citizenship by investment overview", href: links.programs },
         { label: "Caribbean vs Portugal comparison", href: links.portugal },
-        { label: "Book a private consultation", href: links.consultation },
+    { label: "Arrange a private consultation", href: links.consultation },
       ]}
       cta={{
         eyebrow: "Route selection",
         title: "Need to decide whether direct citizenship or residence-led planning makes more sense?",
         description: "The right answer usually depends on time horizon, geography, family goals, and how much optionality you actually need.",
-        primaryAction: { href: links.consultation, label: "Request a private consultation" },
-        secondaryAction: { href: links.contact, label: "Contact the advisory team" },
+    primaryAction: { href: links.consultation, label: "Request a consultation" },
+    secondaryAction: { href: links.contact, label: "Arrange a written introduction" },
       }}
     >
       <div className="space-y-6 text-base leading-8 text-muted-foreground">

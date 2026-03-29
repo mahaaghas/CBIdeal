@@ -33,7 +33,7 @@ export function GccExpatsCaribbeanPassportArticle({
       ? "مقالات إضافية من نفس مركز المحتوى."
       : locale === "ru"
         ? "Другие материалы из этого же контент-хаба."
-        : "More articles from the same advisory content hub."
+        : "Further reading from the editorial library."
 
   const internalLinks = {
     citizenship: localizeHref(locale, "/citizenship-by-investment"),
@@ -120,7 +120,7 @@ export function GccExpatsCaribbeanPassportArticle({
                 </Link>{" "}
                 are the best starting points. If you already have a profile to review, you can{" "}
                 <Link href={internalLinks.contact} className="text-primary underline underline-offset-4">
-                  contact the advisory team
+  arrange a written introduction
                 </Link>{" "}
                 for a more structured first discussion.
               </p>
@@ -454,7 +454,7 @@ export function GccExpatsCaribbeanPassportArticle({
                 <Link href={internalLinks.companies} className="text-primary underline underline-offset-4">
                   company page
                 </Link>{" "}
-                explains how the CRM and lead workflow are positioned on the B2B side.
+  explains how the broader professional structure is presented in a quieter format.
               </p>
             </div>
 
@@ -602,7 +602,7 @@ export function GccExpatsCaribbeanPassportArticle({
                 {[
                   { label: "Citizenship by investment overview", href: internalLinks.citizenship },
                   { label: "Best CBI programs in 2026", href: internalLinks.bestPrograms },
-                  { label: "Contact the advisory team", href: internalLinks.contact },
+    { label: "Arrange a written introduction", href: internalLinks.contact },
                   { label: "Insights hub", href: internalLinks.insights },
                 ].map((item) => (
                   <Link

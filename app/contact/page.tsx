@@ -19,26 +19,26 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const localized = {
     en: {
-      title: "Contact Investors and Partner Firms",
+      title: "Contact CBI Deal",
       description:
-        "Contact CBI Deal for investor enquiries, CRM questions, guided demos, pricing discussions, or qualified lead partnerships in one premium contact experience.",
+        "Contact CBI Deal for private consultations, professional enquiries, and discreet conversations around citizenship and residency planning.",
       keywords: [
         "citizenship by investment contact",
-        "immigration CRM contact",
-        "passport company demo request",
+        "private citizenship consultation",
+        "international mobility contact",
       ],
     },
     ar: {
-      title: "تواصل مع المستثمرين والشركات الشريكة",
+      title: "تواصل مع CBI Deal",
       description:
-        "تواصل مع CBI Deal بخصوص استفسارات المستثمرين أو أسئلة الـ CRM أو العروض التوضيحية أو التسعير أو شراكات العملاء المحتملين عبر تجربة تواصل مميزة.",
-      keywords: ["التواصل الجنسية عن طريق الاستثمار", "التواصل CRM الهجرة", "طلب عرض توضيحي للشركات"],
+        "تواصل مع CBI Deal بخصوص الاستشارات الخاصة أو الاستفسارات المهنية أو المحادثات الهادئة حول خيارات الجنسية والإقامة.",
+      keywords: ["التواصل الجنسية عن طريق الاستثمار", "الاستشارة الخاصة", "التواصل التنقل الدولي"],
     },
     ru: {
-      title: "Контакты для инвесторов и партнёрских компаний",
+      title: "Связаться с CBI Deal",
       description:
-        "Свяжитесь с CBI Deal по вопросам инвесторов, CRM, демо, тарифов или партнёрства по квалифицированным лидам в едином премиальном формате.",
-      keywords: ["контакты гражданство за инвестиции", "контакты CRM для иммиграции", "запрос демо для компаний"],
+        "Свяжитесь с CBI Deal по вопросам частной консультации, профессиональных запросов и более сдержанного разговора о гражданстве и резидентстве.",
+      keywords: ["контакты гражданство за инвестиции", "частная консультация", "международная мобильность контакты"],
     },
   }[locale]
 
@@ -57,16 +57,16 @@ interface ContactPageProps {
 
 const faqs = [
   {
-    title: "Investor enquiries",
-    body: "If you are looking for citizenship or residency by investment, use the investor form so we can qualify you by profile, family scope, budget, and timing.",
+    title: "Private consultations",
+    body: "If you are considering citizenship or residency by investment, use the investor form so the first exchange begins with the right context.",
   },
   {
-    title: "Company enquiries",
-    body: "If you run a passport company, immigration firm, or advisory desk, use the company form for CRM, qualified leads, pricing, or demo questions.",
+    title: "Professional enquiries",
+    body: "If you represent a licensed firm or advisory practice, use the professional form so the conversation can be directed appropriately from the outset.",
   },
   {
-    title: "Privacy and confidentiality",
-    body: "If your enquiry is sensitive, mention that in the notes and we will keep the follow-up route more controlled and direct.",
+    title: "Privacy and discretion",
+    body: "If the matter is sensitive, mention that in the notes and we will keep the exchange more measured and direct.",
   },
 ]
 
@@ -79,25 +79,25 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
   const copy = {
     en: {
       eyebrow: "Contact",
-      title: "A direct contact point for investors and partner companies.",
+      title: "A discreet contact point for private consultations and professional enquiries.",
       description:
-        "Whether you are an investor looking for the right offer or a company exploring the CRM and qualified leads, the conversation stays clear, warm, and privacy-aware.",
+        "Whether you are exploring your options personally or writing on behalf of a firm, the conversation remains discreet, clear, and carefully handled.",
       openForm: "Open contact form",
       viewPrivacy: "View data protection",
     },
     ar: {
       eyebrow: "تواصل معنا",
-      title: "نقطة تواصل مباشرة للمستثمرين والشركات الشريكة.",
+      title: "ابدأ محادثة واضحة سواء كنت مستثمرًا أو تمثل شركة.",
       description:
-        "سواء كنت مستثمراً يبحث عن العرض المناسب أو شركة تستكشف الـ CRM والعملاء المؤهلين، تبقى المحادثة واضحة وودودة وواعية بالخصوصية.",
+        "هذه الصفحة تقودك إلى المسار الصحيح من البداية: مراجعة للمستثمرين، أو محادثة للشركات، أو تواصل مباشر إذا كانت الحالة أكثر حساسية.",
       openForm: "افتح نموذج التواصل",
       viewPrivacy: "عرض حماية البيانات",
     },
     ru: {
       eyebrow: "Контакты",
-      title: "Прямой контакт для инвесторов и партнёрских компаний.",
+      title: "Дискретный контакт для частных консультаций и профессиональных запросов.",
       description:
-        "Если вы инвестор в поиске подходящего предложения или компания, изучающая CRM и квалифицированные лиды, диалог остаётся ясным, тёплым и конфиденциальным.",
+        "Независимо от того, рассматриваете ли вы варианты лично или пишете от имени фирмы, разговор остаётся сдержанным, ясным и конфиденциальным.",
       openForm: "Открыть форму контакта",
       viewPrivacy: "Смотреть защиту данных",
     },
@@ -107,30 +107,30 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
       ? [
           {
             title: "استفسارات المستثمرين",
-            body: "إذا كنت تبحث عن الجنسية أو الإقامة عن طريق الاستثمار، فاستخدم نموذج المستثمر حتى نتمكن من تأهيلك وفق الملف ونطاق العائلة والميزانية والتوقيت.",
+            body: "إذا كنت تقارن بين الجنسية أو الإقامة الثانية، فاستخدم نموذج المستثمر حتى نراجع الهدف والميزانية ووضع العائلة قبل أي إحالة.",
           },
           {
             title: "استفسارات الشركات",
-            body: "إذا كنت تدير شركة جوازات أو مكتب هجرة أو مكتبًا استشاريًا، فاستخدم نموذج الشركة لأسئلة CRM أو العملاء المحتملين المؤهلين أو الأسعار أو العرض التوضيحي.",
+            body: "إذا كنت تدير شركة جوازات أو مكتب هجرة أو مكتباً استشارياً، فاستخدم نموذج الشركات لبدء نقاش مهني أوضح وأكثر ملاءمة.",
           },
           {
             title: "الخصوصية والسرية",
-            body: "إذا كان استفسارك حساسًا، فاذكر ذلك في الملاحظات وسنجعل مسار المتابعة أكثر ضبطًا ومباشرة.",
+            body: "إذا كانت الحالة حساسة أو تحتاج إلى تعامل أكثر تحفظًا، اذكر ذلك في الملاحظات وسنحافظ على مسار متابعة أكثر مباشرة وهدوءًا.",
           },
         ]
       : locale === "ru"
         ? [
             {
               title: "Запросы инвесторов",
-              body: "Если вас интересует гражданство или резидентство за инвестиции, используйте форму инвестора, чтобы мы могли квалифицировать запрос по профилю, семье, бюджету и срокам.",
+              body: "Если вас интересует гражданство или резидентство за инвестиции, используйте форму инвестора, чтобы первый разговор начался с правильного контекста.",
             },
             {
               title: "Запросы компаний",
-              body: "Если вы управляете паспортной компанией, иммиграционной фирмой или advisory desk, используйте форму компании для вопросов по CRM, лидам, тарифам или демо.",
+              body: "Если вы представляете фирму или консультативную практику, используйте профессиональную форму, чтобы разговор сразу пошёл в более подходящем формате.",
             },
             {
               title: "Приватность и конфиденциальность",
-              body: "Если ваш запрос чувствителен, укажите это в комментарии, и мы построим более контролируемый и прямой маршрут follow-up.",
+              body: "Если ваш запрос чувствителен, укажите это в комментарии, и мы сохраним обмен более сдержанным и прямым.",
             },
           ]
         : faqs
@@ -141,52 +141,52 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         ? "استخدم مسار تواصل واحدًا للطرفين من النشاط."
         : locale === "ru"
           ? "Один контактный поток для обеих сторон бизнеса."
-          : "Use one contact flow for both sides of the business.",
+          : "One contact point, handled with discretion.",
     reachDescription:
       locale === "ar"
-        ? "غالبًا ما يحتاج المستثمرون والشركات إلى محادثات مختلفة. هذا التخطيط يبقيها منفصلة دون تجزئة العلامة أو دفع أي طرف إلى نموذج غير مناسب."
+        ? "يحتاج المستثمر إلى نوع مختلف من الأسئلة عن ذلك الذي تحتاجه الشركة. لهذا نفصل المسارين من دون تشتيت التجربة أو دفع أي طرف إلى نموذج غير مناسب."
         : locale === "ru"
           ? "Инвесторам и фирмам часто нужны разные разговоры. Эта структура разделяет их, не дробя бренд и не отправляя людей в неподходящую форму."
-          : "Investors and firms often need different conversations. This layout keeps them separate without fragmenting the brand or forcing anyone through the wrong form.",
+          : "Investors and professional firms often need different conversations. This layout keeps them distinct while preserving a calm and coherent experience.",
     bulletOne:
-      locale === "ar" ? "مطابقة المستثمرين الدافئين وإحالتهم إلى المزود المناسب." : locale === "ru" ? "Подбор теплых инвесторских запросов и направление к провайдеру." : "Warm investor matching and provider routing.",
+      locale === "ar" ? "مراجعة استفسارات المستثمرين بعناية وتوجيهها إلى المسار الأنسب." : locale === "ru" ? "Внимательный первый разбор запросов инвесторов и направление по наиболее уместному пути." : "Private investor enquiries are reviewed with care and directed to the most suitable path.",
     bulletTwo:
-      locale === "ar" ? "محادثات الشركات حول CRM والأسعار والعروض والعملاء المحتملين المؤهلين." : locale === "ru" ? "Разговоры с компаниями о CRM, тарифах, демо и квалифицированных лидах." : "Company discussions about CRM, pricing, demos, and qualified leads.",
+      locale === "ar" ? "الاستفسارات المهنية تُوجّه إلى الصيغة الأكثر ملاءمة للنقاش." : locale === "ru" ? "Профессиональные запросы направляются в наиболее уместный формат обсуждения." : "Professional enquiries are directed into the most appropriate format for discussion.",
     bulletThree:
-      locale === "ar" ? "رسائل واضحة تراعي الخصوصية وتوقعات المتابعة." : locale === "ru" ? "Понятная privacy-aware коммуникация и ожидания по follow-up." : "Clear privacy-aware messaging and follow-up expectations.",
+      locale === "ar" ? "أسلوب واضح يحترم الخصوصية ويوضح ما يمكن توقعه بعد الرسالة." : locale === "ru" ? "Понятная и бережная к приватности коммуникация с ясными ожиданиями." : "Clear, privacy-aware communication with measured expectations from the start.",
     directEyebrow: locale === "ar" ? "تواصل مباشر" : locale === "ru" ? "Прямой контакт" : "Direct contact",
     directTitle:
       locale === "ar"
-        ? "هل تحتاج إلى محادثة مباشرة بدلًا من ذلك؟"
+        ? "هل تفضّل تواصلًا مباشرًا بدل النموذج؟"
         : locale === "ru"
           ? "Нужен прямой разговор вместо формы?"
-          : "Need a direct conversation instead?",
+          : "Would you prefer to write to us directly?",
     directDescription:
       locale === "ar"
-        ? "إذا كان استفسارك حساسًا زمنيًا أو سريًا، يمكنك التواصل مباشرة عبر القنوات التالية."
+        ? "إذا كانت الحالة حساسة من ناحية الوقت أو الخصوصية، يمكنك التواصل مباشرة عبر القنوات التالية."
         : locale === "ru"
           ? "Если запрос срочный или конфиденциальный, вы можете связаться с командой напрямую по каналам ниже."
           : "If your enquiry is time-sensitive or confidential, you can contact the team directly using the channels below.",
     formsEyebrow: locale === "ar" ? "النماذج" : locale === "ru" ? "Формы" : "Forms",
     formsTitle:
       locale === "ar"
-        ? "اختر مسار الاستفسار الذي يناسب وضعك."
+        ? "اختر المسار الذي يناسب وضعك الحالي."
         : locale === "ru"
           ? "Выберите сценарий запроса, который соответствует вашей ситуации."
-          : "Choose the enquiry flow that matches your situation.",
+          : "Choose the route that best fits your enquiry.",
     formsDescription:
       locale === "ar"
-        ? "توفر النماذج المخصصة تجربة أكثر صلة للمستثمرين والشركات من نموذج تواصل عام واحد."
+        ? "تمنحك النماذج المخصصة بداية أوضح: المستثمر يبدأ من المقارنة والملف، والشركة تبدأ من الاحتياج التشغيلي."
         : locale === "ru"
           ? "Специализированные формы дают более релевантный опыт для инвесторов и компаний, чем одна общая контактная форма."
-          : "Tailored forms create a more relevant experience for both investors and companies than a single generic contact form.",
+          : "Separate forms allow the first exchange to remain more relevant and more measured.",
     faqEyebrow: locale === "ar" ? "الأسئلة الشائعة" : locale === "ru" ? "FAQ" : "FAQ",
     faqTitle:
       locale === "ar"
-        ? "ملاحظات سريعة قبل الإرسال."
+        ? "ملاحظات سريعة قبل الإرسال"
         : locale === "ru"
           ? "Пара быстрых замечаний перед отправкой."
-          : "A few quick notes before you submit.",
+          : "A few notes before you get in touch.",
     faqDescription:
       locale === "ar"
         ? "إجابات قصيرة تساعد في ضبط التوقعات وتعزيز الثقة."
@@ -196,17 +196,17 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
     ctaEyebrow: locale === "ar" ? "ما زلت تقرر؟" : locale === "ru" ? "Еще решаете?" : "Still deciding?",
     ctaTitle:
       locale === "ar"
-        ? "هل تريد الأسعار أو جولة إرشادية قبل التواصل؟"
+        ? "هل تريد الاطلاع على الأسعار أو العرض الإرشادي قبل التواصل؟"
         : locale === "ru"
           ? "Нужны тарифы или guided walkthrough до обращения?"
-          : "Want pricing context or a guided walkthrough before reaching out?",
+          : "Would you prefer to review the pathways and insights first?",
     ctaDescription:
       locale === "ar"
-        ? "يمكنك الانتقال مباشرة إلى العرض التوضيحي أو صفحة الأسعار ثم العودة إلى التواصل عندما تكون جاهزًا."
+        ? "يمكنك الانتقال إلى العرض الإرشادي أو صفحة الأسعار أولًا، ثم العودة إلى التواصل عندما تصبح الصورة أوضح."
         : locale === "ru"
           ? "Вы можете перейти к демо или тарифам, а затем вернуться к контакту, когда будете готовы."
-          : "You can move directly to the demo or pricing section and come back to contact when you are ready.",
-    ctaPrimary: locale === "ar" ? "انتقل إلى العرض الإرشادي" : locale === "ru" ? "Перейти к guided demo" : "Go to guided demo",
+          : "You may prefer to review the main pathways or editorial insights first, then return when the picture is clearer.",
+    ctaPrimary: locale === "ar" ? "انتقل إلى العرض الإرشادي" : locale === "ru" ? "Перейти к guided demo" : "View investor pathways",
   }
 
   return (
@@ -218,8 +218,8 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         primaryAction={{ href: "#contact-form", label: copy.openForm }}
         secondaryAction={{ href: ctaLinks.viewDataProtection, label: copy.viewPrivacy }}
         stats={[
-          { value: settings.salesEmail, label: "company email" },
-          { value: settings.phone, label: "direct phone" },
+          { value: settings.salesEmail, label: "private email" },
+          { value: settings.phone, label: "telephone" },
           { value: settings.whatsapp, label: "WhatsApp" },
         ]}
       />
@@ -297,10 +297,14 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           />
           <Card className="section-card mb-8">
             <CardContent className="space-y-3 p-6 md:p-8">
-              <span className="eyebrow">Compliance</span>
-              <h3 className="card-title text-foreground">Compliance & Regulatory Notice</h3>
+              <span className="eyebrow">{locale === "ar" ? "الامتثال" : "Compliance"}</span>
+              <h3 className="card-title text-foreground">
+                {locale === "ar" ? "إشعار الامتثال والتنظيم" : "Compliance & Regulatory Notice"}
+              </h3>
               <p className="fine-print">
-                We operate as an independent advisory and lead-qualification platform. We connect qualified clients with licensed citizenship and residency by investment providers and do not act as a governmental authority.
+                {locale === "ar"
+                  ? "نعمل كمنصة مستقلة للمراجعة والتأهيل الأولي، ونربط الحالات المناسبة بجهات مرخصة ومعتمدة في مجال الجنسية أو الإقامة عن طريق الاستثمار. نحن لا نمثل جهة حكومية ولا نصدر أي قرارات سيادية."
+                  : "We operate as an independent advisory platform. We connect suitable cases with licensed citizenship and residency by investment providers and do not act as a governmental authority."}
               </p>
             </CardContent>
           </Card>
@@ -334,8 +338,8 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
             eyebrow={detailCopy.ctaEyebrow}
             title={detailCopy.ctaTitle}
             description={detailCopy.ctaDescription}
-            primaryAction={{ href: ctaLinks.requestDemo, label: detailCopy.ctaPrimary }}
-            secondaryAction={{ href: ctaLinks.viewPricing, label: "View pricing" }}
+            primaryAction={{ href: ctaLinks.explorePrograms, label: "View investor pathways" }}
+            secondaryAction={{ href: ctaLinks.viewPricing, label: locale === "ar" ? "اطلع على الأسعار" : "View pricing" }}
           />
         </div>
       </section>

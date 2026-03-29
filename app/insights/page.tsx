@@ -153,7 +153,7 @@ export default async function InsightsPage() {
         : {
             heroEyebrow: "Insights",
             heroTitle: "Insights",
-            heroDescription: "Structured analysis to support more informed citizenship and residency decisions.",
+            heroDescription: "Structured analysis to support more informed citizenship and residency decisions, with a quieter editorial emphasis on comparison, suitability, due diligence, and international planning context. The aim is to help visitors understand the subject properly before deciding which route, or which question, deserves closer attention.",
             heroPrimary: "Explore your options",
             heroSecondary: "Request a private consultation",
             stats: [
@@ -164,32 +164,32 @@ export default async function InsightsPage() {
             categoriesEyebrow: "Editorial focus",
             categoriesTitle: "An editorial library for more informed decisions.",
             categoriesDescription:
-              "The material here is intended to clarify practical comparisons, jurisdiction differences, and the broader considerations that shape a serious decision.",
+              "The material here is intended to clarify practical comparisons, jurisdiction differences, and the broader considerations that shape a serious decision before any route is treated as obvious. The categories below are designed to make that library easier to navigate.",
             categories: [
               {
                 title: "Program comparisons",
-                description: "A more measured reading of how similar routes differ in practice, rather than relying on broad rankings or noise.",
+                description: "A more measured reading of how similar routes differ in practice, rather than relying on broad rankings, headlines, or noise.",
               },
               {
                 title: "Jurisdiction analysis",
-                description: "A wider view of the legal and practical environment surrounding different jurisdictions and programme types.",
+                description: "A wider view of the legal, practical, and regional environment surrounding different jurisdictions and programme types.",
               },
               {
                 title: "Strategic considerations",
-                description: "Articles focused on timing, due diligence, family fit, cost, and longer-term planning considerations.",
+                description: "Articles focused on timing, due diligence, family fit, cost, and the wider planning considerations that shape suitability.",
               },
             ],
             featuredEyebrow: "Featured reading",
             featuredTitle: "A closer editorial look.",
-            featuredDescription: "A selected piece that brings more depth to a question that often shapes cross-border decisions.",
+            featuredDescription: "A selected piece that brings more depth to a question that often shapes serious cross-border decisions.",
             emptyTitle: "No articles have been published yet.",
             emptyDescription: "New analysis will appear here as it is published.",
             latestEyebrow: "Latest analysis",
             latestTitle: "Further reading from the editorial library",
-            latestDescription: "Additional analysis covering programme comparisons, route differences, and decision-shaping considerations.",
+            latestDescription: "Additional analysis covering programme comparisons, route differences, and the considerations that usually matter once the enquiry becomes more serious. Readers can use this section to continue into narrower topics after the broader editorial framing above.",
             ctaEyebrow: "Next step",
             ctaTitle: "Once the picture is clearer, move to the page or conversation that best suits your situation.",
-            ctaDescription: "The purpose of these articles is to support clearer thinking before you decide how, or whether, to proceed.",
+      ctaDescription: "The purpose of these articles is to support clearer thinking before you decide how, or whether, to proceed with a more detailed discussion.",
             ctaPrimary: "Explore your options",
             ctaSecondary: "Request a private consultation",
           }

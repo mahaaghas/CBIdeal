@@ -15,7 +15,7 @@ export function EnglishLandingLeadForm({
   sourcePage,
   title = "Request a private consultation",
   description = "Share a concise outline of your situation so the first conversation can begin with the right level of context and discretion.",
-  submitLabel = "Request consultation",
+  submitLabel = "Request a consultation",
   className,
 }: EnglishLandingLeadFormProps) {
   return (

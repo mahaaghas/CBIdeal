@@ -45,12 +45,12 @@ const trustItems = [
   {
     title: "Grounded in suitability",
     description:
-      "The aim is to establish whether a route appears suitable, not to create artificial certainty or push a quick decision.",
+      "The aim is to establish whether a route appears suitable, not to create artificial certainty or push a quick decision before the context is properly understood.",
   },
   {
     title: "Structured, not hurried",
     description:
-      "The first step is intended to clarify priorities and outline whether a more detailed discussion would be worthwhile.",
+      "The first step is intended to clarify priorities, household context, and timing before any more detailed route discussion is treated as worthwhile.",
   },
 ]
 
@@ -176,15 +176,15 @@ export default function BookConsultationPage() {
         title={copy?.heroTitle ?? "Request a private consultation"}
         description={
           copy?.heroDescription ??
-          "This initial conversation allows us to understand your situation, priorities, and timeline, and to determine whether we can support your case."
+          "This initial conversation allows us to understand your situation, priorities, and timeline, and to determine whether there is a sensible basis for a more detailed discussion. The page is designed to clarify what this first step covers before you decide whether to request it."
         }
-        primaryAction={{ href: "#consultation-form", label: copy?.heroPrimary ?? "Request consultation" }}
+        primaryAction={{ href: "#consultation-form", label: copy?.heroPrimary ?? "Request a consultation" }}
         secondaryAction={{ href: routes.programs, label: copy?.heroSecondary ?? "Explore your options" }}
         stats={
           copy?.stats ?? [
             { value: "Private", label: "handled with discretion from the outset" },
-            { value: "Measured", label: "focused on suitability rather than speed" },
-            { value: "Clear", label: "designed to bring structure to the next step" },
+            { value: "Measured", label: "focused on suitability rather than speed or premature certainty" },
+            { value: "Clear", label: "designed to bring structure to the next step and the wider decision" },
           ]
         }
         aside={
@@ -193,9 +193,9 @@ export default function BookConsultationPage() {
             title={copy?.formTitle ?? "Request a private consultation"}
             description={
               copy?.formDescription ??
-              "Share the essentials below and we will review whether a more detailed conversation would be appropriate."
+              "Share the essentials below and we will review whether a more detailed conversation would be appropriate, and which questions deserve attention first."
             }
-            submitLabel={copy?.heroPrimary ?? "Request consultation"}
+          submitLabel={copy?.heroPrimary ?? "Request a consultation"}
             sourceCategory="consultation"
             sourcePage="book-a-cbi-consultation"
           />
@@ -271,16 +271,19 @@ export default function BookConsultationPage() {
                 {
                   title: "Citizenship by investment",
                   description: "Begin with the main page if you would like a clearer overview of the broader route first.",
+                  
                   href: routes.programs,
                 },
                 {
                   title: "Caribbean CBI comparison",
                   description: "Use the comparison page if you are already narrowing the field between practical programme options.",
+                  
                   href: routes.caribbeanComparison,
                 },
                 {
                   title: "Insights",
                   description: "Read further analysis on programme comparisons, due diligence, and wider international planning considerations.",
+                  
                   href: routes.insights,
                 },
               ]

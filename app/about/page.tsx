@@ -168,23 +168,23 @@ export default function AboutPage() {
             heroEyebrow: "Our approach",
             heroTitle: "Our approach",
             heroDescription:
-              "CBI Deal provides a structured and discreet starting point for individuals exploring citizenship and residency pathways.",
+              "CBI Deal provides a structured and discreet starting point for individuals exploring citizenship and residency pathways. This page explains the principles that shape that approach and the kind of guidance visitors should expect from it.",
             heroPrimary: "Explore your options",
             heroSecondary: "Request a private consultation",
             principlesEyebrow: "Core principles",
             principlesTitle: "A more considered starting point for complex international decisions.",
             principlesDescription:
-              "The intention is not to overstate certainty, but to provide a more disciplined frame through which options can be approached with greater clarity.",
+              "The intention is not to overstate certainty, but to provide a more disciplined frame through which options can be approached with greater clarity. The principles below describe how the platform is designed to remain calm, selective, and useful from the outset.",
             principleCards,
             supportingEyebrow: "Why this matters",
             supportingTitle: "Jurisdictions and pathways vary, as does what is suitable for each case.",
             supportingDescription:
-              "Different jurisdictions and pathway structures require careful consideration. Suitability is rarely defined by a single programme feature; it is shaped by timing, family circumstances, preparedness, and longer-term priorities. The platform is designed to help visitors approach these decisions with greater clarity and suitability.",
+              "Different jurisdictions and pathway structures require careful consideration. Suitability is rarely defined by a single programme feature; it is shaped by timing, family circumstances, preparedness, and longer-term priorities. The platform is designed to help visitors make sense of those moving parts before any single route is treated as the answer.",
             ctaEyebrow: "Next step",
             ctaTitle: "Request a private consultation",
             ctaDescription:
-              "If your situation would benefit from a more considered first conversation, this is the appropriate point to begin.",
-            ctaPrimary: "Request a consultation",
+              "If your situation would benefit from a more considered first conversation, this is the appropriate point at which to begin.",
+            ctaPrimary: "Request a private consultation",
             ctaSecondary: "Explore your options",
           }
 

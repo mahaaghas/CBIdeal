@@ -282,7 +282,7 @@ const leadFormTypeCopyByLocale: Record<
       notesPlaceholder:
         "Add anything that matters for context: family members, mobility goals, timing, or jurisdictions already under consideration.",
       notesHelp: "A clearer picture makes it easier to indicate the most suitable next step.",
-      submitIdleLabel: "Request consultation",
+      submitIdleLabel: "Request a consultation",
     },
     company: {
       eyebrow: "Professional enquiry",
@@ -292,7 +292,7 @@ const leadFormTypeCopyByLocale: Record<
       notesPlaceholder:
         "Tell us about your current structure, what you are reviewing, and the kind of professional discussion you would like to arrange.",
       notesHelp: "Use this field for operating context, timing, or any particular sensitivities around the discussion.",
-      submitIdleLabel: "Request a private reply",
+      submitIdleLabel: "Request a reply",
     },
     partner: {
       eyebrow: "Professional enquiry",
@@ -302,7 +302,7 @@ const leadFormTypeCopyByLocale: Record<
       notesPlaceholder:
         "Describe the jurisdictions you cover, the profile of the work involved, and the kind of professional relationship you are exploring.",
       notesHelp: "This helps us decide what kind of response would be most appropriate.",
-      submitIdleLabel: "Submit enquiry",
+      submitIdleLabel: "Send enquiry",
     },
   },
   ar: {

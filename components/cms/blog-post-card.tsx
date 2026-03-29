@@ -18,7 +18,7 @@ export function BlogPostCard({ post, featured = false }: BlogPostCardProps) {
   const locale = getRequestLocale()
   const direction = getRequestDirection()
   const isRtl = direction === "rtl"
-  const readLabel = locale === "ar" ? "اقرأ التحليل" : locale === "ru" ? "Читать материал" : "Read analysis"
+  const readLabel = locale === "ar" ? "اقرأ التحليل" : locale === "ru" ? "Открыть материал" : "Read the analysis"
   const byLabel = locale === "ar" ? "بقلم" : locale === "ru" ? "Автор" : "By"
 
   return (

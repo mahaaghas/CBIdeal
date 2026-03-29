@@ -329,18 +329,18 @@ function getHomeCopy(locale: Locale) {
       eyebrow: "Private advisory platform",
       title: "Structured guidance for citizenship and residency decisions",
       description:
-        "CBI Deal supports investors and internationally mobile families in navigating complex programme options with clarity, discretion, and a structured approach.",
+        "CBI Deal supports investors and internationally mobile families in approaching citizenship and residency pathways with greater clarity, discretion, and structure. This page introduces the main route types, the way the process is framed, and the points at which a more private conversation may become useful.",
       primary: "Explore your options",
       secondary: "Request a consultation",
       stats: [
-        { value: "Clearer first steps", label: "The emphasis is on understanding fit before movement becomes formal." },
-        { value: "International perspective", label: "Jurisdictions, timing, family context, and planning horizon are viewed together." },
-        { value: "Measured access", label: "Introductions are only relevant when the route itself appears genuinely suitable." },
+                { value: "Clearer first steps", label: "The emphasis is on understanding suitability before any more committed step is taken." },
+        { value: "International perspective", label: "Jurisdictions, timing, family context, and planning horizon are considered together rather than in isolation." },
+        { value: "Measured access", label: "Further introductions are only useful once the route itself appears genuinely coherent." },
       ],
       asideEyebrow: "Who this gateway is for",
       asideTitle: "For investors and internationally mobile families seeking a more considered starting point.",
       asideDescription:
-        "The homepage is designed to help visitors enter the process calmly, understand the shape of the decision, and move forward only where the fit appears real.",
+                "This gateway is intended for people who want to understand the landscape properly before committing themselves to a programme, a jurisdiction, or a more detailed discussion.",
       asidePoints: [
         "Family-led and long-horizon planning.",
         "Cross-jurisdiction comparisons rather than single-country promotion.",
@@ -348,21 +348,21 @@ function getHomeCopy(locale: Locale) {
       ],
       noteTitle: "Discretion matters",
       noteDescription:
-        "Citizenship and residency planning often sits alongside sensitive family, business, and mobility questions. The first step should reflect that reality.",
+        "Citizenship and residency planning often sits alongside sensitive family, business, and mobility questions. The first step should feel measured, private, and proportionate to that reality.",
     },
     positioning: {
       eyebrow: "Positioning",
       title: "A more considered approach to international mobility",
       description:
-        "Citizenship and residency decisions require more than programme comparisons. They require context, structure, and a clear understanding of long-term implications.",
+        "Citizenship and residency decisions require more than programme comparisons. They require context, structure, and a clear understanding of the legal, practical, and long-term implications that different routes create. This section explains the lens through which those decisions are approached on the platform.",
       items: [
         {
           title: "Independent perspective",
-          description: "The purpose is to understand what genuinely suits the case, not to steer every enquiry towards the same route.",
+          description: "The purpose is to understand what genuinely suits the case, rather than treating every visitor as though the same destination should fit everyone.",
         },
         {
           title: "Decision-making in context",
-          description: "Budget, timing, family structure, mobility aims, and practical constraints all shape what the right route looks like.",
+          description: "Budget, timing, family structure, mobility aims, and practical constraints all shape what the right route actually looks like once the case is examined properly.",
         },
         {
           title: "Calm and exacting tone",
@@ -374,7 +374,7 @@ function getHomeCopy(locale: Locale) {
       eyebrow: "Approach",
       title: "How the process is framed",
       description:
-        "The structure is intended to clarify the right direction without exposing the visitor to unnecessary internal mechanics.",
+        "The structure is intended to clarify the right direction without exposing the visitor to unnecessary internal mechanics or making the process feel transactional. It shows what the first stage is meant to achieve before any route is treated as settled.",
       steps: [
         {
           icon: Globe2,
@@ -384,12 +384,12 @@ function getHomeCopy(locale: Locale) {
         {
           icon: Compass,
           title: "Strategic direction",
-          description: "Suitable jurisdictions and pathway structures are explored before any route is treated as the answer by default.",
+          description: "Suitable jurisdictions and pathway structures are explored before any route is treated as the answer by default or reduced to a single headline feature.",
         },
         {
           icon: ShieldCheck,
           title: "Relevant access",
-          description: "Where appropriate, the next step can move towards licensed providers in a way that feels measured and proportionate.",
+          description: "Where appropriate, the next step can move towards licensed providers in a way that remains measured, proportionate, and privacy-aware.",
         },
       ],
     },
@@ -397,23 +397,23 @@ function getHomeCopy(locale: Locale) {
       eyebrow: "Investor pathways",
       title: "The main routes clients usually compare",
       description:
-        "Different objectives call for different structures. Some cases point towards direct citizenship, others towards residency planning or strategic relocation.",
+        "Different objectives call for different structures. Some cases point towards direct citizenship, others towards residency planning or wider international repositioning. The routes below are intended as starting points for orientation rather than as a list of interchangeable products.",
       items: [
         {
           title: "Citizenship by Investment",
-          description: "For those considering direct citizenship routes through established investment-led programmes.",
+          description: "For those considering direct citizenship routes through established investment-led programmes where mobility, contingency planning, or family optionality matter.",
           image: siteImages.stLuciaAerial.src,
           alt: siteImages.stLuciaAerial.alt,
         },
         {
           title: "Residency by Investment",
-          description: "For families and investors looking at residence-led structures with a longer planning horizon.",
+          description: "For families and investors looking at residence-led structures with a longer planning horizon and a more gradual route into international optionality.",
           image: siteImages.coimbra.src,
           alt: siteImages.coimbra.alt,
         },
         {
           title: "Strategic Relocation",
-          description: "For cases where mobility, residence, family planning, and international repositioning are considered together.",
+          description: "For cases where mobility, residence, family planning, and international repositioning need to be considered together rather than treated as separate decisions.",
           image: siteImages.budapest.src,
           alt: siteImages.budapest.alt,
         },
@@ -422,20 +422,20 @@ function getHomeCopy(locale: Locale) {
     insights: {
       eyebrow: "Insights",
       title: "Insights for more informed decisions",
-      description: "Analysis on programmes, jurisdictions, and international planning considerations.",
+      description: "Editorial analysis on programmes, jurisdictions, due diligence, and the planning considerations that shape serious cross-border decisions. It is intended to help visitors understand the landscape more fully before narrowing their options.",
       cta: "View insights",
     },
     consultation: {
-      eyebrow: "Consultation",
-              title: "Request a consultation",
+      eyebrow: "Private consultation",
+      title: "Request a consultation",
       description:
-        "Initial conversations are used to understand your situation and determine whether we can support your case.",
-      primary: "Request consultation",
+        "Initial conversations are intended to understand your situation, priorities, and timing, and to determine whether a more detailed discussion would be appropriate. For many visitors, this is the point at which general research gives way to case-specific judgement.",
+                primary: "Request a consultation",
       secondary: "Explore your options",
     },
     scarcity: {
       title: "We work with a limited number of cases at any one time.",
-      description: "Priority is given to applicants with clear objectives, serious intent, and a considered approach to the decision.",
+      description: "Priority is given to applicants with clear objectives, serious intent, and a considered approach to citizenship, residency, or wider international planning.",
     },
   }
 }

@@ -14,31 +14,51 @@ export function ContactInquiryTabs({ locale = "en", defaultValue = "investor" }:
   const messages = getMessages(locale)
   const isRtl = locale === "ar"
   const copy = {
-    investorTitle: locale === "ar" ? "مراجعة للمستثمر" : locale === "ru" ? "Запрос инвестора" : "Investor review",
+    investorTitle:
+      locale === "ar"
+        ? "مراجعة للمستثمر"
+        : locale === "ru"
+          ? "Запрос инвестора"
+          : "Investor review",
     investorDescription:
       locale === "ar"
         ? "شارك وضعك الحالي وما الذي تحاول الوصول إليه، حتى نتمكن من اقتراح الخطوة الأنسب بهدوء."
         : locale === "ru"
           ? "Поделитесь своим профилем и целью, чтобы мы могли спокойно предложить наиболее уместный следующий шаг."
-          : "Share your current position and what you are trying to achieve so we can suggest the most suitable next step.",
+          : "Share your current position and what you are trying to achieve so a more suitable next step can be considered with care.",
     investorSubmit:
-      locale === "ar" ? "اطلب المراجعة" : locale === "ru" ? "Запросить рассмотрение" : "Request review",
-    companyTitle: locale === "ar" ? "محادثة مهنية" : locale === "ru" ? "Профессиональный запрос" : "Professional enquiry",
+      locale === "ar"
+        ? "اطلب المراجعة"
+        : locale === "ru"
+          ? "Запросить рассмотрение"
+          : "Request a private review",
+    companyTitle:
+      locale === "ar"
+        ? "محادثة مهنية"
+        : locale === "ru"
+          ? "Профессиональный запрос"
+          : "Professional enquiry",
     companyDescription:
       locale === "ar"
         ? "إذا كنت تمثل جهة مهنية أو استشارية، أخبرنا بطبيعة النقاش الذي تريد ترتيبه."
         : locale === "ru"
           ? "Если вы представляете профессиональную или консультативную фирму, сообщите, какой разговор вы хотели бы организовать."
-          : "If you represent a professional or advisory firm, tell us what kind of discussion you would like to arrange.",
+          : "If you represent a professional or advisory firm, tell us what kind of discussion you would value arranging.",
     companySubmit:
-      locale === "ar" ? "اطلب معاودة الاتصال" : locale === "ru" ? "Запросить обратный звонок" : "Request a private reply",
+      locale === "ar"
+        ? "اطلب معاودة الاتصال"
+        : locale === "ru"
+          ? "Запросить обратный звонок"
+          : "Request a reply",
   }
 
   return (
     <Tabs defaultValue={defaultValue} dir={isRtl ? "rtl" : "ltr"} className={isRtl ? "text-right" : undefined}>
       <div className="mb-7 space-y-4">
         <span className="eyebrow">{messages.forms.tabsEyebrow}</span>
-        <h3 className="max-w-[18ch] text-[2rem] leading-[1.12] text-foreground md:text-[2.3rem]">{messages.forms.tabsTitle}</h3>
+        <h3 className="max-w-[18ch] text-[2rem] leading-[1.12] text-foreground md:text-[2.3rem]">
+          {messages.forms.tabsTitle}
+        </h3>
         <p className="max-w-[38rem] text-sm leading-7 text-muted-foreground md:text-[0.98rem] md:leading-8">
           {messages.forms.tabsDescription}
         </p>

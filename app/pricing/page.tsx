@@ -55,16 +55,16 @@ export default function PricingPage() {
       eyebrow: "Engagement options",
       title: "Clear engagement options for professional firms.",
       description:
-        "The structure is intended to be clear enough for an informed first decision, while leaving room for tailored arrangements where needed.",
+        "The structure is intended to be clear enough for an informed first decision, while leaving room for tailored arrangements where needed. This page is designed to explain the broad commercial shape of the platform without making the pricing itself feel over-produced.",
       primary: "Request a private overview",
-      secondary: "Write to us instead",
+      secondary: "Contact us directly",
       plansEyebrow: "Plans",
       plansTitle: "Three clear structures are enough for a calm and credible pricing page.",
       plansDescription:
-        "The figures are intended to support careful decisions without feeling either disposable or overstated.",
+        "The figures are intended to support careful decisions without feeling either disposable or overstated. They should give firms enough context to understand the broad structure before deciding whether a more detailed discussion is worthwhile.",
       enterpriseTitle: "Need a wider structure or a more tailored arrangement?",
       enterpriseDescription:
-        "Wider arrangements can include tailored access, implementation planning, and a more bespoke way of working.",
+        "Wider arrangements can include tailored access, implementation planning, and a more bespoke way of working. This final section is intended to show where the standard structures end and where a more tailored conversation may begin.",
     },
     ar: {
       eyebrow: "خيارات التعامل",

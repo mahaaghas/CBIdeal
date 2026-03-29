@@ -73,7 +73,7 @@ export default function DemoPage() {
       eyebrow: "Private overview",
       title: "Request a private overview for your firm.",
       description:
-        "A short private overview can be the clearest way to understand whether the structure, working style, and level of support are right for your team.",
+        "A short private overview can be the clearest way to understand whether the structure, working style, and level of support are right for your team. This page explains what that discussion covers and how to request it in a more measured way.",
       requestDemo: "Arrange a private overview",
       seePricing: "View pricing first",
     },
@@ -115,7 +115,7 @@ export default function DemoPage() {
           <SectionHeading
             eyebrow="What the discussion includes"
             title="A structured overview, not a rushed presentation."
-            description="The overview is designed to clarify fit and context, not to overwhelm teams with unnecessary detail."
+            description="The overview is designed to clarify fit and context, not to overwhelm teams with unnecessary detail. It should give enough substance for an informed first judgement without turning into a full operational review."
           />
           <ProcessSteps steps={demoSteps} />
         </div>
@@ -125,7 +125,7 @@ export default function DemoPage() {
         <div className="container-shell">
           <MeetingSchedulerCard
             title="Arrange a private overview"
-            description="Use this section if you would prefer to move directly to a structured conversation."
+            description="Use this section if you would prefer to move directly to a structured conversation after reviewing what the overview is intended to cover."
           />
         </div>
       </section>
@@ -136,7 +136,7 @@ export default function DemoPage() {
             <span className="eyebrow">Private overview</span>
             <h2 className="section-title max-w-xl text-foreground">Tell us what you would like to discuss.</h2>
             <p className="max-w-xl text-lg leading-8 text-muted-foreground">
-              Share a little context about your firm and the areas you would like to review. We will shape the discussion accordingly.
+              Share a little context about your firm and the areas you would like to review. That helps ensure the first conversation begins with the right emphasis rather than a generic walkthrough.
             </p>
             <Card className="section-card">
               <CardContent className="space-y-3 p-8">
@@ -161,7 +161,7 @@ export default function DemoPage() {
           <CtaPanel
             eyebrow="Need more context first?"
             title="Review pricing or return to the professional overview before getting in touch."
-            description="You can read a little more first, then return when you are ready for a private discussion."
+            description="You can read a little more first, then return when you are ready for a private discussion. For some teams, that additional context makes the first exchange materially more useful."
             primaryAction={{ href: ctaLinks.viewPricing, label: "View pricing" }}
             secondaryAction={{ href: routeLinks.forCompanies, label: "Back to professional overview" }}
           />

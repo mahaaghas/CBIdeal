@@ -62,17 +62,17 @@ export async function MeetingSchedulerCard({
             eyebrow: "Private consultation",
             defaultTitle: "Request a private consultation",
             defaultDescription:
-              "This initial step offers a calmer format for understanding whether a route is suitable and whether a more detailed discussion would be worthwhile.",
-            suitability: "Useful where a clearer review is needed before any more formal decision is made.",
-            duration: "A first discussion is usually well covered in 20 to 30 minutes.",
+              "This initial step offers a calmer format for understanding whether a route appears suitable and whether a more detailed discussion would be appropriate.",
+            suitability: "Useful where a clearer first view is needed before any more committed step is taken.",
+            duration: "A first discussion is usually comfortably covered in 20 to 30 minutes.",
             discretion: "Handled in a private and structured format, without any obligation to continue.",
             cardTitle: "What this conversation is for",
             cardBody:
-              "It helps bring structure to the broader picture, clarify priorities, and determine whether a more detailed next step would be appropriate.",
+              "It helps bring structure to the broader picture, clarify priorities, and decide whether a more detailed next step would be appropriate.",
             note:
               "We work with a limited number of cases and prioritise serious enquiries that benefit from a more considered first exchange.",
-            primary: "Request consultation",
-            secondary: "Write to us instead",
+            primary: "Request a consultation",
+            secondary: "Contact us directly",
           }
 
   const resolvedTitle = title ?? copy.defaultTitle

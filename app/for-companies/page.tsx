@@ -138,7 +138,7 @@ export default async function ForCompaniesPage() {
         ? "استخدم هذه الصفحة إذا كنت تمثل جهة مهنية وتبحث عن نقاش خاص وأكثر تنظيماً حول الملاءمة وطبيعة العلاقة المهنية المحتملة."
         : locale === "ru"
           ? "Используйте эту страницу, если вы представляете фирму и хотите начать более частный и структурированный разговор о профессиональной пригодности и формате возможного взаимодействия."
-          : "Use this section if you represent a firm and would like a more private discussion around structure, professional fit, and how a relationship might be approached.",
+          : "Use this section if you represent a firm and would like a more private discussion around structure, professional fit, and how a relationship might be approached. It is designed as an entry point for serious firms that want a clearer sense of the platform before taking the conversation further.",
     bookMeeting: locale === "ar" ? "رتّب محادثة خاصة" : locale === "ru" ? "Договориться о частном обсуждении" : "Arrange a private discussion",
     requestDemo: locale === "ar" ? "اطلب عرضًا خاصًا" : locale === "ru" ? "Запросить частный обзор" : "Request a private overview",
     whatFirms: locale === "ar" ? "كيف يُستخدم هذا القسم" : locale === "ru" ? "Как используется эта страница" : "How firms use this section",
@@ -168,7 +168,7 @@ export default async function ForCompaniesPage() {
         ? "يركز العرض على ما يهم الفرق المهنية فعلاً: وضوح الحالة، وسياق العميل، وتماسك العمل داخل الفريق."
         : locale === "ru"
           ? "Обзор остаётся близким к тому, что действительно важно профессиональным командам: ясность по статусу, контекст клиента и согласованность внутренней работы."
-          : "The overview remains close to day-to-day realities: incoming enquiries, adviser responsibility, client context, and continuity of follow-up.",
+          : "The overview remains close to day-to-day realities: incoming enquiries, adviser responsibility, client context, and continuity of follow-up. It is intended to show what the platform actually helps a specialist team keep in order.",
     partnershipEyebrow: locale === "ar" ? "علاقات مهنية" : locale === "ru" ? "Профессиональные отношения" : "Professional relationships",
     partnershipTitle:
       locale === "ar"
@@ -181,7 +181,7 @@ export default async function ForCompaniesPage() {
         ? "المقصود ليس فتح مسار تجاري صريح، بل معرفة ما إذا كانت هناك مناسبة مهنية حقيقية لنقاش أكثر تحديداً."
         : locale === "ru"
           ? "Речь не о прямой коммерческой подаче, а о понимании того, есть ли реальная профессиональная уместность для более предметного разговора."
-          : "The wider platform can support a more structured conversation around presentation, working methods, and how introductions may be handled where appropriate.",
+          : "The wider platform can support a more structured conversation around presentation, working methods, and how introductions may be handled where appropriate. This section is there to explain that broader context without forcing it into a sales narrative.",
     companyFormEyebrow: locale === "ar" ? "نموذج استفسار الشركات" : locale === "ru" ? "Форма запроса компании" : "Professional enquiry form",
     companyFormTitle:
       locale === "ar" ? "أخبرنا بما تحتاجه شركتك الآن." : locale === "ru" ? "Расскажите, что нужно вашей фирме." : "Tell us what your firm needs.",
@@ -190,14 +190,14 @@ export default async function ForCompaniesPage() {
         ? "استخدم النموذج إذا كنت ترغب في مشاركة السياق الحالي لفريقك وبدء نقاش مهني أكثر هدوءاً."
         : locale === "ru"
           ? "Используйте форму, если хотите описать текущий контекст своей команды и начать более спокойный профессиональный разговор."
-          : "Use the form for a professional enquiry about structure, fit, or the most suitable next discussion.",
+          : "Use the form for a professional enquiry about structure, fit, or the most suitable next discussion. It gives your firm a clear way to describe what it wants to review before the conversation begins.",
     formTitle: locale === "ar" ? "اطلب محادثة مهنية" : locale === "ru" ? "Запросить профессиональное обсуждение" : "Request a professional discussion",
     formDescription:
       locale === "ar"
         ? "شارك وضع فريقك الحالي وسنعود إليك بالصورة أو الإعداد الأقرب لاحتياجك."
         : locale === "ru"
           ? "Поделитесь профилем своей команды, и мы вернемся с наиболее релевантной конфигурацией."
-          : "Share a little context and we will return in the most suitable format.",
+          : "Share a little context and we will return in the most suitable format. The aim is to make the response more relevant from the first exchange rather than relying on a generic reply.",
     submit: locale === "ar" ? "اطلب محادثة" : locale === "ru" ? "Запросить обсуждение" : "Request discussion",
   }
   const localizedTrustItems =

@@ -88,7 +88,7 @@ export default function PartnersPage() {
       <PageHero
         eyebrow="For specialist practices"
         title="Professional conversations for specialist practices and trusted counterparts."
-        description="Use this page where a more private discussion is needed around collaboration, institutional fit, or cross-border case context."
+        description="Use this page where a more private discussion is needed around collaboration, institutional fit, or cross-border case context. It is intended for specialist counterparts who want to understand the professional frame before moving into specifics."
         primaryAction={{ href: "#partner-form", label: "Request a professional discussion" }}
         secondaryAction={{ href: routeLinks.forCompanies, label: "View professional overview" }}
         stats={[
@@ -125,7 +125,7 @@ export default function PartnersPage() {
           <SectionHeading
             eyebrow="Professional context"
             title="A clearer basis for professional collaboration."
-            description="The aim is to make the shape of a possible relationship easier to understand without turning the page into a transactional marketplace."
+            description="The aim is to make the shape of a possible relationship easier to understand without turning the page into a transactional marketplace. The section below outlines the contexts in which that kind of conversation usually becomes relevant."
           />
           <div className="grid gap-6 lg:grid-cols-3">
             {models.map((model) => (
@@ -151,7 +151,7 @@ export default function PartnersPage() {
               Professional discussions work best when the context is clear.
             </h2>
             <p className="max-w-xl text-lg leading-8 text-muted-foreground">
-              The page is intended to replace vague partnership language with a more grounded sense of suitability, seriousness, and institutional fit.
+              The page is intended to replace vague partnership language with a more grounded sense of suitability, seriousness, and institutional fit, so visitors can understand what sort of relationship is actually being contemplated.
             </p>
             <div className="space-y-4">
               {criteria.map((criterion) => (
@@ -180,7 +180,7 @@ export default function PartnersPage() {
             <span className="eyebrow">Professional enquiry</span>
             <h2 className="section-title max-w-xl text-foreground">Request a private professional discussion.</h2>
             <p className="max-w-xl text-lg leading-8 text-muted-foreground">
-              Use the form to share the outline of your practice, the jurisdictions you cover, and the kind of discussion that would be most useful.
+               Use the form to share the outline of your practice, the jurisdictions you cover, and the kind of discussion that would be most useful. That allows the first reply to be shaped around the right context rather than broad assumptions.
             </p>
           </div>
           <LeadQualificationForm
@@ -199,7 +199,7 @@ export default function PartnersPage() {
           <CtaPanel
             eyebrow="Further context"
             title="Would you prefer a broader overview before taking the conversation further?"
-            description="Move to the professional overview for a clearer sense of the wider platform and its tone."
+            description="Move to the professional overview for a clearer sense of the wider platform and its tone. For some firms, that broader reading is the better starting point before a more specific exchange."
             primaryAction={{ href: routeLinks.forCompanies, label: "View professional overview" }}
             secondaryAction={{ href: routeLinks.programs, label: "Go to investor pathways" }}
           />

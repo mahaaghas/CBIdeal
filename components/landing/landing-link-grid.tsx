@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
-import { getRequestDirection } from "@/lib/i18n/request"
+import { getRequestDirection, getRequestLocale } from "@/lib/i18n/request"
 import { cn } from "@/lib/utils"
 
 interface LinkItem {
@@ -15,8 +15,10 @@ interface LandingLinkGridProps {
 }
 
 export function LandingLinkGrid({ items }: LandingLinkGridProps) {
+  const locale = getRequestLocale()
   const direction = getRequestDirection()
   const isRtl = direction === "rtl"
+  const actionLabel = locale === "ar" ? "عرض الصفحة" : locale === "ru" ? "Открыть страницу" : "View page"
 
   return (
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -34,7 +36,7 @@ export function LandingLinkGrid({ items }: LandingLinkGridProps) {
                 isRtl && "flex-row-reverse self-end",
               )}
             >
-              Learn more
+              {actionLabel}
               <ArrowRight className="size-4" />
             </Link>
           </CardContent>

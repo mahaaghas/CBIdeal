@@ -81,7 +81,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
       eyebrow: "Contact",
       title: "A discreet contact point for private consultations and professional enquiries.",
       description:
-        "Whether you are exploring your options personally or writing on behalf of a firm, the conversation remains discreet, clear, and carefully handled.",
+        "Whether you are exploring your options personally or writing on behalf of a firm, this page is intended to show the most appropriate way to get in touch and what kind of first exchange each route is designed for.",
       openForm: "Open contact form",
       viewPrivacy: "View data protection",
     },
@@ -147,7 +147,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         ? "يحتاج المستثمر إلى نوع مختلف من الأسئلة عن ذلك الذي تحتاجه الشركة. لهذا نفصل المسارين من دون تشتيت التجربة أو دفع أي طرف إلى نموذج غير مناسب."
         : locale === "ru"
           ? "Инвесторам и фирмам часто нужны разные разговоры. Эта структура разделяет их, не дробя бренд и не отправляя людей в неподходящую форму."
-          : "Investors and professional firms often need different conversations. This layout keeps them distinct while preserving a calm and coherent experience.",
+          : "Investors and professional firms often need different conversations. This section explains how the contact routes are separated so the first exchange can remain calm, relevant, and easier to navigate.",
     bulletOne:
       locale === "ar" ? "مراجعة استفسارات المستثمرين بعناية وتوجيهها إلى المسار الأنسب." : locale === "ru" ? "Внимательный первый разбор запросов инвесторов и направление по наиболее уместному пути." : "Private investor enquiries are reviewed with care and directed to the most suitable path.",
     bulletTwo:
@@ -179,7 +179,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         ? "تمنحك النماذج المخصصة بداية أوضح: المستثمر يبدأ من المقارنة والملف، والشركة تبدأ من الاحتياج التشغيلي."
         : locale === "ru"
           ? "Специализированные формы дают более релевантный опыт для инвесторов и компаний, чем одна общая контактная форма."
-          : "Separate forms allow the first exchange to remain more relevant and more measured.",
+          : "Separate forms allow the first exchange to remain more relevant and more measured. They also make it easier to understand which information matters at the outset, depending on who is writing.",
     faqEyebrow: locale === "ar" ? "الأسئلة الشائعة" : locale === "ru" ? "FAQ" : "FAQ",
     faqTitle:
       locale === "ar"
@@ -192,7 +192,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         ? "إجابات قصيرة تساعد في ضبط التوقعات وتعزيز الثقة."
         : locale === "ru"
           ? "Короткие ответы, которые помогают настроить ожидания и усилить доверие."
-          : "Short answers that help set expectations and reinforce trust.",
+          : "Short answers that help set expectations, reduce unnecessary uncertainty, and make the contact process easier to read before you begin.",
     ctaEyebrow: locale === "ar" ? "ما زلت تقرر؟" : locale === "ru" ? "Еще решаете?" : "Still deciding?",
     ctaTitle:
       locale === "ar"
@@ -205,7 +205,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         ? "يمكنك الانتقال إلى العرض الإرشادي أو صفحة الأسعار أولًا، ثم العودة إلى التواصل عندما تصبح الصورة أوضح."
         : locale === "ru"
           ? "Вы можете перейти к демо или тарифам, а затем вернуться к контакту, когда будете готовы."
-          : "You may prefer to review the main pathways or editorial insights first, then return when the picture is clearer.",
+          : "You may prefer to review the main pathways or editorial insights first, then return when the picture is clearer. This is often the better route if your questions are still broad rather than case-specific.",
     ctaPrimary: locale === "ar" ? "انتقل إلى العرض الإرشادي" : locale === "ru" ? "Перейти к guided demo" : "View investor pathways",
   }
 

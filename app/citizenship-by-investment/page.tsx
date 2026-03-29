@@ -45,22 +45,22 @@ const trustItems = [
   {
     title: "Confidential first review",
     description:
-      "Every enquiry is framed around profile fit, documentation readiness, and realistic next steps before the discussion becomes more formal.",
+      "Every enquiry is framed around profile fit, documentation readiness, and realistic next steps before attention narrows to a specific jurisdiction.",
   },
   {
     title: "Designed for real decision-making",
     description:
-      "We help clients compare suitability, family fit, and trade-offs rather than pushing one route on every profile.",
+      "We help clients compare suitability, family fit, and trade-offs rather than reducing the decision to a single programme headline.",
   },
   {
     title: "Relevant introductions",
     description:
-      "Our role is to structure the enquiry before it moves towards licensed and appropriate parties.",
+      "Our role is to bring structure to the enquiry before it moves towards licensed and appropriate parties.",
   },
   {
     title: "Compliance-aware from the start",
     description:
-      "Due diligence, AML, KYC, and source-of-funds readiness are treated as core parts of the process, not fine print.",
+      "Due diligence, AML, KYC, and source-of-funds readiness are treated as core parts of the process, not fine print or an afterthought.",
   },
 ]
 
@@ -100,17 +100,17 @@ const faqs = [
   {
     question: "Do you guarantee that a route will be suitable?",
     answer:
-      "No. The purpose of the first review is to test fit before expectations become unrealistic. Final suitability depends on your profile, documentation, and the rules of the official programme involved.",
+      "No. The purpose of the first review is to test fit before expectations become unrealistic. Final suitability depends on your profile, documentation, source-of-funds position, and the rules of the official programme involved.",
   },
   {
     question: "Is this only relevant for Caribbean programs?",
     answer:
-      "No. This pillar page is designed to explain citizenship by investment broadly, while related comparison pages help narrow the Caribbean shortlist or compare citizenship with residency routes.",
+      "No. This pillar page is designed to explain citizenship by investment broadly, while related comparison pages help narrow the Caribbean shortlist, compare route types, or explore residency-led alternatives.",
   },
   {
     question: "What happens after I submit the form?",
     answer:
-      "Your enquiry is reviewed privately and, where appropriate, moved towards a more formal conversation with the right licensed party.",
+      "Your enquiry is reviewed privately and, where appropriate, moved towards a more detailed conversation with the right licensed party once the route itself appears coherent.",
   },
 ]
 
@@ -265,21 +265,21 @@ export default function CitizenshipByInvestmentPage() {
       <LandingHero
         eyebrow={copy?.heroEyebrow ?? "Citizenship by investment"}
         title={copy?.heroTitle ?? "Citizenship by investment for investors who want a clearer, more structured route."}
-        description={copy?.heroDescription ?? "We help clients compare official citizenship by investment programmes, understand the trade-offs honestly, and move towards the route that best suits the profile."}
+        description={copy?.heroDescription ?? "This page is intended for investors who want to understand citizenship by investment with greater clarity: what the route covers, where the main trade-offs sit, and how to move from broad interest towards a more informed shortlist."}
         primaryAction={{ href: "#qualification", label: copy?.heroPrimary ?? "Explore your options" }}
         secondaryAction={{ href: routes.bookConsultation, label: copy?.heroSecondary ?? "Request a consultation" }}
         stats={copy?.stats ?? [
-          { value: "Private review", label: "handled discreetly from the first step" },
-          { value: "Profile-led", label: "built around fit, not generic rankings" },
-          { value: "Measured access", label: "formal introductions only where the fit appears real" },
+          { value: "Private review", label: "handled discreetly from the first step and framed around the actual profile" },
+          { value: "Profile-led", label: "built around fit, family context, and practical suitability rather than generic rankings" },
+          { value: "Measured access", label: "formal introductions only where the route appears coherent and realistically usable" },
         ]}
         highlightsLabel={locale === "ar" ? "لماذا يستخدم المستثمرون هذه الصفحة" : "Why investors use this page"}
         aside={
           <LocalizedLandingLeadForm
             locale={locale}
             title={copy?.leadTitle ?? "Request a private review"}
-            description={copy?.leadDescription ?? "Share the essentials and we will help you understand which route appears most suitable before the discussion becomes more formal."}
-            submitLabel={locale === "ar" ? "اعرف الخيار الأنسب لك" : "Explore your options"}
+            description={copy?.leadDescription ?? "Share the essentials and we will help you understand which route appears most suitable before the discussion becomes more detailed."}
+            submitLabel={locale === "ar" ? "اعرف الخيار الأنسب لك" : "Request a private review"}
             sourceCategory="pillar"
             sourcePage="citizenship-by-investment"
           />
@@ -368,7 +368,7 @@ export default function CitizenshipByInvestmentPage() {
                   {copy?.processTitle ?? "A serious first conversation starts with a clearer review."}
                 </h2>
                 <p className="max-w-[38rem] text-base leading-8 text-primary-foreground/80 md:text-lg">
-                  {copy?.processDescription ?? "This route is designed to move from initial enquiry to a more formal next step in a way that feels selective, structured, and easier to trust."}
+                {copy?.processDescription ?? "This route is designed to move from initial enquiry to a more considered next step in a way that feels selective, structured, and easier to trust. The aim is to show how a serious case is usually narrowed before formal programme work begins."}
                 </p>
               </div>
               <ProcessSteps steps={localizedProcessSteps} />
@@ -382,7 +382,7 @@ export default function CitizenshipByInvestmentPage() {
           <SectionHeading
             eyebrow={copy?.shortlistEyebrow ?? "Shortlist logic"}
             title={copy?.shortlistTitle ?? "Most investors are comparing a few practical route types, not dozens of completely different outcomes."}
-            description={copy?.shortlistDescription ?? "The strongest comparison is usually not about tiny ranking differences. It is about fit: cost structure, family inclusion, reputation, and strategic use."}
+            description={copy?.shortlistDescription ?? "The strongest comparison is usually not about tiny ranking differences. It is about fit: cost structure, family inclusion, reputational positioning, due diligence realities, and strategic use. This section is meant to show what a sensible shortlist actually compares."}
           />
           <LandingComparisonTable
             columns={[
@@ -429,7 +429,7 @@ export default function CitizenshipByInvestmentPage() {
           <SectionHeading
             eyebrow={copy?.nextEyebrow ?? "Where to go next"}
             title={copy?.nextTitle ?? "Choose the next page based on the kind of decision you are making."}
-            description={copy?.nextDescription ?? "Some visitors need a broad comparison, others need a private consultation. This system is meant to support both without forcing a rushed decision."}
+            description={copy?.nextDescription ?? "Some visitors need a broader comparison, others need a private consultation sooner. The structure here is meant to help you choose the right next page based on how far the decision has already progressed."}
           />
           <LandingLinkGrid
             items={copy?.links ?? [
@@ -459,14 +459,14 @@ export default function CitizenshipByInvestmentPage() {
       <LandingFaqSection
         eyebrow={copy?.faqEyebrow ?? "FAQ"}
         title={copy?.faqTitle ?? "Common questions from investor-side enquiries."}
-        description={copy?.faqDescription ?? "These answers keep expectations realistic while helping serious enquirers understand what the process is designed to do."}
+        description={copy?.faqDescription ?? "These answers keep expectations realistic while helping serious enquirers understand what the process is designed to do, and what it is not designed to promise."}
         items={localizedFaqs}
       />
 
       <LandingCtaSection
         eyebrow={copy?.ctaEyebrow ?? "Private consultation"}
         title={copy?.ctaTitle ?? "Ready to discuss your case in a more structured setting?"}
-          description={copy?.ctaDescription ?? "Request a consultation if you want to move from broad research into a more considered conversation with realistic next steps."}
+          description={copy?.ctaDescription ?? "Request a consultation if you want to move from broad research into a more considered conversation shaped around your profile, priorities, and realistic next steps."}
         primaryAction={{ href: routes.bookConsultation, label: copy?.ctaPrimary ?? "Request a consultation" }}
         secondaryAction={{ href: routes.contact, label: copy?.ctaSecondary ?? "Arrange a written introduction" }}
       />

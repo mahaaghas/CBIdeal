@@ -117,7 +117,7 @@ export default function DataProtectionPage() {
         ? "تمنح هذه الصفحة المستثمرين والشركات شرحًا نظيفًا وموثوقًا لكيفية التعامل مع المعلومات المرسلة دون تعقيد قانوني غير ضروري."
         : locale === "ru"
           ? "Эта страница дает инвесторам и компаниям понятное и убедительное объяснение того, как обрабатывается отправленная информация без лишнего юридического шума."
-          : "This gives investors and companies a clean, credible explanation of how submitted information is handled, without unnecessary legal jargon.",
+          : "This gives investors and companies a clean, credible explanation of how submitted information is handled, what standards shape that approach, and where to look if a more detailed privacy question arises.",
     primary: locale === "ar" ? "تواصل معنا بخصوص الخصوصية" : locale === "ru" ? "Связаться по вопросам приватности" : "Raise a privacy question",
     secondary: locale === "ar" ? "العودة إلى الصفحة الرئيسية" : locale === "ru" ? "Назад на главную" : "Return home",
     overviewEyebrow: locale === "ar" ? "نظرة عامة" : locale === "ru" ? "Обзор" : "Overview",
@@ -132,7 +132,7 @@ export default function DataProtectionPage() {
         ? "هذا شرح موجز يعزز الثقة حول كيفية تعامل المنصة مع الاستفسارات السرية والبيانات المرتبطة بها."
         : locale === "ru"
           ? "Это краткое и спокойное объяснение того, как платформа обращается с конфиденциальными обращениями и связанными с ними данными."
-      : "This page explains, in straightforward terms, how confidential enquiries and related information are handled.",
+      : "This page explains, in straightforward terms, how confidential enquiries and related information are handled, so visitors can understand the essentials without having to work through unnecessary legal language.",
     ctaEyebrow: locale === "ar" ? "الخطوة التالية" : locale === "ru" ? "Следующий шаг" : "Next step",
     ctaTitle:
       locale === "ar"
@@ -183,7 +183,7 @@ export default function DataProtectionPage() {
           <SectionHeading
             eyebrow="Compliance"
             title="Compliance & Regulatory Notice"
-            description="This notice clarifies the role of the platform, the role of licensed partners, and the standards we expect across every enquiry."
+            description="This notice clarifies the role of the platform, the role of licensed partners, and the standards expected across every enquiry, so the distinction between advisory access and formal programme decision-making remains clear."
           />
           <Card className="section-card">
             <CardContent className="space-y-5 p-8 md:p-10">

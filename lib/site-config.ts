@@ -46,7 +46,7 @@ const pricingPlans = [
     seats: "Up to 3 users",
     ctaLabel: "Arrange a private discussion",
     ctaHref: ctaLinks.requestDemo,
-    secondaryLabel: "Write to us instead",
+    secondaryLabel: "Contact us directly",
     secondaryHref: ctaLinks.contactSales,
     featured: false,
     features: [
@@ -84,7 +84,7 @@ const pricingPlans = [
     description:
       "For larger firms that require tailored access, broader operational structure, or a more bespoke engagement format.",
     seats: "Custom structure",
-    ctaLabel: "Write to us instead",
+    ctaLabel: "Contact us directly",
     ctaHref: ctaLinks.contactSales,
     secondaryLabel: "Arrange a private discussion",
     secondaryHref: ctaLinks.bookCompanyCall,

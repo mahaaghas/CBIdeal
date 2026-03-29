@@ -58,7 +58,7 @@ export function CheapestCbiProgramsArticle({
       cta={{
         eyebrow: "Private review",
         title: "Need the cheapest realistic route for your actual household, not just the brochure headline?",
-    description: "Share your profile and we will help you understand where the overall economics look strongest before any more formal next step is considered.",
+    description: "Share your profile and we will help you understand where the overall economics look strongest before any more considered next step is discussed.",
     primaryAction: { href: links.consultation, label: "Request a consultation" },
     secondaryAction: { href: links.contact, label: "Arrange a written introduction" },
       }}

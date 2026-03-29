@@ -53,13 +53,13 @@ export async function generateMetadata(): Promise<Metadata> {
         ? "للمكاتب المرخصة والممارسات الاستشارية"
         : locale === "ru"
           ? "Для лицензированных фирм и консультативных практик"
-          : "For Licensed Firms and Advisory Practices",
+          : "For firms",
     description:
       locale === "ar"
         ? "مدخل مهني أكثر هدوءاً للمكاتب المرخصة والممارسات الاستشارية التي ترغب في مناقشة مناسبة ومحددة."
         : locale === "ru"
           ? "Более спокойная профессиональная точка входа для лицензированных фирм и консультативных практик."
-          : "Explore a structured entry point for licensed firms and advisory practices seeking a more private professional discussion.",
+          : "A clearer starting point for licensed firms and advisory practices interested in a more thoughtful professional conversation.",
     path: localizeHref(locale, "/for-companies"),
     keywords: [
         "licensed firms",
@@ -132,30 +132,30 @@ export default async function ForCompaniesPage() {
         ? "مدخل مهني أكثر هدوءاً للمكاتب المرخصة والممارسات الاستشارية."
         : locale === "ru"
           ? "Более спокойная профессиональная точка входа для лицензированных фирм и консультативных практик."
-          : "A more considered entry point for licensed firms and advisory practices.",
+          : "Start a more focused conversation",
     heroDescription:
       locale === "ar"
         ? "استخدم هذه الصفحة إذا كنت تمثل جهة مهنية وتبحث عن نقاش خاص وأكثر تنظيماً حول الملاءمة وطبيعة العلاقة المهنية المحتملة."
         : locale === "ru"
           ? "Используйте эту страницу, если вы представляете фирму и хотите начать более частный и структурированный разговор о профессиональной пригодности и формате возможного взаимодействия."
-          : "This page is intended for firms that want to understand the professional context before any more specific discussion begins. Use it to review the broader platform, the working tone, and the kinds of conversations that may be appropriate for a serious firm.",
-    bookMeeting: locale === "ar" ? "رتّب محادثة خاصة" : locale === "ru" ? "Договориться о частном обсуждении" : "Arrange a private discussion",
-    requestDemo: locale === "ar" ? "اطلب عرضًا خاصًا" : locale === "ru" ? "Запросить частный обзор" : "Request a private overview",
-    whatFirms: locale === "ar" ? "كيف يُستخدم هذا القسم" : locale === "ru" ? "Как используется эта страница" : "How firms use this section",
-    crmSaas: locale === "ar" ? "نظرة مهنية منظمة" : locale === "ru" ? "Профессиональный обзор" : "Platform overview",
+          : "We work with a small number of licensed firms and advisory practices looking for a more structured and thoughtful way to engage.\n\nIf you're exploring whether this could fit into your current work, this is a good place to start.",
+    bookMeeting: locale === "ar" ? "رتّب محادثة خاصة" : locale === "ru" ? "Договориться о частном обсуждении" : "Start a conversation",
+    requestDemo: locale === "ar" ? "اطلب عرضًا خاصًا" : locale === "ru" ? "Запросить частный обзор" : "Request an overview",
+    whatFirms: locale === "ar" ? "كيف يُستخدم هذا القسم" : locale === "ru" ? "Как используется эта страница" : "What this is for",
+    crmSaas: locale === "ar" ? "نظرة مهنية منظمة" : locale === "ru" ? "Профессиональный обзор" : "Clarity first",
     crmSaasDesc:
       locale === "ar"
         ? "هذه الصفحة تمنحك قراءة أوضح لطبيعة المنصة، والنبرة المهنية، وكيف يمكن أن يبدأ النقاش بشكل أكثر هدوءاً."
         : locale === "ru"
           ? "Эта страница помогает спокойно понять характер платформы, профессиональный тон и то, как может начаться дальнейший разговор."
-          : "Review how enquiries, client context, internal notes, and continuity can sit within a more orderly professional environment.",
-    qualifiedLeads: locale === "ar" ? "محادثة مهنية أوسع" : locale === "ru" ? "Более широкое профессиональное обсуждение" : "Professional context",
+          : "Get a clear sense of how this fits into your current workflow before taking anything further.",
+    qualifiedLeads: locale === "ar" ? "محادثة مهنية أوسع" : locale === "ru" ? "Более широкое профессиональное обсуждение" : "Professional fit",
     qualifiedLeadsDesc:
       locale === "ar"
         ? "قد تستخدم بعض الجهات هذا القسم لفهم ما إذا كانت هناك أرضية مناسبة لنقاش مهني أوسع ضمن إطار أكثر تحفظاً."
         : locale === "ru"
           ? "Некоторые фирмы используют эту страницу, чтобы понять, есть ли спокойная и уместная основа для более широкого профессионального разговора."
-          : "Use the page to begin a more thoughtful discussion around structure, presentation, and the kind of professional fit that may be worth exploring.",
+          : "See whether there's a natural alignment in how work is handled and presented.",
     productEyebrow: locale === "ar" ? "نظرة عامة" : locale === "ru" ? "Обзор" : "Overview",
     productTitle:
       locale === "ar"
@@ -248,9 +248,9 @@ export default async function ForCompaniesPage() {
         primaryAction={{ href: "#meeting", label: copy.bookMeeting }}
         secondaryAction={{ href: ctaLinks.requestDemo, label: copy.requestDemo }}
         stats={[
-          { value: "Structure", label: locale === "ar" ? "لعرض تشغيلي أكثر وضوحًا" : "for a clearer operating view" },
-          { value: "Discretion", label: locale === "ar" ? "للنقاشات المهنية المدروسة" : "for measured professional discussions" },
-          { value: "Fit", label: locale === "ar" ? "لتقدير الملاءمة بشكل أهدأ" : "for calmer fit assessment" },
+          { value: "Structure", label: locale === "ar" ? "لعرض تشغيلي أكثر وضوحًا" : "A clearer way to approach and organise cases" },
+          { value: "Discretion", label: locale === "ar" ? "للنقاشات المهنية المدروسة" : "Conversations that remain measured and controlled" },
+          { value: "Fit", label: locale === "ar" ? "لتقدير الملاءمة بشكل أهدأ" : "A better sense of whether working together makes sense" },
         ]}
       >
         <div className="space-y-4 rounded-[28px] border border-white/10 bg-white/10 p-6 backdrop-blur">

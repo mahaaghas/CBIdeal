@@ -156,7 +156,7 @@ export const siteConfig = {
       { href: routeLinks.home, label: "Home" },
       { href: routeLinks.about, label: "Our approach" },
       { href: routeLinks.programs, label: "Citizenship by investment" },
-      { href: routeLinks.forCompanies, label: "Professional counterparts" },
+      { href: routeLinks.forCompanies, label: "Work with us" },
       { href: routeLinks.insights, label: "Insights" },
       { href: routeLinks.pricing, label: "Engagement options" },
     ],

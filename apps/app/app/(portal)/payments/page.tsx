@@ -1,191 +1,158 @@
-import { BellRing, CheckCircle2, Filter, UploadCloud, XCircle } from "lucide-react"
-import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
-import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
-import { CrmStatCard } from "@cbideal/ui/components/crm-stat-card"
-import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
-import { CrmTableCard } from "@cbideal/ui/components/crm-table-card"
-import { CrmToolbar } from "@cbideal/ui/components/crm-toolbar"
-import { Button } from "@cbideal/ui/components/ui/button"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@cbideal/ui/components/ui/table"
-import { notificationLog, paymentProofs, paymentSchedules } from "@/lib/mock-data"
+const paymentRows = [
+  {
+    user: "Ahmed Rahman",
+    program: "Dominica citizenship",
+    amount: "$221,000",
+    status: "Completed",
+    statusTone: "green",
+    date: "Jan 15, 2026",
+    actions: ["View receipt"],
+  },
+  {
+    user: "Al Noor Holdings",
+    program: "Portugal residence route",
+    amount: "EUR 12,000",
+    status: "Pending",
+    statusTone: "amber",
+    date: "Jan 18, 2026",
+    actions: ["Verify", "Details"],
+  },
+  {
+    user: "Westbridge Capital",
+    program: "European residence structure",
+    amount: "EUR 14,000",
+    status: "Pending",
+    statusTone: "amber",
+    date: "Jan 20, 2026",
+    actions: ["Verify", "Details"],
+  },
+  {
+    user: "M. El Sayed",
+    program: "Strategic relocation",
+    amount: "EUR 4,200",
+    status: "Failed",
+    statusTone: "red",
+    date: "Jan 22, 2026",
+    actions: ["Retry"],
+  },
+] as const
+
+function toneClass(tone: string) {
+  if (tone === "green") return "app-status-pill app-status-green"
+  if (tone === "amber") return "app-status-pill app-status-amber"
+  if (tone === "red") return "app-status-pill app-status-red"
+  return "app-status-pill app-status-blue"
+}
 
 export default function PaymentsPage() {
-  const dueSoon = paymentSchedules.filter((item) => item.status === "Due soon" || item.status === "Upcoming").length
-  const proofsPending = paymentSchedules.filter(
-    (item) => item.status === "Awaiting proof" || item.status === "Under review" || item.status === "Rejected",
-  ).length
-  const approved = paymentSchedules.filter((item) => item.status === "Approved" || item.status === "Paid").length
-
   return (
-    <div className="section-stack">
-      <CrmPageHeader
-        eyebrow="Payments"
-        title="Payment stages, due dates, and proof review kept inside the same case workflow."
-        description="The payment layer is structured around quotation-linked stages rather than loose invoices. Internal teams can track what is due, what is overdue, and what evidence has been uploaded, while client-facing users only see the stages relevant to their matter."
-        actions={
-          <>
-            <Button variant="outline" className="rounded-full">
-              <BellRing className="size-4" />
-              Review reminders
-            </Button>
-            <Button className="rounded-full">
-              <UploadCloud className="size-4" />
-              Log payment proof
-            </Button>
-          </>
-        }
-      />
-
-      <div className="grid gap-4 md:grid-cols-3">
-        <CrmStatCard
-          label="Upcoming stages"
-          value={`${dueSoon}`}
-          note="Payments approaching or already in their reminder window."
-          trend="Due soon"
-        />
-        <CrmStatCard
-          label="Awaiting evidence"
-          value={`${proofsPending}`}
-          note="Stages waiting on client proof, finance review, or corrected re-upload."
-          trend="Needs review"
-        />
-        <CrmStatCard
-          label="Approved stages"
-          value={`${approved}`}
-          note="Payments already cleared and ready for the next operational step."
-          trend="Financially confirmed"
-        />
+    <div className="space-y-8">
+      <div className="space-y-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="font-serif text-[2.9rem] leading-[1.02] tracking-[-0.045em] text-white md:text-[3.5rem]">
+            Welcome back, Admin
+          </h1>
+          <span className="app-pill rounded-full px-4 py-1.5 text-sm font-semibold">Admin workspace</span>
+        </div>
+        <p className="max-w-3xl text-[1.05rem] text-slate-200/82">
+          Track payment stages, verify uploaded proof, and keep client-facing finance records aligned with the case.
+        </p>
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
-        <CrmTableCard
-          title="Payment schedule"
-          description="A single register for every stage, due date, and current approval position."
-          action={
-            <CrmToolbar
-              searchPlaceholder="Search clients, payment stages, or case IDs"
-              actions={
-                <Button variant="outline" className="rounded-full">
-                  <Filter className="size-4" />
-                  Filter
-                </Button>
-              }
-            />
-          }
-        >
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Client</TableHead>
-                <TableHead>Stage</TableHead>
-                <TableHead>Due date</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paymentSchedules.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell className="font-medium text-foreground">{row.client}</TableCell>
-                  <TableCell>{row.label}</TableCell>
-                  <TableCell>{row.dueDate}</TableCell>
-                  <TableCell>
-                    {row.currency} {row.amount.toLocaleString()}
-                  </TableCell>
-                  <TableCell>
-                    <CrmStatusBadge status={row.status} />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CrmTableCard>
-
-        <CrmSectionCard
-          title="Proof review queue"
-          description="Uploaded proofs can be approved or returned with a required reason before the case moves on."
-        >
-          <div className="space-y-3">
-            {paymentProofs.map((proof) => (
-              <div key={proof.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium text-foreground">{proof.client}</p>
-                    <p className="text-sm leading-6 text-muted-foreground">
-                      {proof.fileName} · uploaded {proof.uploadedAt}
-                    </p>
-                    {proof.rejectionReason ? (
-                      <p className="text-sm leading-6 text-muted-foreground">{proof.rejectionReason}</p>
-                    ) : null}
-                  </div>
-                  <CrmStatusBadge status={proof.status} />
-                </div>
+      <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
+        {[
+          { label: "Total clients", value: "248", change: "+12% from last month", iconBg: "app-kpi-icon", icon: Users },
+          { label: "Pending reviews", value: "34", change: "+8% from last month", iconBg: "bg-[#d8891a]", icon: Bell },
+          { label: "Approved docs", value: "892", change: "+23% from last month", iconBg: "bg-[#46b264]", icon: FileCheck2 },
+          { label: "Total revenue", value: "$2.4M", change: "+18% from last month", iconBg: "app-kpi-icon", icon: Wallet },
+        ].map((item) => (
+          <div key={item.label} className="app-kpi rounded-[22px] px-6 py-6">
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-3">
+                <p className="text-[1.05rem] font-medium text-slate-300">{item.label}</p>
+                <p className="font-serif text-[3rem] leading-none tracking-[-0.04em] text-white">{item.value}</p>
+                <p className="text-base font-medium text-[#54de82]">{item.change}</p>
               </div>
-            ))}
-          </div>
-        </CrmSectionCard>
-      </div>
-
-      <div className="grid gap-5 xl:grid-cols-3">
-        <CrmSectionCard
-          title="Approve proof"
-          description="Approvals confirm the payment stage and allow the case to move on."
-        >
-          <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-            <div className="flex items-start gap-3">
-              <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-800">
-                <CheckCircle2 className="size-4" />
+              <div className={`${item.iconBg} flex size-12 items-center justify-center rounded-[18px] text-white`}>
+                <item.icon className="size-5" />
               </div>
-              <p className="text-sm leading-7 text-muted-foreground">
-                Once approved, the payment stage can be marked as cleared and the assigned account manager receives a
-                confirmation update automatically.
-              </p>
             </div>
           </div>
-        </CrmSectionCard>
-
-        <CrmSectionCard
-          title="Reject proof"
-          description="Rejected proofs always require a reason so the client knows what must be corrected."
-        >
-          <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-            <div className="flex items-start gap-3">
-              <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-rose-50 text-rose-700">
-                <XCircle className="size-4" />
-              </div>
-              <p className="text-sm leading-7 text-muted-foreground">
-                Rejections trigger a client message asking for a fresh upload and keep the rejection note visible on the
-                payment record.
-              </p>
-            </div>
-          </div>
-        </CrmSectionCard>
-
-        <CrmSectionCard
-          title="Reminder flow"
-          description="Upcoming and overdue reminders stay connected to the specific payment stage."
-        >
-          <div className="space-y-3">
-            {notificationLog
-              .filter((item) => item.type.includes("Payment") || item.type.includes("payment"))
-              .map((item) => (
-                <div key={item.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-3 shadow-sm">
-                  <p className="text-sm font-medium text-foreground">{item.type}</p>
-                  <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                    {item.recipient} · {item.sentAt}
-                  </p>
-                </div>
-              ))}
-          </div>
-        </CrmSectionCard>
+        ))}
       </div>
+
+      <section className="app-surface rounded-[26px] px-6 py-6 md:px-8 md:py-7">
+        <div className="space-y-6">
+          <div className="app-tabbar inline-flex rounded-2xl p-1">
+            <a href="/dashboard?tab=clients" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">
+              Clients
+            </a>
+            <a href="/dashboard?tab=documents" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">
+              Documents
+            </a>
+            <span className="app-tab app-tab-active rounded-[14px] px-10 py-2.5 text-lg font-medium">Payments</span>
+          </div>
+
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="relative min-w-0 flex-1">
+              <input className="app-search h-14 w-full rounded-2xl px-12 text-base outline-none" placeholder="Search payments..." readOnly />
+              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 21l-4.35-4.35M10.8 18a7.2 7.2 0 1 0 0-14.4 7.2 7.2 0 0 0 0 14.4Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </span>
+            </div>
+            <button type="button" className="app-search inline-flex h-14 items-center gap-2 rounded-2xl px-5 text-base font-semibold text-white">
+              Filter
+            </button>
+          </div>
+
+          <div className="app-grid-table bg-[#263248]">
+            <table className="w-full">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Program</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paymentRows.map((row) => (
+                  <tr key={`${row.user}-${row.program}`}>
+                    <td className="font-semibold text-white">{row.user}</td>
+                    <td className="font-semibold text-white">{row.program}</td>
+                    <td className="font-semibold text-[#6289c1]">{row.amount}</td>
+                    <td><span className={toneClass(row.statusTone)}>{row.status}</span></td>
+                    <td className="text-slate-400">{row.date}</td>
+                    <td>
+                      <div className="flex flex-wrap gap-2">
+                        {row.actions.map((action) => (
+                          <span
+                            key={action}
+                            className={
+                              action === "Verify"
+                                ? "app-status-pill app-status-green"
+                                : action === "Retry"
+                                  ? "app-status-pill app-status-blue"
+                                  : "text-slate-300"
+                            }
+                          >
+                            {action}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
+import { Bell, FileCheck2, Users, Wallet } from "lucide-react"

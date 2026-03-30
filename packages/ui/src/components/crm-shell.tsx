@@ -4,34 +4,30 @@ import type { ReactNode } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
-  BellDot,
+  Bell,
   BriefcaseBusiness,
   Building2,
-  ChevronRight,
   CircleHelp,
   CreditCard,
   FileStack,
   FolderKanban,
   LayoutDashboard,
   ListChecks,
+  LogOut,
   ReceiptText,
-  Search,
   Settings,
   Users,
 } from "lucide-react"
-import { BrandMark } from "./brand-mark"
-import { Button } from "./ui/button"
-import { Card, CardContent } from "./ui/card"
 import { cn } from "../lib/utils"
 
 const navigation = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/leads", label: "Leads", icon: CircleHelp },
   { href: "/clients", label: "Clients", icon: Building2 },
-  { href: "/cases", label: "Cases / Applications", icon: BriefcaseBusiness },
-  { href: "/quotations", label: "Quotations", icon: ReceiptText },
-  { href: "/payments", label: "Payments", icon: CreditCard },
+  { href: "/cases", label: "Applications", icon: BriefcaseBusiness },
   { href: "/documents", label: "Documents", icon: FileStack },
+  { href: "/payments", label: "Payments", icon: CreditCard },
+  { href: "/quotations", label: "Quotations", icon: ReceiptText },
   { href: "/tasks", label: "Tasks", icon: ListChecks },
   { href: "/team", label: "Team", icon: Users },
   { href: "/settings", label: "Settings", icon: Settings },
@@ -45,136 +41,101 @@ export function CrmShell({ children }: CrmShellProps) {
   const pathname = usePathname()
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container-shell py-4 md:py-6">
-        <div className="grid gap-5 xl:grid-cols-[276px_minmax(0,1fr)]">
-          <aside className="space-y-5">
-            <Card className="hero-panel overflow-hidden">
-              <CardContent className="space-y-6 p-6">
-                <BrandMark href="/dashboard" muted wordmark="DEAL" monogram="CBI" />
-                <div className="space-y-3">
-                  <p className="text-xs uppercase tracking-[0.24em] text-primary-foreground/68">
-                    CBI Deal Platform
-                  </p>
-                  <h1 className="text-[1.8rem] leading-[1.08] tracking-[-0.03em] text-primary-foreground">
-                    Calm structure for casework, client visibility, and internal coordination.
-                  </h1>
-                  <p className="text-sm leading-7 text-primary-foreground/78">
-                    One shared workspace for investor matters, team activity, and controlled client access.
-                  </p>
-                </div>
-                <div className="rounded-[24px] border border-white/14 bg-white/[0.08] p-4">
-                  <p className="text-sm font-medium text-primary-foreground">app.cbideal.nl</p>
-                  <p className="mt-1 text-sm leading-6 text-primary-foreground/72">
-                    Prepared for multi-tenant workspaces, firm-level controls, and client-specific access.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+    <div className="app-shell">
+      <div className="grid min-h-screen xl:grid-cols-[244px_minmax(0,1fr)]">
+        <aside className="app-sidebar hidden xl:flex xl:flex-col">
+          <div className="app-sidebar-brand px-8 py-7">
+            <Link href="/dashboard" className="inline-flex flex-col leading-none">
+              <span className="font-serif text-[3.1rem] tracking-[-0.05em] text-white">CBI</span>
+              <span className="mt-2 pl-1 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-200">
+                Deal Platform
+              </span>
+            </Link>
+          </div>
 
-            <Card className="section-card overflow-hidden">
-              <CardContent className="space-y-2 p-3">
-                {navigation.map((item) => {
-                  const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`)
-                  const Icon = item.icon
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={cn(
-                        "group flex items-center justify-between rounded-[20px] px-4 py-3 text-sm font-medium transition-all",
-                        isActive
-                          ? "bg-primary text-primary-foreground shadow-[0_14px_32px_rgba(21,27,42,0.18)]"
-                          : "text-foreground hover:bg-muted/70",
-                      )}
-                    >
-                      <span className="flex items-center gap-3">
-                        <Icon className="size-4" />
-                        <span>{item.label}</span>
-                      </span>
-                      <ChevronRight
-                        className={cn(
-                          "size-4 transition-transform",
-                          isActive ? "opacity-100" : "opacity-0 group-hover:translate-x-0.5 group-hover:opacity-70",
-                        )}
-                      />
-                    </Link>
-                  )
-                })}
-              </CardContent>
-            </Card>
+          <nav className="flex-1 px-3 py-4" aria-label="Workspace navigation">
+            <div className="space-y-2">
+              {navigation.map((item) => {
+                const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`)
+                const Icon = item.icon
 
-            <Card className="section-card">
-              <CardContent className="space-y-4 p-5">
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-                    External access
-                  </p>
-                  <p className="text-sm leading-7 text-foreground">
-                    A simplified client portal can sit alongside the internal workspace without changing the core
-                    system.
-                  </p>
-                </div>
-                <Button asChild variant="outline" className="w-full rounded-full">
-                  <Link href="/portal">
-                    <FolderKanban className="size-4" />
-                    View client portal
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "app-nav-link flex items-center gap-3 rounded-2xl px-4 py-3 text-[1rem] font-medium transition-colors",
+                      isActive && "app-nav-link-active",
+                    )}
+                  >
+                    <Icon className="size-4" />
+                    <span>{item.label}</span>
                   </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </aside>
+                )
+              })}
+            </div>
+          </nav>
 
-          <div className="space-y-5">
-            <header className="section-card">
-              <CardContent className="flex flex-col gap-4 p-4 md:flex-row md:items-center md:justify-between md:p-5">
-                <div className="flex flex-1 items-center gap-3 rounded-full border border-border/70 bg-background px-4 py-3 shadow-sm">
-                  <Search className="size-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">
-                    Search clients, quotations, payments, documents, or internal notes
+          <div className="border-t border-white/8 px-3 py-5">
+            <Link
+              href="/portal"
+              className="app-nav-link flex items-center gap-3 rounded-2xl px-4 py-3 text-[1rem] font-medium transition-colors"
+            >
+              <FolderKanban className="size-4" />
+              <span>Client portal</span>
+            </Link>
+            <button
+              type="button"
+              className="app-nav-link mt-2 flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-[1rem] font-medium transition-colors"
+            >
+              <LogOut className="size-4" />
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </aside>
+
+        <div className="min-w-0 px-5 py-5 md:px-8 md:py-7 xl:px-10 xl:py-8">
+          <div className="mx-auto flex min-h-full w-full max-w-[1280px] flex-col gap-6">
+            <header className="flex items-center justify-between xl:justify-end">
+              <Link href="/dashboard" className="xl:hidden">
+                <span className="font-serif text-[2.2rem] tracking-[-0.05em] text-white">CBI Deal</span>
+              </Link>
+
+              <div className="flex items-center gap-3">
+                <button type="button" className="app-top-icon relative flex size-12 items-center justify-center rounded-full transition-colors">
+                  <Bell className="size-5" />
+                  <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full bg-[#f04f4f] text-[0.68rem] font-semibold text-white">
+                    3
                   </span>
+                </button>
+                <div className="app-avatar flex size-12 items-center justify-center rounded-full text-base font-semibold">
+                  AM
                 </div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <Button variant="outline" size="icon" className="rounded-full">
-                    <BellDot className="size-4" />
-                    <span className="sr-only">Notifications</span>
-                  </Button>
-                  <div className="flex items-center gap-3 rounded-full border border-border/70 bg-background px-3 py-2 shadow-sm">
-                    <div className="flex size-10 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                      CD
-                    </div>
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-foreground">CBI Deal Workspace</p>
-                      <p className="text-xs text-muted-foreground">Admin seat</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
+              </div>
             </header>
 
-            <nav className="section-card xl:hidden" aria-label="Mobile app navigation">
-              <CardContent className="flex gap-2 overflow-x-auto p-3">
-                {navigation.map((item) => {
-                  const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`)
-                  const Icon = item.icon
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={cn(
-                        "flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors",
-                        isActive ? "bg-primary text-primary-foreground" : "bg-muted/55 text-foreground",
-                      )}
-                    >
-                      <Icon className="size-4" />
-                      <span>{item.label}</span>
-                    </Link>
-                  )
-                })}
-              </CardContent>
+            <nav className="flex gap-2 overflow-x-auto xl:hidden" aria-label="Mobile workspace navigation">
+              {navigation.map((item) => {
+                const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`)
+                const Icon = item.icon
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "app-nav-link flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-colors",
+                      isActive && "app-nav-link-active",
+                    )}
+                  >
+                    <Icon className="size-4" />
+                    <span>{item.label}</span>
+                  </Link>
+                )
+              })}
             </nav>
 
-            <main className="space-y-5">{children}</main>
+            <main className="space-y-6">{children}</main>
           </div>
         </div>
       </div>

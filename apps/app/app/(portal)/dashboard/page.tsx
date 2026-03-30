@@ -1,290 +1,409 @@
-import Link from "next/link"
-import {
-  ArrowRight,
-  BellRing,
-  CreditCard,
-  FileStack,
-  ReceiptText,
-  ShieldCheck,
-} from "lucide-react"
-import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
-import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
-import { CrmStatCard } from "@cbideal/ui/components/crm-stat-card"
-import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
-import { CrmTableCard } from "@cbideal/ui/components/crm-table-card"
-import { Button } from "@cbideal/ui/components/ui/button"
-import { Progress } from "@cbideal/ui/components/ui/progress"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@cbideal/ui/components/ui/table"
-import {
-  cases,
-  dashboardMetrics,
-  documentChecklistItems,
-  notificationLog,
-  paymentSchedules,
-  quotations,
-  reminderSettings,
-  tasks,
-  workspace,
-} from "@/lib/mock-data"
+import { Bell, CheckCircle2, CreditCard, FileCheck2, Users, Wallet } from "lucide-react"
 
-const icons = [
-  <ReceiptText key="quotations" className="size-5" />,
-  <CreditCard key="payments" className="size-5" />,
-  <FileStack key="checklist" className="size-5" />,
-  <BellRing key="reminders" className="size-5" />,
-]
+const tabs = [
+  { id: "clients", label: "Clients" },
+  { id: "documents", label: "Documents" },
+  { id: "payments", label: "Payments" },
+] as const
 
-export default function DashboardPage() {
-  const overduePayments = paymentSchedules.filter((item) => item.status === "Overdue" || item.status === "Rejected")
-  const reviewQueue = documentChecklistItems.filter(
-    (item) => item.status === "Uploaded" || item.status === "Under Review" || item.status === "Rejected",
-  )
+const clientRows = [
+  {
+    name: "Ahmed Rahman",
+    email: "a.rahman@samplemail.com",
+    country: "Kuwait",
+    progress: "Payment",
+    progressTone: "blue",
+    status: "Active",
+    statusTone: "blue",
+    joined: "Jan 15, 2026",
+  },
+  {
+    name: "Al Noor Holdings",
+    email: "office@alnoor-demo.com",
+    country: "United Arab Emirates",
+    progress: "Review",
+    progressTone: "amber",
+    status: "Pending",
+    statusTone: "amber",
+    joined: "Jan 18, 2026",
+  },
+  {
+    name: "Westbridge Capital",
+    email: "counsel@westbridge-demo.com",
+    country: "Qatar",
+    progress: "Upload",
+    progressTone: "blue",
+    status: "Active",
+    statusTone: "blue",
+    joined: "Jan 20, 2026",
+  },
+  {
+    name: "M. El Sayed",
+    email: "m.elsayed@samplemail.com",
+    country: "Saudi Arabia",
+    progress: "Approved",
+    progressTone: "green",
+    status: "Approved",
+    statusTone: "green",
+    joined: "Dec 28, 2025",
+  },
+] as const
+
+const documentRows = [
+  {
+    user: "Ahmed Rahman",
+    document: "Passport copy",
+    type: "Identity",
+    typeTone: "blue",
+    status: "Approved",
+    statusTone: "green",
+    uploaded: "Jan 12, 2026",
+    actions: ["Download"],
+  },
+  {
+    user: "Al Noor Holdings",
+    document: "Source of funds memo",
+    type: "Financial",
+    typeTone: "blue",
+    status: "Pending",
+    statusTone: "amber",
+    uploaded: "Jan 18, 2026",
+    actions: ["Approve", "Reject"],
+  },
+  {
+    user: "Westbridge Capital",
+    document: "Board authority resolution",
+    type: "Legal",
+    typeTone: "blue",
+    status: "Pending",
+    statusTone: "amber",
+    uploaded: "Jan 20, 2026",
+    actions: ["Approve", "Reject"],
+  },
+  {
+    user: "M. El Sayed",
+    document: "Police clearance",
+    type: "Legal",
+    typeTone: "blue",
+    status: "Rejected",
+    statusTone: "red",
+    uploaded: "Jan 21, 2026",
+    actions: ["Download"],
+  },
+] as const
+
+const paymentRows = [
+  {
+    user: "Ahmed Rahman",
+    program: "Dominica citizenship",
+    amount: "$221,000",
+    status: "Completed",
+    statusTone: "green",
+    date: "Jan 15, 2026",
+    actions: ["View receipt"],
+  },
+  {
+    user: "Al Noor Holdings",
+    program: "Portugal residence route",
+    amount: "EUR 12,000",
+    status: "Pending",
+    statusTone: "amber",
+    date: "Jan 18, 2026",
+    actions: ["Verify", "Details"],
+  },
+  {
+    user: "Westbridge Capital",
+    program: "European residence structure",
+    amount: "EUR 14,000",
+    status: "Pending",
+    statusTone: "amber",
+    date: "Jan 20, 2026",
+    actions: ["Verify", "Details"],
+  },
+  {
+    user: "M. El Sayed",
+    program: "Strategic relocation",
+    amount: "EUR 4,200",
+    status: "Failed",
+    statusTone: "red",
+    date: "Jan 22, 2026",
+    actions: ["Retry"],
+  },
+] as const
+
+function toneClass(tone: string) {
+  if (tone === "green") return "app-status-pill app-status-green"
+  if (tone === "amber") return "app-status-pill app-status-amber"
+  if (tone === "red") return "app-status-pill app-status-red"
+  return "app-status-pill app-status-blue"
+}
+
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ tab?: string }>
+}) {
+  const resolved = searchParams ? await searchParams : undefined
+  const activeTab = resolved?.tab === "documents" || resolved?.tab === "payments" ? resolved.tab : "clients"
 
   return (
-    <div className="section-stack">
-      <CrmPageHeader
-        eyebrow="Account manager dashboard"
-        title="A structured operating view across quotations, payments, documents, and current cases."
-        description="The workspace is designed to keep financial steps, document review, and client communication visible from one place. Use this view to see what needs attention today, what is waiting on clients, and where internal follow-through should happen next."
-        actions={
-          <>
-            <Button asChild variant="outline" className="rounded-full">
-              <Link href="/documents">Open review queue</Link>
-            </Button>
-            <Button asChild className="rounded-full">
-              <Link href="/quotations">
-                Review quotations
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-          </>
-        }
-      />
+    <div className="space-y-8">
+      <div className="space-y-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="font-serif text-[2.9rem] leading-[1.02] tracking-[-0.045em] text-white md:text-[3.5rem]">
+            Welcome back, Admin
+          </h1>
+          <span className="app-pill rounded-full px-4 py-1.5 text-sm font-semibold">Admin workspace</span>
+        </div>
+        <p className="max-w-3xl text-[1.05rem] text-slate-200/82">
+          Manage applications, documents, payments, and client activity from one structured workspace.
+        </p>
+      </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {dashboardMetrics.map((metric, index) => (
-          <CrmStatCard key={metric.label} {...metric} icon={icons[index]} />
+      <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
+        {[
+          {
+            label: "Total clients",
+            value: "248",
+            change: "+12% from last month",
+            icon: Users,
+            iconClass: "app-kpi-icon",
+          },
+          {
+            label: "Pending reviews",
+            value: "34",
+            change: "+8% from last month",
+            icon: Bell,
+            iconClass: "bg-[#d8891a]",
+          },
+          {
+            label: "Approved docs",
+            value: "892",
+            change: "+23% from last month",
+            icon: FileCheck2,
+            iconClass: "bg-[#46b264]",
+          },
+          {
+            label: "Total revenue",
+            value: "$2.4M",
+            change: "+18% from last month",
+            icon: Wallet,
+            iconClass: "app-kpi-icon",
+          },
+        ].map((item) => (
+          <div key={item.label} className="app-kpi rounded-[22px] px-6 py-6">
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-3">
+                <p className="text-[1.05rem] font-medium text-slate-300">{item.label}</p>
+                <p className="font-serif text-[3rem] leading-none tracking-[-0.04em] text-white">{item.value}</p>
+                <p className="text-base font-medium text-[#54de82]">{item.change}</p>
+              </div>
+              <div className={`flex size-12 items-center justify-center rounded-[18px] text-white ${item.iconClass}`}>
+                <item.icon className="size-5" />
+              </div>
+            </div>
+          </div>
         ))}
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
-        <CrmTableCard
-          title="Attention required today"
-          description="Priority tasks across payment handling, document review, and active case progression."
-          action={
-            <Button asChild variant="outline" className="rounded-full">
-              <Link href="/tasks">View all tasks</Link>
-            </Button>
-          }
-        >
-          <div className="grid gap-3">
-            {tasks.map((task) => (
-              <div
-                key={task.id}
-                className="flex items-start justify-between gap-4 rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm"
-              >
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">{task.name}</p>
-                  <p className="text-sm leading-6 text-muted-foreground">
-                    {task.owner} · {task.priority} priority · due {task.due}
-                  </p>
-                </div>
-                <CrmStatusBadge status={task.status} />
-              </div>
-            ))}
+      <section className="app-surface rounded-[26px] px-6 py-6 md:px-8 md:py-7">
+        <div className="space-y-6">
+          <div className="app-tabbar inline-flex rounded-2xl p-1">
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.id
+              return (
+                <a
+                  key={tab.id}
+                  href={`/dashboard?tab=${tab.id}`}
+                  className={isActive ? "app-tab app-tab-active rounded-[14px] px-10 py-2.5 text-lg font-medium" : "app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium transition-colors hover:text-white"}
+                >
+                  {tab.label}
+                </a>
+              )
+            })}
           </div>
-        </CrmTableCard>
 
-        <CrmSectionCard
-          title="Workspace summary"
-          description="A quick read on the operating model behind the current workload."
-        >
-          <div className="rounded-[22px] border border-primary/10 bg-primary/[0.04] p-5">
-            <p className="text-sm leading-7 text-muted-foreground">
-              <span className="font-medium text-foreground">{workspace.workspaceName}</span> is running one internal
-              operating layer for advisers, coordinators, and finance, with a separate client-facing layer for
-              quotations, payment proofs, and document uploads.
-            </p>
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="relative min-w-0 flex-1">
+              <input
+                className="app-search h-14 w-full rounded-2xl px-12 text-base outline-none"
+                placeholder={
+                  activeTab === "documents"
+                    ? "Search documents..."
+                    : activeTab === "payments"
+                      ? "Search payments..."
+                      : "Search clients..."
+                }
+                readOnly
+              />
+              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 21l-4.35-4.35M10.8 18a7.2 7.2 0 1 0 0-14.4 7.2 7.2 0 0 0 0 14.4Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                </svg>
+              </span>
+            </div>
+            <button
+              type="button"
+              className="app-search inline-flex h-14 items-center gap-2 rounded-2xl px-5 text-base font-semibold text-white"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M4 5h16M7 12h10M10 19h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+              Filter
+            </button>
           </div>
-          <div className="grid gap-3">
-            {[
-              {
-                label: "Quotations in circulation",
-                value: `${quotations.length}`,
-                note: "Draft, sent, and accepted schedules kept close to the relevant case.",
-              },
-              {
-                label: "Payments needing attention",
-                value: `${overduePayments.length + paymentSchedules.filter((item) => item.status === "Awaiting proof").length}`,
-                note: "Upcoming stages, missing proofs, and rejected payment evidence.",
-              },
-              {
-                label: "Documents in review",
-                value: `${reviewQueue.length}`,
-                note: "Uploads waiting on review, approval, or re-upload guidance.",
-              },
-            ].map((item) => (
-              <div key={item.label} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{item.label}</p>
-                <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-foreground">{item.value}</p>
-                <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.note}</p>
-              </div>
-            ))}
-          </div>
-        </CrmSectionCard>
-      </div>
 
-      <div className="grid gap-5 xl:grid-cols-[1.08fr_0.92fr]">
-        <CrmTableCard
-          title="Payments and review checkpoints"
-          description="Financial stages and client evidence that still require coordination or approval."
-          action={
-            <Button asChild variant="outline" className="rounded-full">
-              <Link href="/payments">Open payment tracking</Link>
-            </Button>
-          }
-        >
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Client</TableHead>
-                <TableHead>Stage</TableHead>
-                <TableHead>Due</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paymentSchedules.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell className="font-medium text-foreground">{row.client}</TableCell>
-                  <TableCell>{row.label}</TableCell>
-                  <TableCell>{row.dueDate}</TableCell>
-                  <TableCell>
-                    <CrmStatusBadge status={row.status} />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CrmTableCard>
+          <div className="app-grid-table bg-[#263248]">
+            {activeTab === "clients" ? (
+              <table className="w-full">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Country</th>
+                    <th>Progress</th>
+                    <th>Status</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {clientRows.map((row) => (
+                    <tr key={row.email}>
+                      <td>
+                        <div className="space-y-1">
+                          <p className="text-[1.05rem] font-semibold text-white">{row.name}</p>
+                          <p className="text-sm text-slate-400">{row.email}</p>
+                        </div>
+                      </td>
+                      <td>{row.country}</td>
+                      <td><span className={toneClass(row.progressTone)}>{row.progress}</span></td>
+                      <td><span className={toneClass(row.statusTone)}>{row.status}</span></td>
+                      <td className="text-slate-400">{row.joined}</td>
+                      <td className="text-slate-400">•••</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : null}
 
-        <CrmSectionCard
-          title="Reminder and notification activity"
-          description="Automated follow-through across quotations, payments, uploads, and missing records."
-        >
-          <div className="space-y-3">
-            {notificationLog.slice(0, 4).map((item) => (
-              <div key={item.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium text-foreground">{item.type}</p>
-                    <p className="text-sm leading-6 text-muted-foreground">
-                      {item.recipient} · {item.channel} · {item.sentAt}
-                    </p>
-                  </div>
-                  <CrmStatusBadge status={item.status} />
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="space-y-3 border-t border-border/70 pt-4">
-            {reminderSettings.map((setting) => (
-              <div key={setting.id} className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm font-medium text-foreground">{setting.name}</p>
-                  <p className="text-sm leading-6 text-muted-foreground">
-                    {setting.trigger} · {setting.audience}
-                  </p>
-                </div>
-                <CrmStatusBadge status={setting.status} />
-              </div>
-            ))}
-          </div>
-        </CrmSectionCard>
-      </div>
+            {activeTab === "documents" ? (
+              <table className="w-full">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Document</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Uploaded</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {documentRows.map((row) => (
+                    <tr key={`${row.user}-${row.document}`}>
+                      <td className="font-semibold text-white">{row.user}</td>
+                      <td className="font-semibold text-white">{row.document}</td>
+                      <td><span className={toneClass(row.typeTone)}>{row.type}</span></td>
+                      <td><span className={toneClass(row.statusTone)}>{row.status}</span></td>
+                      <td className="text-slate-400">{row.uploaded}</td>
+                      <td>
+                        <div className="flex flex-wrap gap-2">
+                          {row.actions.map((action) => (
+                            <span
+                              key={action}
+                              className={
+                                action === "Approve"
+                                  ? "app-status-pill app-status-green"
+                                  : action === "Reject"
+                                    ? "app-status-pill app-status-red"
+                                    : "text-slate-300"
+                              }
+                            >
+                              {action}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : null}
 
-      <div className="grid gap-5 xl:grid-cols-[1.08fr_0.92fr]">
-        <CrmTableCard
-          title="Live cases"
-          description="Current matters, where they stand, and how far each one has moved through the work already in hand."
-          action={
-            <Button asChild variant="outline" className="rounded-full">
-              <Link href="/cases">View all cases</Link>
-            </Button>
-          }
-        >
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Route</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Stage</TableHead>
-                <TableHead>Progress</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {cases.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell className="font-medium text-foreground">{item.route}</TableCell>
-                  <TableCell>{item.client}</TableCell>
-                  <TableCell>
-                    <CrmStatusBadge status={item.stage} />
-                  </TableCell>
-                  <TableCell className="min-w-44">
-                    <div className="space-y-2">
-                      <Progress value={item.progress} className="h-2.5" />
-                      <p className="text-xs text-muted-foreground">{item.progress}% complete</p>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CrmTableCard>
-
-        <CrmSectionCard
-          title="Review discipline"
-          description="The same operating logic runs across casework, document handling, and client-facing communication."
-        >
-          <div className="space-y-3">
-            {[
-              {
-                icon: ShieldCheck,
-                title: "Approved uploads are visible",
-                body: "External users only see the progress, requests, and updates that are ready to be shown.",
-              },
-              {
-                icon: FileStack,
-                title: "Rejected items stay actionable",
-                body: "Re-upload requests keep the reason close to the item so follow-up stays precise rather than generic.",
-              },
-              {
-                icon: CreditCard,
-                title: "Payments stay tied to cases",
-                body: "Each payment stage remains linked to its quotation, case, and assigned account manager.",
-              },
-            ].map((item) => (
-              <div key={item.title} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <item.icon className="size-4" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium text-foreground">{item.title}</p>
-                    <p className="text-sm leading-6 text-muted-foreground">{item.body}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
+            {activeTab === "payments" ? (
+              <table className="w-full">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Program</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paymentRows.map((row) => (
+                    <tr key={`${row.user}-${row.program}`}>
+                      <td className="font-semibold text-white">{row.user}</td>
+                      <td className="font-semibold text-white">{row.program}</td>
+                      <td className="font-semibold text-[#6289c1]">{row.amount}</td>
+                      <td><span className={toneClass(row.statusTone)}>{row.status}</span></td>
+                      <td className="text-slate-400">{row.date}</td>
+                      <td>
+                        <div className="flex flex-wrap gap-2">
+                          {row.actions.map((action) => (
+                            <span
+                              key={action}
+                              className={
+                                action === "Verify"
+                                  ? "app-status-pill app-status-green"
+                                  : action === "Retry"
+                                    ? "app-status-pill app-status-blue"
+                                    : "text-slate-300"
+                              }
+                            >
+                              {action}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : null}
           </div>
-        </CrmSectionCard>
+        </div>
+      </section>
+
+      <div className="grid gap-5 lg:grid-cols-2 xl:hidden">
+        <div className="app-surface rounded-[22px] px-5 py-5">
+          <div className="flex items-start gap-3">
+            <div className="app-kpi-icon flex size-11 items-center justify-center rounded-[18px] text-white">
+              <CreditCard className="size-5" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-white">Payment review</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-300">
+                Quotation-linked payment stages, proof uploads, and reminders stay visible in one place.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="app-surface rounded-[22px] px-5 py-5">
+          <div className="flex items-start gap-3">
+            <div className="flex size-11 items-center justify-center rounded-[18px] bg-[#46b264] text-white">
+              <CheckCircle2 className="size-5" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-white">Document approvals</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-300">
+                Review decisions stay attached to the exact document item so client follow-up remains precise.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

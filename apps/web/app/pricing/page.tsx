@@ -14,12 +14,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const locale = getRequestLocale()
   const localized = {
     en: {
-      title: "Engagement Options for Professional Firms",
+      title: "Solutions for Professional Firms",
       description:
-        "Review clear engagement options for professional firms, including indicative structures and tailored arrangements for larger teams.",
+        "Review clear solutions for professional firms, including structured packages and tailored arrangements for larger teams.",
       keywords: [
-        "professional engagement options",
-        "private advisory pricing",
+        "professional solutions",
+        "private advisory solutions",
         "licensed firm consultation",
       ],
     },
@@ -52,19 +52,19 @@ export default function PricingPage() {
   const routeLinks = getLocalizedRouteLinks(locale)
   const copy = {
     en: {
-      eyebrow: "Engagement options",
-      title: "Clear engagement options for professional firms.",
+      eyebrow: "Solutions",
+      title: "Clear solutions for professional firms.",
       description:
-        "This page is intended to explain the broad engagement structure in a straightforward way. It should give firms enough context for an informed first view, while leaving room for a more tailored discussion where that proves appropriate.",
+        "This page outlines the main solution structures in a straightforward way. It should give firms enough context for an informed first view, while leaving room for a more tailored discussion where that proves appropriate.",
       primary: "Request a private overview",
       secondary: "Contact us directly",
-      plansEyebrow: "Plans",
-      plansTitle: "Three clear structures are enough for a calm and credible pricing page.",
+      plansEyebrow: "Solutions",
+      plansTitle: "Three clear structures are enough for a calm and credible solutions page.",
       plansDescription:
-        "The figures below are there to provide orientation rather than pressure. They should help firms understand the broad structure, compare the main options, and decide whether a more detailed conversation would be useful.",
+        "The figures below are there to provide orientation rather than pressure. They should help firms understand the main structures, compare the available solutions, and decide whether a more detailed conversation would be useful.",
       enterpriseTitle: "Need a wider structure or a more tailored arrangement?",
       enterpriseDescription:
-        "Wider arrangements can include tailored access, implementation planning, and a more bespoke way of working. This final section is intended to show where the standard structures end and where a more tailored conversation may begin.",
+        "Wider arrangements can include tailored access, implementation planning, and a more bespoke way of working. This final section is intended to show where the standard solutions end and where a more tailored conversation may begin.",
     },
     ar: {
       eyebrow: "خيارات التعامل",
@@ -128,8 +128,8 @@ export default function PricingPage() {
         <div className="container-shell">
           <MeetingSchedulerCard
             compact
-            title={locale === "ar" ? "هل تفضل مراجعة الأسعار في محادثة مباشرة؟" : "Would you prefer to review the engagement options together?"}
-            description={locale === "ar" ? "استخدم هذا القسم إذا كنت تريد مناقشة حجم الفريق أو النطاق أو الهيكل الأنسب للتعامل." : "Use this section if you would like to discuss team size, scope, or which engagement structure appears most suitable before moving further."}
+            title={locale === "ar" ? "هل تفضل مراجعة الحلول في محادثة مباشرة؟" : "Would you prefer to review the solutions together?"}
+            description={locale === "ar" ? "استخدم هذا القسم إذا كنت تريد مناقشة حجم الفريق أو النطاق أو الهيكل الأنسب." : "Use this section if you would like to discuss team size, scope, or which solution structure appears most suitable before moving further."}
           />
         </div>
       </section>

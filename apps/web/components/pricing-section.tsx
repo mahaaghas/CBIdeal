@@ -26,7 +26,7 @@ export function PricingSection({ locale = "en", preview = false }: PricingSectio
         : locale === "ru"
           ? "Экономия примерно двух месяцев при годовой оплате."
           : "Save roughly two months with annual billing.",
-    preview: locale === "ar" ? "عرض الأسعار كاملة" : locale === "ru" ? "Полные тарифы" : "View full pricing",
+    preview: locale === "ar" ? "عرض الحلول كاملة" : locale === "ru" ? "Все решения" : "View all solutions",
     bestValue: locale === "ar" ? "أفضل قيمة" : locale === "ru" ? "Лучшее предложение" : "Best value",
   }
 

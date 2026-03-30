@@ -7,9 +7,9 @@ import { buildPageMetadata } from "@/lib/metadata"
 export async function generateMetadata(): Promise<Metadata> {
   const locale = getRequestLocale()
   return buildPageMetadata({
-    title: "Professional overview for licensed firms",
+    title: "Collaborations overview for licensed firms",
     description:
-      "Redirecting to the professional overview for licensed firms, private discussions, and engagement options.",
+      "Redirecting to the collaborations overview for licensed firms, private discussions, and collaboration context.",
     path: localizeHref(locale, "/crm"),
     locale,
   })

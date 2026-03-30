@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, BarChart3, Building2, FileCheck2, MessagesSquare, ShieldCheck } from "lucide-react"
@@ -50,15 +50,15 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata({
     title:
       locale === "ar"
-        ? "للمكاتب المرخصة والممارسات الاستشارية"
+        ? "Ù„Ù„Ù…ÙƒØ§ØªØ¨ Ø§Ù„Ù…Ø±Ø®ØµØ© ÙˆØ§Ù„Ù…Ù…Ø§Ø±Ø³Ø§Øª Ø§Ù„Ø§Ø³ØªØ´Ø§Ø±ÙŠØ©"
         : locale === "ru"
-          ? "Для лицензированных фирм и консультативных практик"
+          ? "Ð”Ð»Ñ Ð»Ð¸Ñ†ÐµÐ½Ð·Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ñ… Ñ„Ð¸Ñ€Ð¼ Ð¸ ÐºÐ¾Ð½ÑÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ð¸Ð²Ð½Ñ‹Ñ… Ð¿Ñ€Ð°ÐºÑ‚Ð¸Ðº"
           : "For firms",
     description:
       locale === "ar"
-        ? "مدخل مهني أكثر هدوءاً للمكاتب المرخصة والممارسات الاستشارية التي ترغب في مناقشة مناسبة ومحددة."
+        ? "Ù…Ø¯Ø®Ù„ Ù…Ù‡Ù†ÙŠ Ø£ÙƒØ«Ø± Ù‡Ø¯ÙˆØ¡Ø§Ù‹ Ù„Ù„Ù…ÙƒØ§ØªØ¨ Ø§Ù„Ù…Ø±Ø®ØµØ© ÙˆØ§Ù„Ù…Ù…Ø§Ø±Ø³Ø§Øª Ø§Ù„Ø§Ø³ØªØ´Ø§Ø±ÙŠØ© Ø§Ù„ØªÙŠ ØªØ±ØºØ¨ ÙÙŠ Ù…Ù†Ø§Ù‚Ø´Ø© Ù…Ù†Ø§Ø³Ø¨Ø© ÙˆÙ…Ø­Ø¯Ø¯Ø©."
         : locale === "ru"
-          ? "Более спокойная профессиональная точка входа для лицензированных фирм и консультативных практик."
+          ? "Ð‘Ð¾Ð»ÐµÐµ ÑÐ¿Ð¾ÐºÐ¾Ð¹Ð½Ð°Ñ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ð°Ñ Ñ‚Ð¾Ñ‡ÐºÐ° Ð²Ñ…Ð¾Ð´Ð° Ð´Ð»Ñ Ð»Ð¸Ñ†ÐµÐ½Ð·Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ñ… Ñ„Ð¸Ñ€Ð¼ Ð¸ ÐºÐ¾Ð½ÑÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ð¸Ð²Ð½Ñ‹Ñ… Ð¿Ñ€Ð°ÐºÑ‚Ð¸Ðº."
           : "A clearer starting point for licensed firms and advisory practices interested in a more thoughtful professional conversation.",
     path: localizeHref(locale, "/for-companies"),
     keywords: [
@@ -126,108 +126,108 @@ export default async function ForCompaniesPage() {
   const routeLinks = getLocalizedRouteLinks(locale)
   const cmsPage = await getLandingPageBySlug("for-companies")
   const copy = {
-    heroEyebrow: locale === "ar" ? "للشركات والمكاتب المتخصصة" : locale === "ru" ? "Для фирм и профессиональных практик" : "For licensed firms and advisory practices",
+    heroEyebrow: locale === "ar" ? "Ù„Ù„Ø´Ø±ÙƒØ§Øª ÙˆØ§Ù„Ù…ÙƒØ§ØªØ¨ Ø§Ù„Ù…ØªØ®ØµØµØ©" : locale === "ru" ? "Ð”Ð»Ñ Ñ„Ð¸Ñ€Ð¼ Ð¸ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ñ‹Ñ… Ð¿Ñ€Ð°ÐºÑ‚Ð¸Ðº" : "For licensed firms and advisory practices",
     heroTitle:
       locale === "ar"
-        ? "مدخل مهني أكثر هدوءاً للمكاتب المرخصة والممارسات الاستشارية."
+        ? "Ù…Ø¯Ø®Ù„ Ù…Ù‡Ù†ÙŠ Ø£ÙƒØ«Ø± Ù‡Ø¯ÙˆØ¡Ø§Ù‹ Ù„Ù„Ù…ÙƒØ§ØªØ¨ Ø§Ù„Ù…Ø±Ø®ØµØ© ÙˆØ§Ù„Ù…Ù…Ø§Ø±Ø³Ø§Øª Ø§Ù„Ø§Ø³ØªØ´Ø§Ø±ÙŠØ©."
         : locale === "ru"
-          ? "Более спокойная профессиональная точка входа для лицензированных фирм и консультативных практик."
+          ? "Ð‘Ð¾Ð»ÐµÐµ ÑÐ¿Ð¾ÐºÐ¾Ð¹Ð½Ð°Ñ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ð°Ñ Ñ‚Ð¾Ñ‡ÐºÐ° Ð²Ñ…Ð¾Ð´Ð° Ð´Ð»Ñ Ð»Ð¸Ñ†ÐµÐ½Ð·Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ñ… Ñ„Ð¸Ñ€Ð¼ Ð¸ ÐºÐ¾Ð½ÑÑƒÐ»ÑŒÑ‚Ð°Ñ‚Ð¸Ð²Ð½Ñ‹Ñ… Ð¿Ñ€Ð°ÐºÑ‚Ð¸Ðº."
           : "Start a more focused conversation",
     heroDescription:
       locale === "ar"
-        ? "استخدم هذه الصفحة إذا كنت تمثل جهة مهنية وتبحث عن نقاش خاص وأكثر تنظيماً حول الملاءمة وطبيعة العلاقة المهنية المحتملة."
+        ? "Ø§Ø³ØªØ®Ø¯Ù… Ù‡Ø°Ù‡ Ø§Ù„ØµÙØ­Ø© Ø¥Ø°Ø§ ÙƒÙ†Øª ØªÙ…Ø«Ù„ Ø¬Ù‡Ø© Ù…Ù‡Ù†ÙŠØ© ÙˆØªØ¨Ø­Ø« Ø¹Ù† Ù†Ù‚Ø§Ø´ Ø®Ø§Øµ ÙˆØ£ÙƒØ«Ø± ØªÙ†Ø¸ÙŠÙ…Ø§Ù‹ Ø­ÙˆÙ„ Ø§Ù„Ù…Ù„Ø§Ø¡Ù…Ø© ÙˆØ·Ø¨ÙŠØ¹Ø© Ø§Ù„Ø¹Ù„Ø§Ù‚Ø© Ø§Ù„Ù…Ù‡Ù†ÙŠØ© Ø§Ù„Ù…Ø­ØªÙ…Ù„Ø©."
         : locale === "ru"
-          ? "Используйте эту страницу, если вы представляете фирму и хотите начать более частный и структурированный разговор о профессиональной пригодности и формате возможного взаимодействия."
+          ? "Ð˜ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐ¹Ñ‚Ðµ ÑÑ‚Ñƒ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñƒ, ÐµÑÐ»Ð¸ Ð²Ñ‹ Ð¿Ñ€ÐµÐ´ÑÑ‚Ð°Ð²Ð»ÑÐµÑ‚Ðµ Ñ„Ð¸Ñ€Ð¼Ñƒ Ð¸ Ñ…Ð¾Ñ‚Ð¸Ñ‚Ðµ Ð½Ð°Ñ‡Ð°Ñ‚ÑŒ Ð±Ð¾Ð»ÐµÐµ Ñ‡Ð°ÑÑ‚Ð½Ñ‹Ð¹ Ð¸ ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ð¹ Ñ€Ð°Ð·Ð³Ð¾Ð²Ð¾Ñ€ Ð¾ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ð¾Ð¹ Ð¿Ñ€Ð¸Ð³Ð¾Ð´Ð½Ð¾ÑÑ‚Ð¸ Ð¸ Ñ„Ð¾Ñ€Ð¼Ð°Ñ‚Ðµ Ð²Ð¾Ð·Ð¼Ð¾Ð¶Ð½Ð¾Ð³Ð¾ Ð²Ð·Ð°Ð¸Ð¼Ð¾Ð´ÐµÐ¹ÑÑ‚Ð²Ð¸Ñ."
           : "We work with a small number of licensed firms and advisory practices looking for a more structured and thoughtful way to engage.\n\nIf you're exploring whether this could fit into your current work, this is a good place to start.",
-    bookMeeting: locale === "ar" ? "رتّب محادثة خاصة" : locale === "ru" ? "Договориться о частном обсуждении" : "Start a conversation",
-    requestDemo: locale === "ar" ? "اطلب عرضًا خاصًا" : locale === "ru" ? "Запросить частный обзор" : "Request an overview",
-    whatFirms: locale === "ar" ? "كيف يُستخدم هذا القسم" : locale === "ru" ? "Как используется эта страница" : "What this is for",
-    crmSaas: locale === "ar" ? "نظرة مهنية منظمة" : locale === "ru" ? "Профессиональный обзор" : "Clarity first",
+    bookMeeting: locale === "ar" ? "Ø±ØªÙ‘Ø¨ Ù…Ø­Ø§Ø¯Ø«Ø© Ø®Ø§ØµØ©" : locale === "ru" ? "Ð”Ð¾Ð³Ð¾Ð²Ð¾Ñ€Ð¸Ñ‚ÑŒÑÑ Ð¾ Ñ‡Ð°ÑÑ‚Ð½Ð¾Ð¼ Ð¾Ð±ÑÑƒÐ¶Ð´ÐµÐ½Ð¸Ð¸" : "Start a conversation",
+    requestDemo: locale === "ar" ? "Ø§Ø·Ù„Ø¨ Ø¹Ø±Ø¶Ù‹Ø§ Ø®Ø§ØµÙ‹Ø§" : locale === "ru" ? "Ð—Ð°Ð¿Ñ€Ð¾ÑÐ¸Ñ‚ÑŒ Ñ‡Ð°ÑÑ‚Ð½Ñ‹Ð¹ Ð¾Ð±Ð·Ð¾Ñ€" : "Request an overview",
+    whatFirms: locale === "ar" ? "ÙƒÙŠÙ ÙŠÙØ³ØªØ®Ø¯Ù… Ù‡Ø°Ø§ Ø§Ù„Ù‚Ø³Ù…" : locale === "ru" ? "ÐšÐ°Ðº Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐµÑ‚ÑÑ ÑÑ‚Ð° ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ð°" : "What this is for",
+    crmSaas: locale === "ar" ? "Ù†Ø¸Ø±Ø© Ù…Ù‡Ù†ÙŠØ© Ù…Ù†Ø¸Ù…Ø©" : locale === "ru" ? "ÐŸÑ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ñ‹Ð¹ Ð¾Ð±Ð·Ð¾Ñ€" : "Clarity first",
     crmSaasDesc:
       locale === "ar"
-        ? "هذه الصفحة تمنحك قراءة أوضح لطبيعة المنصة، والنبرة المهنية، وكيف يمكن أن يبدأ النقاش بشكل أكثر هدوءاً."
+        ? "Ù‡Ø°Ù‡ Ø§Ù„ØµÙØ­Ø© ØªÙ…Ù†Ø­Ùƒ Ù‚Ø±Ø§Ø¡Ø© Ø£ÙˆØ¶Ø­ Ù„Ø·Ø¨ÙŠØ¹Ø© Ø§Ù„Ù…Ù†ØµØ©ØŒ ÙˆØ§Ù„Ù†Ø¨Ø±Ø© Ø§Ù„Ù…Ù‡Ù†ÙŠØ©ØŒ ÙˆÙƒÙŠÙ ÙŠÙ…ÙƒÙ† Ø£Ù† ÙŠØ¨Ø¯Ø£ Ø§Ù„Ù†Ù‚Ø§Ø´ Ø¨Ø´ÙƒÙ„ Ø£ÙƒØ«Ø± Ù‡Ø¯ÙˆØ¡Ø§Ù‹."
         : locale === "ru"
-          ? "Эта страница помогает спокойно понять характер платформы, профессиональный тон и то, как может начаться дальнейший разговор."
+          ? "Ð­Ñ‚Ð° ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ð° Ð¿Ð¾Ð¼Ð¾Ð³Ð°ÐµÑ‚ ÑÐ¿Ð¾ÐºÐ¾Ð¹Ð½Ð¾ Ð¿Ð¾Ð½ÑÑ‚ÑŒ Ñ…Ð°Ñ€Ð°ÐºÑ‚ÐµÑ€ Ð¿Ð»Ð°Ñ‚Ñ„Ð¾Ñ€Ð¼Ñ‹, Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ñ‹Ð¹ Ñ‚Ð¾Ð½ Ð¸ Ñ‚Ð¾, ÐºÐ°Ðº Ð¼Ð¾Ð¶ÐµÑ‚ Ð½Ð°Ñ‡Ð°Ñ‚ÑŒÑÑ Ð´Ð°Ð»ÑŒÐ½ÐµÐ¹ÑˆÐ¸Ð¹ Ñ€Ð°Ð·Ð³Ð¾Ð²Ð¾Ñ€."
           : "Get a clear sense of how this fits into your current workflow before taking anything further.",
-    qualifiedLeads: locale === "ar" ? "محادثة مهنية أوسع" : locale === "ru" ? "Более широкое профессиональное обсуждение" : "Professional fit",
+    qualifiedLeads: locale === "ar" ? "Ù…Ø­Ø§Ø¯Ø«Ø© Ù…Ù‡Ù†ÙŠØ© Ø£ÙˆØ³Ø¹" : locale === "ru" ? "Ð‘Ð¾Ð»ÐµÐµ ÑˆÐ¸Ñ€Ð¾ÐºÐ¾Ðµ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ð¾Ðµ Ð¾Ð±ÑÑƒÐ¶Ð´ÐµÐ½Ð¸Ðµ" : "Professional fit",
     qualifiedLeadsDesc:
       locale === "ar"
-        ? "قد تستخدم بعض الجهات هذا القسم لفهم ما إذا كانت هناك أرضية مناسبة لنقاش مهني أوسع ضمن إطار أكثر تحفظاً."
+        ? "Ù‚Ø¯ ØªØ³ØªØ®Ø¯Ù… Ø¨Ø¹Ø¶ Ø§Ù„Ø¬Ù‡Ø§Øª Ù‡Ø°Ø§ Ø§Ù„Ù‚Ø³Ù… Ù„ÙÙ‡Ù… Ù…Ø§ Ø¥Ø°Ø§ ÙƒØ§Ù†Øª Ù‡Ù†Ø§Ùƒ Ø£Ø±Ø¶ÙŠØ© Ù…Ù†Ø§Ø³Ø¨Ø© Ù„Ù†Ù‚Ø§Ø´ Ù…Ù‡Ù†ÙŠ Ø£ÙˆØ³Ø¹ Ø¶Ù…Ù† Ø¥Ø·Ø§Ø± Ø£ÙƒØ«Ø± ØªØ­ÙØ¸Ø§Ù‹."
         : locale === "ru"
-          ? "Некоторые фирмы используют эту страницу, чтобы понять, есть ли спокойная и уместная основа для более широкого профессионального разговора."
+          ? "ÐÐµÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ðµ Ñ„Ð¸Ñ€Ð¼Ñ‹ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÑŽÑ‚ ÑÑ‚Ñƒ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñƒ, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð¿Ð¾Ð½ÑÑ‚ÑŒ, ÐµÑÑ‚ÑŒ Ð»Ð¸ ÑÐ¿Ð¾ÐºÐ¾Ð¹Ð½Ð°Ñ Ð¸ ÑƒÐ¼ÐµÑÑ‚Ð½Ð°Ñ Ð¾ÑÐ½Ð¾Ð²Ð° Ð´Ð»Ñ Ð±Ð¾Ð»ÐµÐµ ÑˆÐ¸Ñ€Ð¾ÐºÐ¾Ð³Ð¾ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ð¾Ð³Ð¾ Ñ€Ð°Ð·Ð³Ð¾Ð²Ð¾Ñ€Ð°."
           : "See whether there's a natural alignment in how work is handled and presented.",
-    productEyebrow: locale === "ar" ? "نظرة عامة" : locale === "ru" ? "Обзор" : "Overview",
+    productEyebrow: locale === "ar" ? "Ù†Ø¸Ø±Ø© Ø¹Ø§Ù…Ø©" : locale === "ru" ? "ÐžÐ±Ð·Ð¾Ñ€" : "Overview",
     productTitle:
       locale === "ar"
-        ? "عرض أقرب إلى واقع الفرق المتخصصة."
+        ? "Ø¹Ø±Ø¶ Ø£Ù‚Ø±Ø¨ Ø¥Ù„Ù‰ ÙˆØ§Ù‚Ø¹ Ø§Ù„ÙØ±Ù‚ Ø§Ù„Ù…ØªØ®ØµØµØ©."
         : locale === "ru"
-          ? "Более сфокусированный обзор для специализированных команд."
+          ? "Ð‘Ð¾Ð»ÐµÐµ ÑÑ„Ð¾ÐºÑƒÑÐ¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ð¹ Ð¾Ð±Ð·Ð¾Ñ€ Ð´Ð»Ñ ÑÐ¿ÐµÑ†Ð¸Ð°Ð»Ð¸Ð·Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ñ… ÐºÐ¾Ð¼Ð°Ð½Ð´."
           : "A clearer professional view for specialist firms.",
     productDescription:
       locale === "ar"
-        ? "يركز العرض على ما يهم الفرق المهنية فعلاً: وضوح الحالة، وسياق العميل، وتماسك العمل داخل الفريق."
+        ? "ÙŠØ±ÙƒØ² Ø§Ù„Ø¹Ø±Ø¶ Ø¹Ù„Ù‰ Ù…Ø§ ÙŠÙ‡Ù… Ø§Ù„ÙØ±Ù‚ Ø§Ù„Ù…Ù‡Ù†ÙŠØ© ÙØ¹Ù„Ø§Ù‹: ÙˆØ¶ÙˆØ­ Ø§Ù„Ø­Ø§Ù„Ø©ØŒ ÙˆØ³ÙŠØ§Ù‚ Ø§Ù„Ø¹Ù…ÙŠÙ„ØŒ ÙˆØªÙ…Ø§Ø³Ùƒ Ø§Ù„Ø¹Ù…Ù„ Ø¯Ø§Ø®Ù„ Ø§Ù„ÙØ±ÙŠÙ‚."
         : locale === "ru"
-          ? "Обзор остаётся близким к тому, что действительно важно профессиональным командам: ясность по статусу, контекст клиента и согласованность внутренней работы."
+          ? "ÐžÐ±Ð·Ð¾Ñ€ Ð¾ÑÑ‚Ð°Ñ‘Ñ‚ÑÑ Ð±Ð»Ð¸Ð·ÐºÐ¸Ð¼ Ðº Ñ‚Ð¾Ð¼Ñƒ, Ñ‡Ñ‚Ð¾ Ð´ÐµÐ¹ÑÑ‚Ð²Ð¸Ñ‚ÐµÐ»ÑŒÐ½Ð¾ Ð²Ð°Ð¶Ð½Ð¾ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ñ‹Ð¼ ÐºÐ¾Ð¼Ð°Ð½Ð´Ð°Ð¼: ÑÑÐ½Ð¾ÑÑ‚ÑŒ Ð¿Ð¾ ÑÑ‚Ð°Ñ‚ÑƒÑÑƒ, ÐºÐ¾Ð½Ñ‚ÐµÐºÑÑ‚ ÐºÐ»Ð¸ÐµÐ½Ñ‚Ð° Ð¸ ÑÐ¾Ð³Ð»Ð°ÑÐ¾Ð²Ð°Ð½Ð½Ð¾ÑÑ‚ÑŒ Ð²Ð½ÑƒÑ‚Ñ€ÐµÐ½Ð½ÐµÐ¹ Ñ€Ð°Ð±Ð¾Ñ‚Ñ‹."
           : "This section gives a practical view of what the platform is designed to help a specialist team keep in order. The emphasis stays close to day-to-day realities: client context, adviser responsibility, and continuity of follow-up.",
-    partnershipEyebrow: locale === "ar" ? "سياق مهني" : locale === "ru" ? "Профессиональный контекст" : "Professional context",
+    partnershipEyebrow: locale === "ar" ? "Ø³ÙŠØ§Ù‚ Ù…Ù‡Ù†ÙŠ" : locale === "ru" ? "ÐŸÑ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ñ‹Ð¹ ÐºÐ¾Ð½Ñ‚ÐµÐºÑÑ‚" : "Professional context",
     partnershipTitle:
       locale === "ar"
-        ? "تبدأ بعض الجهات من هنا لفهم ما إذا كان هناك أساس مناسب لعلاقة مهنية أوسع."
+        ? "ØªØ¨Ø¯Ø£ Ø¨Ø¹Ø¶ Ø§Ù„Ø¬Ù‡Ø§Øª Ù…Ù† Ù‡Ù†Ø§ Ù„ÙÙ‡Ù… Ù…Ø§ Ø¥Ø°Ø§ ÙƒØ§Ù† Ù‡Ù†Ø§Ùƒ Ø£Ø³Ø§Ø³ Ù…Ù†Ø§Ø³Ø¨ Ù„Ø¹Ù„Ø§Ù‚Ø© Ù…Ù‡Ù†ÙŠØ© Ø£ÙˆØ³Ø¹."
         : locale === "ru"
-          ? "Некоторые фирмы начинают здесь, чтобы понять, уместен ли более широкий профессиональный формат."
-          : "Some firms begin here when exploring whether a wider professional context is worth discussing.",
+          ? "ÐÐµÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ðµ Ñ„Ð¸Ñ€Ð¼Ñ‹ Ð½Ð°Ñ‡Ð¸Ð½Ð°ÑŽÑ‚ Ð·Ð´ÐµÑÑŒ, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð¿Ð¾Ð½ÑÑ‚ÑŒ, ÑƒÐ¼ÐµÑÑ‚ÐµÐ½ Ð»Ð¸ Ð±Ð¾Ð»ÐµÐµ ÑˆÐ¸Ñ€Ð¾ÐºÐ¸Ð¹ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ñ‹Ð¹ Ñ„Ð¾Ñ€Ð¼Ð°Ñ‚."
+          : "Some firms begin here when exploring whether a wider professional collaboration is worth discussing.",
     partnershipDescription:
       locale === "ar"
-        ? "المقصود ليس فتح مسار تجاري صريح، بل معرفة ما إذا كانت هناك مناسبة مهنية حقيقية لنقاش أكثر تحديداً."
+        ? "Ø§Ù„Ù…Ù‚ØµÙˆØ¯ Ù„ÙŠØ³ ÙØªØ­ Ù…Ø³Ø§Ø± ØªØ¬Ø§Ø±ÙŠ ØµØ±ÙŠØ­ØŒ Ø¨Ù„ Ù…Ø¹Ø±ÙØ© Ù…Ø§ Ø¥Ø°Ø§ ÙƒØ§Ù†Øª Ù‡Ù†Ø§Ùƒ Ù…Ù†Ø§Ø³Ø¨Ø© Ù…Ù‡Ù†ÙŠØ© Ø­Ù‚ÙŠÙ‚ÙŠØ© Ù„Ù†Ù‚Ø§Ø´ Ø£ÙƒØ«Ø± ØªØ­Ø¯ÙŠØ¯Ø§Ù‹."
         : locale === "ru"
-          ? "Речь не о прямой коммерческой подаче, а о понимании того, есть ли реальная профессиональная уместность для более предметного разговора."
+          ? "Ð ÐµÑ‡ÑŒ Ð½Ðµ Ð¾ Ð¿Ñ€ÑÐ¼Ð¾Ð¹ ÐºÐ¾Ð¼Ð¼ÐµÑ€Ñ‡ÐµÑÐºÐ¾Ð¹ Ð¿Ð¾Ð´Ð°Ñ‡Ðµ, Ð° Ð¾ Ð¿Ð¾Ð½Ð¸Ð¼Ð°Ð½Ð¸Ð¸ Ñ‚Ð¾Ð³Ð¾, ÐµÑÑ‚ÑŒ Ð»Ð¸ Ñ€ÐµÐ°Ð»ÑŒÐ½Ð°Ñ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ð°Ñ ÑƒÐ¼ÐµÑÑ‚Ð½Ð¾ÑÑ‚ÑŒ Ð´Ð»Ñ Ð±Ð¾Ð»ÐµÐµ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ð½Ð¾Ð³Ð¾ Ñ€Ð°Ð·Ð³Ð¾Ð²Ð¾Ñ€Ð°."
           : "The wider platform can support a more structured conversation around presentation, working methods, and how introductions may be handled where appropriate. Read this section as context for the type of professional discussion that may follow, rather than as a direct commercial pitch.",
-    companyFormEyebrow: locale === "ar" ? "نموذج للشركات" : locale === "ru" ? "Форма для профессионального обсуждения" : "Professional discussion form",
+    companyFormEyebrow: locale === "ar" ? "Ù†Ù…ÙˆØ°Ø¬ Ù„Ù„Ø´Ø±ÙƒØ§Øª" : locale === "ru" ? "Ð¤Ð¾Ñ€Ð¼Ð° Ð´Ð»Ñ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ð¾Ð³Ð¾ Ð¾Ð±ÑÑƒÐ¶Ð´ÐµÐ½Ð¸Ñ" : "Professional discussion form",
     companyFormTitle:
-      locale === "ar" ? "شاركنا بما تنظر فيه شركتك الآن." : locale === "ru" ? "Поделитесь тем, что ваша фирма рассматривает сейчас." : "Outline what your firm is considering.",
+      locale === "ar" ? "Ø´Ø§Ø±ÙƒÙ†Ø§ Ø¨Ù…Ø§ ØªÙ†Ø¸Ø± ÙÙŠÙ‡ Ø´Ø±ÙƒØªÙƒ Ø§Ù„Ø¢Ù†." : locale === "ru" ? "ÐŸÐ¾Ð´ÐµÐ»Ð¸Ñ‚ÐµÑÑŒ Ñ‚ÐµÐ¼, Ñ‡Ñ‚Ð¾ Ð²Ð°ÑˆÐ° Ñ„Ð¸Ñ€Ð¼Ð° Ñ€Ð°ÑÑÐ¼Ð°Ñ‚Ñ€Ð¸Ð²Ð°ÐµÑ‚ ÑÐµÐ¹Ñ‡Ð°Ñ." : "Outline what your firm is considering.",
     companyFormDescription:
       locale === "ar"
-        ? "استخدم النموذج إذا كنت ترغب في مشاركة السياق الحالي لفريقك وبدء نقاش مهني أكثر هدوءاً."
+        ? "Ø§Ø³ØªØ®Ø¯Ù… Ø§Ù„Ù†Ù…ÙˆØ°Ø¬ Ø¥Ø°Ø§ ÙƒÙ†Øª ØªØ±ØºØ¨ ÙÙŠ Ù…Ø´Ø§Ø±ÙƒØ© Ø§Ù„Ø³ÙŠØ§Ù‚ Ø§Ù„Ø­Ø§Ù„ÙŠ Ù„ÙØ±ÙŠÙ‚Ùƒ ÙˆØ¨Ø¯Ø¡ Ù†Ù‚Ø§Ø´ Ù…Ù‡Ù†ÙŠ Ø£ÙƒØ«Ø± Ù‡Ø¯ÙˆØ¡Ø§Ù‹."
         : locale === "ru"
-          ? "Используйте форму, если хотите описать текущий контекст своей команды и начать более спокойный профессиональный разговор."
+          ? "Ð˜ÑÐ¿Ð¾Ð»ÑŒÐ·ÑƒÐ¹Ñ‚Ðµ Ñ„Ð¾Ñ€Ð¼Ñƒ, ÐµÑÐ»Ð¸ Ñ…Ð¾Ñ‚Ð¸Ñ‚Ðµ Ð¾Ð¿Ð¸ÑÐ°Ñ‚ÑŒ Ñ‚ÐµÐºÑƒÑ‰Ð¸Ð¹ ÐºÐ¾Ð½Ñ‚ÐµÐºÑÑ‚ ÑÐ²Ð¾ÐµÐ¹ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ‹ Ð¸ Ð½Ð°Ñ‡Ð°Ñ‚ÑŒ Ð±Ð¾Ð»ÐµÐµ ÑÐ¿Ð¾ÐºÐ¾Ð¹Ð½Ñ‹Ð¹ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ñ‹Ð¹ Ñ€Ð°Ð·Ð³Ð¾Ð²Ð¾Ñ€."
           : "Use the form if your firm would like to outline the context before a private discussion begins. It is designed to help you describe what you would like to review, and why it matters, in a more orderly way.",
-    formTitle: locale === "ar" ? "اطلب مناقشة خاصة" : locale === "ru" ? "Запросить частное профессиональное обсуждение" : "Request a private discussion",
+    formTitle: locale === "ar" ? "Ø§Ø·Ù„Ø¨ Ù…Ù†Ø§Ù‚Ø´Ø© Ø®Ø§ØµØ©" : locale === "ru" ? "Ð—Ð°Ð¿Ñ€Ð¾ÑÐ¸Ñ‚ÑŒ Ñ‡Ð°ÑÑ‚Ð½Ð¾Ðµ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ð¾Ðµ Ð¾Ð±ÑÑƒÐ¶Ð´ÐµÐ½Ð¸Ðµ" : "Request a private discussion",
     formDescription:
       locale === "ar"
-        ? "شارك وضع فريقك الحالي وسنعود إليك بالصورة أو الإعداد الأقرب لاحتياجك."
+        ? "Ø´Ø§Ø±Ùƒ ÙˆØ¶Ø¹ ÙØ±ÙŠÙ‚Ùƒ Ø§Ù„Ø­Ø§Ù„ÙŠ ÙˆØ³Ù†Ø¹ÙˆØ¯ Ø¥Ù„ÙŠÙƒ Ø¨Ø§Ù„ØµÙˆØ±Ø© Ø£Ùˆ Ø§Ù„Ø¥Ø¹Ø¯Ø§Ø¯ Ø§Ù„Ø£Ù‚Ø±Ø¨ Ù„Ø§Ø­ØªÙŠØ§Ø¬Ùƒ."
         : locale === "ru"
-          ? "Поделитесь профилем своей команды, и мы вернемся с наиболее релевантной конфигурацией."
+          ? "ÐŸÐ¾Ð´ÐµÐ»Ð¸Ñ‚ÐµÑÑŒ Ð¿Ñ€Ð¾Ñ„Ð¸Ð»ÐµÐ¼ ÑÐ²Ð¾ÐµÐ¹ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ‹, Ð¸ Ð¼Ñ‹ Ð²ÐµÑ€Ð½ÐµÐ¼ÑÑ Ñ Ð½Ð°Ð¸Ð±Ð¾Ð»ÐµÐµ Ñ€ÐµÐ»ÐµÐ²Ð°Ð½Ñ‚Ð½Ð¾Ð¹ ÐºÐ¾Ð½Ñ„Ð¸Ð³ÑƒÑ€Ð°Ñ†Ð¸ÐµÐ¹."
           : "Share a little context so the first reply can be shaped around the right professional frame. The aim is to make the opening exchange more relevant, more measured, and easier to continue.",
-    submit: locale === "ar" ? "اطلب مناقشة خاصة" : locale === "ru" ? "Запросить обсуждение" : "Request a discussion",
+    submit: locale === "ar" ? "Ø§Ø·Ù„Ø¨ Ù…Ù†Ø§Ù‚Ø´Ø© Ø®Ø§ØµØ©" : locale === "ru" ? "Ð—Ð°Ð¿Ñ€Ð¾ÑÐ¸Ñ‚ÑŒ Ð¾Ð±ÑÑƒÐ¶Ð´ÐµÐ½Ð¸Ðµ" : "Request a discussion",
   }
   const localizedTrustItems =
     locale === "ar"
       ? [
-          { title: "مصمم للمكاتب المتخصصة", description: "مهيأ للجهات المرخصة والفرق المتخصصة التي تفضل الوضوح والنظام ونبرة مهنية أكثر هدوءاً." },
-          { title: "نقاشات مهنية خاصة", description: "تمنح الصفحة مساحة مناسبة لمحادثات جادة حول الملاءمة المؤسسية وطبيعة العلاقة المهنية." },
-          { title: "عرض موثوق ومتماسك", description: "يبقى التقديم محدداً وهادئاً وملائماً للجهات التي تتخذ قراراتها بعناية." },
-          { title: "يراعي الخصوصية من البداية", description: "تم تصميم البنية بما يطمئن الفرق المهنية بشأن السرية والوصول المنظم والتعامل المسؤول مع البيانات." },
+          { title: "Ù…ØµÙ…Ù… Ù„Ù„Ù…ÙƒØ§ØªØ¨ Ø§Ù„Ù…ØªØ®ØµØµØ©", description: "Ù…Ù‡ÙŠØ£ Ù„Ù„Ø¬Ù‡Ø§Øª Ø§Ù„Ù…Ø±Ø®ØµØ© ÙˆØ§Ù„ÙØ±Ù‚ Ø§Ù„Ù…ØªØ®ØµØµØ© Ø§Ù„ØªÙŠ ØªÙØ¶Ù„ Ø§Ù„ÙˆØ¶ÙˆØ­ ÙˆØ§Ù„Ù†Ø¸Ø§Ù… ÙˆÙ†Ø¨Ø±Ø© Ù…Ù‡Ù†ÙŠØ© Ø£ÙƒØ«Ø± Ù‡Ø¯ÙˆØ¡Ø§Ù‹." },
+          { title: "Ù†Ù‚Ø§Ø´Ø§Øª Ù…Ù‡Ù†ÙŠØ© Ø®Ø§ØµØ©", description: "ØªÙ…Ù†Ø­ Ø§Ù„ØµÙØ­Ø© Ù…Ø³Ø§Ø­Ø© Ù…Ù†Ø§Ø³Ø¨Ø© Ù„Ù…Ø­Ø§Ø¯Ø«Ø§Øª Ø¬Ø§Ø¯Ø© Ø­ÙˆÙ„ Ø§Ù„Ù…Ù„Ø§Ø¡Ù…Ø© Ø§Ù„Ù…Ø¤Ø³Ø³ÙŠØ© ÙˆØ·Ø¨ÙŠØ¹Ø© Ø§Ù„Ø¹Ù„Ø§Ù‚Ø© Ø§Ù„Ù…Ù‡Ù†ÙŠØ©." },
+          { title: "Ø¹Ø±Ø¶ Ù…ÙˆØ«ÙˆÙ‚ ÙˆÙ…ØªÙ…Ø§Ø³Ùƒ", description: "ÙŠØ¨Ù‚Ù‰ Ø§Ù„ØªÙ‚Ø¯ÙŠÙ… Ù…Ø­Ø¯Ø¯Ø§Ù‹ ÙˆÙ‡Ø§Ø¯Ø¦Ø§Ù‹ ÙˆÙ…Ù„Ø§Ø¦Ù…Ø§Ù‹ Ù„Ù„Ø¬Ù‡Ø§Øª Ø§Ù„ØªÙŠ ØªØªØ®Ø° Ù‚Ø±Ø§Ø±Ø§ØªÙ‡Ø§ Ø¨Ø¹Ù†Ø§ÙŠØ©." },
+          { title: "ÙŠØ±Ø§Ø¹ÙŠ Ø§Ù„Ø®ØµÙˆØµÙŠØ© Ù…Ù† Ø§Ù„Ø¨Ø¯Ø§ÙŠØ©", description: "ØªÙ… ØªØµÙ…ÙŠÙ… Ø§Ù„Ø¨Ù†ÙŠØ© Ø¨Ù…Ø§ ÙŠØ·Ù…Ø¦Ù† Ø§Ù„ÙØ±Ù‚ Ø§Ù„Ù…Ù‡Ù†ÙŠØ© Ø¨Ø´Ø£Ù† Ø§Ù„Ø³Ø±ÙŠØ© ÙˆØ§Ù„ÙˆØµÙˆÙ„ Ø§Ù„Ù…Ù†Ø¸Ù… ÙˆØ§Ù„ØªØ¹Ø§Ù…Ù„ Ø§Ù„Ù…Ø³Ø¤ÙˆÙ„ Ù…Ø¹ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª." },
         ]
       : locale === "ru"
         ? [
-            { title: "Для специализированных практик", description: "Подходит лицензированным фирмам и профессиональным командам, которым важны ясность, порядок и более сдержанный тон." },
-            { title: "Частные профессиональные разговоры", description: "Страница создаёт пространство для серьёзных разговоров об институциональной пригодности и формате взаимодействия." },
-            { title: "Убедительно и сдержанно", description: "Подача остаётся премиальной, конкретной и уместной для фирм, принимающих взвешенные решения." },
-            { title: "Приватность с самого начала", description: "Структура изначально подчёркивает конфиденциальность, организованный доступ и ответственное обращение с данными." },
+            { title: "Ð”Ð»Ñ ÑÐ¿ÐµÑ†Ð¸Ð°Ð»Ð¸Ð·Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ñ… Ð¿Ñ€Ð°ÐºÑ‚Ð¸Ðº", description: "ÐŸÐ¾Ð´Ñ…Ð¾Ð´Ð¸Ñ‚ Ð»Ð¸Ñ†ÐµÐ½Ð·Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ð¼ Ñ„Ð¸Ñ€Ð¼Ð°Ð¼ Ð¸ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ñ‹Ð¼ ÐºÐ¾Ð¼Ð°Ð½Ð´Ð°Ð¼, ÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ð¼ Ð²Ð°Ð¶Ð½Ñ‹ ÑÑÐ½Ð¾ÑÑ‚ÑŒ, Ð¿Ð¾Ñ€ÑÐ´Ð¾Ðº Ð¸ Ð±Ð¾Ð»ÐµÐµ ÑÐ´ÐµÑ€Ð¶Ð°Ð½Ð½Ñ‹Ð¹ Ñ‚Ð¾Ð½." },
+            { title: "Ð§Ð°ÑÑ‚Ð½Ñ‹Ðµ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ñ‹Ðµ Ñ€Ð°Ð·Ð³Ð¾Ð²Ð¾Ñ€Ñ‹", description: "Ð¡Ñ‚Ñ€Ð°Ð½Ð¸Ñ†Ð° ÑÐ¾Ð·Ð´Ð°Ñ‘Ñ‚ Ð¿Ñ€Ð¾ÑÑ‚Ñ€Ð°Ð½ÑÑ‚Ð²Ð¾ Ð´Ð»Ñ ÑÐµÑ€ÑŒÑ‘Ð·Ð½Ñ‹Ñ… Ñ€Ð°Ð·Ð³Ð¾Ð²Ð¾Ñ€Ð¾Ð² Ð¾Ð± Ð¸Ð½ÑÑ‚Ð¸Ñ‚ÑƒÑ†Ð¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ð¾Ð¹ Ð¿Ñ€Ð¸Ð³Ð¾Ð´Ð½Ð¾ÑÑ‚Ð¸ Ð¸ Ñ„Ð¾Ñ€Ð¼Ð°Ñ‚Ðµ Ð²Ð·Ð°Ð¸Ð¼Ð¾Ð´ÐµÐ¹ÑÑ‚Ð²Ð¸Ñ." },
+            { title: "Ð£Ð±ÐµÐ´Ð¸Ñ‚ÐµÐ»ÑŒÐ½Ð¾ Ð¸ ÑÐ´ÐµÑ€Ð¶Ð°Ð½Ð½Ð¾", description: "ÐŸÐ¾Ð´Ð°Ñ‡Ð° Ð¾ÑÑ‚Ð°Ñ‘Ñ‚ÑÑ Ð¿Ñ€ÐµÐ¼Ð¸Ð°Ð»ÑŒÐ½Ð¾Ð¹, ÐºÐ¾Ð½ÐºÑ€ÐµÑ‚Ð½Ð¾Ð¹ Ð¸ ÑƒÐ¼ÐµÑÑ‚Ð½Ð¾Ð¹ Ð´Ð»Ñ Ñ„Ð¸Ñ€Ð¼, Ð¿Ñ€Ð¸Ð½Ð¸Ð¼Ð°ÑŽÑ‰Ð¸Ñ… Ð²Ð·Ð²ÐµÑˆÐµÐ½Ð½Ñ‹Ðµ Ñ€ÐµÑˆÐµÐ½Ð¸Ñ." },
+            { title: "ÐŸÑ€Ð¸Ð²Ð°Ñ‚Ð½Ð¾ÑÑ‚ÑŒ Ñ ÑÐ°Ð¼Ð¾Ð³Ð¾ Ð½Ð°Ñ‡Ð°Ð»Ð°", description: "Ð¡Ñ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ð° Ð¸Ð·Ð½Ð°Ñ‡Ð°Ð»ÑŒÐ½Ð¾ Ð¿Ð¾Ð´Ñ‡Ñ‘Ñ€ÐºÐ¸Ð²Ð°ÐµÑ‚ ÐºÐ¾Ð½Ñ„Ð¸Ð´ÐµÐ½Ñ†Ð¸Ð°Ð»ÑŒÐ½Ð¾ÑÑ‚ÑŒ, Ð¾Ñ€Ð³Ð°Ð½Ð¸Ð·Ð¾Ð²Ð°Ð½Ð½Ñ‹Ð¹ Ð´Ð¾ÑÑ‚ÑƒÐ¿ Ð¸ Ð¾Ñ‚Ð²ÐµÑ‚ÑÑ‚Ð²ÐµÐ½Ð½Ð¾Ðµ Ð¾Ð±Ñ€Ð°Ñ‰ÐµÐ½Ð¸Ðµ Ñ Ð´Ð°Ð½Ð½Ñ‹Ð¼Ð¸." },
           ]
         : trustItems
   const localizedProofBlocks =
     locale === "ar"
       ? [
-          "يعرض المنصة بصيغة أقرب إلى واقع الجهات المتخصصة، لا إلى قوالب عامة أو مبالغ فيها.",
-          "يعطي انطباعاً أكثر هدوءاً وتنظيماً حول الطريقة التي يمكن أن تبدأ بها العلاقة المهنية.",
-          "يفيد الجهات التي تفضل الوضوح والخصوصية قبل أي خطوة أكثر تحديداً.",
+          "ÙŠØ¹Ø±Ø¶ Ø§Ù„Ù…Ù†ØµØ© Ø¨ØµÙŠØºØ© Ø£Ù‚Ø±Ø¨ Ø¥Ù„Ù‰ ÙˆØ§Ù‚Ø¹ Ø§Ù„Ø¬Ù‡Ø§Øª Ø§Ù„Ù…ØªØ®ØµØµØ©ØŒ Ù„Ø§ Ø¥Ù„Ù‰ Ù‚ÙˆØ§Ù„Ø¨ Ø¹Ø§Ù…Ø© Ø£Ùˆ Ù…Ø¨Ø§Ù„Øº ÙÙŠÙ‡Ø§.",
+          "ÙŠØ¹Ø·ÙŠ Ø§Ù†Ø·Ø¨Ø§Ø¹Ø§Ù‹ Ø£ÙƒØ«Ø± Ù‡Ø¯ÙˆØ¡Ø§Ù‹ ÙˆØªÙ†Ø¸ÙŠÙ…Ø§Ù‹ Ø­ÙˆÙ„ Ø§Ù„Ø·Ø±ÙŠÙ‚Ø© Ø§Ù„ØªÙŠ ÙŠÙ…ÙƒÙ† Ø£Ù† ØªØ¨Ø¯Ø£ Ø¨Ù‡Ø§ Ø§Ù„Ø¹Ù„Ø§Ù‚Ø© Ø§Ù„Ù…Ù‡Ù†ÙŠØ©.",
+          "ÙŠÙÙŠØ¯ Ø§Ù„Ø¬Ù‡Ø§Øª Ø§Ù„ØªÙŠ ØªÙØ¶Ù„ Ø§Ù„ÙˆØ¶ÙˆØ­ ÙˆØ§Ù„Ø®ØµÙˆØµÙŠØ© Ù‚Ø¨Ù„ Ø£ÙŠ Ø®Ø·ÙˆØ© Ø£ÙƒØ«Ø± ØªØ­Ø¯ÙŠØ¯Ø§Ù‹.",
         ]
       : locale === "ru"
         ? [
-            "Показывает платформу ближе к реальности специализированных практик, а не к шаблонным продуктовым обещаниям.",
-            "Создаёт более спокойное и структурированное впечатление о том, как может начаться профессиональный диалог.",
-            "Полезно для фирм, которым важны ясность и приватность до более предметного следующего шага.",
+            "ÐŸÐ¾ÐºÐ°Ð·Ñ‹Ð²Ð°ÐµÑ‚ Ð¿Ð»Ð°Ñ‚Ñ„Ð¾Ñ€Ð¼Ñƒ Ð±Ð»Ð¸Ð¶Ðµ Ðº Ñ€ÐµÐ°Ð»ÑŒÐ½Ð¾ÑÑ‚Ð¸ ÑÐ¿ÐµÑ†Ð¸Ð°Ð»Ð¸Ð·Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ñ… Ð¿Ñ€Ð°ÐºÑ‚Ð¸Ðº, Ð° Ð½Ðµ Ðº ÑˆÐ°Ð±Ð»Ð¾Ð½Ð½Ñ‹Ð¼ Ð¿Ñ€Ð¾Ð´ÑƒÐºÑ‚Ð¾Ð²Ñ‹Ð¼ Ð¾Ð±ÐµÑ‰Ð°Ð½Ð¸ÑÐ¼.",
+            "Ð¡Ð¾Ð·Ð´Ð°Ñ‘Ñ‚ Ð±Ð¾Ð»ÐµÐµ ÑÐ¿Ð¾ÐºÐ¾Ð¹Ð½Ð¾Ðµ Ð¸ ÑÑ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ð¾Ðµ Ð²Ð¿ÐµÑ‡Ð°Ñ‚Ð»ÐµÐ½Ð¸Ðµ Ð¾ Ñ‚Ð¾Ð¼, ÐºÐ°Ðº Ð¼Ð¾Ð¶ÐµÑ‚ Ð½Ð°Ñ‡Ð°Ñ‚ÑŒÑÑ Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¾Ð½Ð°Ð»ÑŒÐ½Ñ‹Ð¹ Ð´Ð¸Ð°Ð»Ð¾Ð³.",
+            "ÐŸÐ¾Ð»ÐµÐ·Ð½Ð¾ Ð´Ð»Ñ Ñ„Ð¸Ñ€Ð¼, ÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ð¼ Ð²Ð°Ð¶Ð½Ñ‹ ÑÑÐ½Ð¾ÑÑ‚ÑŒ Ð¸ Ð¿Ñ€Ð¸Ð²Ð°Ñ‚Ð½Ð¾ÑÑ‚ÑŒ Ð´Ð¾ Ð±Ð¾Ð»ÐµÐµ Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚Ð½Ð¾Ð³Ð¾ ÑÐ»ÐµÐ´ÑƒÑŽÑ‰ÐµÐ³Ð¾ ÑˆÐ°Ð³Ð°.",
           ]
         : proofBlocks
 
@@ -248,9 +248,9 @@ export default async function ForCompaniesPage() {
         primaryAction={{ href: "#meeting", label: copy.bookMeeting }}
         secondaryAction={{ href: ctaLinks.requestDemo, label: copy.requestDemo }}
         stats={[
-          { value: "Structure", label: locale === "ar" ? "لعرض تشغيلي أكثر وضوحًا" : "A clearer way to approach and organise cases" },
-          { value: "Discretion", label: locale === "ar" ? "للنقاشات المهنية المدروسة" : "Conversations that remain measured and controlled" },
-          { value: "Fit", label: locale === "ar" ? "لتقدير الملاءمة بشكل أهدأ" : "A better sense of whether working together makes sense" },
+          { value: "Structure", label: locale === "ar" ? "Ù„Ø¹Ø±Ø¶ ØªØ´ØºÙŠÙ„ÙŠ Ø£ÙƒØ«Ø± ÙˆØ¶ÙˆØ­Ù‹Ø§" : "A clearer way to approach and organise cases" },
+          { value: "Discretion", label: locale === "ar" ? "Ù„Ù„Ù†Ù‚Ø§Ø´Ø§Øª Ø§Ù„Ù…Ù‡Ù†ÙŠØ© Ø§Ù„Ù…Ø¯Ø±ÙˆØ³Ø©" : "Conversations that remain measured and controlled" },
+          { value: "Fit", label: locale === "ar" ? "Ù„ØªÙ‚Ø¯ÙŠØ± Ø§Ù„Ù…Ù„Ø§Ø¡Ù…Ø© Ø¨Ø´ÙƒÙ„ Ø£Ù‡Ø¯Ø£" : "A better sense of whether working together makes sense" },
         ]}
       >
         <div className="space-y-4 rounded-[28px] border border-white/10 bg-white/10 p-6 backdrop-blur">
@@ -301,23 +301,23 @@ export default async function ForCompaniesPage() {
             </div>
             <Card className="section-card overflow-hidden">
               <CardContent className="space-y-6 p-8">
-                <span className="eyebrow">{locale === "ar" ? "نظرة عامة" : "Overview"}</span>
-                <h3 className="card-title text-foreground">{locale === "ar" ? "رؤية أوضح لبيئة العمل التي يعتمد عليها فريقك يوميًا." : "A clearer view of the environment your team would work within day to day."}</h3>
+                <span className="eyebrow">{locale === "ar" ? "Ù†Ø¸Ø±Ø© Ø¹Ø§Ù…Ø©" : "Overview"}</span>
+                <h3 className="card-title text-foreground">{locale === "ar" ? "Ø±Ø¤ÙŠØ© Ø£ÙˆØ¶Ø­ Ù„Ø¨ÙŠØ¦Ø© Ø§Ù„Ø¹Ù…Ù„ Ø§Ù„ØªÙŠ ÙŠØ¹ØªÙ…Ø¯ Ø¹Ù„ÙŠÙ‡Ø§ ÙØ±ÙŠÙ‚Ùƒ ÙŠÙˆÙ…ÙŠÙ‹Ø§." : "A clearer view of the environment your team would work within day to day."}</h3>
                 <p className="fine-print">
                   {locale === "ar"
-                    ? "يركز هذا العرض على ما يهم المشتري أولًا: ملكية الطلب، وحالة الملف، وانضباط المتابعة، ووضوح العمل داخل الفريق."
+                    ? "ÙŠØ±ÙƒØ² Ù‡Ø°Ø§ Ø§Ù„Ø¹Ø±Ø¶ Ø¹Ù„Ù‰ Ù…Ø§ ÙŠÙ‡Ù… Ø§Ù„Ù…Ø´ØªØ±ÙŠ Ø£ÙˆÙ„Ù‹Ø§: Ù…Ù„ÙƒÙŠØ© Ø§Ù„Ø·Ù„Ø¨ØŒ ÙˆØ­Ø§Ù„Ø© Ø§Ù„Ù…Ù„ÙØŒ ÙˆØ§Ù†Ø¶Ø¨Ø§Ø· Ø§Ù„Ù…ØªØ§Ø¨Ø¹Ø©ØŒ ÙˆÙˆØ¶ÙˆØ­ Ø§Ù„Ø¹Ù…Ù„ Ø¯Ø§Ø®Ù„ Ø§Ù„ÙØ±ÙŠÙ‚."
                     : "The overview focuses on the areas teams usually care about first: ownership, status clarity, internal continuity, and visibility."}
                 </p>
                 <div className="rounded-[28px] border border-border/70 bg-primary p-6 text-primary-foreground shadow-[0_24px_60px_rgba(20,26,42,0.22)]">
                   <div className="grid gap-4">
                     <div className="rounded-2xl border border-white/10 bg-white/8 p-4">
                       <div className="mb-2 flex items-center justify-between text-sm text-primary-foreground/70">
-                        <span>{locale === "ar" ? "المشهد العام" : "General overview"}</span>
-                        <span>{locale === "ar" ? "12 ملفاً نشطاً" : "12 active matters"}</span>
+                        <span>{locale === "ar" ? "Ø§Ù„Ù…Ø´Ù‡Ø¯ Ø§Ù„Ø¹Ø§Ù…" : "General overview"}</span>
+                        <span>{locale === "ar" ? "12 Ù…Ù„ÙØ§Ù‹ Ù†Ø´Ø·Ø§Ù‹" : "12 active matters"}</span>
                       </div>
                       <div className="space-y-3">
                         {locale === "ar"
-                          ? ["مراجعة حالة جديدة", "مراجعة مالطا", "ملف عائلي للبرتغال"].map((row) => (
+                          ? ["Ù…Ø±Ø§Ø¬Ø¹Ø© Ø­Ø§Ù„Ø© Ø¬Ø¯ÙŠØ¯Ø©", "Ù…Ø±Ø§Ø¬Ø¹Ø© Ù…Ø§Ù„Ø·Ø§", "Ù…Ù„Ù Ø¹Ø§Ø¦Ù„ÙŠ Ù„Ù„Ø¨Ø±ØªØºØ§Ù„"].map((row) => (
                               <div key={row} className="rounded-xl border border-white/10 bg-black/10 px-4 py-3 text-sm">
                                 {row}
                               </div>
@@ -330,8 +330,8 @@ export default async function ForCompaniesPage() {
                       </div>
                     </div>
                     <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="rounded-2xl border border-white/10 bg-black/10 p-4 text-sm">{locale === "ar" ? "ملاحظات العميل، والحالة الحالية، وملكية المستشار" : "Client notes, status, and adviser ownership"}</div>
-                      <div className="rounded-2xl border border-white/10 bg-black/10 p-4 text-sm">{locale === "ar" ? "رؤية أوضح للفريق وتذكيرات بالخطوات التالية" : "Team visibility and next-step reminders"}</div>
+                      <div className="rounded-2xl border border-white/10 bg-black/10 p-4 text-sm">{locale === "ar" ? "Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø§Ù„Ø¹Ù…ÙŠÙ„ØŒ ÙˆØ§Ù„Ø­Ø§Ù„Ø© Ø§Ù„Ø­Ø§Ù„ÙŠØ©ØŒ ÙˆÙ…Ù„ÙƒÙŠØ© Ø§Ù„Ù…Ø³ØªØ´Ø§Ø±" : "Client notes, status, and adviser ownership"}</div>
+                      <div className="rounded-2xl border border-white/10 bg-black/10 p-4 text-sm">{locale === "ar" ? "Ø±Ø¤ÙŠØ© Ø£ÙˆØ¶Ø­ Ù„Ù„ÙØ±ÙŠÙ‚ ÙˆØªØ°ÙƒÙŠØ±Ø§Øª Ø¨Ø§Ù„Ø®Ø·ÙˆØ§Øª Ø§Ù„ØªØ§Ù„ÙŠØ©" : "Team visibility and next-step reminders"}</div>
                     </div>
                   </div>
                 </div>
@@ -352,13 +352,13 @@ export default async function ForCompaniesPage() {
             <div className="space-y-4">
               {[ 
                 locale === "ar"
-                  ? "تبدأ هذه الصفحة من نقاش مهني منظم بدلاً من انتقال سريع إلى خطوات غير مناسبة."
+                  ? "ØªØ¨Ø¯Ø£ Ù‡Ø°Ù‡ Ø§Ù„ØµÙØ­Ø© Ù…Ù† Ù†Ù‚Ø§Ø´ Ù…Ù‡Ù†ÙŠ Ù…Ù†Ø¸Ù… Ø¨Ø¯Ù„Ø§Ù‹ Ù…Ù† Ø§Ù†ØªÙ‚Ø§Ù„ Ø³Ø±ÙŠØ¹ Ø¥Ù„Ù‰ Ø®Ø·ÙˆØ§Øª ØºÙŠØ± Ù…Ù†Ø§Ø³Ø¨Ø©."
                   : "We begin with a structured professional discussion rather than a rushed introduction.",
                 locale === "ar"
-                  ? "ننظر أولاً إلى السياق العام والتوقيت والأهداف قبل اقتراح أي خطوة لاحقة."
+                  ? "Ù†Ù†Ø¸Ø± Ø£ÙˆÙ„Ø§Ù‹ Ø¥Ù„Ù‰ Ø§Ù„Ø³ÙŠØ§Ù‚ Ø§Ù„Ø¹Ø§Ù… ÙˆØ§Ù„ØªÙˆÙ‚ÙŠØª ÙˆØ§Ù„Ø£Ù‡Ø¯Ø§Ù Ù‚Ø¨Ù„ Ø§Ù‚ØªØ±Ø§Ø­ Ø£ÙŠ Ø®Ø·ÙˆØ© Ù„Ø§Ø­Ù‚Ø©."
                   : "We consider context, timing, and objectives before suggesting any next step.",
                 locale === "ar"
-                  ? "إذا بدت الملاءمة حقيقية، يمكن عندها الانتقال إلى نقاش أكثر تحديداً."
+                  ? "Ø¥Ø°Ø§ Ø¨Ø¯Øª Ø§Ù„Ù…Ù„Ø§Ø¡Ù…Ø© Ø­Ù‚ÙŠÙ‚ÙŠØ©ØŒ ÙŠÙ…ÙƒÙ† Ø¹Ù†Ø¯Ù‡Ø§ Ø§Ù„Ø§Ù†ØªÙ‚Ø§Ù„ Ø¥Ù„Ù‰ Ù†Ù‚Ø§Ø´ Ø£ÙƒØ«Ø± ØªØ­Ø¯ÙŠØ¯Ø§Ù‹."
                   : "If the fit appears genuine, the discussion can then move into a more defined format.",
               ].map((point) => (
                 <div key={point} className="flex items-start gap-3">
@@ -370,8 +370,8 @@ export default async function ForCompaniesPage() {
           </div>
           <Card className="section-card">
             <CardContent className="space-y-4 p-8">
-              <span className="eyebrow">{locale === "ar" ? "لماذا تدخل الشركات هذا المسار" : "Why firms begin here"}</span>
-              <h3 className="card-title text-foreground">{locale === "ar" ? "التجربة مبنية حول الجدية والتنظيم." : "The experience is built around seriousness, structure, and fit."}</h3>
+              <span className="eyebrow">{locale === "ar" ? "Ù„Ù…Ø§Ø°Ø§ ØªØ¯Ø®Ù„ Ø§Ù„Ø´Ø±ÙƒØ§Øª Ù‡Ø°Ø§ Ø§Ù„Ù…Ø³Ø§Ø±" : "Why firms begin here"}</span>
+              <h3 className="card-title text-foreground">{locale === "ar" ? "Ø§Ù„ØªØ¬Ø±Ø¨Ø© Ù…Ø¨Ù†ÙŠØ© Ø­ÙˆÙ„ Ø§Ù„Ø¬Ø¯ÙŠØ© ÙˆØ§Ù„ØªÙ†Ø¸ÙŠÙ…." : "The experience is built around seriousness, structure, and fit."}</h3>
               <div className="space-y-3">
                 {localizedProofBlocks.map((block) => (
                   <div key={block} className="rounded-2xl border border-border/70 bg-muted/30 px-4 py-4 text-sm leading-7 text-muted-foreground">
@@ -380,7 +380,7 @@ export default async function ForCompaniesPage() {
                 ))}
               </div>
               <Button variant="outline" asChild>
-                  <Link href={routeLinks.partners}>{locale === "ar" ? "استكشف السياق المهني" : "Explore professional context"}</Link>
+                  <Link href={routeLinks.partners}>{locale === "ar" ? "Ø§Ø³ØªÙƒØ´Ù Ø§Ù„Ø³ÙŠØ§Ù‚ Ø§Ù„Ù…Ù‡Ù†ÙŠ" : "Explore professional context"}</Link>
               </Button>
             </CardContent>
           </Card>
@@ -419,9 +419,9 @@ export default async function ForCompaniesPage() {
       <section className="section-padding bg-muted/30">
         <div className="container-shell">
           <SectionHeading
-            eyebrow="Engagement options"
-            title={locale === "ar" ? "تسعير واضح وموثوق لهيكل التعامل." : "Clear, credible options for a structured engagement."}
-            description={locale === "ar" ? "الأسعار مصاغة بشكل واضح، مع مرونة للنطاق الأوسع عندما يكون ذلك منطقيًا." : "The options are presented clearly, with room for broader arrangements where that proves sensible."}
+            eyebrow="Solutions"
+            title={locale === "ar" ? "ØªØ³Ø¹ÙŠØ± ÙˆØ§Ø¶Ø­ ÙˆÙ…ÙˆØ«ÙˆÙ‚ Ù„Ù‡ÙŠÙƒÙ„ Ø§Ù„ØªØ¹Ø§Ù…Ù„." : "Clear, credible solutions for a structured working relationship."}
+            description={locale === "ar" ? "Ø§Ù„Ø£Ø³Ø¹Ø§Ø± Ù…ØµØ§ØºØ© Ø¨Ø´ÙƒÙ„ ÙˆØ§Ø¶Ø­ØŒ Ù…Ø¹ Ù…Ø±ÙˆÙ†Ø© Ù„Ù„Ù†Ø·Ø§Ù‚ Ø§Ù„Ø£ÙˆØ³Ø¹ Ø¹Ù†Ø¯Ù…Ø§ ÙŠÙƒÙˆÙ† Ø°Ù„Ùƒ Ù…Ù†Ø·Ù‚ÙŠÙ‹Ø§." : "The solutions are presented clearly, with room for broader arrangements where that proves sensible."}
           />
           <PricingSection locale={locale} preview />
         </div>
@@ -431,15 +431,15 @@ export default async function ForCompaniesPage() {
         <div className="container-shell grid gap-6 lg:grid-cols-2">
           <Card className="section-card">
             <CardContent className="space-y-4 p-8">
-              <span className="eyebrow">{locale === "ar" ? "حماية البيانات" : "Data protection"}</span>
-              <h3 className="card-title text-foreground">{locale === "ar" ? "مصمم لدعم التعامل السري مع بيانات العملاء." : "Designed to support confidential client handling."}</h3>
+              <span className="eyebrow">{locale === "ar" ? "Ø­Ù…Ø§ÙŠØ© Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª" : "Data protection"}</span>
+              <h3 className="card-title text-foreground">{locale === "ar" ? "Ù…ØµÙ…Ù… Ù„Ø¯Ø¹Ù… Ø§Ù„ØªØ¹Ø§Ù…Ù„ Ø§Ù„Ø³Ø±ÙŠ Ù…Ø¹ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø¹Ù…Ù„Ø§Ø¡." : "Designed to support confidential client handling."}</h3>
               <p className="fine-print">
                 {locale === "ar"
-                  ? "تم تأطير التجربة بما يحترم خصوصية بيانات المستثمرين والشركات، ويعتمد على وصول منظم وتعامل داخلي مسؤول."
+                  ? "ØªÙ… ØªØ£Ø·ÙŠØ± Ø§Ù„ØªØ¬Ø±Ø¨Ø© Ø¨Ù…Ø§ ÙŠØ­ØªØ±Ù… Ø®ØµÙˆØµÙŠØ© Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ø³ØªØ«Ù…Ø±ÙŠÙ† ÙˆØ§Ù„Ø´Ø±ÙƒØ§ØªØŒ ÙˆÙŠØ¹ØªÙ…Ø¯ Ø¹Ù„Ù‰ ÙˆØµÙˆÙ„ Ù…Ù†Ø¸Ù… ÙˆØªØ¹Ø§Ù…Ù„ Ø¯Ø§Ø®Ù„ÙŠ Ù…Ø³Ø¤ÙˆÙ„."
                   : "The wider structure is framed around responsible handling of investor and company information, restricted access, and a privacy-aware way of working."}
               </p>
               <Button variant="outline" asChild>
-                <Link href={routeLinks.dataProtection}>{locale === "ar" ? "اقرأ سياسة حماية البيانات" : "Read data protection"}</Link>
+                <Link href={routeLinks.dataProtection}>{locale === "ar" ? "Ø§Ù‚Ø±Ø£ Ø³ÙŠØ§Ø³Ø© Ø­Ù…Ø§ÙŠØ© Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª" : "Read data protection"}</Link>
               </Button>
             </CardContent>
           </Card>
@@ -455,16 +455,16 @@ export default async function ForCompaniesPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent" />
             </div>
             <CardContent className="space-y-4 p-8">
-              <span className="eyebrow">{locale === "ar" ? "عرض خاص" : "Private overview"}</span>
-              <h3 className="card-title text-foreground">{locale === "ar" ? "إذا لم تكن تريد التواصل مباشرة بعد، ابدأ بعرض خاص." : "If you would prefer a calmer first step, begin with a private overview."}</h3>
+              <span className="eyebrow">{locale === "ar" ? "Ø¹Ø±Ø¶ Ø®Ø§Øµ" : "Private overview"}</span>
+              <h3 className="card-title text-foreground">{locale === "ar" ? "Ø¥Ø°Ø§ Ù„Ù… ØªÙƒÙ† ØªØ±ÙŠØ¯ Ø§Ù„ØªÙˆØ§ØµÙ„ Ù…Ø¨Ø§Ø´Ø±Ø© Ø¨Ø¹Ø¯ØŒ Ø§Ø¨Ø¯Ø£ Ø¨Ø¹Ø±Ø¶ Ø®Ø§Øµ." : "If you would prefer a calmer first step, begin with a private overview."}</h3>
               <p className="fine-print">
                 {locale === "ar"
-                  ? "العرض الإرشادي يمنح الفريق تجربة شراء أوضح عندما لا تكون التجربة الذاتية هي الخطوة الأولى المناسبة."
+                  ? "Ø§Ù„Ø¹Ø±Ø¶ Ø§Ù„Ø¥Ø±Ø´Ø§Ø¯ÙŠ ÙŠÙ…Ù†Ø­ Ø§Ù„ÙØ±ÙŠÙ‚ ØªØ¬Ø±Ø¨Ø© Ø´Ø±Ø§Ø¡ Ø£ÙˆØ¶Ø­ Ø¹Ù†Ø¯Ù…Ø§ Ù„Ø§ ØªÙƒÙˆÙ† Ø§Ù„ØªØ¬Ø±Ø¨Ø© Ø§Ù„Ø°Ø§ØªÙŠØ© Ù‡ÙŠ Ø§Ù„Ø®Ø·ÙˆØ© Ø§Ù„Ø£ÙˆÙ„Ù‰ Ø§Ù„Ù…Ù†Ø§Ø³Ø¨Ø©."
                   : "A private overview often gives firms a clearer first impression when a direct introduction would feel too abrupt."}
               </p>
               <Button asChild>
                 <Link href={ctaLinks.requestDemo}>
-                  {locale === "ar" ? "اطلب عرضًا خاصًا" : "Request a private overview"}
+                  {locale === "ar" ? "Ø§Ø·Ù„Ø¨ Ø¹Ø±Ø¶Ù‹Ø§ Ø®Ø§ØµÙ‹Ø§" : "Request a private overview"}
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
@@ -476,14 +476,15 @@ export default async function ForCompaniesPage() {
       <section className="section-padding pt-0">
         <div className="container-shell">
           <CtaPanel
-            eyebrow={locale === "ar" ? "الخطوة التالية" : "Next step"}
-            title={locale === "ar" ? "هل تريد الاطلاع على الأسعار أو طلب عرض خاص أو قراءة حماية البيانات؟" : "Would you prefer to review the engagement options, request a private overview, or read about data protection?"}
-            description={locale === "ar" ? "يمكنك الانتقال إلى الأسعار أو العرض الخاص أو تفاصيل حماية البيانات من دون مغادرة نفس التجربة المتماسكة." : "You can move into the engagement options, a private overview, or data protection detail without leaving the same coherent experience."}
-            primaryAction={{ href: ctaLinks.viewPricing, label: locale === "ar" ? "اطلع على الخيارات" : "Review options" }}
-            secondaryAction={{ href: ctaLinks.requestDemo, label: locale === "ar" ? "اطلب عرضًا خاصًا" : "Request a private overview" }}
+            eyebrow={locale === "ar" ? "Ø§Ù„Ø®Ø·ÙˆØ© Ø§Ù„ØªØ§Ù„ÙŠØ©" : "Next step"}
+            title={locale === "ar" ? "Ù‡Ù„ ØªØ±ÙŠØ¯ Ø§Ù„Ø§Ø·Ù„Ø§Ø¹ Ø¹Ù„Ù‰ Ø§Ù„Ø£Ø³Ø¹Ø§Ø± Ø£Ùˆ Ø·Ù„Ø¨ Ø¹Ø±Ø¶ Ø®Ø§Øµ Ø£Ùˆ Ù‚Ø±Ø§Ø¡Ø© Ø­Ù…Ø§ÙŠØ© Ø§Ù„Ø¨ÙŠØ§Ù†Ø§ØªØŸ" : "Would you prefer to review the solutions, request a private overview, or read about data protection?"}
+            description={locale === "ar" ? "ÙŠÙ…ÙƒÙ†Ùƒ Ø§Ù„Ø§Ù†ØªÙ‚Ø§Ù„ Ø¥Ù„Ù‰ Ø§Ù„Ø£Ø³Ø¹Ø§Ø± Ø£Ùˆ Ø§Ù„Ø¹Ø±Ø¶ Ø§Ù„Ø®Ø§Øµ Ø£Ùˆ ØªÙØ§ØµÙŠÙ„ Ø­Ù…Ø§ÙŠØ© Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ù…Ù† Ø¯ÙˆÙ† Ù…ØºØ§Ø¯Ø±Ø© Ù†ÙØ³ Ø§Ù„ØªØ¬Ø±Ø¨Ø© Ø§Ù„Ù…ØªÙ…Ø§Ø³ÙƒØ©." : "You can move into the solutions, a private overview, or data protection detail without leaving the same coherent experience."}
+            primaryAction={{ href: ctaLinks.viewPricing, label: locale === "ar" ? "Ø§Ø·Ù„Ø¹ Ø¹Ù„Ù‰ Ø§Ù„Ø®ÙŠØ§Ø±Ø§Øª" : "View solutions" }}
+            secondaryAction={{ href: ctaLinks.requestDemo, label: locale === "ar" ? "Ø§Ø·Ù„Ø¨ Ø¹Ø±Ø¶Ù‹Ø§ Ø®Ø§ØµÙ‹Ø§" : "Request a private overview" }}
           />
         </div>
       </section>
     </SiteShell>
   )
 }
+

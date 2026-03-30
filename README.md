@@ -83,6 +83,8 @@ Build both apps:
 npm run build
 ```
 
+On Vercel, the root build script automatically resolves the correct deploy target and mirrors the selected app output to the root `.next` directory when needed.
+
 Build only the public site:
 
 ```bash

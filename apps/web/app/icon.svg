@@ -1,0 +1,16 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="transparent"/>
+  <circle cx="256" cy="256" r="212" fill="#293246"/>
+  <text
+    x="256"
+    y="278"
+    text-anchor="middle"
+    fill="#F6F1E5"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="118"
+    font-weight="800"
+    letter-spacing="0"
+  >
+    CBI
+  </text>
+</svg>

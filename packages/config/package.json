@@ -1,0 +1,11 @@
+{
+  "name": "@cbideal/config",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./globals.css": "./src/globals.css",
+    "./branding": "./src/branding.ts",
+    "./pricing": "./src/pricing.ts"
+  }
+}

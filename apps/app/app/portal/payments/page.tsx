@@ -1,55 +1,100 @@
-import Link from "next/link"
-import { CreditCard, UploadCloud } from "lucide-react"
+"use client"
+
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
 import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
 import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
-import { Button } from "@cbideal/ui/components/ui/button"
-import { getPaymentsForClient } from "@/lib/mock-data"
+import { PaymentProofUploadControl } from "@/components/workflow-controls"
+import { useWorkflow } from "@/lib/workflow-store"
 
 export default function PortalPaymentsPage() {
-  const payments = getPaymentsForClient("a-rahman")
+  const {
+    currentPortalClientId,
+    getPaymentsForClient,
+    getPaymentProofByPaymentId,
+    getPortalOverview,
+  } = useWorkflow()
+
+  const payments = getPaymentsForClient(currentPortalClientId)
+  const overview = getPortalOverview(currentPortalClientId)
+  const firstActionable = payments.find(
+    (payment) => payment.status === "Awaiting proof" || payment.status === "Rejected",
+  )
 
   return (
-    <div className="section-stack">
+    <div className="space-y-8">
       <CrmPageHeader
         eyebrow="Payments"
         title="Your payment schedule"
-        description="Payment stages are shown here in the order they become relevant. Where a stage requires evidence, you can upload proof of payment directly against that stage."
+        description="Each stage shows what it covers, where it currently stands, and whether anything further is required from you."
         actions={
-          <Button asChild className="rounded-full">
-            <Link href="/portal/payments?action=upload-proof">
-            <UploadCloud className="size-4" />
-            Upload proof of payment
-            </Link>
-          </Button>
+          firstActionable ? (
+            <PaymentProofUploadControl
+              paymentId={firstActionable.id}
+              paymentLabel={firstActionable.label}
+              triggerLabel={firstActionable.status === "Rejected" ? "Re-upload proof" : "Upload proof"}
+              className="rounded-full"
+            />
+          ) : undefined
         }
       />
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {payments.map((payment) => (
-          <CrmSectionCard
-            key={payment.id}
-            title={payment.label}
-            description={`${payment.currency} ${payment.amount.toLocaleString()} · due ${payment.dueDate}`}
-          >
-            <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <CreditCard className="size-4" />
-                  </div>
+      <div className="grid gap-4 md:grid-cols-3">
+        <div className="app-surface-soft rounded-[20px] px-5 py-5">
+          <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Open stages</p>
+          <p className="mt-3 text-[2rem] font-semibold text-white">{overview.pendingPayments}</p>
+        </div>
+        <div className="app-surface-soft rounded-[20px] px-5 py-5">
+          <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Status</p>
+          <p className="mt-3 text-lg font-semibold text-white">{overview.paymentHeadline}</p>
+        </div>
+        <div className="app-surface-soft rounded-[20px] px-5 py-5">
+          <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Next step</p>
+          <p className="mt-3 text-lg font-semibold text-white">{overview.nextStep}</p>
+        </div>
+      </div>
+
+      <div className="grid gap-5 md:grid-cols-2">
+        {payments.map((payment) => {
+          const proof = getPaymentProofByPaymentId(payment.id)
+          const actionable = payment.status === "Awaiting proof" || payment.status === "Rejected"
+
+          return (
+            <CrmSectionCard
+              key={payment.id}
+              title={payment.label}
+              description={`${payment.currency} ${payment.amount.toLocaleString()} · due ${payment.dueDate}`}
+            >
+              <div className="space-y-4 rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+                <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-foreground">Current stage status</p>
                     <p className="text-sm leading-6 text-muted-foreground">
-                      If a proof upload is needed, it will be reviewed before the stage is marked as cleared.
+                      {proof
+                        ? `Latest proof: ${proof.fileName} · uploaded ${proof.uploadedAt}`
+                        : "No proof of payment has been uploaded yet."}
                     </p>
                   </div>
+                  <CrmStatusBadge status={payment.status} />
                 </div>
-                <CrmStatusBadge status={payment.status} />
+
+                {proof?.rejectionReason ? (
+                  <div className="rounded-[16px] bg-rose-50 px-4 py-3 text-sm leading-6 text-rose-700">
+                    {proof.rejectionReason}
+                  </div>
+                ) : null}
+
+                {actionable ? (
+                  <PaymentProofUploadControl
+                    paymentId={payment.id}
+                    paymentLabel={payment.label}
+                    triggerLabel={payment.status === "Rejected" ? "Re-upload proof" : "Upload proof"}
+                    className="rounded-full"
+                  />
+                ) : null}
               </div>
-            </div>
-          </CrmSectionCard>
-        ))}
+            </CrmSectionCard>
+          )
+        })}
       </div>
     </div>
   )

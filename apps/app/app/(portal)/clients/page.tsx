@@ -1,52 +1,10 @@
-import Link from "next/link"
-import { Bell, FileCheck2, Users, Wallet } from "lucide-react"
+"use client"
 
-const clientRows = [
-  {
-    clientId: "a-rahman",
-    name: "Ahmed Rahman",
-    email: "a.rahman@samplemail.com",
-    country: "Kuwait",
-    progress: "Payment",
-    progressTone: "blue",
-    status: "Active",
-    statusTone: "blue",
-    joined: "Jan 15, 2026",
-  },
-  {
-    clientId: "al-noor",
-    name: "Al Noor Holdings",
-    email: "office@alnoor-demo.com",
-    country: "United Arab Emirates",
-    progress: "Review",
-    progressTone: "amber",
-    status: "Pending",
-    statusTone: "amber",
-    joined: "Jan 18, 2026",
-  },
-  {
-    clientId: "westbridge",
-    name: "Westbridge Capital",
-    email: "counsel@westbridge-demo.com",
-    country: "Qatar",
-    progress: "Upload",
-    progressTone: "blue",
-    status: "Active",
-    statusTone: "blue",
-    joined: "Jan 20, 2026",
-  },
-  {
-    clientId: "m-elsayed",
-    name: "M. El Sayed",
-    email: "m.elsayed@samplemail.com",
-    country: "Saudi Arabia",
-    progress: "Approved",
-    progressTone: "green",
-    status: "Approved",
-    statusTone: "green",
-    joined: "Dec 28, 2025",
-  },
-] as const
+import Link from "next/link"
+import { useMemo, useState } from "react"
+import { Bell, FileCheck2, Users, Wallet } from "lucide-react"
+import { clients } from "@/lib/mock-data"
+import { useWorkflow } from "@/lib/workflow-store"
 
 function toneClass(tone: string) {
   if (tone === "green") return "app-status-pill app-status-green"
@@ -56,6 +14,50 @@ function toneClass(tone: string) {
 }
 
 export default function ClientsPage() {
+  const [searchTerm, setSearchTerm] = useState("")
+  const [actionNeededOnly, setActionNeededOnly] = useState(false)
+  const { state, getCaseByClientId, getClientDetail } = useWorkflow()
+
+  const rows = useMemo(() => clients.map((client) => {
+    const caseRecord = getCaseByClientId(client.id)
+    const actionNeeded =
+      caseRecord?.applicationStatus.includes("Awaiting") ||
+      caseRecord?.applicationStatus.includes("Rejected")
+
+    return {
+      clientId: client.id,
+      name: client.name,
+      email: getClientDetail(client.id)?.contact ?? client.owner,
+      country: client.region,
+      progress: caseRecord?.applicationStatus ?? client.context,
+      progressTone:
+        caseRecord?.applicationStatus.includes("Awaiting") || caseRecord?.applicationStatus.includes("Rejected")
+          ? "amber"
+          : caseRecord?.applicationStatus.includes("Formal") || caseRecord?.applicationStatus.includes("Approved")
+            ? "green"
+            : "blue",
+      status: actionNeeded ? "Action needed" : caseRecord?.applicationStatus === "Formal review" ? "In review" : "On track",
+      statusTone: actionNeeded ? "amber" : caseRecord?.applicationStatus === "Formal review" ? "green" : "blue",
+      joined: caseRecord?.nextMilestone ?? "Active file",
+      actionNeeded,
+    }
+  }), [getCaseByClientId, getClientDetail])
+
+  const visibleRows = rows.filter((row) => {
+    const matchesSearch = [row.name, row.email, row.country, row.progress, row.status]
+      .join(" ")
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+
+    return matchesSearch && (!actionNeededOnly || row.actionNeeded)
+  })
+
+  const pendingReviews = state.checklist.filter((item) => item.status === "Uploaded" || item.status === "Under Review").length
+  const approvedDocs = state.checklist.filter((item) => item.status === "Approved").length
+  const totalRevenue = state.payments
+    .filter((payment) => payment.status === "Paid" || payment.status === "Approved")
+    .reduce((sum, payment) => sum + payment.amount, 0)
+
   return (
     <div className="space-y-8">
       <div className="space-y-3">
@@ -66,16 +68,16 @@ export default function ClientsPage() {
           <span className="app-pill rounded-full px-4 py-1.5 text-sm font-semibold">Admin workspace</span>
         </div>
         <p className="max-w-3xl text-[1.05rem] text-slate-200/82">
-          Review client status, application progress, and current operational position across the live portfolio.
+          Review live client status, case position, and where attention is currently needed.
         </p>
       </div>
 
       <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
         {[
-          { label: "Total clients", value: "248", change: "+12% from last month", iconBg: "app-kpi-icon", icon: Users },
-          { label: "Pending reviews", value: "34", change: "+8% from last month", iconBg: "bg-[#d8891a]", icon: Bell },
-          { label: "Approved docs", value: "892", change: "+23% from last month", iconBg: "bg-[#46b264]", icon: FileCheck2 },
-          { label: "Total revenue", value: "$2.4M", change: "+18% from last month", iconBg: "app-kpi-icon", icon: Wallet },
+          { label: "Total clients", value: `${clients.length}`, change: "Live client relationships", iconBg: "app-kpi-icon", icon: Users },
+          { label: "Pending reviews", value: `${pendingReviews}`, change: "Checklist items awaiting review", iconBg: "bg-[#d8891a]", icon: Bell },
+          { label: "Approved docs", value: `${approvedDocs}`, change: "Approved checklist items", iconBg: "bg-[#46b264]", icon: FileCheck2 },
+          { label: "Collected revenue", value: `EUR ${(totalRevenue / 1000).toFixed(0)}k`, change: "Paid and approved stages", iconBg: "app-kpi-icon", icon: Wallet },
         ].map((item) => (
           <div key={item.label} className="app-kpi rounded-[22px] px-6 py-6">
             <div className="flex items-start justify-between gap-4">
@@ -96,26 +98,26 @@ export default function ClientsPage() {
         <div className="space-y-6">
           <div className="app-tabbar inline-flex rounded-2xl p-1">
             <span className="app-tab app-tab-active rounded-[14px] px-10 py-2.5 text-lg font-medium">Clients</span>
-            <Link href="/documents" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">
-              Documents
-            </Link>
-            <Link href="/payments" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">
-              Payments
-            </Link>
+            <Link href="/documents" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">Documents</Link>
+            <Link href="/payments" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">Payments</Link>
           </div>
 
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="relative min-w-0 flex-1">
-              <input className="app-search h-14 w-full rounded-2xl px-12 text-base outline-none" placeholder="Search clients..." />
-              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <path d="M21 21l-4.35-4.35M10.8 18a7.2 7.2 0 1 0 0-14.4 7.2 7.2 0 0 0 0 14.4Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                </svg>
-              </span>
+              <input
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                className="app-search h-14 w-full rounded-2xl px-12 text-base outline-none"
+                placeholder="Search clients..."
+              />
             </div>
-            <Link href="/clients?filter=active" className="app-search inline-flex h-14 items-center gap-2 rounded-2xl px-5 text-base font-semibold text-white">
-              Filter
-            </Link>
+            <button
+              type="button"
+              onClick={() => setActionNeededOnly((current) => !current)}
+              className="app-search inline-flex h-14 items-center gap-2 rounded-2xl px-5 text-base font-semibold text-white"
+            >
+              {actionNeededOnly ? "Show all clients" : "Show action needed"}
+            </button>
           </div>
 
           <div className="app-grid-table bg-[#263248]">
@@ -126,13 +128,13 @@ export default function ClientsPage() {
                   <th>Country</th>
                   <th>Progress</th>
                   <th>Status</th>
-                  <th>Joined</th>
+                  <th>Next milestone</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {clientRows.map((row) => (
-                  <tr key={row.email}>
+                {visibleRows.map((row) => (
+                  <tr key={row.clientId}>
                     <td>
                       <div className="space-y-1">
                         <p className="text-[1.05rem] font-semibold text-white">{row.name}</p>

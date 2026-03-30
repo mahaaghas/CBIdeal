@@ -1,5 +1,7 @@
+"use client"
+
 import Link from "next/link"
-import { notFound } from "next/navigation"
+import { useParams } from "next/navigation"
 import {
   ArrowLeft,
   BellRing,
@@ -14,37 +16,47 @@ import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
 import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
 import { Button } from "@cbideal/ui/components/ui/button"
 import { Progress } from "@cbideal/ui/components/ui/progress"
-import {
-  clientDetails,
-  cases,
-  getChecklistForCase,
-  getNotificationsForClient,
-  getPaymentsForClient,
-  getQuotationById,
-  getQuotationTotal,
-  getReviewsForCase,
-  getUploadsForCase,
-} from "@/lib/mock-data"
+import { DocumentReviewControls, PaymentReviewControls } from "@/components/workflow-controls"
+import { useWorkflow } from "@/lib/workflow-store"
 
-type Params = Promise<{ clientId: string }>
+export default function ClientDetailPage() {
+  const params = useParams<{ clientId: string }>()
+  const clientId = typeof params.clientId === "string" ? params.clientId : ""
+  const {
+    getClientDetail,
+    getCaseByClientId,
+    getQuotationByClientId,
+    getPaymentsForClient,
+    getPaymentProofByPaymentId,
+    getChecklistForCase,
+    getLatestUploadForChecklistItem,
+    getReviewsForCase,
+    getNotificationsForClient,
+    getClientUpdates,
+  } = useWorkflow()
 
-export default async function ClientDetailPage({ params }: { params: Params }) {
-  const { clientId } = await params
-  const client = clientDetails[clientId as keyof typeof clientDetails]
+  const client = getClientDetail(clientId)
+  const caseRecord = getCaseByClientId(clientId)
 
-  if (!client) {
-    notFound()
+  if (!client || !caseRecord) {
+    return (
+      <div className="section-stack">
+        <CrmSectionCard title="Client not found" description="The requested client record is not available in this workspace state.">
+          <Button asChild className="rounded-full">
+            <Link href="/clients">Return to clients</Link>
+          </Button>
+        </CrmSectionCard>
+      </div>
+    )
   }
 
-  const currentCase = cases.find((item) => item.id === client.caseId)
-  const quotation = client.quotationId ? getQuotationById(client.quotationId) : null
-  const payments = getPaymentsForClient(client.id)
-  const checklist = getChecklistForCase(client.caseId)
-  const uploads = getUploadsForCase(client.caseId)
-  const reviews = getReviewsForCase(client.caseId)
-  const notifications = getNotificationsForClient(client.id)
+  const quotation = getQuotationByClientId(clientId)
+  const payments = getPaymentsForClient(clientId)
+  const checklist = getChecklistForCase(caseRecord.id)
+  const reviews = getReviewsForCase(caseRecord.id)
+  const notifications = getNotificationsForClient(clientId)
+  const updates = getClientUpdates(clientId)
 
-  const progress = currentCase?.progress ?? 0
   const checklistByCategory = checklist.reduce<Record<string, typeof checklist>>((groups, item) => {
     groups[item.category] ??= []
     groups[item.category].push(item)
@@ -56,7 +68,7 @@ export default async function ClientDetailPage({ params }: { params: Params }) {
       <CrmPageHeader
         eyebrow="Client case detail"
         title={client.name}
-        description={`${client.summary} This view keeps the quotation, payment schedule, checklist, reviews, and client-facing activity in one structured workspace so the account manager does not need to reconstruct the case from separate tools.`}
+        description={`${client.summary} This view keeps the payment structure, document decisions, and client-facing update trail connected to the same matter.`}
         actions={
           <>
             <Button asChild variant="outline" className="rounded-full">
@@ -82,7 +94,7 @@ export default async function ClientDetailPage({ params }: { params: Params }) {
           <p className="fine-print">Relationship owner: {client.owner}</p>
         </CrmSectionCard>
         <CrmSectionCard title="Case stage" description="Current matter position.">
-          <CrmStatusBadge status={currentCase?.stage ?? client.applicationStatus} />
+          <CrmStatusBadge status={caseRecord.applicationStatus} />
         </CrmSectionCard>
         <CrmSectionCard title="Quotation" description="Commercial status for the active matter.">
           {quotation ? <CrmStatusBadge status={quotation.status} /> : <p className="fine-print">No quotation yet</p>}
@@ -95,25 +107,23 @@ export default async function ClientDetailPage({ params }: { params: Params }) {
       <div className="grid gap-5 xl:grid-cols-[0.92fr_1.08fr]">
         <CrmSectionCard
           title="Case progress"
-          description="A single progress view covering stage, timing, and what the client should be asked for next."
+          description="A clear read on progress, current position, and what the client will see next."
         >
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-foreground">{currentCase?.route ?? client.applicationStatus}</p>
-              <p className="text-sm text-muted-foreground">{progress}%</p>
+              <p className="text-sm font-medium text-foreground">{caseRecord.route}</p>
+              <p className="text-sm text-muted-foreground">{caseRecord.progress}%</p>
             </div>
-            <Progress value={progress} className="h-2.5" />
+            <Progress value={caseRecord.progress} className="h-2.5" />
           </div>
           <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
             <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Next milestone</p>
-            <p className="mt-2 text-sm font-medium text-foreground">{currentCase?.nextMilestone ?? "To be confirmed"}</p>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              Current stage: {currentCase?.applicationStatus ?? client.applicationStatus}
-            </p>
+            <p className="mt-2 text-sm font-medium text-foreground">{caseRecord.nextMilestone}</p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Current status: {caseRecord.applicationStatus}</p>
           </div>
           <div className="space-y-3">
-            {client.notes.map((note) => (
-              <div key={note} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+            {updates.slice(0, 3).map((note, index) => (
+              <div key={`${note}-${index}`} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5 flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <MessageSquareMore className="size-4" />
@@ -127,7 +137,7 @@ export default async function ClientDetailPage({ params }: { params: Params }) {
 
         <CrmSectionCard
           title="Quotation and payment structure"
-          description="Commercial scope, fee visibility, and payment stages tied directly to the active matter."
+          description="Commercial scope, payment stages, and finance review decisions attached to the active matter."
         >
           {quotation ? (
             <>
@@ -139,42 +149,42 @@ export default async function ClientDetailPage({ params }: { params: Params }) {
                   </div>
                   <CrmStatusBadge status={quotation.status} />
                 </div>
-                <div className="mt-4 grid gap-3 md:grid-cols-3">
-                  <div className="rounded-[18px] border border-border/70 bg-muted/20 px-4 py-3">
-                    <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Service fees</p>
-                    <p className="mt-2 text-sm font-medium text-foreground">
-                      {quotation.currency} {quotation.serviceFees.reduce((sum, item) => sum + item.amount, 0).toLocaleString()}
-                    </p>
-                  </div>
-                  <div className="rounded-[18px] border border-border/70 bg-muted/20 px-4 py-3">
-                    <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Government fees</p>
-                    <p className="mt-2 text-sm font-medium text-foreground">
-                      {quotation.currency} {quotation.governmentFees.reduce((sum, item) => sum + item.amount, 0).toLocaleString()}
-                    </p>
-                  </div>
-                  <div className="rounded-[18px] border border-border/70 bg-muted/20 px-4 py-3">
-                    <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Total</p>
-                    <p className="mt-2 text-sm font-medium text-foreground">
-                      {quotation.currency} {getQuotationTotal(quotation.id).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
               </div>
 
               <div className="space-y-3">
-                {payments.map((payment) => (
-                  <div key={payment.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium text-foreground">{payment.label}</p>
-                        <p className="text-sm leading-6 text-muted-foreground">
-                          {payment.currency} {payment.amount.toLocaleString()} · due {payment.dueDate}
-                        </p>
+                {payments.map((payment) => {
+                  const proof = getPaymentProofByPaymentId(payment.id)
+
+                  return (
+                    <div key={payment.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium text-foreground">{payment.label}</p>
+                          <p className="text-sm leading-6 text-muted-foreground">
+                            {payment.currency} {payment.amount.toLocaleString()} · due {payment.dueDate}
+                          </p>
+                          {proof ? (
+                            <p className="text-sm leading-6 text-muted-foreground">
+                              Proof: {proof.fileName} · uploaded {proof.uploadedAt}
+                            </p>
+                          ) : (
+                            <p className="text-sm leading-6 text-muted-foreground">Awaiting client upload.</p>
+                          )}
+                          {proof?.rejectionReason ? (
+                            <p className="text-sm leading-6 text-rose-700">{proof.rejectionReason}</p>
+                          ) : null}
+                        </div>
+                        <CrmStatusBadge status={payment.status} />
                       </div>
-                      <CrmStatusBadge status={payment.status} />
+
+                      {payment.status === "Under review" ? (
+                        <div className="mt-4">
+                          <PaymentReviewControls paymentId={payment.id} paymentLabel={payment.label} />
+                        </div>
+                      ) : null}
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </>
           ) : (
@@ -185,7 +195,7 @@ export default async function ClientDetailPage({ params }: { params: Params }) {
 
       <CrmSectionCard
         title="Document checklist"
-        description="Required records grouped by category so internal teams and clients can work from the same structure."
+        description="Required records grouped by category, with review actions attached to the specific item."
       >
         <div className="grid gap-4 xl:grid-cols-2">
           {Object.entries(checklistByCategory).map(([category, items]) => (
@@ -200,20 +210,33 @@ export default async function ClientDetailPage({ params }: { params: Params }) {
                 </div>
               </div>
               <div className="space-y-3">
-                {items.map((item) => (
-                  <div key={item.id} className="rounded-[18px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium text-foreground">{item.item}</p>
-                        <p className="text-sm leading-6 text-muted-foreground">
-                          {item.uploadedAt ? `Uploaded ${item.uploadedAt}` : "Awaiting upload"}
-                        </p>
-                        {item.comment ? <p className="text-sm leading-6 text-muted-foreground">{item.comment}</p> : null}
+                {items.map((item) => {
+                  const latestUpload = getLatestUploadForChecklistItem(item.id)
+                  const canReview = item.status === "Uploaded" || item.status === "Under Review"
+
+                  return (
+                    <div key={item.id} className="rounded-[18px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium text-foreground">{item.item}</p>
+                          <p className="text-sm leading-6 text-muted-foreground">
+                            {latestUpload
+                              ? `${latestUpload.fileName} · uploaded ${latestUpload.uploadedAt}`
+                              : "Awaiting upload"}
+                          </p>
+                          {item.comment ? <p className="text-sm leading-6 text-muted-foreground">{item.comment}</p> : null}
+                        </div>
+                        <CrmStatusBadge status={item.status} />
                       </div>
-                      <CrmStatusBadge status={item.status} />
+
+                      {canReview ? (
+                        <div className="mt-4">
+                          <DocumentReviewControls checklistItemId={item.id} itemLabel={item.item} />
+                        </div>
+                      ) : null}
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           ))}
@@ -222,27 +245,12 @@ export default async function ClientDetailPage({ params }: { params: Params }) {
 
       <div className="grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
         <CrmSectionCard
-          title="Uploads and review decisions"
-          description="Every upload can be reviewed, approved, or returned with a required reason."
+          title="Review trail"
+          description="Uploads, decisions, and comments remain visible together so nothing is lost in handover."
         >
           <div className="space-y-3">
-            {uploads.map((upload) => (
-              <div key={upload.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium text-foreground">{upload.fileName}</p>
-                    <p className="text-sm leading-6 text-muted-foreground">
-                      Uploaded by {upload.uploadedBy} · {upload.uploadedAt}
-                    </p>
-                  </div>
-                  <CrmStatusBadge status={upload.status} />
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="space-y-3 border-t border-border/70 pt-4">
             {reviews.map((review) => (
-              <div key={review.id} className="rounded-[20px] border border-border/70 bg-muted/20 px-4 py-4">
+              <div key={review.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-foreground">{review.item}</p>
@@ -259,8 +267,8 @@ export default async function ClientDetailPage({ params }: { params: Params }) {
         </CrmSectionCard>
 
         <CrmSectionCard
-          title="Client-facing notifications"
-          description="Workflow-triggered messages keep the client informed without exposing internal-only context."
+          title="Client-facing notices"
+          description="Messages created by the workflow that the client can see or receive by email."
         >
           <div className="space-y-3">
             {notifications.map((item) => (
@@ -270,49 +278,47 @@ export default async function ClientDetailPage({ params }: { params: Params }) {
                     <BellRing className="size-4" />
                   </div>
                   <div className="space-y-1">
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
                       <p className="text-sm font-medium text-foreground">{item.type}</p>
                       <CrmStatusBadge status={item.status} />
                     </div>
-                    <p className="text-sm leading-6 text-muted-foreground">
-                      {item.channel} · {item.sentAt}
-                    </p>
+                    <p className="text-sm leading-6 text-muted-foreground">{item.channel} · {item.sentAt}</p>
                   </div>
                 </div>
               </div>
             ))}
-          </div>
 
-          <div className="space-y-3 border-t border-border/70 pt-4">
-            {[
-              {
-                icon: ReceiptText,
-                title: "Quotation visibility",
-                body: "Clients can read and download their quotation without seeing internal notes or drafting history.",
-              },
-              {
-                icon: CreditCard,
-                title: "Payment proof loop",
-                body: "Rejected proofs remain attached to the stage with the reason kept visible for re-upload.",
-              },
-              {
-                icon: ShieldCheck,
-                title: "Controlled document access",
-                body: "Only required checklist items and approved updates appear in the client-facing layer.",
-              },
-            ].map((item) => (
-              <div key={item.title} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <item.icon className="size-4" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium text-foreground">{item.title}</p>
-                    <p className="text-sm leading-6 text-muted-foreground">{item.body}</p>
+            <div className="space-y-3 border-t border-border/70 pt-4">
+              {[
+                {
+                  icon: ReceiptText,
+                  title: "Quotation visibility",
+                  body: "Clients can read and download their quotation without seeing internal drafting notes.",
+                },
+                {
+                  icon: CreditCard,
+                  title: "Payment proof loop",
+                  body: "Rejected proofs remain attached to the exact stage together with the rejection reason.",
+                },
+                {
+                  icon: ShieldCheck,
+                  title: "Controlled document access",
+                  body: "Only checklist items and updates relevant to the client appear in the portal.",
+                },
+              ].map((item) => (
+                <div key={item.title} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                      <item.icon className="size-4" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-foreground">{item.title}</p>
+                      <p className="text-sm leading-6 text-muted-foreground">{item.body}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </CrmSectionCard>
       </div>

@@ -35,9 +35,15 @@ const navigation = [
 
 interface CrmShellProps {
   children: ReactNode
+  notificationCount?: number
+  profileInitials?: string
 }
 
-export function CrmShell({ children }: CrmShellProps) {
+export function CrmShell({
+  children,
+  notificationCount = 3,
+  profileInitials = "AD",
+}: CrmShellProps) {
   const pathname = usePathname()
 
   return (
@@ -108,16 +114,18 @@ export function CrmShell({ children }: CrmShellProps) {
                   className="app-top-icon relative flex size-12 items-center justify-center rounded-full transition-colors"
                 >
                   <Bell className="size-5" />
-                  <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full bg-[#f04f4f] text-[0.68rem] font-semibold text-white">
-                    3
-                  </span>
+                  {notificationCount > 0 ? (
+                    <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full bg-[#f04f4f] text-[0.68rem] font-semibold text-white">
+                      {notificationCount}
+                    </span>
+                  ) : null}
                 </Link>
                 <Link
                   href="/settings"
                   aria-label="Open profile and workspace settings"
                   className="app-avatar flex size-12 items-center justify-center rounded-full text-base font-semibold"
                 >
-                  AM
+                  {profileInitials}
                 </Link>
               </div>
             </header>

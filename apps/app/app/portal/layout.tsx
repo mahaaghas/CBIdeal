@@ -4,6 +4,7 @@ import type { ReactNode } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Bell, CreditCard, FileStack, FolderKanban, LogOut, Settings } from "lucide-react"
+import { useWorkflow } from "@/lib/workflow-store"
 
 const portalNavigation = [
   { href: "/portal", label: "Overview", icon: FolderKanban },
@@ -15,6 +16,17 @@ const portalNavigation = [
 
 export default function ClientPortalLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
+  const { currentPortalClientId, getClientDetail, getNotificationsForClient } = useWorkflow()
+  const client = getClientDetail(currentPortalClientId)
+  const initials = client?.name
+    .split(" ")
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase() ?? "CP"
+  const notificationCount = getNotificationsForClient(currentPortalClientId).filter(
+    (item) => item.status === "Queued" || item.status === "Sent",
+  ).length
 
   return (
     <div className="app-shell">
@@ -72,16 +84,18 @@ export default function ClientPortalLayout({ children }: { children: ReactNode }
                   className="app-top-icon relative flex size-12 items-center justify-center rounded-full transition-colors"
                 >
                   <Bell className="size-5" />
-                  <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full bg-[#f04f4f] text-[0.68rem] font-semibold text-white">
-                    3
-                  </span>
+                  {notificationCount > 0 ? (
+                    <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full bg-[#f04f4f] text-[0.68rem] font-semibold text-white">
+                      {notificationCount}
+                    </span>
+                  ) : null}
                 </Link>
                 <Link
                   href="/portal/profile"
                   aria-label="Open client profile"
                   className="app-avatar flex size-12 items-center justify-center rounded-full text-base font-semibold"
                 >
-                  AM
+                  {initials}
                 </Link>
               </div>
             </header>

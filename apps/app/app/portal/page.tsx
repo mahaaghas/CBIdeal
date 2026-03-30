@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { CreditCard, FileText, Upload } from "lucide-react"
 
 const steps = [
@@ -106,9 +107,9 @@ export default function ClientPortalPage() {
               </div>
             </div>
 
-            <button type="button" className="w-full rounded-2xl bg-[#5b759b] px-5 py-4 text-base font-semibold text-white transition-colors hover:bg-[#6884ad]">
+            <Link href="/portal/payments" className="block w-full rounded-2xl bg-[#5b759b] px-5 py-4 text-center text-base font-semibold text-white transition-colors hover:bg-[#6884ad]">
               Complete Payment
-            </button>
+            </Link>
           </div>
         </section>
 
@@ -138,9 +139,9 @@ export default function ClientPortalPage() {
                       <p className="text-sm text-slate-300">{item.note}</p>
                     </div>
                     {item.action ? (
-                      <button type="button" className="rounded-xl border border-white/10 px-4 py-2 text-sm font-semibold text-white">
+                      <Link href="/portal/documents" className="rounded-xl border border-white/10 px-4 py-2 text-sm font-semibold text-white transition-colors hover:border-white/20 hover:bg-white/5">
                         {item.action}
-                      </button>
+                      </Link>
                     ) : (
                       <span className={item.tone === "green" ? "app-status-pill app-status-green" : "app-status-pill app-status-amber"}>
                         {item.tone === "green" ? "Uploaded" : "Pending"}
@@ -151,13 +152,13 @@ export default function ClientPortalPage() {
               ))}
             </div>
 
-            <div className="app-upload-zone rounded-[20px] px-6 py-10 text-center">
+            <Link href="/portal/documents" className="app-upload-zone block rounded-[20px] px-6 py-10 text-center transition-colors hover:bg-white/[0.03]">
               <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-white/5 text-slate-200">
                 <Upload className="size-7" />
               </div>
               <p className="mt-5 text-lg font-semibold text-white">Drop files here or click to upload</p>
               <p className="mt-2 text-sm text-slate-300">Accepted formats: PDF, JPG, PNG</p>
-            </div>
+            </Link>
           </div>
         </section>
       </div>

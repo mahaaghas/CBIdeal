@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { Bell, CheckCircle2, CreditCard, FileCheck2, Users, Wallet } from "lucide-react"
 
 const tabs = [
@@ -8,6 +9,7 @@ const tabs = [
 
 const clientRows = [
   {
+    clientId: "a-rahman",
     name: "Ahmed Rahman",
     email: "a.rahman@samplemail.com",
     country: "Kuwait",
@@ -18,6 +20,7 @@ const clientRows = [
     joined: "Jan 15, 2026",
   },
   {
+    clientId: "al-noor",
     name: "Al Noor Holdings",
     email: "office@alnoor-demo.com",
     country: "United Arab Emirates",
@@ -28,6 +31,7 @@ const clientRows = [
     joined: "Jan 18, 2026",
   },
   {
+    clientId: "westbridge",
     name: "Westbridge Capital",
     email: "counsel@westbridge-demo.com",
     country: "Qatar",
@@ -38,6 +42,7 @@ const clientRows = [
     joined: "Jan 20, 2026",
   },
   {
+    clientId: "m-elsayed",
     name: "M. El Sayed",
     email: "m.elsayed@samplemail.com",
     country: "Saudi Arabia",
@@ -51,6 +56,7 @@ const clientRows = [
 
 const documentRows = [
   {
+    clientId: "a-rahman",
     user: "Ahmed Rahman",
     document: "Passport copy",
     type: "Identity",
@@ -58,9 +64,10 @@ const documentRows = [
     status: "Approved",
     statusTone: "green",
     uploaded: "Jan 12, 2026",
-    actions: ["Download"],
+    actions: [{ label: "Download", href: "/clients/a-rahman?section=uploads" }],
   },
   {
+    clientId: "al-noor",
     user: "Al Noor Holdings",
     document: "Source of funds memo",
     type: "Financial",
@@ -68,9 +75,13 @@ const documentRows = [
     status: "Pending",
     statusTone: "amber",
     uploaded: "Jan 18, 2026",
-    actions: ["Approve", "Reject"],
+    actions: [
+      { label: "Approve", href: "/clients/al-noor?section=uploads&decision=approve" },
+      { label: "Reject", href: "/clients/al-noor?section=uploads&decision=reject" },
+    ],
   },
   {
+    clientId: "westbridge",
     user: "Westbridge Capital",
     document: "Board authority resolution",
     type: "Legal",
@@ -78,9 +89,13 @@ const documentRows = [
     status: "Pending",
     statusTone: "amber",
     uploaded: "Jan 20, 2026",
-    actions: ["Approve", "Reject"],
+    actions: [
+      { label: "Approve", href: "/clients/westbridge?section=uploads&decision=approve" },
+      { label: "Reject", href: "/clients/westbridge?section=uploads&decision=reject" },
+    ],
   },
   {
+    clientId: "m-elsayed",
     user: "M. El Sayed",
     document: "Police clearance",
     type: "Legal",
@@ -88,46 +103,56 @@ const documentRows = [
     status: "Rejected",
     statusTone: "red",
     uploaded: "Jan 21, 2026",
-    actions: ["Download"],
+    actions: [{ label: "Download", href: "/clients/m-elsayed?section=uploads" }],
   },
 ] as const
 
 const paymentRows = [
   {
+    clientId: "a-rahman",
     user: "Ahmed Rahman",
     program: "Dominica citizenship",
     amount: "$221,000",
     status: "Completed",
     statusTone: "green",
     date: "Jan 15, 2026",
-    actions: ["View receipt"],
+    actions: [{ label: "View receipt", href: "/clients/a-rahman?section=payments" }],
   },
   {
+    clientId: "al-noor",
     user: "Al Noor Holdings",
     program: "Portugal residence route",
     amount: "EUR 12,000",
     status: "Pending",
     statusTone: "amber",
     date: "Jan 18, 2026",
-    actions: ["Verify", "Details"],
+    actions: [
+      { label: "Verify", href: "/clients/al-noor?section=payments&action=verify" },
+      { label: "Details", href: "/clients/al-noor?section=payments" },
+    ],
   },
   {
+    clientId: "westbridge",
     user: "Westbridge Capital",
     program: "European residence structure",
     amount: "EUR 14,000",
     status: "Pending",
     statusTone: "amber",
     date: "Jan 20, 2026",
-    actions: ["Verify", "Details"],
+    actions: [
+      { label: "Verify", href: "/clients/westbridge?section=payments&action=verify" },
+      { label: "Details", href: "/clients/westbridge?section=payments" },
+    ],
   },
   {
+    clientId: "m-elsayed",
     user: "M. El Sayed",
     program: "Strategic relocation",
     amount: "EUR 4,200",
     status: "Failed",
     statusTone: "red",
     date: "Jan 22, 2026",
-    actions: ["Retry"],
+    actions: [{ label: "Retry", href: "/clients/m-elsayed?section=payments&action=retry" }],
   },
 ] as const
 
@@ -136,6 +161,13 @@ function toneClass(tone: string) {
   if (tone === "amber") return "app-status-pill app-status-amber"
   if (tone === "red") return "app-status-pill app-status-red"
   return "app-status-pill app-status-blue"
+}
+
+function actionClass(label: string) {
+  if (label === "Approve" || label === "Verify") return "app-status-pill app-status-green"
+  if (label === "Reject") return "app-status-pill app-status-red"
+  if (label === "Retry") return "app-status-pill app-status-blue"
+  return "text-slate-300 underline-offset-4 hover:text-white hover:underline"
 }
 
 export default async function DashboardPage({
@@ -212,13 +244,17 @@ export default async function DashboardPage({
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id
               return (
-                <a
+                <Link
                   key={tab.id}
                   href={`/dashboard?tab=${tab.id}`}
-                  className={isActive ? "app-tab app-tab-active rounded-[14px] px-10 py-2.5 text-lg font-medium" : "app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium transition-colors hover:text-white"}
+                  className={
+                    isActive
+                      ? "app-tab app-tab-active rounded-[14px] px-10 py-2.5 text-lg font-medium"
+                      : "app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium transition-colors hover:text-white"
+                  }
                 >
                   {tab.label}
-                </a>
+                </Link>
               )
             })}
           </div>
@@ -234,7 +270,6 @@ export default async function DashboardPage({
                       ? "Search payments..."
                       : "Search clients..."
                 }
-                readOnly
               />
               <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -242,15 +277,15 @@ export default async function DashboardPage({
                 </svg>
               </span>
             </div>
-            <button
-              type="button"
+            <Link
+              href={activeTab === "documents" ? "/documents?filter=pending" : activeTab === "payments" ? "/payments?filter=pending" : "/clients?filter=active"}
               className="app-search inline-flex h-14 items-center gap-2 rounded-2xl px-5 text-base font-semibold text-white"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                 <path d="M4 5h16M7 12h10M10 19h4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
               </svg>
               Filter
-            </button>
+            </Link>
           </div>
 
           <div className="app-grid-table bg-[#263248]">
@@ -279,7 +314,11 @@ export default async function DashboardPage({
                       <td><span className={toneClass(row.progressTone)}>{row.progress}</span></td>
                       <td><span className={toneClass(row.statusTone)}>{row.status}</span></td>
                       <td className="text-slate-400">{row.joined}</td>
-                      <td className="text-slate-400">•••</td>
+                      <td>
+                        <Link href={`/clients/${row.clientId}`} className="text-slate-300 underline-offset-4 hover:text-white hover:underline">
+                          Open record
+                        </Link>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -309,18 +348,9 @@ export default async function DashboardPage({
                       <td>
                         <div className="flex flex-wrap gap-2">
                           {row.actions.map((action) => (
-                            <span
-                              key={action}
-                              className={
-                                action === "Approve"
-                                  ? "app-status-pill app-status-green"
-                                  : action === "Reject"
-                                    ? "app-status-pill app-status-red"
-                                    : "text-slate-300"
-                              }
-                            >
-                              {action}
-                            </span>
+                            <Link key={action.label} href={action.href} className={actionClass(action.label)}>
+                              {action.label}
+                            </Link>
                           ))}
                         </div>
                       </td>
@@ -353,18 +383,9 @@ export default async function DashboardPage({
                       <td>
                         <div className="flex flex-wrap gap-2">
                           {row.actions.map((action) => (
-                            <span
-                              key={action}
-                              className={
-                                action === "Verify"
-                                  ? "app-status-pill app-status-green"
-                                  : action === "Retry"
-                                    ? "app-status-pill app-status-blue"
-                                    : "text-slate-300"
-                              }
-                            >
-                              {action}
-                            </span>
+                            <Link key={action.label} href={action.href} className={actionClass(action.label)}>
+                              {action.label}
+                            </Link>
                           ))}
                         </div>
                       </td>

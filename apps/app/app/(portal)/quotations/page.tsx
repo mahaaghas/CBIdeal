@@ -32,13 +32,17 @@ export default function QuotationsPage() {
         description="Each quotation keeps service fees, government costs, optional items, and notes close to the relevant case. The same record can be reviewed internally and then presented inside the client portal without changing format."
         actions={
           <>
-            <Button variant="outline" className="rounded-full">
-              <Download className="size-4" />
-              Export register
+            <Button asChild variant="outline" className="rounded-full">
+              <Link href="/quotations?export=register">
+                <Download className="size-4" />
+                Export register
+              </Link>
             </Button>
-            <Button className="rounded-full">
-              <ReceiptText className="size-4" />
-              Create quotation
+            <Button asChild className="rounded-full">
+              <Link href="/clients?compose=quotation">
+                <ReceiptText className="size-4" />
+                Create quotation
+              </Link>
             </Button>
           </>
         }
@@ -74,13 +78,17 @@ export default function QuotationsPage() {
               searchPlaceholder="Search quotation IDs, clients, or case references"
               actions={
                 <>
-                  <Button variant="outline" className="rounded-full">
-                    <Filter className="size-4" />
-                    Filter
+                  <Button asChild variant="outline" className="rounded-full">
+                    <Link href="/quotations?filter=active">
+                      <Filter className="size-4" />
+                      Filter
+                    </Link>
                   </Button>
-                  <Button variant="outline" className="rounded-full">
-                    <Send className="size-4" />
-                    Resend quotation
+                  <Button asChild variant="outline" className="rounded-full">
+                    <Link href="/quotations?action=resend">
+                      <Send className="size-4" />
+                      Resend quotation
+                    </Link>
                   </Button>
                 </>
               }

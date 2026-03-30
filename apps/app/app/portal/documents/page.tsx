@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { UploadCloud } from "lucide-react"
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
 import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
@@ -20,9 +21,11 @@ export default function PortalDocumentsPage() {
         title="Requested and reviewed documents"
         description="Each document request appears as a checklist item so it is clear what has been approved, what is still under review, and what needs to be uploaded again."
         actions={
-          <Button className="rounded-full">
+          <Button asChild className="rounded-full">
+            <Link href="/portal/documents?action=upload">
             <UploadCloud className="size-4" />
             Upload document
+            </Link>
           </Button>
         }
       />

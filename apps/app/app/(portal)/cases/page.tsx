@@ -56,9 +56,11 @@ export default function CasesPage() {
             searchPlaceholder="Search routes, case references, or clients"
             actions={
               <>
-                <Button variant="outline" className="rounded-full">
-                  <Filter className="size-4" />
-                  Filter
+                <Button asChild variant="outline" className="rounded-full">
+                  <Link href="/cases?filter=active">
+                    <Filter className="size-4" />
+                    Filter
+                  </Link>
                 </Button>
                 <Button asChild className="rounded-full">
                   <Link href="/documents">

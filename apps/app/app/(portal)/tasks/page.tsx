@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { CalendarCheck2, Filter } from "lucide-react"
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
 import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
@@ -77,13 +78,17 @@ export default function TasksPage() {
             searchPlaceholder="Search tasks, owners, or priority"
             actions={
               <>
-                <Button variant="outline" className="rounded-full">
-                  <Filter className="size-4" />
-                  Filter
+                <Button asChild variant="outline" className="rounded-full">
+                  <Link href="/tasks?filter=priority">
+                    <Filter className="size-4" />
+                    Filter
+                  </Link>
                 </Button>
-                <Button className="rounded-full">
-                  <CalendarCheck2 className="size-4" />
-                  Review due today
+                <Button asChild className="rounded-full">
+                  <Link href="/tasks?view=due-today">
+                    <CalendarCheck2 className="size-4" />
+                    Review due today
+                  </Link>
                 </Button>
               </>
             }

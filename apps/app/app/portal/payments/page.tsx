@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { CreditCard, UploadCloud } from "lucide-react"
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
 import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
@@ -15,9 +16,11 @@ export default function PortalPaymentsPage() {
         title="Your payment schedule"
         description="Payment stages are shown here in the order they become relevant. Where a stage requires evidence, you can upload proof of payment directly against that stage."
         actions={
-          <Button className="rounded-full">
+          <Button asChild className="rounded-full">
+            <Link href="/portal/payments?action=upload-proof">
             <UploadCloud className="size-4" />
             Upload proof of payment
+            </Link>
           </Button>
         }
       />

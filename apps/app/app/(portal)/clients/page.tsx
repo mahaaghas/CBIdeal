@@ -1,5 +1,9 @@
+import Link from "next/link"
+import { Bell, FileCheck2, Users, Wallet } from "lucide-react"
+
 const clientRows = [
   {
+    clientId: "a-rahman",
     name: "Ahmed Rahman",
     email: "a.rahman@samplemail.com",
     country: "Kuwait",
@@ -10,6 +14,7 @@ const clientRows = [
     joined: "Jan 15, 2026",
   },
   {
+    clientId: "al-noor",
     name: "Al Noor Holdings",
     email: "office@alnoor-demo.com",
     country: "United Arab Emirates",
@@ -20,6 +25,7 @@ const clientRows = [
     joined: "Jan 18, 2026",
   },
   {
+    clientId: "westbridge",
     name: "Westbridge Capital",
     email: "counsel@westbridge-demo.com",
     country: "Qatar",
@@ -30,6 +36,7 @@ const clientRows = [
     joined: "Jan 20, 2026",
   },
   {
+    clientId: "m-elsayed",
     name: "M. El Sayed",
     email: "m.elsayed@samplemail.com",
     country: "Saudi Arabia",
@@ -89,26 +96,26 @@ export default function ClientsPage() {
         <div className="space-y-6">
           <div className="app-tabbar inline-flex rounded-2xl p-1">
             <span className="app-tab app-tab-active rounded-[14px] px-10 py-2.5 text-lg font-medium">Clients</span>
-            <a href="/documents" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">
+            <Link href="/documents" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">
               Documents
-            </a>
-            <a href="/payments" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">
+            </Link>
+            <Link href="/payments" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">
               Payments
-            </a>
+            </Link>
           </div>
 
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="relative min-w-0 flex-1">
-              <input className="app-search h-14 w-full rounded-2xl px-12 text-base outline-none" placeholder="Search clients..." readOnly />
+              <input className="app-search h-14 w-full rounded-2xl px-12 text-base outline-none" placeholder="Search clients..." />
               <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path d="M21 21l-4.35-4.35M10.8 18a7.2 7.2 0 1 0 0-14.4 7.2 7.2 0 0 0 0 14.4Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                 </svg>
               </span>
             </div>
-            <button type="button" className="app-search inline-flex h-14 items-center gap-2 rounded-2xl px-5 text-base font-semibold text-white">
+            <Link href="/clients?filter=active" className="app-search inline-flex h-14 items-center gap-2 rounded-2xl px-5 text-base font-semibold text-white">
               Filter
-            </button>
+            </Link>
           </div>
 
           <div className="app-grid-table bg-[#263248]">
@@ -136,7 +143,11 @@ export default function ClientsPage() {
                     <td><span className={toneClass(row.progressTone)}>{row.progress}</span></td>
                     <td><span className={toneClass(row.statusTone)}>{row.status}</span></td>
                     <td className="text-slate-400">{row.joined}</td>
-                    <td className="text-slate-400">•••</td>
+                    <td>
+                      <Link href={`/clients/${row.clientId}`} className="text-slate-300 underline-offset-4 hover:text-white hover:underline">
+                        Open record
+                      </Link>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -147,4 +158,3 @@ export default function ClientsPage() {
     </div>
   )
 }
-import { Bell, FileCheck2, Users, Wallet } from "lucide-react"

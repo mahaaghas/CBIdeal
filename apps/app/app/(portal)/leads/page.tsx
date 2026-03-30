@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { ArrowRight, Filter } from "lucide-react"
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
 import { CrmStatCard } from "@cbideal/ui/components/crm-stat-card"
@@ -68,13 +69,17 @@ export default function LeadsPage() {
             searchPlaceholder="Search names, regions, or route focus"
             actions={
               <>
-                <Button variant="outline" className="rounded-full">
-                  <Filter className="size-4" />
-                  Filter
+                <Button asChild variant="outline" className="rounded-full">
+                  <Link href="/leads?filter=priority">
+                    <Filter className="size-4" />
+                    Filter
+                  </Link>
                 </Button>
-                <Button className="rounded-full">
-                  Review current matters
-                  <ArrowRight className="size-4" />
+                <Button asChild className="rounded-full">
+                  <Link href="/clients">
+                    Review current matters
+                    <ArrowRight className="size-4" />
+                  </Link>
                 </Button>
               </>
             }

@@ -84,13 +84,13 @@ export function CrmShell({ children }: CrmShellProps) {
               <FolderKanban className="size-4" />
               <span>Client portal</span>
             </Link>
-            <button
-              type="button"
+            <Link
+              href="/portal/login"
               className="app-nav-link mt-2 flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-[1rem] font-medium transition-colors"
             >
               <LogOut className="size-4" />
               <span>Sign Out</span>
-            </button>
+            </Link>
           </div>
         </aside>
 
@@ -102,15 +102,23 @@ export function CrmShell({ children }: CrmShellProps) {
               </Link>
 
               <div className="flex items-center gap-3">
-                <button type="button" className="app-top-icon relative flex size-12 items-center justify-center rounded-full transition-colors">
+                <Link
+                  href="/settings#notifications"
+                  aria-label="Open notifications"
+                  className="app-top-icon relative flex size-12 items-center justify-center rounded-full transition-colors"
+                >
                   <Bell className="size-5" />
                   <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full bg-[#f04f4f] text-[0.68rem] font-semibold text-white">
                     3
                   </span>
-                </button>
-                <div className="app-avatar flex size-12 items-center justify-center rounded-full text-base font-semibold">
+                </Link>
+                <Link
+                  href="/settings"
+                  aria-label="Open profile and workspace settings"
+                  className="app-avatar flex size-12 items-center justify-center rounded-full text-base font-semibold"
+                >
                   AM
-                </div>
+                </Link>
               </div>
             </header>
 

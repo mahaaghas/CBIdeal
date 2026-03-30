@@ -1,4 +1,4 @@
-import { ArrowUpToLine, Eye, Filter } from "lucide-react"
+import { CheckCircle2, Filter, UploadCloud, XCircle } from "lucide-react"
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
 import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
 import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
@@ -13,59 +13,35 @@ import {
   TableHeader,
   TableRow,
 } from "@cbideal/ui/components/ui/table"
-import { documents } from "@/lib/mock-data"
+import { documentChecklistItems, documentUploads, reviewDecisions } from "@/lib/mock-data"
 
 export default function DocumentsPage() {
+  const categories = Array.from(new Set(documentChecklistItems.map((item) => item.category)))
+
   return (
     <div className="section-stack">
       <CrmPageHeader
-        eyebrow="Documents"
-        title="A cleaner record of uploads, requests, and document status."
-        description="The document layer keeps file visibility close to the relevant case while staying visually aligned with the wider CBI Deal system. It is designed for review, follow-up, and controlled client access."
+        eyebrow="Document review queue"
+        title="Checklist items, uploads, and review decisions organised in one controlled workflow."
+        description="The document layer is built around required checklist items rather than loose files. That keeps each upload tied to a category, a case, a review decision, and a clear next action for the client."
+        actions={
+          <>
+            <Button variant="outline" className="rounded-full">
+              <UploadCloud className="size-4" />
+              Review latest uploads
+            </Button>
+            <Button className="rounded-full">Request missing documents</Button>
+          </>
+        }
       />
 
-      <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
-        <CrmSectionCard
-          title="Upload and review"
-          description="Internal teams can keep uploads, requests, and reviews in one place, while the same structure is ready for external client portal use."
-        >
-          <div className="rounded-[24px] border border-dashed border-primary/28 bg-primary/[0.04] p-6">
-            <p className="text-sm font-medium text-foreground">Upload a document pack</p>
-            <p className="mt-2 text-sm leading-7 text-muted-foreground">
-              Use this area for internal uploads today, with room to route the same action through the client portal later.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3">
-              <Button className="rounded-full">
-                <ArrowUpToLine className="size-4" />
-                Upload files
-              </Button>
-              <Button variant="outline" className="rounded-full">
-                <Eye className="size-4" />
-                Review recent uploads
-              </Button>
-            </div>
-          </div>
-          <div className="grid gap-3 md:grid-cols-2">
-            {[
-              { label: "Awaiting upload", value: "34" },
-              { label: "In review", value: "18" },
-              { label: "Received", value: "66" },
-              { label: "Requested today", value: "7" },
-            ].map((item) => (
-              <div key={item.label} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-                <p className="text-sm text-muted-foreground">{item.label}</p>
-                <p className="mt-1 text-2xl font-semibold tracking-[-0.03em] text-foreground">{item.value}</p>
-              </div>
-            ))}
-          </div>
-        </CrmSectionCard>
-
+      <div className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
         <CrmTableCard
-          title="Document queue"
-          description="The current queue shows where each document sits, who supplied it, and whether follow-up is still needed."
+          title="Checklist register"
+          description="A full register of required items, grouped internally by case but readable at platform level."
           action={
             <CrmToolbar
-              searchPlaceholder="Search document names or case references"
+              searchPlaceholder="Search checklist items, cases, or categories"
               actions={
                 <Button variant="outline" className="rounded-full">
                   <Filter className="size-4" />
@@ -78,29 +54,141 @@ export default function DocumentsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Document</TableHead>
+                <TableHead>Item</TableHead>
+                <TableHead>Category</TableHead>
                 <TableHead>Case</TableHead>
+                <TableHead>Uploaded</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Origin</TableHead>
-                <TableHead>Updated</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {documents.map((row) => (
-                <TableRow key={`${row.caseId}-${row.name}`}>
-                  <TableCell className="font-medium text-foreground">{row.name}</TableCell>
-                  <TableCell>{row.caseId}</TableCell>
+              {documentChecklistItems.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell className="font-medium text-foreground">{item.item}</TableCell>
+                  <TableCell>{item.category}</TableCell>
+                  <TableCell>{item.caseId}</TableCell>
+                  <TableCell>{item.uploadedAt ?? "—"}</TableCell>
                   <TableCell>
-                    <CrmStatusBadge status={row.status} />
+                    <CrmStatusBadge status={item.status} />
                   </TableCell>
-                  <TableCell>{row.origin}</TableCell>
-                  <TableCell>{row.updatedAt}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </CrmTableCard>
+
+        <CrmSectionCard
+          title="Review actions"
+          description="Approve and reject paths are kept explicit so client follow-up stays precise."
+        >
+          <div className="space-y-3">
+            <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-800">
+                  <CheckCircle2 className="size-4" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-foreground">Approval records reviewer and date</p>
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    Approved items can move straight into the next case step or provider pack without further handling.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-rose-50 text-rose-700">
+                  <XCircle className="size-4" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-foreground">Rejection requires a reason</p>
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    The rejection comment stays attached to the checklist item and triggers a re-upload request for the client.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CrmSectionCard>
       </div>
+
+      <CrmTableCard
+        title="Current uploads"
+        description="A platform-wide view of the files that have been uploaded against checklist items."
+      >
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>File</TableHead>
+              <TableHead>Client</TableHead>
+              <TableHead>Case</TableHead>
+              <TableHead>Uploaded by</TableHead>
+              <TableHead>Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {documentUploads.map((upload) => (
+              <TableRow key={upload.id}>
+                <TableCell className="font-medium text-foreground">{upload.fileName}</TableCell>
+                <TableCell>{upload.client}</TableCell>
+                <TableCell>{upload.caseId}</TableCell>
+                <TableCell>{upload.uploadedBy}</TableCell>
+                <TableCell>
+                  <CrmStatusBadge status={upload.status} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CrmTableCard>
+
+      <div className="grid gap-4 xl:grid-cols-5">
+        {categories.map((category) => {
+          const items = documentChecklistItems.filter((item) => item.category === category)
+
+          return (
+            <CrmSectionCard
+              key={category}
+              title={category}
+              description={`${items.length} required items in this document group.`}
+              className="xl:col-span-1"
+            >
+              <div className="space-y-3">
+                {items.map((item) => (
+                  <div key={item.id} className="rounded-[18px] border border-border/70 bg-background px-4 py-3 shadow-sm">
+                    <p className="text-sm font-medium text-foreground">{item.item}</p>
+                    <div className="mt-2">
+                      <CrmStatusBadge status={item.status} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CrmSectionCard>
+          )
+        })}
+      </div>
+
+      <CrmSectionCard
+        title="Recent review decisions"
+        description="Approved and rejected outcomes stay visible alongside the reason for the decision."
+      >
+        <div className="grid gap-4 md:grid-cols-3">
+          {reviewDecisions.map((review) => (
+            <div key={review.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+              <div className="flex items-start justify-between gap-3">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-foreground">{review.item}</p>
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    {review.reviewer} · {review.decidedAt}
+                  </p>
+                  <p className="text-sm leading-6 text-muted-foreground">{review.note}</p>
+                </div>
+                <CrmStatusBadge status={review.decision} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </CrmSectionCard>
     </div>
   )
 }

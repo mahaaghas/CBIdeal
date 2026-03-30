@@ -9,10 +9,12 @@ import {
   Building2,
   ChevronRight,
   CircleHelp,
+  CreditCard,
   FileStack,
   FolderKanban,
   LayoutDashboard,
   ListChecks,
+  ReceiptText,
   Search,
   Settings,
   Users,
@@ -27,6 +29,8 @@ const navigation = [
   { href: "/leads", label: "Leads", icon: CircleHelp },
   { href: "/clients", label: "Clients", icon: Building2 },
   { href: "/cases", label: "Cases / Applications", icon: BriefcaseBusiness },
+  { href: "/quotations", label: "Quotations", icon: ReceiptText },
+  { href: "/payments", label: "Payments", icon: CreditCard },
   { href: "/documents", label: "Documents", icon: FileStack },
   { href: "/tasks", label: "Tasks", icon: ListChecks },
   { href: "/team", label: "Team", icon: Users },
@@ -127,7 +131,7 @@ export function CrmShell({ children }: CrmShellProps) {
                 <div className="flex flex-1 items-center gap-3 rounded-full border border-border/70 bg-background px-4 py-3 shadow-sm">
                   <Search className="size-4 text-muted-foreground" />
                   <span className="text-sm text-muted-foreground">
-                    Search clients, cases, documents, or internal notes
+                    Search clients, quotations, payments, documents, or internal notes
                   </span>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">

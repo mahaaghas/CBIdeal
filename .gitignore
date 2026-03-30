@@ -6,9 +6,15 @@
 # next.js
 /.next/
 /out/
+/apps/*/.next/
+/apps/*/out/
 
 # production
 /build
+/packages/*/dist/
+
+# turbo / workspace caches
+/.turbo/
 
 # debug
 npm-debug.log*

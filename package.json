@@ -6,7 +6,8 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspace @cbideal/web && npm run build --workspace @cbideal/app",
+    "build": "node scripts/vercel-root-build.mjs",
+    "build:all": "npm run build --workspace @cbideal/web && npm run build --workspace @cbideal/app",
     "build:web": "npm run build --workspace @cbideal/web",
     "build:app": "npm run build --workspace @cbideal/app",
     "dev:web": "npm run dev --workspace @cbideal/web",

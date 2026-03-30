@@ -14,11 +14,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const locale = getRequestLocale()
   const localized = {
     en: {
-      title: "Engagement Options for Professional Firms",
+      title: "Solutions for Professional Firms",
       description:
-        "Review clear engagement options for professional firms, including indicative structures and tailored arrangements for larger teams.",
+        "Review clear solutions for professional firms, including indicative structures and tailored arrangements for larger teams.",
       keywords: [
-        "professional engagement options",
+        "professional solutions",
         "private advisory pricing",
         "licensed firm consultation",
       ],
@@ -52,10 +52,10 @@ export default function PricingPage() {
   const routeLinks = getLocalizedRouteLinks(locale)
   const copy = {
     en: {
-      eyebrow: "Engagement options",
-      title: "Clear engagement options for professional firms.",
+      eyebrow: "Solutions",
+      title: "Clear solutions for professional firms.",
       description:
-        "This page is intended to explain the broad engagement structure in a straightforward way. It should give firms enough context for an informed first view, while leaving room for a more tailored discussion where that proves appropriate.",
+        "This page is intended to explain the broad solution structure in a straightforward way. It should give firms enough context for an informed first view, while leaving room for a more tailored discussion where that proves appropriate.",
       primary: "Request a private overview",
       secondary: "Contact us directly",
       plansEyebrow: "Plans",
@@ -128,8 +128,8 @@ export default function PricingPage() {
         <div className="container-shell">
           <MeetingSchedulerCard
             compact
-            title={locale === "ar" ? "هل تفضل مراجعة الأسعار في محادثة مباشرة؟" : "Would you prefer to review the engagement options together?"}
-            description={locale === "ar" ? "استخدم هذا القسم إذا كنت تريد مناقشة حجم الفريق أو النطاق أو الهيكل الأنسب للتعامل." : "Use this section if you would like to discuss team size, scope, or which engagement structure appears most suitable before moving further."}
+            title={locale === "ar" ? "هل تفضل مراجعة الأسعار في محادثة مباشرة؟" : "Would you prefer to review the solutions together?"}
+            description={locale === "ar" ? "استخدم هذا القسم إذا كنت تريد مناقشة حجم الفريق أو النطاق أو الهيكل الأنسب للتعامل." : "Use this section if you would like to discuss team size, scope, or which solution structure appears most suitable before moving further."}
           />
         </div>
       </section>

@@ -339,7 +339,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
             title={detailCopy.ctaTitle}
             description={detailCopy.ctaDescription}
             primaryAction={{ href: ctaLinks.explorePrograms, label: "Explore pathways" }}
-            secondaryAction={{ href: ctaLinks.viewPricing, label: locale === "ar" ? "اطلع على الخيارات" : "Review options" }}
+            secondaryAction={{ href: ctaLinks.viewPricing, label: locale === "ar" ? "اطلع على الخيارات" : "View solutions" }}
           />
         </div>
       </section>

@@ -419,9 +419,9 @@ export default async function ForCompaniesPage() {
       <section className="section-padding bg-muted/30">
         <div className="container-shell">
           <SectionHeading
-            eyebrow="Engagement options"
-            title={locale === "ar" ? "تسعير واضح وموثوق لهيكل التعامل." : "Clear, credible options for a structured engagement."}
-            description={locale === "ar" ? "الأسعار مصاغة بشكل واضح، مع مرونة للنطاق الأوسع عندما يكون ذلك منطقيًا." : "The options are presented clearly, with room for broader arrangements where that proves sensible."}
+            eyebrow="Solutions"
+            title={locale === "ar" ? "تسعير واضح وموثوق لهيكل التعامل." : "Clear, credible solutions for a structured working relationship."}
+            description={locale === "ar" ? "الأسعار مصاغة بشكل واضح، مع مرونة للنطاق الأوسع عندما يكون ذلك منطقيًا." : "The solutions are presented clearly, with room for broader arrangements where that proves sensible."}
           />
           <PricingSection locale={locale} preview />
         </div>
@@ -477,9 +477,9 @@ export default async function ForCompaniesPage() {
         <div className="container-shell">
           <CtaPanel
             eyebrow={locale === "ar" ? "الخطوة التالية" : "Next step"}
-            title={locale === "ar" ? "هل تريد الاطلاع على الأسعار أو طلب عرض خاص أو قراءة حماية البيانات؟" : "Would you prefer to review the engagement options, request a private overview, or read about data protection?"}
-            description={locale === "ar" ? "يمكنك الانتقال إلى الأسعار أو العرض الخاص أو تفاصيل حماية البيانات من دون مغادرة نفس التجربة المتماسكة." : "You can move into the engagement options, a private overview, or data protection detail without leaving the same coherent experience."}
-            primaryAction={{ href: ctaLinks.viewPricing, label: locale === "ar" ? "اطلع على الخيارات" : "Review options" }}
+            title={locale === "ar" ? "هل تريد الاطلاع على الأسعار أو طلب عرض خاص أو قراءة حماية البيانات؟" : "Would you prefer to review the solutions, request a private overview, or read about data protection?"}
+            description={locale === "ar" ? "يمكنك الانتقال إلى الأسعار أو العرض الخاص أو تفاصيل حماية البيانات من دون مغادرة نفس التجربة المتماسكة." : "You can move into the solutions, a private overview, or data protection detail without leaving the same coherent experience."}
+            primaryAction={{ href: ctaLinks.viewPricing, label: locale === "ar" ? "اطلع على الخيارات" : "View solutions" }}
             secondaryAction={{ href: ctaLinks.requestDemo, label: locale === "ar" ? "اطلب عرضًا خاصًا" : "Request a private overview" }}
           />
         </div>

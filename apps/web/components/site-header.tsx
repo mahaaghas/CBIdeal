@@ -24,12 +24,12 @@ export function SiteHeader() {
         <div className="flex flex-col gap-3">
           <div className={cn("flex items-center justify-between gap-6", isRtl && "flex-row-reverse")}>
             <BrandMark />
-            <nav className={cn("hidden items-center gap-6 md:flex", isRtl && "md:flex-row-reverse")}>
+            <nav className={cn("hidden items-center gap-4 lg:gap-5 md:flex", isRtl && "md:flex-row-reverse")}>
               {mainNavLinks.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={cn("text-sm font-medium text-muted-foreground/88 hover:text-foreground", isRtl && "text-right")}
+                  className={cn("text-[0.81rem] font-medium text-muted-foreground/88 hover:text-foreground lg:text-sm", isRtl && "text-right")}
                 >
                   {item.label}
                 </Link>

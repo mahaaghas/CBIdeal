@@ -29,9 +29,9 @@ export const schedulerConfig = {
 export const mainNavLinks = [
   { href: routeLinks.home, label: "Home" },
   { href: routeLinks.programs, label: "Programs" },
-  { href: routeLinks.forCompanies, label: "Work with us" },
+  { href: routeLinks.forCompanies, label: "Collaborations" },
   { href: routeLinks.insights, label: "Insights" },
-  { href: routeLinks.pricing, label: "Engagement" },
+  { href: routeLinks.pricing, label: "Solutions" },
   { href: routeLinks.contact, label: "Contact" },
 ]
 

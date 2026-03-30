@@ -69,13 +69,13 @@ export function PageHero({
             className={cn(
               "page-hero-grid relative grid gap-8 md:gap-10",
               hasAside
-                ? "lg:grid-cols-[minmax(0,1.5fr)_minmax(18.75rem,0.72fr)] lg:items-start lg:gap-14 xl:grid-cols-[minmax(0,1.58fr)_minmax(19.5rem,0.68fr)]"
+                ? "lg:grid-cols-[minmax(0,1.76fr)_minmax(17.5rem,0.64fr)] lg:items-stretch lg:gap-12 xl:grid-cols-[minmax(0,1.84fr)_minmax(18.5rem,0.6fr)] xl:gap-14"
                 : "content-measure",
             )}
           >
             <div
               className={cn(
-                "page-hero-copy flex min-w-0 flex-col justify-start space-y-6 md:space-y-8",
+                "page-hero-copy flex min-w-0 flex-col justify-start space-y-6 md:space-y-8 lg:h-full",
                 compact && "space-y-5 md:space-y-6",
                 isRtl && "text-right",
               )}
@@ -86,7 +86,7 @@ export function PageHero({
                   className={cn(
                     "text-primary-foreground",
                     hasAside
-                      ? "max-w-[19ch] text-[clamp(2.3rem,3.05vw,3.18rem)] leading-[1.08] tracking-[-0.03em]"
+                      ? "max-w-[20ch] text-[clamp(2.15rem,2.7vw,3.02rem)] leading-[1.1] tracking-[-0.028em]"
                       : "display-title max-w-[42rem]",
                     compact && !children && "max-w-[18ch] text-[clamp(2.3rem,3.35vw,3.2rem)] leading-[1.08] tracking-[-0.028em]",
                   )}
@@ -97,7 +97,7 @@ export function PageHero({
                   className={cn(
                     "text-primary-foreground/76",
                     hasAside
-                      ? "max-w-[42rem] text-[0.98rem] leading-[1.9] md:text-[1.02rem] md:leading-8"
+                      ? "max-w-[42rem] text-[0.96rem] leading-[1.82] md:text-[1rem] md:leading-[1.95]"
                       : "max-w-[40rem] text-base leading-7 md:text-lg md:leading-8",
                     compact && !children && "max-w-[40rem] text-[0.98rem] leading-7 md:text-base md:leading-[1.9]",
                   )}
@@ -138,7 +138,7 @@ export function PageHero({
               {renderStatsInPrimaryColumn ? (
                 <div
                   className={cn(
-                    "page-hero-stats mt-2 border-t border-white/10 pt-6",
+                    "page-hero-stats mt-auto border-t border-white/10 pt-6",
                     compact && "pt-5 md:pt-6",
                   )}
                 >
@@ -161,7 +161,7 @@ export function PageHero({
             {hasAside ? (
               <div
                 className={cn(
-                  "page-hero-aside w-full max-w-[21rem] self-start",
+                  "page-hero-aside w-full max-w-[19.75rem] self-start xl:max-w-[20.5rem]",
                   isRtl ? "lg:justify-self-start" : "lg:justify-self-end",
                 )}
               >

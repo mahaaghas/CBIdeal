@@ -75,7 +75,7 @@ export default function DemoPage() {
       description:
         "A short private overview can be the clearest way to understand whether the structure, working style, and level of support are right for your team. This page explains what that discussion covers and how to request it in a more measured way.",
       requestDemo: "Arrange a private overview",
-      seePricing: "Review options first",
+      seePricing: "View solutions first",
     },
     ar: {
       eyebrow: "عرض خاص",
@@ -141,7 +141,7 @@ export default function DemoPage() {
             <Card className="section-card">
               <CardContent className="space-y-3 p-8">
                 <h3 className="card-title text-foreground">Typical discussion areas</h3>
-                <p className="fine-print">Working method, team coordination, internal visibility, client handling, and the shape of a possible engagement.</p>
+                <p className="fine-print">Working method, team coordination, internal visibility, client handling, and the shape of a possible solution.</p>
               </CardContent>
             </Card>
           </div>
@@ -160,10 +160,10 @@ export default function DemoPage() {
         <div className="container-shell">
           <CtaPanel
             eyebrow="Need more context first?"
-            title="Review the wider options first, or return to the professional overview before getting in touch."
+            title="Review the wider solutions first, or return to the collaborations overview before getting in touch."
             description="You can read a little more first, then return when you are ready for a private discussion. For some teams, that additional context makes the first exchange materially more useful."
-            primaryAction={{ href: ctaLinks.viewPricing, label: "Review options" }}
-            secondaryAction={{ href: routeLinks.forCompanies, label: "Back to professional overview" }}
+            primaryAction={{ href: ctaLinks.viewPricing, label: "View solutions" }}
+            secondaryAction={{ href: routeLinks.forCompanies, label: "Back to collaborations overview" }}
           />
         </div>
       </section>

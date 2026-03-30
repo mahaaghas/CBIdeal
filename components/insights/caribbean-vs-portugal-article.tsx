@@ -252,7 +252,7 @@ export function CaribbeanVsPortugalArticle({
                 If the first and third questions matter most, a Caribbean passport often becomes the cleaner answer. If the second and fourth questions dominate, the Portugal Golden Visa usually deserves closer attention.
               </p>
               <p className="text-base leading-8 text-muted-foreground">
-  And if you run an advisory firm or immigration practice that handles exactly these kinds of comparisons at scale, our <Link href={internalLinks.companies} className="text-primary underline underline-offset-4">professional overview</Link> explains the broader structure in a quieter and more measured way.
+            And if you run an advisory firm or immigration practice that handles exactly these kinds of comparisons at scale, our <Link href={internalLinks.companies} className="text-primary underline underline-offset-4">collaborations overview</Link> explains the broader structure in a quieter and more measured way.
               </p>
             </div>
 

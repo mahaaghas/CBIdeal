@@ -90,7 +90,7 @@ export default function PartnersPage() {
         title="Professional conversations for specialist practices and trusted counterparts."
         description="This page is intended for specialist counterparts who want to understand the professional frame before moving into specifics. Use it where a more private discussion is needed around collaboration, institutional fit, or cross-border case context."
         primaryAction={{ href: "#partner-form", label: "Request a professional discussion" }}
-        secondaryAction={{ href: routeLinks.forCompanies, label: "View professional overview" }}
+        secondaryAction={{ href: routeLinks.forCompanies, label: "View collaborations overview" }}
         stats={[
           { value: "Private", label: "for measured first conversations" },
           { value: "Selective", label: "for cases where fit matters" },
@@ -199,8 +199,8 @@ export default function PartnersPage() {
           <CtaPanel
             eyebrow="Further context"
             title="Would you prefer a broader overview before taking the conversation further?"
-            description="Move to the professional overview if you would like a broader sense of the platform and its tone before continuing. For some firms, that wider reading is the better starting point before a more specific exchange."
-            primaryAction={{ href: routeLinks.forCompanies, label: "View professional overview" }}
+            description="Move to the collaborations overview if you would like a broader sense of the platform and its tone before continuing. For some firms, that wider reading is the better starting point before a more specific exchange."
+            primaryAction={{ href: routeLinks.forCompanies, label: "View collaborations overview" }}
             secondaryAction={{ href: routeLinks.programs, label: "Go to investor pathways" }}
           />
         </div>

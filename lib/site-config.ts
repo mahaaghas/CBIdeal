@@ -66,7 +66,7 @@ const pricingPlans = [
     seats: "Up to 10 users",
     ctaLabel: "Arrange a private discussion",
     ctaHref: ctaLinks.requestDemo,
-    secondaryLabel: "View engagement options",
+    secondaryLabel: "View solutions",
     secondaryHref: ctaLinks.viewPricing,
     featured: true,
     features: [
@@ -82,7 +82,7 @@ const pricingPlans = [
     monthlyPrice: null,
     yearlyPrice: null,
     description:
-      "For larger firms that require tailored access, broader operational structure, or a more bespoke engagement format.",
+      "For larger firms that require tailored access, broader operational structure, or a more bespoke solution format.",
     seats: "Custom structure",
     ctaLabel: "Contact us directly",
     ctaHref: ctaLinks.contactSales,
@@ -156,9 +156,9 @@ export const siteConfig = {
       { href: routeLinks.home, label: "Home" },
       { href: routeLinks.about, label: "Our approach" },
       { href: routeLinks.programs, label: "Citizenship by investment" },
-      { href: routeLinks.forCompanies, label: "Work with us" },
+      { href: routeLinks.forCompanies, label: "Collaborations" },
       { href: routeLinks.insights, label: "Insights" },
-      { href: routeLinks.pricing, label: "Engagement options" },
+      { href: routeLinks.pricing, label: "Solutions" },
     ],
     legalLinks: [
       { href: routeLinks.dataProtection, label: "Data protection" },

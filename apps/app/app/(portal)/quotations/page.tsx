@@ -15,6 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@cbideal/ui/components/ui/table"
+import { CommunicationComposer } from "@/components/communication-composer"
 import { getQuotationTotal, quotations } from "@/lib/mock-data"
 
 export default function QuotationsPage() {
@@ -120,7 +121,19 @@ export default function QuotationsPage() {
                   </TableCell>
                   <TableCell>{quotation.validUntil}</TableCell>
                   <TableCell>
-                    {quotation.currency} {getQuotationTotal(quotation.id).toLocaleString()}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span>{quotation.currency} {getQuotationTotal(quotation.id).toLocaleString()}</span>
+                      {quotation.status !== "Paid" ? (
+                        <CommunicationComposer
+                          clientId={quotation.clientId}
+                          caseId={quotation.caseId}
+                          quotationId={quotation.id}
+                          defaultCategory="Quotation follow-up"
+                          triggerLabel="Follow up"
+                          className="rounded-full"
+                        />
+                      ) : null}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -208,6 +221,14 @@ export default function QuotationsPage() {
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
+              <CommunicationComposer
+                clientId={quotation.clientId}
+                caseId={quotation.caseId}
+                quotationId={quotation.id}
+                defaultCategory="Quotation follow-up"
+                triggerLabel="Send quotation follow-up"
+                className="w-full rounded-full"
+              />
             </div>
           ))}
         </div>

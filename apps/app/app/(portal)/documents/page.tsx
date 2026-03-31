@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useState } from "react"
 import { Bell, FileCheck2, Users, Wallet } from "lucide-react"
+import { CommunicationComposer } from "@/components/communication-composer"
 import { DocumentReviewControls } from "@/components/workflow-controls"
 import { useWorkflow } from "@/lib/workflow-store"
 
@@ -25,9 +26,9 @@ export default function DocumentsPage() {
     .reduce((sum, payment) => sum + payment.amount, 0)
 
   const rows = state.checklist
-    .filter((item) => item.status !== "Not Uploaded")
     .map((item) => ({
       clientId: item.clientId,
+      caseId: item.caseId,
       checklistItemId: item.id,
       user: getClientDetail(item.clientId)?.name ?? item.clientId,
       document: item.item,
@@ -131,6 +132,15 @@ export default function DocumentsPage() {
                       <div className="flex flex-wrap gap-2">
                         {row.status === "Uploaded" || row.status === "Under Review" ? (
                           <DocumentReviewControls checklistItemId={row.checklistItemId} itemLabel={row.document} />
+                        ) : row.status === "Rejected" || row.status === "Not Uploaded" ? (
+                          <CommunicationComposer
+                            clientId={row.clientId}
+                            caseId={row.caseId}
+                            checklistItemId={row.checklistItemId}
+                            defaultCategory={row.status === "Rejected" ? "Document re-upload request" : "Missing document"}
+                            triggerLabel={row.status === "Rejected" ? "Request re-upload" : "Request document"}
+                            className="rounded-full"
+                          />
                         ) : (
                           <Link href={`/clients/${row.clientId}`} className="text-slate-300 underline-offset-4 hover:text-white hover:underline">
                             Open record

@@ -16,7 +16,9 @@ import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
 import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
 import { Button } from "@cbideal/ui/components/ui/button"
 import { Progress } from "@cbideal/ui/components/ui/progress"
+import { CommunicationComposer } from "@/components/communication-composer"
 import { DocumentReviewControls, PaymentReviewControls } from "@/components/workflow-controls"
+import { useCommunication } from "@/lib/communication-store"
 import { useWorkflow } from "@/lib/workflow-store"
 
 export default function ClientDetailPage() {
@@ -34,6 +36,7 @@ export default function ClientDetailPage() {
     getNotificationsForClient,
     getClientUpdates,
   } = useWorkflow()
+  const { getCommunicationHistory } = useCommunication()
 
   const client = getClientDetail(clientId)
   const caseRecord = getCaseByClientId(clientId)
@@ -56,6 +59,7 @@ export default function ClientDetailPage() {
   const reviews = getReviewsForCase(caseRecord.id)
   const notifications = getNotificationsForClient(clientId)
   const updates = getClientUpdates(clientId)
+  const communicationHistory = getCommunicationHistory(clientId)
 
   const checklistByCategory = checklist.reduce<Record<string, typeof checklist>>((groups, item) => {
     groups[item.category] ??= []
@@ -80,6 +84,14 @@ export default function ClientDetailPage() {
             <Button asChild className="rounded-full">
               <Link href="/portal">Open client portal</Link>
             </Button>
+            <CommunicationComposer
+              clientId={clientId}
+              caseId={caseRecord.id}
+              quotationId={quotation?.id}
+              defaultCategory="Application progress update"
+              triggerLabel="Send progress update"
+              className="rounded-full"
+            />
           </>
         }
       />
@@ -182,6 +194,22 @@ export default function ClientDetailPage() {
                           <PaymentReviewControls paymentId={payment.id} paymentLabel={payment.label} />
                         </div>
                       ) : null}
+
+                      {payment.status === "Awaiting proof" ||
+                      payment.status === "Due soon" ||
+                      payment.status === "Rejected" ||
+                      payment.status === "Overdue" ? (
+                        <div className="mt-3">
+                          <CommunicationComposer
+                            clientId={clientId}
+                            caseId={caseRecord.id}
+                            paymentId={payment.id}
+                            defaultCategory={payment.status === "Rejected" || payment.status === "Overdue" ? "Overdue payment" : "Payment reminder"}
+                            triggerLabel={payment.status === "Rejected" ? "Request new proof" : "Send payment reminder"}
+                            className="rounded-full"
+                          />
+                        </div>
+                      ) : null}
                     </div>
                   )
                 })}
@@ -213,6 +241,7 @@ export default function ClientDetailPage() {
                 {items.map((item) => {
                   const latestUpload = getLatestUploadForChecklistItem(item.id)
                   const canReview = item.status === "Uploaded" || item.status === "Under Review"
+                  const canMessage = item.status === "Rejected" || item.status === "Not Uploaded"
 
                   return (
                     <div key={item.id} className="rounded-[18px] border border-border/70 bg-background px-4 py-4 shadow-sm">
@@ -232,6 +261,20 @@ export default function ClientDetailPage() {
                       {canReview ? (
                         <div className="mt-4">
                           <DocumentReviewControls checklistItemId={item.id} itemLabel={item.item} />
+                        </div>
+                      ) : null}
+
+                      {canMessage ? (
+                        <div className="mt-3">
+                          <CommunicationComposer
+                            clientId={clientId}
+                            caseId={caseRecord.id}
+                            checklistItemId={item.id}
+                            defaultCategory={item.status === "Rejected" ? "Document re-upload request" : "Missing document"}
+                            triggerLabel={item.status === "Rejected" ? "Request re-upload" : "Request document"}
+                            customReason={item.comment}
+                            className="rounded-full"
+                          />
                         </div>
                       ) : null}
                     </div>
@@ -267,10 +310,30 @@ export default function ClientDetailPage() {
         </CrmSectionCard>
 
         <CrmSectionCard
-          title="Client-facing notices"
-          description="Messages created by the workflow that the client can see or receive by email."
+          title="Communication history"
+          description="Prepared drafts, sent reminders, and scheduled updates linked to this client."
         >
           <div className="space-y-3">
+            {communicationHistory.map((item) => (
+              <div key={item.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <MessageSquareMore className="size-4" />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <p className="text-sm font-medium text-foreground">{item.templateName}</p>
+                      <CrmStatusBadge status={item.status} />
+                    </div>
+                    <p className="text-sm leading-6 text-muted-foreground">{item.subject}</p>
+                    <p className="text-sm leading-6 text-muted-foreground">{item.sender}</p>
+                    <p className="text-sm leading-6 text-muted-foreground">{item.createdAt}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            <div className="space-y-3 border-t border-border/70 pt-4">
             {notifications.map((item) => (
               <div key={item.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
                 <div className="flex items-start gap-3">
@@ -287,6 +350,7 @@ export default function ClientDetailPage() {
                 </div>
               </div>
             ))}
+            </div>
 
             <div className="space-y-3 border-t border-border/70 pt-4">
               {[

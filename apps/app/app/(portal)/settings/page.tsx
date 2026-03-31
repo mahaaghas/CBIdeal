@@ -1,9 +1,11 @@
+import Link from "next/link"
 import { saasPricingModel } from "@cbideal/config/pricing"
 import { BellRing, Building2, CreditCard, Users } from "lucide-react"
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
 import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
 import { CrmStatCard } from "@cbideal/ui/components/crm-stat-card"
 import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
+import { Button } from "@cbideal/ui/components/ui/button"
 import { pricingSnapshot, reminderSettings, workspace } from "@/lib/mock-data"
 
 export default function SettingsPage() {
@@ -122,6 +124,11 @@ export default function SettingsPage() {
               </div>
             </div>
           ))}
+        </div>
+        <div className="pt-2">
+          <Button asChild variant="outline" className="rounded-full">
+            <Link href="/settings/email">Open email settings</Link>
+          </Button>
         </div>
       </CrmSectionCard>
 

@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useState } from "react"
 import { Bell, FileCheck2, Users, Wallet } from "lucide-react"
+import { CommunicationComposer } from "@/components/communication-composer"
 import { PaymentReviewControls } from "@/components/workflow-controls"
 import { useWorkflow } from "@/lib/workflow-store"
 
@@ -33,6 +34,7 @@ export default function PaymentsPage() {
   const rows = state.payments.map((payment) => ({
     paymentId: payment.id,
     clientId: payment.clientId,
+    caseId: payment.caseId,
     user: payment.client,
     program: getCaseByClientId(payment.clientId)?.route ?? payment.label,
     amount: `${payment.currency} ${payment.amount.toLocaleString()}`,
@@ -135,6 +137,15 @@ export default function PaymentsPage() {
                       <div className="flex flex-wrap gap-2">
                         {row.status === "Under review" ? (
                           <PaymentReviewControls paymentId={row.paymentId} paymentLabel={row.program} />
+                        ) : row.status === "Awaiting proof" || row.status === "Due soon" || row.status === "Rejected" || row.status === "Overdue" ? (
+                          <CommunicationComposer
+                            clientId={row.clientId}
+                            caseId={row.caseId}
+                            paymentId={row.paymentId}
+                            defaultCategory={row.status === "Rejected" || row.status === "Overdue" ? "Overdue payment" : "Payment reminder"}
+                            triggerLabel={row.status === "Rejected" || row.status === "Overdue" ? "Send overdue note" : "Send reminder"}
+                            className="rounded-full"
+                          />
                         ) : (
                           <Link
                             href={`/clients/${row.clientId}`}

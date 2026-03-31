@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useMemo, useState } from "react"
-import { formatPlanAmount, getSaasPlan, saasAppConfig, saasPlans, type SelfServePlanId } from "@cbideal/config"
+import { formatPlanAmount, getSaasPlan, isSelfServePlan, saasAppConfig, saasPlans, type SelfServePlanId } from "@cbideal/config"
 import { AppBrand } from "@cbideal/ui/components/app-brand"
 import { useBranding } from "@/lib/branding-store"
 import { getSelfServeCheckoutUrl, usePlatformAccess } from "@/lib/platform-access-store"
@@ -13,7 +13,8 @@ function SignupPageContent() {
   const searchParams = useSearchParams()
   const { branding } = useBranding()
   const { registerWorkspace, ready } = usePlatformAccess()
-  const initialPlan = (searchParams.get("plan") as SelfServePlanId | null) ?? "starter"
+  const requestedPlan = searchParams.get("plan")
+  const initialPlan = requestedPlan && isSelfServePlan(requestedPlan) ? requestedPlan : "starter"
   const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -101,6 +102,12 @@ function SignupPageContent() {
               <p className="text-sm leading-7 text-slate-300">
                 This creates the first admin user, the company record, and the subscription context that billing will activate.
               </p>
+              <div className="inline-flex items-center gap-2 rounded-full border border-[var(--app-brand-primary)]/20 bg-[var(--app-brand-surface-tint)] px-4 py-2 text-sm text-slate-100">
+                <span className="app-pill rounded-full px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em]">
+                  Plan
+                </span>
+                <span>{activePlan.name} is preselected from the pricing page.</span>
+              </div>
             </div>
 
             <form className="space-y-6" onSubmit={handleSubmit}>

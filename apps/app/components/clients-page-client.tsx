@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@cbideal/ui/components/ui/dialog"
 import { Input } from "@cbideal/ui/components/ui/input"
+import { DataImportWorkflow } from "@/components/data-import-workflow"
 import { useWorkflow } from "@/lib/workflow-store"
 
 function toneClass(tone: string) {
@@ -163,10 +164,19 @@ export function ClientsPageClient() {
 
         <section className="app-surface rounded-[26px] px-6 py-6 md:px-8 md:py-7">
           <div className="space-y-6">
-            <div className="app-tabbar inline-flex rounded-2xl p-1">
-              <span className="app-tab app-tab-active rounded-[14px] px-10 py-2.5 text-lg font-medium">Clients</span>
-              <Link href="/documents" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">Documents</Link>
-              <Link href="/payments" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">Payments</Link>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="app-tabbar inline-flex rounded-2xl p-1">
+                <span className="app-tab app-tab-active rounded-[14px] px-10 py-2.5 text-lg font-medium">Clients</span>
+                <Link href="/documents" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">Documents</Link>
+                <Link href="/payments" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">Payments</Link>
+              </div>
+              <DataImportWorkflow
+                source="Workspace"
+                defaultType="clients"
+                triggerLabel="Import clients"
+                title="Import client records"
+                description="Bring existing clients into the workspace, map the uploaded columns, review the preview, and confirm the records that should be created."
+              />
             </div>
 
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">

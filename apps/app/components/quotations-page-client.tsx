@@ -18,6 +18,7 @@ import {
   TableRow,
 } from "@cbideal/ui/components/ui/table"
 import { CommunicationComposer } from "@/components/communication-composer"
+import { DataImportWorkflow } from "@/components/data-import-workflow"
 import { QuotationWorkflow } from "@/components/quotation-workflow"
 import { useBranding } from "@/lib/branding-store"
 import { exportQuotationRegister } from "@/lib/quotation-export"
@@ -81,6 +82,13 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
         description="The quotation workspace now supports a real creation flow, a live fee builder, and a branded export register. Internal teams can move from client selection to a ready-to-review quotation without leaving the module."
         actions={
           <>
+            <DataImportWorkflow
+              source="Workspace"
+              defaultType="quotations"
+              triggerLabel="Import quotations"
+              title="Import quotations"
+              description="Upload existing quotation data, map it to the platform fields, and bring it into the live commercial register."
+            />
             <Button
               type="button"
               variant="outline"

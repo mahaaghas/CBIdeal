@@ -96,6 +96,22 @@ export const demoWorkspaceConfig = {
   planId: "growth" as const,
 } as const
 
+export function getSaasDemoUrl() {
+  return `${saasAppConfig.appUrl}${saasAppConfig.demoPath}`
+}
+
+export function getSaasLoginUrl(planId?: SaasPlanId) {
+  if (!planId) {
+    return `${saasAppConfig.appUrl}${saasAppConfig.loginPath}`
+  }
+
+  return `${saasAppConfig.appUrl}${saasAppConfig.loginPath}?plan=${planId}`
+}
+
+export function getSelfServeSignupUrl(planId: SelfServePlanId) {
+  return `${saasAppConfig.appUrl}${saasAppConfig.signupPath}?plan=${planId}`
+}
+
 export function getSaasPlan(planId: SaasPlanId) {
   return saasPlans.find((plan) => plan.id === planId) ?? saasPlans[0]
 }

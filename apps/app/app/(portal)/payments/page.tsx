@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { Bell, FileCheck2, Users, Wallet } from "lucide-react"
 import { CommunicationComposer } from "@/components/communication-composer"
+import { DataImportWorkflow } from "@/components/data-import-workflow"
 import { PaymentReviewControls } from "@/components/workflow-controls"
 import { useWorkflow } from "@/lib/workflow-store"
 
@@ -54,11 +55,20 @@ export default function PaymentsPage() {
   return (
     <div className="space-y-8">
       <div className="space-y-3">
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="font-serif text-[2.9rem] leading-[1.02] tracking-[-0.045em] text-white md:text-[3.5rem]">
-            Welcome back, Admin
-          </h1>
-          <span className="app-pill rounded-full px-4 py-1.5 text-sm font-semibold">Admin workspace</span>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="font-serif text-[2.9rem] leading-[1.02] tracking-[-0.045em] text-white md:text-[3.5rem]">
+              Welcome back, Admin
+            </h1>
+            <span className="app-pill rounded-full px-4 py-1.5 text-sm font-semibold">Admin workspace</span>
+          </div>
+          <DataImportWorkflow
+            source="Workspace"
+            defaultType="payments"
+            triggerLabel="Import payments"
+            title="Import payment stages"
+            description="Upload payment schedules from your existing system, map the uploaded columns, and confirm the stages that should enter this workspace."
+          />
         </div>
         <p className="max-w-3xl text-[1.05rem] text-slate-200/82">
           Track payment stages, verify uploaded proof, and keep finance visibility aligned with each live matter.

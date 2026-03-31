@@ -37,11 +37,11 @@ function BillingSuccessPageContent() {
             </p>
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/dashboard" className="rounded-full bg-[var(--app-brand-primary)] px-5 py-3.5 text-sm font-semibold text-[var(--app-brand-on-primary)] transition hover:bg-[var(--app-brand-primary-strong)]">
-              Open workspace
+            <Link href="/setup" className="rounded-full bg-[var(--app-brand-primary)] px-5 py-3.5 text-sm font-semibold text-[var(--app-brand-on-primary)] transition hover:bg-[var(--app-brand-primary-strong)]">
+              Continue workspace setup
             </Link>
-            <Link href="/settings" className="rounded-full border border-white/12 px-5 py-3.5 text-sm font-semibold text-white transition hover:border-white/28">
-              Review plan settings
+            <Link href="/dashboard" className="rounded-full border border-white/12 px-5 py-3.5 text-sm font-semibold text-white transition hover:border-white/28">
+              Open workspace now
             </Link>
           </div>
         </div>

@@ -16,6 +16,7 @@ import {
   documentUploads,
   externalUsers,
   internalUsers,
+  leads as initialLeads,
   notificationLog,
   paymentProofs,
   paymentSchedules,
@@ -25,6 +26,7 @@ import {
   tasks,
   workspace,
 } from "@/lib/mock-data"
+import type { ImportSource, ImportType } from "@/lib/data-import"
 import { buildScopedStorageKey } from "@/lib/platform-access"
 import { usePlatformAccess } from "@/lib/platform-access-store"
 
@@ -60,6 +62,31 @@ type ChecklistRecord = (typeof documentChecklistItems)[number]
 type UploadRecord = (typeof documentUploads)[number]
 type ReviewRecord = (typeof reviewDecisions)[number]
 type NotificationRecord = (typeof notificationLog)[number] & { clientId?: string; isRead?: boolean }
+export type WorkspaceLeadRecord = {
+  id: string
+  name: string
+  companyName?: string
+  email: string
+  phone?: string
+  country?: string
+  interest: string
+  status: "New" | "Contacted" | "Qualified" | "Converted"
+  assignedManager: string
+  sourcePage?: string
+  submittedAt: string
+  notes?: string
+}
+export type WorkspaceImportSummary = {
+  id: string
+  importType: ImportType
+  source: ImportSource
+  fileName: string
+  importedCount: number
+  skippedCount: number
+  issueCount: number
+  issues: string[]
+  completedAt: string
+}
 
 export type WorkflowNotificationFeedItem = {
   id: string
@@ -73,6 +100,7 @@ export type WorkflowNotificationFeedItem = {
 }
 
 type WorkflowState = {
+  leads: WorkspaceLeadRecord[]
   clients: ClientRecord[]
   clientProfiles: Record<string, ClientDetailRecord>
   cases: CaseRecord[]
@@ -84,11 +112,13 @@ type WorkflowState = {
   reviews: ReviewRecord[]
   notifications: NotificationRecord[]
   clientUpdates: Record<string, string[]>
+  importSummaries: WorkspaceImportSummary[]
 }
 
 type WorkflowContextValue = {
   state: WorkflowState
   currentPortalClientId: string
+  getAllLeads: () => WorkspaceLeadRecord[]
   getAllClients: () => ClientRecord[]
   getClientById: (clientId: string) => ClientRecord | undefined
   getClientDetail: (clientId: string) => ClientDetailRecord | undefined
@@ -102,6 +132,7 @@ type WorkflowContextValue = {
   getReviewsForCase: (caseId: string) => ReviewRecord[]
   getNotificationsForClient: (clientId: string) => NotificationRecord[]
   getClientUpdates: (clientId: string) => string[]
+  getImportSummaries: () => WorkspaceImportSummary[]
   getWorkspaceNotificationFeed: () => WorkflowNotificationFeedItem[]
   getPortalNotificationFeed: (clientId: string) => WorkflowNotificationFeedItem[]
   getOpenNotificationCount: () => number
@@ -133,6 +164,14 @@ type WorkflowContextValue = {
     notes?: string
     terms?: string
   }) => string
+  importRecords: (input: {
+    type: ImportType
+    rows: Record<string, string>[]
+    fileName: string
+    source: ImportSource
+    skipInvalidRows?: boolean
+  }) => WorkspaceImportSummary
+  startFromScratch: () => void
   getPortalOverview: (clientId: string) => {
     route: string
     stage: string
@@ -327,6 +366,27 @@ function buildInitialState(): WorkflowState {
   )
 
   return {
+    leads: clone(initialLeads).map((lead, index) => ({
+      id: lead.id ?? `workspace-lead-${index + 1}`,
+      name: lead.name,
+      companyName: lead.name.includes("Office") || lead.name.includes("Capital") ? lead.name : "",
+      email: `${normaliseClientId(lead.name) || `lead-${index + 1}`}@example.com`,
+      phone: "",
+      country: lead.region,
+      interest: lead.focus,
+      status:
+        lead.status === "Private consultation"
+          ? "Qualified"
+          : lead.status === "Awaiting documents"
+            ? "Contacted"
+            : lead.status === "Initial review" || lead.status === "Research stage"
+              ? "New"
+              : "Qualified",
+      assignedManager: lead.owner,
+      sourcePage: "/website-import",
+      submittedAt: "29 Mar 2026",
+      notes: `${lead.timeline} / ${lead.budget}`,
+    })),
     clients: clone(clients),
     clientProfiles: clone(clientDetails),
     cases: clone(initialCases),
@@ -343,6 +403,7 @@ function buildInitialState(): WorkflowState {
       "westbridge-capital": clone(clientDetails["westbridge-capital"].notes),
       "m-el-sayed": clone(clientDetails["m-el-sayed"].notes),
     },
+    importSummaries: [],
   }
 }
 
@@ -351,6 +412,7 @@ function buildWorkspaceSeed(companyName: string, ownerName: string): WorkflowSta
   const welcomeCaseId = `case-${welcomeClientId}`
 
   return {
+    leads: [],
     clients: [
       {
         id: welcomeClientId,
@@ -428,6 +490,7 @@ function buildWorkspaceSeed(companyName: string, ownerName: string): WorkflowSta
         "Your workspace is active. Add your first real client or quotation to begin replacing the onboarding record.",
       ],
     },
+    importSummaries: [],
   }
 }
 
@@ -437,6 +500,177 @@ function getClientName(clientId: string) {
 
 function getAssignedManagerName(ownerId?: string) {
   return internalUsers.find((user) => user.id === ownerId)?.name ?? "Account manager"
+}
+
+function getInternalUserByName(raw?: string | null) {
+  const normalised = raw?.trim().toLowerCase()
+  if (!normalised) return internalUsers[0]
+  return (
+    internalUsers.find((user) => user.name.toLowerCase() === normalised) ??
+    internalUsers.find((user) => user.name.toLowerCase().includes(normalised)) ??
+    internalUsers[0]
+  )
+}
+
+function normaliseQuotationStatusValue(value?: string | null): QuotationRecord["status"] {
+  const normalised = value?.trim().toLowerCase()
+  if (normalised === "sent") return "Sent"
+  if (normalised === "accepted") return "Accepted"
+  if (normalised === "partially paid") return "Partially Paid"
+  if (normalised === "paid") return "Paid"
+  return "Draft"
+}
+
+function normalisePaymentStatusValue(value?: string | null): PaymentRecord["status"] {
+  const normalised = value?.trim().toLowerCase()
+  if (normalised === "due soon") return "Due soon"
+  if (normalised === "awaiting proof") return "Awaiting proof"
+  if (normalised === "under review") return "Under review"
+  if (normalised === "approved") return "Approved"
+  if (normalised === "overdue") return "Overdue"
+  if (normalised === "rejected") return "Rejected"
+  if (normalised === "paid") return "Paid"
+  return "Upcoming"
+}
+
+function isWorkspaceSeedState(state: WorkflowState) {
+  return (
+    state.clients.length === 1 &&
+    state.clients[0]?.type === "Firm workspace" &&
+    state.cases.length === 1 &&
+    state.quotations.length === 0 &&
+    state.payments.length === 0 &&
+    state.leads.length === 0 &&
+    state.importSummaries.length === 0
+  )
+}
+
+function clearWorkspaceSeed(state: WorkflowState) {
+  if (!isWorkspaceSeedState(state)) return
+
+  state.clients = []
+  state.clientProfiles = {}
+  state.cases = []
+  state.notifications = []
+  state.clientUpdates = {}
+}
+
+function ensureImportedClient(
+  state: WorkflowState,
+  input: {
+    clientName: string
+    companyName?: string
+    type?: string
+    context?: string
+    region?: string
+    investmentRange?: string
+    jurisdictionFocus?: string
+    assignedManager?: string
+    email?: string
+    notes?: string
+    status?: string
+  },
+) {
+  const name = input.clientName.trim() || input.companyName?.trim() || "Imported client"
+  const clientId = normaliseClientId(name) || `client-${Date.now()}`
+  const manager = getInternalUserByName(input.assignedManager)
+  const existing = state.clients.find((client) => client.id === clientId)
+
+  if (!existing) {
+    state.clients.unshift({
+      id: clientId,
+      name,
+      type: input.type?.trim() || "Imported client",
+      context: input.context?.trim() || "Imported from existing records",
+      status: input.status?.trim() || "Active",
+      owner: manager.name,
+      ownerId: manager.id,
+      jurisdictionFocus: input.jurisdictionFocus?.trim() || "Imported route context",
+      portalStatus: "Portal pending",
+      summary: input.notes?.trim() || "Imported from a structured data migration.",
+      region: input.region?.trim() || input.companyName?.trim() || "Imported region",
+      investmentRange: input.investmentRange?.trim() || "Not yet classified",
+    } as ClientRecord)
+  }
+
+  const existingProfile = state.clientProfiles[clientId]
+  if (!existingProfile) {
+    state.clientProfiles[clientId] = {
+      id: clientId,
+      name,
+      contact: input.email?.trim() || manager.name,
+      owner: manager.name,
+      profileType: input.type?.trim() || "Imported client",
+      region: input.region?.trim() || "Imported region",
+      status: input.status?.trim() || "Active",
+      applicationStatus: "Imported record",
+      summary: input.notes?.trim() || "Imported into the workspace from existing operational data.",
+      caseId: "",
+      quotationId: "",
+      paymentIds: [],
+      notes: [
+        "Imported into the workspace.",
+        input.notes?.trim() || "Review the imported record and continue normal operations.",
+      ],
+    } as ClientDetailRecord
+  }
+
+  if (!state.clientUpdates[clientId]) {
+    state.clientUpdates[clientId] = ["Imported into the workspace and ready for review."]
+  }
+
+  return clientId
+}
+
+function ensureImportedCase(
+  state: WorkflowState,
+  input: {
+    clientId: string
+    clientName: string
+    route: string
+    stage?: string
+    applicationStatus?: string
+    assignedManager?: string
+    nextMilestone?: string
+    progress?: number
+    region?: string
+  },
+) {
+  const manager = getInternalUserByName(input.assignedManager)
+  const existing =
+    state.cases.find(
+      (caseRecord) =>
+        caseRecord.clientId === input.clientId &&
+        caseRecord.route.toLowerCase() === input.route.trim().toLowerCase(),
+    ) ?? state.cases.find((caseRecord) => caseRecord.clientId === input.clientId)
+
+  if (existing) {
+    return existing.id
+  }
+
+  const caseId = `case-${Date.now()}-${state.cases.length + 1}`
+  state.cases.unshift({
+    id: caseId,
+    clientId: input.clientId,
+    client: input.clientName,
+    route: input.route.trim(),
+    stage: input.stage?.trim() || "Imported",
+    owner: manager.name,
+    ownerId: manager.id,
+    nextMilestone: input.nextMilestone?.trim() || formatDate(),
+    progress: Math.max(8, Math.min(Math.round(input.progress ?? 24), 96)),
+    applicationStatus: input.applicationStatus?.trim() || "Imported and ready for review",
+    region: input.region?.trim() || "Imported region",
+  } as CaseRecord)
+
+  if (state.clientProfiles[input.clientId] && !state.clientProfiles[input.clientId].caseId) {
+    state.clientProfiles[input.clientId] = {
+      ...state.clientProfiles[input.clientId],
+      caseId,
+    }
+  }
+
+  return caseId
 }
 
 function pushNotification(
@@ -706,6 +940,8 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
   }, [scopedStorageKey, state])
 
   const value = useMemo<WorkflowContextValue>(() => {
+    const getAllLeads = () => state.leads
+
     const getAllClients = () => state.clients
 
     const getClientById = (clientId: string) => state.clients.find((client) => client.id === clientId)
@@ -743,6 +979,9 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
       state.notifications.filter((item) => item.clientId === clientId)
 
     const getClientUpdates = (clientId: string) => state.clientUpdates[clientId] ?? []
+
+    const getImportSummaries = () =>
+      [...state.importSummaries].sort((left, right) => parseDateLabel(right.completedAt) - parseDateLabel(left.completedAt))
 
     const getWorkspaceNotificationFeed = () =>
       [...state.notifications]
@@ -943,6 +1182,256 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
       })
 
       return nextId
+    }
+
+    const startFromScratch = () => {
+      setState((current) => {
+        const next = clone(current)
+        clearWorkspaceSeed(next)
+        return next
+      })
+    }
+
+    const importRecords = (input: {
+      type: ImportType
+      rows: Record<string, string>[]
+      fileName: string
+      source: ImportSource
+      skipInvalidRows?: boolean
+    }) => {
+      const summary: WorkspaceImportSummary = {
+        id: `import-${Date.now()}`,
+        importType: input.type,
+        source: input.source,
+        fileName: input.fileName,
+        importedCount: 0,
+        skippedCount: 0,
+        issueCount: 0,
+        issues: [],
+        completedAt: formatDateTime(),
+      }
+
+      setState((current) => {
+        const next = clone(current)
+        clearWorkspaceSeed(next)
+
+        input.rows.forEach((row, index) => {
+          const rowLabel = `Row ${index + 2}`
+          const issuePrefix = `${rowLabel}:`
+
+          switch (input.type) {
+            case "leads": {
+              if (!row.full_name || !row.email) {
+                summary.skippedCount += 1
+                summary.issues.push(`${issuePrefix} full name and email are required.`)
+                return
+              }
+
+              const existingLead = next.leads.find(
+                (lead) =>
+                  lead.email.toLowerCase() === row.email.toLowerCase() &&
+                  lead.name.toLowerCase() === row.full_name.toLowerCase(),
+              )
+
+              if (existingLead) {
+                summary.skippedCount += 1
+                summary.issues.push(`${issuePrefix} duplicate lead already exists.`)
+                return
+              }
+
+              next.leads.unshift({
+                id: `lead-${Date.now()}-${index}`,
+                name: row.full_name,
+                companyName: row.company_name || "",
+                email: row.email,
+                phone: row.phone || "",
+                country: row.country || "",
+                interest: row.interest || "Imported enquiry",
+                status:
+                  row.status === "Contacted" || row.status === "Qualified" || row.status === "Converted"
+                    ? row.status
+                    : "New",
+                assignedManager: getInternalUserByName(row.assigned_manager).name,
+                sourcePage: row.source_page || "Imported",
+                submittedAt: row.submitted_at ? formatDateLabelFromIso(new Date(row.submitted_at).toISOString()) : formatDate(),
+                notes: row.notes || "",
+              })
+              summary.importedCount += 1
+              return
+            }
+            case "clients": {
+              if (!row.client_name && !row.company_name) {
+                summary.skippedCount += 1
+                summary.issues.push(`${issuePrefix} client name is required.`)
+                return
+              }
+
+              ensureImportedClient(next, {
+                clientName: row.client_name || row.company_name,
+                companyName: row.company_name,
+                type: row.client_type,
+                context: row.case_context,
+                region: row.region || row.country,
+                investmentRange: row.investment_range,
+                jurisdictionFocus: row.jurisdiction_focus,
+                assignedManager: row.assigned_manager,
+                email: row.email,
+                notes: row.notes,
+                status: row.status,
+              })
+              summary.importedCount += 1
+              return
+            }
+            case "cases": {
+              if (!row.client_name || !row.route) {
+                summary.skippedCount += 1
+                summary.issues.push(`${issuePrefix} client name and route are required.`)
+                return
+              }
+
+              const clientId = ensureImportedClient(next, {
+                clientName: row.client_name,
+                context: row.route,
+                region: row.region,
+                assignedManager: row.assigned_manager,
+              })
+
+              ensureImportedCase(next, {
+                clientId,
+                clientName: row.client_name,
+                route: row.route,
+                stage: row.stage,
+                applicationStatus: row.application_status,
+                assignedManager: row.assigned_manager,
+                nextMilestone: row.next_milestone ? formatDateLabelFromIso(new Date(row.next_milestone).toISOString()) : formatDate(),
+                progress: Number(row.progress || 24),
+                region: row.region,
+              })
+              summary.importedCount += 1
+              return
+            }
+            case "quotations": {
+              if (!row.client_name || !row.quotation_date || Number.isNaN(Number(row.service_fees_total || 0))) {
+                summary.skippedCount += 1
+                summary.issues.push(`${issuePrefix} client name, quotation date, and service fees total are required.`)
+                return
+              }
+
+              const clientId = ensureImportedClient(next, {
+                clientName: row.client_name,
+                context: row.quotation_title || "Imported quotation",
+                assignedManager: row.advisor_name,
+              })
+              const caseId = ensureImportedCase(next, {
+                clientId,
+                clientName: row.client_name,
+                route: row.quotation_title || "Imported commercial scope",
+                assignedManager: row.advisor_name,
+                applicationStatus: "Commercial preparation",
+              })
+              const clientRecord = next.clients.find((entry) => entry.id === clientId)
+              if (!clientRecord) {
+                summary.skippedCount += 1
+                summary.issues.push(`${issuePrefix} client could not be created.`)
+                return
+              }
+
+              const quotationId = row.quotation_id?.trim() || `quo-${Date.now()}-${index}`
+              next.quotations.unshift(
+                buildQuotationComputedFields({
+                  id: quotationId.toLowerCase(),
+                  caseId,
+                  clientId,
+                  client: clientRecord.name,
+                  status: normaliseQuotationStatusValue(row.status),
+                  currency: row.currency?.trim() || "EUR",
+                  quotationDate: formatDateLabelFromIso(new Date(row.quotation_date).toISOString()),
+                  validUntil: formatDateLabelFromIso(
+                    new Date(new Date(row.quotation_date).getTime() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+                  ),
+                  owner: getInternalUserByName(row.advisor_name).name,
+                  ownerId: getInternalUserByName(row.advisor_name).id,
+                  note: row.notes?.trim() || "Imported quotation",
+                  title: row.quotation_title?.trim() || "Imported quotation",
+                  advisorName: getInternalUserByName(row.advisor_name).name,
+                  serviceFees: [{ label: "Imported service fees", amount: Number(row.service_fees_total || 0) }],
+                  governmentFees: [{ label: "Imported government fees", amount: Number(row.government_fees_total || 0) }],
+                  optionalItems: [{ label: "Imported optional items", amount: Number(row.optional_items_total || 0) }],
+                  discountAmount: Number(row.discount_amount || 0),
+                  discountReason: row.discount_reason || null,
+                  vatApplied: (row.vat_applied || "").trim().toLowerCase() === "yes" || (row.vat_applied || "").trim().toLowerCase() === "true",
+                  vatPercentage: Number(row.vat_percentage || 0),
+                  notes: row.notes || "",
+                  terms: "Imported into the platform and ready for review.",
+                  decisionStatus: normaliseQuotationStatusValue(row.status) === "Accepted" ? "Accepted" : "Pending",
+                  sentDate: normaliseQuotationStatusValue(row.status) === "Draft" ? null : formatDateLabelFromIso(new Date(row.quotation_date).toISOString()),
+                } as QuotationRecord),
+              )
+
+              if (next.clientProfiles[clientId]) {
+                next.clientProfiles[clientId] = {
+                  ...next.clientProfiles[clientId],
+                  quotationId: quotationId.toLowerCase(),
+                }
+              }
+              summary.importedCount += 1
+              return
+            }
+            case "payments": {
+              if (!row.client_name || !row.payment_label || Number.isNaN(Number(row.amount || 0)) || !row.due_date) {
+                summary.skippedCount += 1
+                summary.issues.push(`${issuePrefix} client name, payment label, amount, and due date are required.`)
+                return
+              }
+
+              const clientId = ensureImportedClient(next, {
+                clientName: row.client_name,
+                context: row.payment_label,
+                assignedManager: row.assigned_manager,
+              })
+              const caseId = ensureImportedCase(next, {
+                clientId,
+                clientName: row.client_name,
+                route: row.notes?.trim() || "Imported payment workflow",
+                assignedManager: row.assigned_manager,
+              })
+              const paymentId = `pay-${Date.now()}-${index}`
+
+              next.payments.unshift({
+                id: paymentId,
+                quotationId: row.quotation_id?.trim() || "",
+                caseId,
+                clientId,
+                client: row.client_name,
+                label: row.payment_label,
+                amount: Number(row.amount || 0),
+                currency: row.currency?.trim() || "EUR",
+                dueDate: formatDateLabelFromIso(new Date(row.due_date).toISOString()),
+                status: normalisePaymentStatusValue(row.status),
+                assignedManager: getInternalUserByName(row.assigned_manager).name,
+                assignedManagerId: getInternalUserByName(row.assigned_manager).id,
+              } as PaymentRecord)
+
+              if (next.clientProfiles[clientId]) {
+                next.clientProfiles[clientId] = {
+                  ...next.clientProfiles[clientId],
+                  paymentIds: [...next.clientProfiles[clientId].paymentIds, paymentId],
+                }
+              }
+              summary.importedCount += 1
+              return
+            }
+            default:
+              return
+          }
+        })
+
+        summary.issueCount = summary.issues.length
+        next.importSummaries.unshift(summary)
+        return next
+      })
+
+      return summary
     }
 
     const getPortalOverview = (clientId: string) => {
@@ -1265,6 +1754,7 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
     return {
       state,
       currentPortalClientId: state.clients[0]?.id ?? CURRENT_PORTAL_CLIENT_ID,
+      getAllLeads,
       getAllClients,
       getClientById,
       getClientDetail,
@@ -1278,6 +1768,7 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
       getReviewsForCase,
       getNotificationsForClient,
       getClientUpdates,
+      getImportSummaries,
       getWorkspaceNotificationFeed,
       getPortalNotificationFeed,
       getOpenNotificationCount,
@@ -1286,6 +1777,8 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
       markNotificationsRead,
       createClient,
       createQuotation,
+      importRecords,
+      startFromScratch,
       getPortalOverview,
       approveDocument,
       rejectDocument,

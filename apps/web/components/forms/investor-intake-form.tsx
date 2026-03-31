@@ -51,12 +51,12 @@ const steps = [
   {
     title: "Profile",
     summary: "Identity, nationality, and residence context.",
-    fields: ["fullName", "nationality", "countryOfResidence"] as const,
+    fields: ["nationality", "countryOfResidence", "familyApplication"] as const,
   },
   {
     title: "Planning",
-    summary: "Budget range, family scope, and timing.",
-    fields: ["investmentRange", "familyApplication", "timeline"] as const,
+    summary: "Budget range, timing, and planning direction.",
+    fields: ["investmentRange", "timeline"] as const,
   },
   {
     title: "Contact",
@@ -126,14 +126,8 @@ function InvestorIntakeFormContent({
   const content = useMemo(() => {
     if (step === 0) {
       return (
-        <div className="grid gap-4">
-          <FormField control={form.control} name="fullName" render={({ field }) => (
-            <FormItem>
-              <FormLabel className={labelClassName}>Full name</FormLabel>
-              <FormControl><Input className={fieldClassName} placeholder="Your full name" {...field} /></FormControl>
-              <FormMessage />
-            </FormItem>
-          )} />
+        <div className="rounded-[1.45rem] border border-[#e3d9cb] bg-white/62 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
+          <div className="grid gap-4">
           <FormField control={form.control} name="nationality" render={({ field }) => (
             <FormItem>
               <FormLabel className={labelClassName}>Nationality</FormLabel>
@@ -148,13 +142,27 @@ function InvestorIntakeFormContent({
               <FormMessage />
             </FormItem>
           )} />
+          <FormField control={form.control} name="familyApplication" render={({ field }) => (
+            <FormItem>
+              <FormLabel className={labelClassName}>Family scope</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger className={selectTriggerClassName}><SelectValue placeholder="Select scope" /></SelectTrigger>
+                </FormControl>
+                <SelectContent>{investorFamilyScopes.map((option) => <SelectItem key={option} value={option}>{option}</SelectItem>)}</SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )} />
+          </div>
         </div>
       )
     }
 
     if (step === 1) {
       return (
-        <div className="grid gap-4">
+        <div className="rounded-[1.45rem] border border-[#e3d9cb] bg-white/62 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
+          <div className="grid gap-4">
           <FormField control={form.control} name="investmentRange" render={({ field }) => (
             <FormItem>
               <FormLabel className={labelClassName}>Investment range</FormLabel>
@@ -163,18 +171,6 @@ function InvestorIntakeFormContent({
                   <SelectTrigger className={selectTriggerClassName}><SelectValue placeholder="Select range" /></SelectTrigger>
                 </FormControl>
                 <SelectContent>{investorInvestmentRanges.map((option) => <SelectItem key={option} value={option}>{option}</SelectItem>)}</SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )} />
-          <FormField control={form.control} name="familyApplication" render={({ field }) => (
-            <FormItem>
-              <FormLabel className={labelClassName}>Family application</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger className={selectTriggerClassName}><SelectValue placeholder="Select scope" /></SelectTrigger>
-                </FormControl>
-                <SelectContent>{investorFamilyScopes.map((option) => <SelectItem key={option} value={option}>{option}</SelectItem>)}</SelectContent>
               </Select>
               <FormMessage />
             </FormItem>
@@ -191,12 +187,24 @@ function InvestorIntakeFormContent({
               <FormMessage />
             </FormItem>
           )} />
+          <div className="rounded-[1.2rem] border border-[#dfd5c6] bg-white/68 px-4 py-4 text-sm leading-7 text-[#666d7b]">
+            Use the final step to add any regional preference, family complexity, or timing detail that would help shape the first reply.
+          </div>
+          </div>
         </div>
       )
     }
 
     return (
-      <div className="grid gap-4">
+      <div className="rounded-[1.45rem] border border-[#e3d9cb] bg-white/62 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
+        <div className="grid gap-4">
+        <FormField control={form.control} name="fullName" render={({ field }) => (
+          <FormItem>
+            <FormLabel className={labelClassName}>Full name</FormLabel>
+            <FormControl><Input className={fieldClassName} placeholder="Your full name" {...field} /></FormControl>
+            <FormMessage />
+          </FormItem>
+        )} />
         <FormField control={form.control} name="email" render={({ field }) => (
           <FormItem>
             <FormLabel className={labelClassName}>Email</FormLabel>
@@ -225,13 +233,14 @@ function InvestorIntakeFormContent({
         )} />
         <FormField control={form.control} name="additionalNotes" render={({ field }) => (
           <FormItem>
-            <FormLabel className={labelClassName}>Additional notes</FormLabel>
+            <FormLabel className={labelClassName}>Additional note</FormLabel>
             <FormControl>
               <Textarea className="min-h-32 rounded-[1.3rem] border border-[#d7cebf] bg-white text-[#1d2430] shadow-[inset_0_1px_0_rgba(255,255,255,0.78)] placeholder:text-[#8b8191] focus-visible:border-[#415776] focus-visible:ring-[#415776]/20" placeholder="Anything useful about your situation, timing, family structure, or jurisdictions under consideration." {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )} />
+        </div>
       </div>
     )
   }, [form.control, step])
@@ -254,11 +263,11 @@ function InvestorIntakeFormContent({
           <div className="flex flex-col gap-3 pt-1">
             <Button
               type={step < steps.length - 1 ? "button" : "submit"}
-              className="h-12 rounded-full bg-[#243041] text-white shadow-[0_18px_36px_rgba(24,31,43,0.18)] hover:bg-[#1d2735]"
+              className="h-[3.25rem] min-h-[3.25rem] rounded-full bg-[#243041] px-6 text-[0.95rem] font-semibold text-white shadow-[0_20px_38px_rgba(24,31,43,0.2)] hover:bg-[#1d2735]"
               onClick={step < steps.length - 1 ? handleNext : undefined}
               disabled={isPending}
             >
-              {step < steps.length - 1 ? "Continue" : submitLabel}
+              {step === 0 ? "Continue to planning" : step === 1 ? "Continue to contact" : submitLabel}
               {isPending ? <LoaderCircle className="size-4 animate-spin" /> : <ChevronRight className="size-4" />}
             </Button>
             <div className="flex items-center justify-between gap-3">

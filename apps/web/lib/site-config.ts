@@ -1,3 +1,5 @@
+import { getSaasDemoUrl, getSaasLoginUrl, getSelfServeSignupUrl, saasAppConfig } from "@cbideal/config"
+
 const routeLinks = {
   home: "/",
   about: "/about",
@@ -16,7 +18,6 @@ const routeLinks = {
 } as const
 
 const calendlyBookingUrl = "https://calendly.com/va-agency-hirings/crm-lead-partnership-call"
-const appBaseUrl = "https://app.cbideal.nl"
 
 const ctaLinks = {
   checkEligibility: "/#eligibility",
@@ -35,12 +36,12 @@ const ctaLinks = {
   speakToTeam: routeLinks.contact,
   contactIntentDemo: `${routeLinks.contact}?intent=demo`,
   returnHome: routeLinks.home,
-  appDemo: `${appBaseUrl}/demo`,
-  appLogin: `${appBaseUrl}/login`,
-  appSignupStarter: `${appBaseUrl}/signup?plan=starter`,
-  appSignupGrowth: `${appBaseUrl}/signup?plan=growth`,
-  enterpriseSetup: `${routeLinks.forCompanies}#company-form`,
-  requestProductDemo: `${routeLinks.demo}#demo-form`,
+  appDemo: getSaasDemoUrl(),
+  appLogin: getSaasLoginUrl(),
+  appSignupStarter: getSelfServeSignupUrl("starter"),
+  appSignupGrowth: getSelfServeSignupUrl("growth"),
+  enterpriseSetup: saasAppConfig.enterprisePath,
+  requestProductDemo: saasAppConfig.requestDemoPath,
 } as const
 
 const pricingPlans = [
@@ -136,7 +137,7 @@ export const siteConfig = {
     requestUrl: ctaLinks.requestDemo,
   },
   saas: {
-    appUrl: appBaseUrl,
+    appUrl: saasAppConfig.appUrl,
     loginUrl: ctaLinks.appLogin,
     demoUrl: ctaLinks.appDemo,
     signupStarterUrl: ctaLinks.appSignupStarter,

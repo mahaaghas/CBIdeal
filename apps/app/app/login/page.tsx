@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useState } from "react"
 import { AppBrand } from "@cbideal/ui/components/app-brand"
-import { getSaasPlan, saasAppConfig } from "@cbideal/config"
+import { getSaasPlan, isSelfServePlan, saasAppConfig } from "@cbideal/config"
 import { useBranding } from "@/lib/branding-store"
 import { usePlatformAccess } from "@/lib/platform-access-store"
 
@@ -17,7 +17,8 @@ function LoginPageContent() {
   const [password, setPassword] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const plan = searchParams.get("plan")
+  const requestedPlan = searchParams.get("plan")
+  const selectedPlan = requestedPlan && isSelfServePlan(requestedPlan) ? getSaasPlan(requestedPlan) : null
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -43,23 +44,30 @@ function LoginPageContent() {
     <div className="app-shell min-h-screen px-5 py-6 md:px-8 md:py-8">
       <div className="mx-auto grid min-h-[calc(100vh-3rem)] w-full max-w-[1220px] gap-6 lg:grid-cols-[0.95fr_1.05fr]">
         <section className="section-card flex flex-col justify-between rounded-[32px] p-8 md:p-10">
-          <div className="space-y-6">
-            <AppBrand
-              name={branding.companyName}
-              subtitle="SaaS access"
-              logoUrl={branding.companyLogoUrl}
-              darkLogoUrl={branding.darkLogoUrl}
-            />
-            <div className="space-y-4">
-              <span className="app-pill inline-flex rounded-full px-4 py-1.5 text-sm font-semibold">Sign in</span>
+          <div className="space-y-7">
+            <AppBrand name={branding.companyName} logoUrl={branding.companyLogoUrl} darkLogoUrl={branding.darkLogoUrl} />
+            <div className="space-y-4.5">
+              <span className="app-pill inline-flex rounded-full px-4 py-1.5 text-sm font-semibold">Workspace access</span>
               <h1 className="font-serif text-[2.5rem] leading-[1.02] tracking-[-0.04em] text-white md:text-[3.2rem]">
-                Access your firm workspace with clarity.
+                One clear place to sign in, start, or explore.
               </h1>
               <p className="max-w-xl text-base leading-8 text-slate-300">
-                Sign in to manage client records, quotations, payments, documents, and branded portal activity inside your own workspace on app.cbideal.nl.
+                Existing teams can sign in immediately. New firms can start a Starter or Growth workspace, open the demo environment, or request a more tailored enterprise setup.
               </p>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-[24px] border border-white/10 bg-white/6 p-5">
+                <p className="text-sm font-semibold text-white">Existing workspace</p>
+                <p className="mt-2 text-sm leading-7 text-slate-300">
+                  Sign in with the credentials created during onboarding and continue inside your firm workspace.
+                </p>
+              </div>
+              <div className="rounded-[24px] border border-white/10 bg-white/6 p-5">
+                <p className="text-sm font-semibold text-white">Self-serve onboarding</p>
+                <p className="mt-2 text-sm leading-7 text-slate-300">
+                  Starter and Growth move from account creation to billing and live workspace access in one direct path.
+                </p>
+              </div>
               <div className="rounded-[24px] border border-white/10 bg-white/6 p-5">
                 <p className="text-sm font-semibold text-white">Instant demo</p>
                 <p className="mt-2 text-sm leading-7 text-slate-300">
@@ -67,48 +75,74 @@ function LoginPageContent() {
                 </p>
               </div>
               <div className="rounded-[24px] border border-white/10 bg-white/6 p-5">
-                <p className="text-sm font-semibold text-white">Self-serve setup</p>
+                <p className="text-sm font-semibold text-white">Enterprise setup</p>
                 <p className="mt-2 text-sm leading-7 text-slate-300">
-                  Starter and Growth plans move from account creation to billing and workspace activation in one path.
+                  Larger structures stay on a more deliberate path so scope, rollout, and access can be configured properly.
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-3 pt-8">
-            <button
-              type="button"
-              onClick={startDemo}
-              className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
-            >
-              View Demo
-            </button>
-            <Link
-              href="/signup"
-              className="rounded-full border border-white/14 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/30"
-            >
-              Create workspace
-            </Link>
-            <Link
-              href={saasAppConfig.enterprisePath}
-              className="rounded-full border border-white/14 px-5 py-3 text-sm font-semibold text-slate-300 transition hover:border-white/30 hover:text-white"
-            >
-              Request enterprise setup
-            </Link>
+          <div className="space-y-4 pt-8">
+            <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={startDemo}
+                className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-slate-100"
+              >
+                View Demo
+              </button>
+              <Link
+                href="/signup"
+                className="rounded-full border border-white/14 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/30"
+              >
+                Create workspace
+              </Link>
+              <Link
+                href={saasAppConfig.enterprisePath}
+                className="rounded-full border border-white/14 px-5 py-3 text-sm font-semibold text-slate-300 transition hover:border-white/30 hover:text-white"
+              >
+                Request enterprise setup
+              </Link>
+            </div>
+            <p className="max-w-xl text-sm leading-7 text-slate-400">
+              Starter and Growth are self-serve. Enterprise stays separate so the setup can be handled more deliberately.
+            </p>
           </div>
         </section>
 
         <section className="section-card rounded-[32px] p-8 md:p-10">
           <div className="mx-auto max-w-[560px] space-y-8">
             <div className="space-y-3">
-              <span className="eyebrow">Workspace access</span>
+              <span className="eyebrow">Sign in</span>
               <h2 className="font-serif text-[2.1rem] leading-[1.06] tracking-[-0.04em] text-white">
                 Sign in to your account
               </h2>
               <p className="text-sm leading-7 text-slate-300">
-                {plan ? `Returning to continue with the ${getSaasPlan(plan as "starter" | "growth" | "enterprise").name} plan.` : "Use the credentials created during onboarding."}
+                {selectedPlan
+                  ? `Returning from pricing for the ${selectedPlan.name} plan. You can continue to onboarding or sign in if your workspace already exists.`
+                  : "Use the credentials created during onboarding to enter your workspace."}
               </p>
             </div>
+
+            {selectedPlan ? (
+              <div className="rounded-[24px] border border-[var(--app-brand-primary)]/20 bg-[var(--app-brand-surface-tint)] p-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-semibold text-white">{selectedPlan.name} is ready to start</p>
+                    <p className="mt-2 text-sm leading-7 text-slate-200">
+                      Continue into self-serve onboarding to create the admin account, company workspace, and billing setup for this plan.
+                    </p>
+                  </div>
+                  <Link
+                    href={`/signup?plan=${selectedPlan.id}`}
+                    className="rounded-full bg-[var(--app-brand-primary)] px-4 py-2.5 text-sm font-semibold text-[var(--app-brand-on-primary)] transition hover:bg-[var(--app-brand-primary-strong)]"
+                  >
+                    Start onboarding
+                  </Link>
+                </div>
+              </div>
+            ) : null}
 
             <form className="space-y-5" onSubmit={handleSubmit}>
               <div className="space-y-2">
@@ -159,12 +193,15 @@ function LoginPageContent() {
             </form>
 
             <div className="rounded-[24px] border border-white/10 bg-white/6 p-5">
-              <p className="text-sm font-semibold text-white">Need a workspace first?</p>
+              <p className="text-sm font-semibold text-white">New to the platform?</p>
               <p className="mt-2 text-sm leading-7 text-slate-300">
-                Create a Starter or Growth account through the self-serve onboarding flow, or request a tailored enterprise setup for larger organisations.
+                Create a Starter or Growth workspace, open the demo environment first, or move through a sales-led enterprise setup.
               </p>
-              <div className="mt-4 flex flex-wrap gap-3">
-                <Link href="/signup" className="rounded-full border border-white/12 px-4 py-2.5 text-sm font-semibold text-white transition hover:border-white/28">
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <Link
+                  href={selectedPlan ? `/signup?plan=${selectedPlan.id}` : "/signup"}
+                  className="rounded-full border border-white/12 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:border-white/28"
+                >
                   Start onboarding
                 </Link>
                 <button
@@ -174,6 +211,12 @@ function LoginPageContent() {
                 >
                   Open demo workspace
                 </button>
+                <Link
+                  href={saasAppConfig.enterprisePath}
+                  className="rounded-full border border-white/12 px-4 py-2.5 text-center text-sm font-semibold text-slate-300 transition hover:border-white/28 hover:text-white sm:col-span-2"
+                >
+                  Request enterprise setup
+                </Link>
               </div>
             </div>
           </div>

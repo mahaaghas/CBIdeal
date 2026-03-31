@@ -31,38 +31,46 @@ export function IntakeFormShell({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-[2rem] border border-[#d9d0c0] bg-[linear-gradient(180deg,#fbf8f2_0%,#f6f1e7_100%)] shadow-[0_32px_80px_rgba(16,22,35,0.22)]",
+        "overflow-hidden rounded-[2.15rem] border border-[#d9d0c0] bg-[linear-gradient(180deg,#fdfaf4_0%,#f5efe4_100%)] shadow-[0_34px_92px_rgba(16,22,35,0.24)]",
         mode === "embedded" ? "p-6 md:p-7" : "p-7 md:p-9",
         className,
       )}
     >
-      <div className="space-y-6">
-        <div className="space-y-3">
-          <span className="inline-flex rounded-full border border-[#ddd2c0] bg-white/65 px-3.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#7a6b58]">
-            Private advisory intake
-          </span>
-          <h3 className="max-w-[16ch] text-[2rem] leading-[1.08] tracking-[-0.03em] text-[#1d2430] md:text-[2.3rem]">
+      <div className="space-y-7">
+        <div className="space-y-3.5">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span className="inline-flex rounded-full border border-[#ddd2c0] bg-white/75 px-3.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#7a6b58]">
+              Private advisory intake
+            </span>
+            <span className="inline-flex rounded-full bg-[#efe6d9] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[#5f6472]">
+              Reviewed discreetly
+            </span>
+          </div>
+          <h3 className="max-w-[15ch] text-[2.05rem] leading-[1.04] tracking-[-0.035em] text-[#1d2430] md:text-[2.4rem]">
             {title}
           </h3>
-          <p className="max-w-[34rem] text-[0.96rem] leading-7 text-[#5f6472] md:text-[1rem] md:leading-8">
+          <p className="max-w-[34rem] text-[0.97rem] leading-7 text-[#5f6472] md:text-[1.02rem] md:leading-8">
             {description}
           </p>
         </div>
 
-        <div className="space-y-4 rounded-[1.6rem] border border-[#dfd5c6] bg-white/72 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] md:p-5">
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-1">
-              <p className="text-sm font-semibold text-[#243041]">
-                Step {step + 1} of {steps.length}
+        <div className="space-y-5 rounded-[1.7rem] border border-[#dfd5c6] bg-white/78 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] md:p-5">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-start justify-between gap-4">
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-[#243041]">
+                  Step {step + 1} of {steps.length}
+                </p>
+                <p className="text-sm leading-6 text-[#6d7484]">{activeStep?.summary}</p>
+              </div>
+              <p className="rounded-full bg-[#243041] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white">
+                {activeStep?.title}
               </p>
-              <p className="text-sm leading-6 text-[#6d7484]">{activeStep?.summary}</p>
             </div>
-            <p className="rounded-full bg-[#243041] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white">
-              {activeStep?.title}
-            </p>
+            <Progress value={progress} className="h-2.5 rounded-full bg-[#e8dfd1]" />
           </div>
-          <Progress value={progress} className="h-2 rounded-full bg-[#e8dfd1]" />
-          <div className={cn("grid gap-2.5", mode === "embedded" ? "grid-cols-3" : "grid-cols-3")}>
+
+          <div className="grid gap-2.5 sm:grid-cols-3">
             {steps.map((item, index) => {
               const active = index === step
               const completed = index < step
@@ -71,7 +79,7 @@ export function IntakeFormShell({
                 <div
                   key={item.title}
                   className={cn(
-                    "rounded-[1.15rem] border px-3 py-3 transition-colors",
+                    "rounded-[1.2rem] border px-3.5 py-3.5 transition-colors",
                     active
                       ? "border-[#243041]/12 bg-[#243041] text-white shadow-[0_14px_26px_rgba(24,31,43,0.16)]"
                       : completed
@@ -92,7 +100,17 @@ export function IntakeFormShell({
                     >
                       {index + 1}
                     </span>
-                    <p className="text-[0.78rem] font-semibold leading-5 md:text-[0.82rem]">{item.title}</p>
+                    <div className="min-w-0">
+                      <p className="text-[0.78rem] font-semibold leading-5 md:text-[0.82rem]">{item.title}</p>
+                      <p
+                        className={cn(
+                          "mt-0.5 text-[0.7rem] leading-5",
+                          active ? "text-white/74" : completed ? "text-[#445064]" : "text-[#7c7381]",
+                        )}
+                      >
+                        {completed ? "Completed" : active ? "Current step" : "Upcoming"}
+                      </p>
+                    </div>
                   </div>
                 </div>
               )
@@ -100,10 +118,24 @@ export function IntakeFormShell({
           </div>
         </div>
 
+        <div className="rounded-[1.7rem] border border-[#e4dacb] bg-white/56 px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
+          <div className="space-y-1">
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-[#6d7484]">
+              Current step
+            </p>
+            <p className="text-sm font-medium text-[#243041]">
+              {activeStep?.title}
+            </p>
+          </div>
+        </div>
+
         {children}
 
-        <div className="rounded-[1.4rem] border border-[#dfd5c6] bg-white/68 px-4 py-4 text-sm leading-7 text-[#666d7b]">
-          {trustNote}
+        <div className="rounded-[1.45rem] border border-[#dfd5c6] bg-white/68 px-4 py-4 text-sm leading-7 text-[#666d7b]">
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-[#6d7484]">
+            Private reassurance
+          </p>
+          <p className="mt-1.5">{trustNote}</p>
         </div>
       </div>
     </div>

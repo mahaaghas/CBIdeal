@@ -75,7 +75,7 @@ export function PageHero({
           >
             <div
               className={cn(
-                "page-hero-copy flex min-w-0 flex-col justify-start space-y-6 md:space-y-8 lg:h-full",
+                "page-hero-copy flex min-w-0 flex-col justify-start space-y-7 md:space-y-9 lg:h-full",
                 compact && "space-y-5 md:space-y-6",
                 isRtl && "text-right",
               )}
@@ -86,7 +86,7 @@ export function PageHero({
                   className={cn(
                     "text-primary-foreground",
                     hasAside
-                      ? "max-w-[20ch] text-[clamp(2.15rem,2.7vw,3.02rem)] leading-[1.1] tracking-[-0.028em]"
+                      ? "max-w-[19ch] text-[clamp(2.2rem,2.8vw,3.15rem)] leading-[1.07] tracking-[-0.03em]"
                       : "display-title max-w-[42rem]",
                     compact && !children && "max-w-[18ch] text-[clamp(2.3rem,3.35vw,3.2rem)] leading-[1.08] tracking-[-0.028em]",
                   )}
@@ -97,7 +97,7 @@ export function PageHero({
                   className={cn(
                     "text-primary-foreground/76",
                     hasAside
-                      ? "max-w-[42rem] text-[0.96rem] leading-[1.82] md:text-[1rem] md:leading-[1.95]"
+                      ? "max-w-[34rem] text-[0.98rem] leading-[1.9] md:text-[1.02rem] md:leading-[1.95]"
                       : "max-w-[40rem] text-base leading-7 md:text-lg md:leading-8",
                     compact && !children && "max-w-[40rem] text-[0.98rem] leading-7 md:text-base md:leading-[1.9]",
                   )}
@@ -107,7 +107,7 @@ export function PageHero({
               </div>
               <div
                 className={cn(
-                  "page-hero-actions flex flex-col gap-3.5 pt-1 sm:flex-row sm:items-center",
+                  "page-hero-actions flex flex-col gap-3.5 pt-2 sm:flex-row sm:items-center",
                   compact && "gap-3 pt-[0.125rem]",
                   isRtl && "sm:flex-row-reverse",
                 )}
@@ -146,7 +146,7 @@ export function PageHero({
                     {stats.map((stat) => (
                       <div
                         key={stat.label}
-                        className="flex min-h-[146px] min-w-0 flex-col justify-center rounded-[22px] border border-white/8 bg-white/[0.03] p-5 md:min-h-[154px] md:p-6"
+                        className="flex min-h-[152px] min-w-0 flex-col justify-between rounded-[22px] border border-white/10 bg-white/[0.04] p-5 shadow-[0_16px_38px_rgba(14,20,31,0.14)] md:min-h-[160px] md:p-6"
                       >
                         <div className="min-w-0 text-[1.22rem] leading-snug text-primary-foreground md:text-[1.34rem] [overflow-wrap:anywhere]">
                           {stat.value}

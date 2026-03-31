@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { saasPricingModel } from "@cbideal/config/pricing"
 import { formatPlanAmount, getSaasPlan } from "@cbideal/config/saas"
-import { BellRing, Building2, CreditCard, Palette, Users } from "lucide-react"
+import { BellRing, Building2, CreditCard, Database, Palette, Users } from "lucide-react"
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
 import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
 import { CrmStatCard } from "@cbideal/ui/components/crm-stat-card"
@@ -166,6 +166,12 @@ export default function SettingsPage() {
                   href: "/settings/email",
                   icon: BellRing,
                 },
+                {
+                  title: "Data import center",
+                  body: "Import leads, clients, cases, quotations, and payments through one controlled migration flow.",
+                  href: "/settings/data",
+                  icon: Database,
+                },
               ].map((item) => (
                 <Link
                   key={item.title}
@@ -191,6 +197,9 @@ export default function SettingsPage() {
               </Button>
               <Button asChild variant="outline" className="app-button-secondary rounded-full">
                 <Link href="/settings/email">Open email settings</Link>
+              </Button>
+              <Button asChild variant="outline" className="app-button-secondary rounded-full">
+                <Link href="/settings/data">Open data center</Link>
               </Button>
             </div>
           </div>

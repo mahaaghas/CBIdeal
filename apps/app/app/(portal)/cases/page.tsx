@@ -18,11 +18,14 @@ import {
   TableHeader,
   TableRow,
 } from "@cbideal/ui/components/ui/table"
-import { cases, getChecklistForCase, getPaymentsForClient } from "@/lib/mock-data"
+import { DataImportWorkflow } from "@/components/data-import-workflow"
+import { useWorkflow } from "@/lib/workflow-store"
 
 export default function CasesPage() {
   const [query, setQuery] = useState("")
   const [filter, setFilter] = useState<"All" | "Active" | "Review" | "Strategy">("All")
+  const { state, getChecklistForCase, getPaymentsForClient } = useWorkflow()
+  const cases = state.cases
 
   const visibleCases = useMemo(() => {
     return cases.filter((item) => {
@@ -108,6 +111,13 @@ export default function CasesPage() {
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
+            <DataImportWorkflow
+              source="Workspace"
+              defaultType="cases"
+              triggerLabel="Import cases"
+              title="Import cases and applications"
+              description="Upload existing cases, map the incoming columns, and confirm the records that should become live case files in this workspace."
+            />
           </div>
         }
       >

@@ -32,7 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
     ru: {
       title: "Форматы взаимодействия для профессиональных фирм",
       description:
-        "Изучите понятные форматы взаимодействия для профессиональных фирм, включая ориентиры и более широкие индивидуальные структуры.",
+        "Изучите понятные форматы взаимодействия для профессиональных фирм, включая структурированные пакеты и более широкие индивидуальные варианты.",
       keywords: ["форматы взаимодействия для фирм", "частная консультация для практик", "профессиональные структуры"],
     },
   }[locale]
@@ -55,7 +55,7 @@ export default function PricingPage() {
       eyebrow: "Solutions",
       title: "Clear SaaS plans for specialist firms.",
       description:
-        "This page explains the self-serve and sales-led paths into the CBI Deal platform. It should make the next step unambiguous: view the demo, create a workspace, or request a more tailored enterprise setup.",
+        "This page explains the self-serve and sales-led paths into the CBI Deal platform. It should make the next step unambiguous: view the demo, create a workspace, or contact sales for a more tailored enterprise setup.",
       primary: "View Demo",
       secondary: "Request Demo",
       plansEyebrow: "Solutions",
@@ -65,36 +65,54 @@ export default function PricingPage() {
       enterpriseTitle: "Need a broader rollout or a more tailored setup?",
       enterpriseDescription:
         "Enterprise is handled separately so implementation, access structure, and commercial scope can be discussed properly before any account is provisioned.",
+      enterpriseAction: "Contact Sales",
+      enterpriseNote: "Enterprise note",
+      backToCompanies: "Back to company overview",
+      reviewTogether: "Would you prefer to review the solutions together?",
+      reviewTogetherDescription:
+        "Use this section if you would like to discuss team size, scope, or which solution structure appears most suitable before moving further.",
     },
     ar: {
       eyebrow: "خيارات التعامل",
       title: "خيارات واضحة وهادئة للمكاتب المتخصصة.",
       description:
-        "صُممت البنية لتكون واضحة بما يكفي لاتخاذ قرار أولي، مع ترك مساحة لترتيبات أوسع عندما يكون ذلك منطقياً.",
-      primary: "اطلب عرضاً خاصاً",
-      secondary: "اكتب إلينا بدلاً من ذلك",
+        "هذه الصفحة تشرح مسار الاشتراك الذاتي ومسار المبيعات المخصص داخل منصة CBI Deal، بحيث تكون الخطوة التالية واضحة: عرض النسخة التجريبية، إنشاء مساحة العمل، أو التواصل معنا بخصوص إعداد Enterprise.",
+      primary: "عرض النسخة التجريبية",
+      secondary: "طلب عرض توضيحي",
       plansEyebrow: "الخطط",
-      plansTitle: "عدد محدود من الخيارات يكفي لشرح الهيكل بوضوح.",
+      plansTitle: "ثلاثة مسارات واضحة، ولكل مسار الإجراء المناسب له.",
       plansDescription:
-        "الأرقام هنا موضوعة لتدعم قراراً أولياً هادئاً من دون مبالغة أو عرض استعراضي.",
+        "Starter و Growth ينتقلان عبر مسار تسجيل وفوترة ذاتي. أما Enterprise فيبقى مساراً أكثر خصوصية حتى يمكن ترتيب الفرق الأوسع بعناية أكبر.",
       enterpriseTitle: "هل تحتاج إلى ترتيب أوسع أو صيغة أكثر تخصيصاً؟",
       enterpriseDescription:
-        "يمكن أن تشمل الترتيبات الأوسع نطاقاً أكثر خصوصية أو تخطيطاً أدق أو طريقة عمل مصممة حول احتياج الفريق.",
+        "يتم التعامل مع Enterprise بشكل منفصل حتى يمكن مناقشة التنفيذ وهيكل الوصول والنطاق التجاري قبل إنشاء أي حساب.",
+      enterpriseAction: "تواصل مع المبيعات",
+      enterpriseNote: "ملاحظة حول Enterprise",
+      backToCompanies: "العودة إلى صفحة الشركات",
+      reviewTogether: "هل تفضل مراجعة الحلول في محادثة مباشرة؟",
+      reviewTogetherDescription:
+        "استخدم هذا القسم إذا كنت تريد مناقشة حجم الفريق أو النطاق أو الهيكل الأنسب قبل المضي قدماً.",
     },
     ru: {
       eyebrow: "Форматы взаимодействия",
       title: "Понятные варианты для специализированных практик.",
       description:
-        "Структура задумана так, чтобы дать ясную основу для первого решения и оставить пространство для более индивидуальных форматов при необходимости.",
-      primary: "Запросить частный обзор",
-      secondary: "Написать нам",
+        "Эта страница объясняет самостоятельный и sales-led пути входа в платформу CBI Deal, чтобы следующий шаг был однозначным: открыть демо, создать рабочее пространство или связаться с отделом продаж по Enterprise.",
+      primary: "Открыть демо",
+      secondary: "Запросить демо",
       plansEyebrow: "Тарифы",
-      plansTitle: "Небольшого числа вариантов достаточно для ясного первого обзора.",
+      plansTitle: "Три понятных варианта, и у каждого есть правильное следующее действие.",
       plansDescription:
-        "Цифры здесь нужны для спокойного первого решения, без излишней агрессии и без ощущения шаблонной продуктовой страницы.",
+        "Starter и Growth идут через самостоятельную регистрацию и биллинг. Enterprise остаётся более персональным маршрутом, чтобы более широкие команды можно было настроить осознанно.",
       enterpriseTitle: "Нужен более широкий формат или более индивидуальная структура?",
       enterpriseDescription:
-        "Более широкие форматы могут включать индивидуальный объём доступа, более подробное планирование и более адаптированный способ работы.",
+        "Enterprise обрабатывается отдельно, чтобы внедрение, структура доступа и коммерческие условия были согласованы до создания аккаунта.",
+      enterpriseAction: "Связаться с отделом продаж",
+      enterpriseNote: "Примечание по Enterprise",
+      backToCompanies: "Назад к странице для компаний",
+      reviewTogether: "Хотите обсудить решения вместе?",
+      reviewTogetherDescription:
+        "Используйте этот раздел, если хотите обсудить размер команды, объём работ или наиболее подходящую структуру решения перед следующим шагом.",
     },
   }[locale]
 
@@ -107,41 +125,57 @@ export default function PricingPage() {
         primaryAction={{ href: ctaLinks.appDemo, label: copy.primary }}
         secondaryAction={{ href: ctaLinks.requestProductDemo, label: copy.secondary }}
         stats={[
-          { value: locale === "ar" ? "لكل مستخدم" : "Per user", label: locale === "ar" ? "تسعير واضح للمقاعد" : "clear seat-based pricing" },
-          { value: locale === "ar" ? "توفير سنوي" : "Annual savings", label: locale === "ar" ? "عند اختيار الفوترة السنوية" : "with yearly billing" },
-          { value: "Enterprise", label: locale === "ar" ? "للهياكل الأوسع أو الاحتياجات المخصصة" : "for broader custom structures" },
+          {
+            value: locale === "ar" ? "لكل مستخدم" : locale === "ru" ? "На пользователя" : "Per user",
+            label:
+              locale === "ar"
+                ? "تسعير واضح للمقاعد"
+                : locale === "ru"
+                  ? "понятная модель по количеству мест"
+                  : "clear seat-based pricing",
+          },
+          {
+            value: locale === "ar" ? "توفير سنوي" : locale === "ru" ? "Годовая экономия" : "Annual savings",
+            label:
+              locale === "ar"
+                ? "عند اختيار الفوترة السنوية"
+                : locale === "ru"
+                  ? "при годовой оплате"
+                  : "with yearly billing",
+          },
+          {
+            value: "Enterprise",
+            label:
+              locale === "ar"
+                ? "للهياكل الأوسع أو الاحتياجات المخصصة"
+                : locale === "ru"
+                  ? "для более широких структур и индивидуальных настроек"
+                  : "for broader custom structures",
+          },
         ]}
       />
 
       <section className="section-padding pt-0">
         <div className="container-shell">
-          <SectionHeading
-            eyebrow={copy.plansEyebrow}
-            title={copy.plansTitle}
-            description={copy.plansDescription}
-          />
+          <SectionHeading eyebrow={copy.plansEyebrow} title={copy.plansTitle} description={copy.plansDescription} />
           <PricingSection locale={locale} />
         </div>
       </section>
 
       <section className="section-padding bg-muted/30">
         <div className="container-shell">
-          <MeetingSchedulerCard
-            compact
-            title={locale === "ar" ? "هل تفضل مراجعة الحلول في محادثة مباشرة؟" : "Would you prefer to review the solutions together?"}
-            description={locale === "ar" ? "استخدم هذا القسم إذا كنت تريد مناقشة حجم الفريق أو النطاق أو الهيكل الأنسب." : "Use this section if you would like to discuss team size, scope, or which solution structure appears most suitable before moving further."}
-          />
+          <MeetingSchedulerCard compact title={copy.reviewTogether} description={copy.reviewTogetherDescription} />
         </div>
       </section>
 
       <section className="section-padding pt-0">
         <div className="container-shell">
           <CtaPanel
-            eyebrow={locale === "ar" ? "ملاحظة حول Enterprise" : "Enterprise note"}
+            eyebrow={copy.enterpriseNote}
             title={copy.enterpriseTitle}
             description={copy.enterpriseDescription}
-            primaryAction={{ href: ctaLinks.enterpriseSetup, label: locale === "ar" ? "Ø§Ø·Ù„Ø¨ Ø¥Ø¹Ø¯Ø§Ø¯ Enterprise" : "Request enterprise setup" }}
-            secondaryAction={{ href: routeLinks.forCompanies, label: locale === "ar" ? "العودة إلى صفحة الشركات" : locale === "ru" ? "Назад к странице для компаний" : "Back to company overview" }}
+            primaryAction={{ href: ctaLinks.enterpriseSetup, label: copy.enterpriseAction }}
+            secondaryAction={{ href: routeLinks.forCompanies, label: copy.backToCompanies }}
           />
         </div>
       </section>

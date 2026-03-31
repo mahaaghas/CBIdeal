@@ -22,19 +22,59 @@ import {
   portalSnapshot,
   quotations,
   reviewDecisions,
+  tasks,
   workspace,
 } from "@/lib/mock-data"
+import { buildScopedStorageKey } from "@/lib/platform-access"
+import { usePlatformAccess } from "@/lib/platform-access-store"
 
+type ClientRecord = (typeof clients)[number]
+type ClientDetailRecord = (typeof clientDetails)[keyof typeof clientDetails]
 type CaseRecord = (typeof initialCases)[number]
-type QuotationRecord = (typeof quotations)[number]
+type QuotationLineItem = {
+  label: string
+  amount: number
+  quantity?: number
+}
+export type QuotationRecord = (typeof quotations)[number] & {
+  title?: string
+  advisorName?: string
+  serviceFees: QuotationLineItem[]
+  governmentFees: QuotationLineItem[]
+  optionalItems: QuotationLineItem[]
+  discountAmount?: number
+  discountReason?: string | null
+  vatApplied?: boolean
+  vatPercentage?: number
+  subtotal?: number
+  vatAmount?: number
+  total?: number
+  notes?: string
+  terms?: string
+  sentDate?: string | null
+  decisionStatus?: "Accepted" | "Pending" | "Declined"
+}
 type PaymentRecord = (typeof paymentSchedules)[number]
 type PaymentProofRecord = (typeof paymentProofs)[number]
 type ChecklistRecord = (typeof documentChecklistItems)[number]
 type UploadRecord = (typeof documentUploads)[number]
 type ReviewRecord = (typeof reviewDecisions)[number]
-type NotificationRecord = (typeof notificationLog)[number] & { clientId?: string }
+type NotificationRecord = (typeof notificationLog)[number] & { clientId?: string; isRead?: boolean }
+
+export type WorkflowNotificationFeedItem = {
+  id: string
+  title: string
+  description: string
+  context: string
+  timestamp: string
+  href: string
+  unread: boolean
+  status: "New" | "Read"
+}
 
 type WorkflowState = {
+  clients: ClientRecord[]
+  clientProfiles: Record<string, ClientDetailRecord>
   cases: CaseRecord[]
   quotations: QuotationRecord[]
   payments: PaymentRecord[]
@@ -49,8 +89,9 @@ type WorkflowState = {
 type WorkflowContextValue = {
   state: WorkflowState
   currentPortalClientId: string
-  getClientById: (clientId: string) => (typeof clients)[number] | undefined
-  getClientDetail: (clientId: string) => (typeof clientDetails)[keyof typeof clientDetails] | undefined
+  getAllClients: () => ClientRecord[]
+  getClientById: (clientId: string) => ClientRecord | undefined
+  getClientDetail: (clientId: string) => ClientDetailRecord | undefined
   getCaseByClientId: (clientId: string) => CaseRecord | undefined
   getQuotationByClientId: (clientId: string) => QuotationRecord | undefined
   getPaymentsForClient: (clientId: string) => PaymentRecord[]
@@ -61,7 +102,37 @@ type WorkflowContextValue = {
   getReviewsForCase: (caseId: string) => ReviewRecord[]
   getNotificationsForClient: (clientId: string) => NotificationRecord[]
   getClientUpdates: (clientId: string) => string[]
+  getWorkspaceNotificationFeed: () => WorkflowNotificationFeedItem[]
+  getPortalNotificationFeed: (clientId: string) => WorkflowNotificationFeedItem[]
   getOpenNotificationCount: () => number
+  getPortalNotificationCount: (clientId: string) => number
+  markNotificationRead: (notificationId: string) => void
+  markNotificationsRead: (notificationIds: string[]) => void
+  createClient: (input: {
+    name: string
+    type: string
+    context: string
+    region: string
+    investmentRange: string
+    jurisdictionFocus: string
+    ownerId: string
+  }) => string
+  createQuotation: (input: {
+    clientId: string
+    title: string
+    quotationDate: string
+    advisorName: string
+    currency: string
+    serviceFees: QuotationLineItem[]
+    governmentFees: QuotationLineItem[]
+    optionalItems: QuotationLineItem[]
+    discountAmount: number
+    discountReason?: string | null
+    vatApplied: boolean
+    vatPercentage: number
+    notes?: string
+    terms?: string
+  }) => string
   getPortalOverview: (clientId: string) => {
     route: string
     stage: string
@@ -107,8 +178,66 @@ function formatDateTime(date = new Date()) {
   }).format(date)
 }
 
+function formatDateLabelFromIso(isoDate: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(isoDate))
+}
+
+function parseDateLabel(value?: string | null) {
+  if (!value) return 0
+
+  const parsed = new Date(value.replace(",", "")).getTime()
+  return Number.isNaN(parsed) ? 0 : parsed
+}
+
 function normaliseClientId(raw?: string | null) {
   return raw?.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") ?? ""
+}
+
+function calculateLineItemsTotal(items: QuotationLineItem[]) {
+  return items.reduce((total, item) => total + item.amount * (item.quantity ?? 1), 0)
+}
+
+function buildQuotationComputedFields(record: QuotationRecord): QuotationRecord {
+  const subtotal =
+    calculateLineItemsTotal(record.serviceFees) +
+    calculateLineItemsTotal(record.governmentFees) +
+    calculateLineItemsTotal(record.optionalItems)
+
+  const discountAmount = record.discountAmount ?? 0
+  const netAmount = Math.max(subtotal - discountAmount, 0)
+  const vatApplied = record.vatApplied ?? false
+  const vatPercentage = record.vatPercentage ?? 0
+  const vatAmount = vatApplied ? Math.round(netAmount * (vatPercentage / 100)) : 0
+  const total = netAmount + vatAmount
+
+  return {
+    ...record,
+    title: record.title ?? `${record.client} quotation`,
+    advisorName: record.advisorName ?? record.owner,
+    discountAmount,
+    discountReason: record.discountReason ?? null,
+    vatApplied,
+    vatPercentage,
+    subtotal,
+    vatAmount,
+    total,
+    notes: record.notes ?? record.note,
+    terms:
+      record.terms ??
+      "This quotation remains subject to final document readiness, programme-side requirements, and the agreed scope of work.",
+    sentDate:
+      record.sentDate ??
+      (record.status === "Draft" ? null : record.quotationDate),
+    decisionStatus:
+      record.decisionStatus ??
+      (record.status === "Accepted" || record.status === "Partially Paid" || record.status === "Paid"
+        ? "Accepted"
+        : "Pending"),
+  }
 }
 
 function buildInitialState(): WorkflowState {
@@ -118,12 +247,90 @@ function buildInitialState(): WorkflowState {
     return {
       ...item,
       clientId: matchedClient?.id,
+      isRead: item.id === "notif-001" || item.id === "notif-003",
     }
   })
 
+  initialNotifications.unshift(
+    {
+      id: "notif-seed-task-updated",
+      type: "Task updated",
+      channel: "Workspace",
+      recipient: "Maha A.",
+      recipientType: "Internal",
+      relatedTo: "task-002",
+      sentAt: "31 Mar 2026, 08:35",
+      status: "Sent",
+      clientId: "al-noor-holdings",
+      isRead: false,
+    },
+    {
+      id: "notif-seed-quotation-accepted",
+      type: "Quotation accepted",
+      channel: "Workspace",
+      recipient: "Maha A.",
+      recipientType: "Internal",
+      relatedTo: "quo-1004",
+      sentAt: "30 Mar 2026, 17:18",
+      status: "Sent",
+      clientId: "m-el-sayed",
+      isRead: false,
+    },
+    {
+      id: "notif-seed-payment-approved",
+      type: "Payment approved",
+      channel: "Email",
+      recipient: "Ahmed Rahman",
+      recipientType: "Client",
+      relatedTo: "pay-rahman-1",
+      sentAt: "30 Mar 2026, 10:42",
+      status: "Sent",
+      clientId: "a-rahman",
+      isRead: false,
+    },
+    {
+      id: "notif-seed-proof-uploaded",
+      type: "Proof of payment uploaded",
+      channel: "Workspace",
+      recipient: "Sami K.",
+      recipientType: "Internal",
+      relatedTo: "pay-rahman-1",
+      sentAt: "30 Mar 2026, 09:55",
+      status: "Sent",
+      clientId: "a-rahman",
+      isRead: true,
+    },
+    {
+      id: "notif-seed-document-approved",
+      type: "Document approved",
+      channel: "Email",
+      recipient: "Al Noor Holdings",
+      recipientType: "Client",
+      relatedTo: "doc-noor-proof-address",
+      sentAt: "29 Mar 2026, 14:12",
+      status: "Sent",
+      clientId: "al-noor-holdings",
+      isRead: true,
+    },
+    {
+      id: "notif-seed-document-uploaded",
+      type: "Document uploaded",
+      channel: "Workspace",
+      recipient: "Nour H.",
+      recipientType: "Internal",
+      relatedTo: "doc-westbridge-board-resolution",
+      sentAt: "30 Mar 2026, 11:18",
+      status: "Sent",
+      clientId: "westbridge-capital",
+      isRead: false,
+    },
+  )
+
   return {
+    clients: clone(clients),
+    clientProfiles: clone(clientDetails),
     cases: clone(initialCases),
-    quotations: clone(quotations),
+    quotations: clone(quotations).map((quotation) => buildQuotationComputedFields(quotation)),
     payments: clone(paymentSchedules),
     paymentProofs: clone(paymentProofs),
     checklist: clone(documentChecklistItems),
@@ -135,6 +342,91 @@ function buildInitialState(): WorkflowState {
       "al-noor-holdings": clone(clientDetails["al-noor-holdings"].notes),
       "westbridge-capital": clone(clientDetails["westbridge-capital"].notes),
       "m-el-sayed": clone(clientDetails["m-el-sayed"].notes),
+    },
+  }
+}
+
+function buildWorkspaceSeed(companyName: string, ownerName: string): WorkflowState {
+  const welcomeClientId = normaliseClientId(companyName) || "workspace-owner"
+  const welcomeCaseId = `case-${welcomeClientId}`
+
+  return {
+    clients: [
+      {
+        id: welcomeClientId,
+        name: companyName,
+        type: "Firm workspace",
+        context: "Workspace setup",
+        status: "Onboarding",
+        owner: ownerName,
+        ownerId: internalUsers[0]?.id ?? "usr-maha",
+        jurisdictionFocus: "Initial configuration",
+        portalStatus: "Portal not yet opened",
+        summary: "This record anchors the firm workspace while the first real clients, quotations, and portal access are being configured.",
+        region: "Internal setup",
+        investmentRange: "Not applicable",
+      },
+    ],
+    clientProfiles: {
+      [welcomeClientId]: {
+        id: welcomeClientId,
+        name: companyName,
+        contact: ownerName,
+        owner: ownerName,
+        profileType: "Firm workspace",
+        region: "Internal setup",
+        status: "Onboarding",
+        applicationStatus: "Ready for setup",
+        summary:
+          "This workspace has been activated. The first real client, quotation, and case will replace the onboarding record naturally as your team begins working.",
+        caseId: welcomeCaseId,
+        quotationId: "",
+        paymentIds: [],
+        notes: [
+          "Welcome to the workspace.",
+          "Create your first client, quotation, or case to replace this onboarding record.",
+        ],
+      },
+    },
+    cases: [
+      {
+        id: welcomeCaseId,
+        clientId: welcomeClientId,
+        client: companyName,
+        route: "Workspace activation",
+        stage: "Ready for setup",
+        owner: ownerName,
+        ownerId: internalUsers[0]?.id ?? "usr-maha",
+        nextMilestone: formatDate(new Date()),
+        progress: 8,
+        applicationStatus: "Complete onboarding and add your first live matter",
+        region: "Internal",
+      },
+    ],
+    quotations: [],
+    payments: [],
+    paymentProofs: [],
+    checklist: [],
+    uploads: [],
+    reviews: [],
+    notifications: [
+      {
+        id: "notif-workspace-welcome",
+        type: "Task assigned",
+        channel: "Workspace",
+        recipient: ownerName,
+        recipientType: "Internal",
+        relatedTo: welcomeCaseId,
+        sentAt: formatDateTime(),
+        status: "Sent",
+        clientId: welcomeClientId,
+        isRead: false,
+      },
+    ],
+    clientUpdates: {
+      [welcomeClientId]: [
+        "Your workspace is active. Add your first real client or quotation to begin replacing the onboarding record.",
+      ],
     },
   }
 }
@@ -161,6 +453,7 @@ function pushNotification(
     id: `notif-${Date.now()}`,
     sentAt: formatDateTime(),
     clientId,
+    isRead: false,
   })
 }
 
@@ -269,32 +562,156 @@ function syncCaseState(state: WorkflowState, caseId?: string | null) {
   caseRecord.applicationStatus = "Structured review"
 }
 
+function resolveNotificationFeedItem(
+  item: NotificationRecord,
+  state: WorkflowState,
+  audience: "workspace" | "portal",
+): WorkflowNotificationFeedItem {
+  const client = item.clientId ? state.clients.find((entry) => entry.id === item.clientId) : undefined
+  const caseRecord = item.clientId ? state.cases.find((entry) => entry.clientId === item.clientId) : undefined
+  const checklistItem = state.checklist.find((entry) => entry.id === item.relatedTo)
+  const payment = state.payments.find((entry) => entry.id === item.relatedTo)
+  const paymentFromProof = state.paymentProofs.find((entry) => entry.id === item.relatedTo)
+  const proofPayment =
+    payment ?? (paymentFromProof ? state.payments.find((entry) => entry.id === paymentFromProof.paymentId) : undefined)
+  const quotation = state.quotations.find((entry) => entry.id === item.relatedTo)
+  const task = tasks.find((entry) => entry.id === item.relatedTo)
+
+  const defaultHref = audience === "workspace" ? "/dashboard" : "/portal"
+  let description = item.type
+  let context = client?.name ?? caseRecord?.route ?? item.recipient
+  let href = defaultHref
+
+  switch (item.type) {
+    case "Document uploaded":
+      description = checklistItem
+        ? `${client?.name ?? "A client"} uploaded ${checklistItem.item.toLowerCase()}.`
+        : `${item.recipient} uploaded a required document.`
+      context = caseRecord?.route ?? client?.name ?? "Document review"
+      href = audience === "workspace" ? "/documents" : "/portal/documents"
+      break
+    case "Document approved":
+      description = checklistItem
+        ? `${checklistItem.item} was approved and cleared for the active file.`
+        : "A required document was approved."
+      context = client?.name ?? caseRecord?.route ?? "Document review"
+      href = audience === "workspace" ? "/documents" : "/portal/documents"
+      break
+    case "Document rejected and re-upload requested":
+      description = checklistItem
+        ? `${checklistItem.item} was returned and a new upload is required.`
+        : "A document needs to be uploaded again."
+      context = client?.name ?? caseRecord?.route ?? "Document review"
+      href = audience === "workspace" ? "/documents" : "/portal/documents"
+      break
+    case "Proof of payment uploaded":
+      description = proofPayment
+        ? `${client?.name ?? "A client"} uploaded proof for ${proofPayment.label.toLowerCase()}.`
+        : "A payment proof was uploaded."
+      context = client?.name ?? proofPayment?.label ?? "Payments"
+      href = audience === "workspace" ? "/payments" : "/portal/payments"
+      break
+    case "Payment approved":
+      description = proofPayment
+        ? `${proofPayment.label} was approved and cleared.`
+        : "A payment stage was approved."
+      context = client?.name ?? proofPayment?.label ?? "Payments"
+      href = audience === "workspace" ? "/payments" : "/portal/payments"
+      break
+    case "Proof of payment rejected":
+      description = proofPayment
+        ? `${proofPayment.label} was returned and new proof is required.`
+        : "A payment proof was returned for re-upload."
+      context = client?.name ?? proofPayment?.label ?? "Payments"
+      href = audience === "workspace" ? "/payments" : "/portal/payments"
+      break
+    case "Payment reminder":
+    case "Missing documents reminder":
+      description = proofPayment
+        ? `A reminder was prepared for ${proofPayment.label.toLowerCase()}.`
+        : caseRecord
+          ? `A reminder was issued for outstanding items in ${caseRecord.route.toLowerCase()}.`
+          : "A client reminder was issued."
+      context = client?.name ?? caseRecord?.route ?? "Client reminder"
+      href = audience === "workspace" ? "/clients" : "/portal/messages"
+      break
+    case "Quotation accepted":
+      description = quotation
+        ? `${quotation.id.toUpperCase()} has moved into an accepted commercial stage.`
+        : "A quotation was accepted."
+      context = client?.name ?? quotation?.client ?? "Quotations"
+      href = audience === "workspace" ? "/quotations" : "/portal/quotations"
+      break
+    case "Quotation sent":
+      description = quotation
+        ? `${quotation.id.toUpperCase()} was issued to the client and is awaiting response.`
+        : "A quotation was issued."
+      context = client?.name ?? quotation?.client ?? "Quotations"
+      href = audience === "workspace" ? "/quotations" : "/portal/quotations"
+      break
+    case "Task assigned":
+    case "Task updated":
+      description = task ? task.name : "A task was updated in the workspace."
+      context = task ? `${task.owner} / ${task.priority} priority` : "Task management"
+      href = audience === "workspace" ? "/tasks" : "/portal/messages"
+      break
+    default:
+      href = audience === "workspace" ? "/clients" : "/portal/messages"
+  }
+
+  return {
+    id: item.id,
+    title: item.type,
+    description,
+    context,
+    timestamp: item.sentAt,
+    href,
+    unread: !item.isRead,
+    status: item.isRead ? "Read" : "New",
+  }
+}
+
 export function WorkflowProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<WorkflowState>(buildInitialState)
+  const { currentTenant, currentUser, mode, storageScope } = usePlatformAccess()
+  const scopedStorageKey = buildScopedStorageKey(STORAGE_KEY, storageScope)
+  const [state, setState] = useState<WorkflowState>(() =>
+    mode === "workspace" && currentTenant
+      ? buildWorkspaceSeed(currentTenant.companyName, currentUser?.fullName ?? "Workspace owner")
+      : buildInitialState(),
+  )
 
   useEffect(() => {
     if (typeof window === "undefined") return
 
-    const saved = window.localStorage.getItem(STORAGE_KEY)
-    if (!saved) return
+    const saved = window.localStorage.getItem(scopedStorageKey)
+    if (!saved) {
+      setState(
+        mode === "workspace" && currentTenant
+          ? buildWorkspaceSeed(currentTenant.companyName, currentUser?.fullName ?? "Workspace owner")
+          : buildInitialState(),
+      )
+      return
+    }
 
     try {
       setState(JSON.parse(saved) as WorkflowState)
     } catch {
-      window.localStorage.removeItem(STORAGE_KEY)
+      window.localStorage.removeItem(scopedStorageKey)
     }
-  }, [])
+  }, [currentTenant, currentUser?.fullName, mode, scopedStorageKey])
 
   useEffect(() => {
     if (typeof window === "undefined") return
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-  }, [state])
+    window.localStorage.setItem(scopedStorageKey, JSON.stringify(state))
+  }, [scopedStorageKey, state])
 
   const value = useMemo<WorkflowContextValue>(() => {
-    const getClientById = (clientId: string) => clients.find((client) => client.id === clientId)
+    const getAllClients = () => state.clients
+
+    const getClientById = (clientId: string) => state.clients.find((client) => client.id === clientId)
 
     const getClientDetail = (clientId: string) =>
-      clientDetails[clientId as keyof typeof clientDetails]
+      state.clientProfiles[clientId]
 
     const getCaseByClientId = (clientId: string) =>
       state.cases.find((item) => item.clientId === clientId)
@@ -327,10 +744,206 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
 
     const getClientUpdates = (clientId: string) => state.clientUpdates[clientId] ?? []
 
+    const getWorkspaceNotificationFeed = () =>
+      [...state.notifications]
+        .sort((left, right) => parseDateLabel(right.sentAt) - parseDateLabel(left.sentAt))
+        .map((item) => resolveNotificationFeedItem(item, state, "workspace"))
+
+    const getPortalNotificationFeed = (clientId: string) =>
+      state.notifications
+        .filter((item) => item.clientId === clientId)
+        .sort((left, right) => parseDateLabel(right.sentAt) - parseDateLabel(left.sentAt))
+        .map((item) => resolveNotificationFeedItem(item, state, "portal"))
+
     const getOpenNotificationCount = () =>
-      state.notifications.filter(
-        (item) => item.recipientType === "Internal" && (item.status === "Sent" || item.status === "Queued"),
-      ).length
+      getWorkspaceNotificationFeed().filter((item) => item.unread).length
+
+    const getPortalNotificationCount = (clientId: string) =>
+      getPortalNotificationFeed(clientId).filter((item) => item.unread).length
+
+    const markNotificationRead = (notificationId: string) => {
+      setState((current) => {
+        const next = clone(current)
+        const notification = next.notifications.find((item) => item.id === notificationId)
+        if (!notification || notification.isRead) return current
+        notification.isRead = true
+        return next
+      })
+    }
+
+    const markNotificationsRead = (notificationIds: string[]) => {
+      if (!notificationIds.length) return
+
+      setState((current) => {
+        const next = clone(current)
+        let changed = false
+
+        next.notifications.forEach((notification) => {
+          if (notificationIds.includes(notification.id) && !notification.isRead) {
+            notification.isRead = true
+            changed = true
+          }
+        })
+
+        return changed ? next : current
+      })
+    }
+
+    const createClient = (input: {
+      name: string
+      type: string
+      context: string
+      region: string
+      investmentRange: string
+      jurisdictionFocus: string
+      ownerId: string
+    }) => {
+      const clientId = normaliseClientId(input.name)
+      const owner = internalUsers.find((user) => user.id === input.ownerId) ?? internalUsers[0]
+      const today = formatDate()
+
+      setState((current) => {
+        const next = clone(current)
+        if (next.clients.some((client) => client.id === clientId)) return current
+
+        next.clients.unshift({
+          id: clientId,
+          name: input.name,
+          type: input.type,
+          context: input.context,
+          status: "Onboarding",
+          owner: owner.name,
+          ownerId: owner.id,
+          jurisdictionFocus: input.jurisdictionFocus,
+          portalStatus: "Invitation sent",
+          summary: `${input.context} currently being prepared for a more detailed review and quotation stage.`,
+          region: input.region,
+          investmentRange: input.investmentRange,
+        } as ClientRecord)
+
+        next.clientProfiles[clientId] = {
+          id: clientId,
+          name: input.name,
+          contact: "Primary contact",
+          owner: owner.name,
+          profileType: input.type,
+          region: input.region,
+          status: "Onboarding",
+          applicationStatus: "Initial review",
+          summary: `${input.context} prepared for the initial advisory and quotation workflow.`,
+          caseId: `case-${Date.now()}`,
+          quotationId: "",
+          paymentIds: [],
+          notes: [
+            "Client record created from the quotation flow.",
+            `Initial context: ${input.context}.`,
+            "Awaiting next operational step.",
+          ],
+        } as ClientDetailRecord
+
+        next.cases.unshift({
+          id: next.clientProfiles[clientId].caseId,
+          clientId,
+          client: input.name,
+          route: input.context,
+          stage: "Initial review",
+          owner: owner.name,
+          ownerId: owner.id,
+          nextMilestone: today,
+          progress: 18,
+          applicationStatus: "Initial review",
+          region: input.region,
+        } as CaseRecord)
+
+        next.clientUpdates[clientId] = [
+          "Your client record has been opened and is ready for the next commercial step.",
+        ]
+
+        return next
+      })
+
+      return clientId
+    }
+
+    const createQuotation = (input: {
+      clientId: string
+      title: string
+      quotationDate: string
+      advisorName: string
+      currency: string
+      serviceFees: QuotationLineItem[]
+      governmentFees: QuotationLineItem[]
+      optionalItems: QuotationLineItem[]
+      discountAmount: number
+      discountReason?: string | null
+      vatApplied: boolean
+      vatPercentage: number
+      notes?: string
+      terms?: string
+    }) => {
+      const nextId = `quo-${Date.now().toString().slice(-4)}`
+
+      setState((current) => {
+        const next = clone(current)
+        const clientRecord = next.clients.find((entry) => entry.id === input.clientId)
+        if (!clientRecord) return current
+
+        const linkedCase = next.cases.find((entry) => entry.clientId === input.clientId)
+        const newQuotation = buildQuotationComputedFields({
+          id: nextId,
+          caseId: linkedCase?.id ?? `case-${Date.now()}`,
+          clientId: input.clientId,
+          client: clientRecord.name,
+          status: "Draft",
+          currency: input.currency,
+          quotationDate: formatDateLabelFromIso(input.quotationDate),
+          validUntil: formatDateLabelFromIso(
+            new Date(new Date(input.quotationDate).getTime() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+          ),
+          owner: input.advisorName,
+          ownerId:
+            internalUsers.find((user) => user.name === input.advisorName)?.id ??
+            clientRecord.ownerId,
+          note: input.notes?.trim() || `${input.title} prepared for structured review.`,
+          title: input.title,
+          advisorName: input.advisorName,
+          serviceFees: input.serviceFees,
+          governmentFees: input.governmentFees,
+          optionalItems: input.optionalItems,
+          discountAmount: input.discountAmount,
+          discountReason: input.discountReason ?? null,
+          vatApplied: input.vatApplied,
+          vatPercentage: input.vatPercentage,
+          notes: input.notes?.trim() || "",
+          terms: input.terms?.trim() || "",
+          decisionStatus: "Pending",
+          sentDate: null,
+        } as QuotationRecord)
+
+        next.quotations.unshift(newQuotation)
+
+        if (next.clientProfiles[input.clientId]) {
+          next.clientProfiles[input.clientId] = {
+            ...next.clientProfiles[input.clientId],
+            quotationId: nextId,
+          }
+        }
+
+        if (linkedCase) {
+          linkedCase.nextMilestone = "Quotation under review"
+        }
+
+        pushClientUpdate(
+          next,
+          input.clientId,
+          `${input.title} has been prepared and saved as a draft quotation.`,
+        )
+
+        return next
+      })
+
+      return nextId
+    }
 
     const getPortalOverview = (clientId: string) => {
       const caseRecord = getCaseByClientId(clientId)
@@ -651,7 +1264,8 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
 
     return {
       state,
-      currentPortalClientId: CURRENT_PORTAL_CLIENT_ID,
+      currentPortalClientId: state.clients[0]?.id ?? CURRENT_PORTAL_CLIENT_ID,
+      getAllClients,
       getClientById,
       getClientDetail,
       getCaseByClientId,
@@ -664,7 +1278,14 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
       getReviewsForCase,
       getNotificationsForClient,
       getClientUpdates,
+      getWorkspaceNotificationFeed,
+      getPortalNotificationFeed,
       getOpenNotificationCount,
+      getPortalNotificationCount,
+      markNotificationRead,
+      markNotificationsRead,
+      createClient,
+      createQuotation,
       getPortalOverview,
       approveDocument,
       rejectDocument,

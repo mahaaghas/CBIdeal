@@ -6,6 +6,8 @@
     ".": "./src/index.ts",
     "./globals.css": "./src/globals.css",
     "./branding": "./src/branding.ts",
-    "./pricing": "./src/pricing.ts"
+    "./lead-intake": "./src/lead-intake.ts",
+    "./pricing": "./src/pricing.ts",
+    "./saas": "./src/saas.ts"
   }
 }

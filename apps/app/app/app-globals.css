@@ -160,6 +160,10 @@ body.app-workspace {
   background: rgba(255, 255, 255, 0.02);
 }
 
+.app-grid-table tbody tr:focus-within {
+  background: rgba(255, 255, 255, 0.05);
+}
+
 .app-grid-table th {
   height: auto;
   padding: 18px 24px;
@@ -173,6 +177,27 @@ body.app-workspace {
 .app-grid-table td {
   padding: 18px 24px;
   color: #dfe7f3;
+  vertical-align: top;
+}
+
+.app-grid-table a:focus-visible,
+.app-grid-table button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.32);
+  outline-offset: 3px;
+}
+
+.app-subtle-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 36px rgba(9, 14, 23, 0.12);
+}
+
+.app-subtle-card-strong {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.03)),
+    #314159;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 22px 44px rgba(11, 17, 28, 0.16);
 }
 
 .app-status-pill {

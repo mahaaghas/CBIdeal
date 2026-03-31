@@ -5,6 +5,8 @@ import "@cbideal/config/globals.css"
 import "./app-globals.css"
 import { BrandingProvider } from "@/lib/branding-store"
 import { CommunicationProvider } from "@/lib/communication-store"
+import { LeadDeskProvider } from "@/lib/lead-desk-store"
+import { PlatformAccessProvider } from "@/lib/platform-access-store"
 import { WorkflowProvider } from "@/lib/workflow-store"
 
 const manrope = Manrope({
@@ -32,11 +34,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className={`app-workspace ${manrope.variable} ${cormorant.variable} font-sans antialiased`}>
-        <BrandingProvider>
-          <WorkflowProvider>
-            <CommunicationProvider>{children}</CommunicationProvider>
-          </WorkflowProvider>
-        </BrandingProvider>
+        <PlatformAccessProvider>
+          <BrandingProvider>
+            <WorkflowProvider>
+              <LeadDeskProvider>
+                <CommunicationProvider>{children}</CommunicationProvider>
+              </LeadDeskProvider>
+            </WorkflowProvider>
+          </BrandingProvider>
+        </PlatformAccessProvider>
       </body>
     </html>
   )

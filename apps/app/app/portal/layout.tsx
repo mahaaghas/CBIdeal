@@ -3,8 +3,9 @@
 import type { ReactNode } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Bell, CreditCard, FileStack, FolderKanban, LogOut, Settings } from "lucide-react"
+import { CreditCard, FileStack, FolderKanban, LogOut, Settings } from "lucide-react"
 import { AppBrand } from "@cbideal/ui/components/app-brand"
+import { NotificationsPanel } from "@/components/notifications-panel"
 import { useBranding } from "@/lib/branding-store"
 import { useWorkflow } from "@/lib/workflow-store"
 
@@ -19,7 +20,14 @@ const portalNavigation = [
 export default function ClientPortalLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const { branding } = useBranding()
-  const { currentPortalClientId, getClientDetail, getNotificationsForClient } = useWorkflow()
+  const {
+    currentPortalClientId,
+    getClientDetail,
+    getPortalNotificationCount,
+    getPortalNotificationFeed,
+    markNotificationRead,
+    markNotificationsRead,
+  } = useWorkflow()
   const client = getClientDetail(currentPortalClientId)
   const initials = client?.name
     .split(" ")
@@ -27,9 +35,8 @@ export default function ClientPortalLayout({ children }: { children: ReactNode }
     .map((part) => part[0])
     .join("")
     .toUpperCase() ?? "CP"
-  const notificationCount = getNotificationsForClient(currentPortalClientId).filter(
-    (item) => item.status === "Queued" || item.status === "Sent",
-  ).length
+  const notificationFeed = getPortalNotificationFeed(currentPortalClientId)
+  const notificationCount = getPortalNotificationCount(currentPortalClientId)
 
   return (
     <div className="app-shell">
@@ -89,18 +96,16 @@ export default function ClientPortalLayout({ children }: { children: ReactNode }
               </Link>
 
               <div className="flex items-center gap-3">
-                <Link
-                  href="/portal/messages"
-                  aria-label="Open portal notifications"
-                  className="app-top-icon relative flex size-12 items-center justify-center rounded-full transition-colors"
-                >
-                  <Bell className="size-5" />
-                  {notificationCount > 0 ? (
-                    <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full bg-[#f04f4f] text-[0.68rem] font-semibold text-white">
-                      {notificationCount}
-                    </span>
-                  ) : null}
-                </Link>
+                <NotificationsPanel
+                  items={notificationFeed}
+                  unreadCount={notificationCount}
+                  title="Recent updates"
+                  description="Important document, payment, and application changes tied to your active file."
+                  emptyTitle="Nothing new right now"
+                  emptyBody="You will see approvals, requests, and payment updates here as your case progresses."
+                  onMarkRead={markNotificationRead}
+                  onMarkAllRead={markNotificationsRead}
+                />
                 <Link
                   href="/portal/profile"
                   aria-label="Open client profile"

@@ -20,6 +20,8 @@ import {
 } from "@/lib/communication-data"
 import { getBrandingUiTokens, useBranding } from "@/lib/branding-store"
 import { externalUsers, workspace } from "@/lib/mock-data"
+import { buildScopedStorageKey } from "@/lib/platform-access"
+import { usePlatformAccess } from "@/lib/platform-access-store"
 import { useWorkflow } from "@/lib/workflow-store"
 
 type CommunicationContextInput = {
@@ -91,29 +93,31 @@ function replaceTokens(input: string, variables: Record<string, string>) {
 
 export function CommunicationProvider({ children }: { children: ReactNode }) {
   const { branding } = useBranding()
+  const { storageScope } = usePlatformAccess()
   const workflow = useWorkflow()
   const [state, setState] = useState<CommunicationState>({
     templates: clone(initialTemplates),
     history: clone(initialCommunicationHistory),
     integration: clone(emailIntegrationSettings),
   })
+  const scopedStorageKey = buildScopedStorageKey(STORAGE_KEY, storageScope)
 
   useEffect(() => {
     if (typeof window === "undefined") return
-    const saved = window.localStorage.getItem(STORAGE_KEY)
+    const saved = window.localStorage.getItem(scopedStorageKey)
     if (!saved) return
 
     try {
       setState(JSON.parse(saved) as CommunicationState)
     } catch {
-      window.localStorage.removeItem(STORAGE_KEY)
+      window.localStorage.removeItem(scopedStorageKey)
     }
-  }, [])
+  }, [scopedStorageKey])
 
   useEffect(() => {
     if (typeof window === "undefined") return
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-  }, [state])
+    window.localStorage.setItem(scopedStorageKey, JSON.stringify(state))
+  }, [scopedStorageKey, state])
 
   const value = useMemo<CommunicationContextValue>(() => {
     const getTemplateById = (templateId: string) =>

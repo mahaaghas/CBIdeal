@@ -7,7 +7,6 @@ import {
   Bell,
   BriefcaseBusiness,
   Building2,
-  CircleHelp,
   CreditCard,
   FileStack,
   FolderKanban,
@@ -24,7 +23,6 @@ import { AppBrand } from "./app-brand"
 
 const navigation = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { href: "/leads", label: "Leads", icon: CircleHelp },
   { href: "/clients", label: "Clients", icon: Building2 },
   { href: "/cases", label: "Applications", icon: BriefcaseBusiness },
   { href: "/documents", label: "Documents", icon: FileStack },
@@ -39,7 +37,11 @@ const navigation = [
 interface CrmShellProps {
   children: ReactNode
   notificationCount?: number
+  notificationsSlot?: ReactNode
   profileInitials?: string
+  profileHref?: string
+  signOutHref?: string
+  portalHref?: string
   brandName?: string
   brandLogoUrl?: string | null
   brandDarkLogoUrl?: string | null
@@ -49,7 +51,11 @@ interface CrmShellProps {
 export function CrmShell({
   children,
   notificationCount = 3,
+  notificationsSlot,
   profileInitials = "AD",
+  profileHref = "/settings",
+  signOutHref = "/logout",
+  portalHref = "/portal",
   brandName = "CBI Deal Advisory",
   brandLogoUrl,
   brandDarkLogoUrl,
@@ -97,14 +103,14 @@ export function CrmShell({
 
           <div className="border-t border-white/8 px-3 py-5">
             <Link
-              href="/portal"
+              href={portalHref}
               className="app-nav-link flex items-center gap-3 rounded-2xl px-4 py-3 text-[1rem] font-medium transition-colors"
             >
               <FolderKanban className="size-4" />
               <span>Client portal</span>
             </Link>
             <Link
-              href="/portal/login"
+              href={signOutHref}
               className="app-nav-link mt-2 flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-[1rem] font-medium transition-colors"
             >
               <LogOut className="size-4" />
@@ -127,20 +133,21 @@ export function CrmShell({
               </Link>
 
               <div className="flex items-center gap-3">
+                {notificationsSlot ?? (
+                  <div
+                    aria-label="Notifications"
+                    className="app-top-icon relative flex size-12 items-center justify-center rounded-full"
+                  >
+                    <Bell className="size-5" />
+                    {notificationCount > 0 ? (
+                      <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full bg-[#f04f4f] text-[0.68rem] font-semibold text-white">
+                        {notificationCount}
+                      </span>
+                    ) : null}
+                  </div>
+                )}
                 <Link
-                  href="/settings#notifications"
-                  aria-label="Open notifications"
-                  className="app-top-icon relative flex size-12 items-center justify-center rounded-full transition-colors"
-                >
-                  <Bell className="size-5" />
-                  {notificationCount > 0 ? (
-                    <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full bg-[#f04f4f] text-[0.68rem] font-semibold text-white">
-                      {notificationCount}
-                    </span>
-                  ) : null}
-                </Link>
-                <Link
-                  href="/settings"
+                  href={profileHref}
                   aria-label="Open profile and workspace settings"
                   className="app-avatar flex size-12 items-center justify-center rounded-full text-base font-semibold"
                 >

@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { saasPricingModel } from "@cbideal/config/pricing"
+import { formatPlanAmount, getSaasPlan } from "@cbideal/config/saas"
 import { BellRing, Building2, CreditCard, Palette, Users } from "lucide-react"
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
 import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
@@ -10,171 +11,247 @@ import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
 import { Button } from "@cbideal/ui/components/ui/button"
 import { useBranding } from "@/lib/branding-store"
 import { pricingSnapshot, reminderSettings, workspace } from "@/lib/mock-data"
+import { usePlatformAccess } from "@/lib/platform-access-store"
 
 export default function SettingsPage() {
   const { branding } = useBranding()
+  const { currentTenant, mode } = usePlatformAccess()
+  const activePlan = currentTenant ? getSaasPlan(currentTenant.planId) : null
 
   return (
     <div className="section-stack">
       <CrmPageHeader
         eyebrow="Settings"
-        title="Account structure, billing visibility, and workflow automation settings."
-        description="The settings area reflects the actual platform model: one firm workspace, internal operating seats, external client accounts, and reminder logic for quotations, payments, and document requests."
+        title="Workspace settings arranged for clarity, billing visibility, and controlled automation."
+        description="The settings area keeps identity, pricing, access limits, and reminder logic readable at a glance. Each section is separated clearly so the operational structure of the platform stays easy to understand."
       />
 
       <div className="grid gap-4 md:grid-cols-3">
         <CrmStatCard
           label="Internal team seats"
-          value={`${workspace.internalSeats}`}
-          note={`${saasPricingModel.currency} ${saasPricingModel.internalSeatMonthly} per seat monthly`}
+          value={`${currentTenant?.internalSeatLimit ?? workspace.internalSeats}`}
+          note={
+            currentTenant
+              ? `${currentTenant.internalSeatCount} active of ${currentTenant.internalSeatLimit ?? "custom"} available`
+              : `${saasPricingModel.currency} ${saasPricingModel.internalSeatMonthly} per seat monthly`
+          }
           trend="Operating users"
         />
         <CrmStatCard
           label="External client accounts"
-          value={`${workspace.externalAccounts}`}
-          note={`${saasPricingModel.currency} ${saasPricingModel.externalClientMonthly} per account monthly`}
+          value={`${currentTenant?.clientAccountLimit ?? workspace.externalAccounts}`}
+          note={
+            currentTenant
+              ? `${currentTenant.clientAccountCount} active of ${currentTenant.clientAccountLimit ?? "custom"} available`
+              : `${saasPricingModel.currency} ${saasPricingModel.externalClientMonthly} per account monthly`
+          }
           trend="Portal access"
         />
         <CrmStatCard
-          label="Current monthly total"
-          value={`${saasPricingModel.currency} ${pricingSnapshot.total}`}
-          note="Combined view of internal seats and external accounts."
-          trend="Billing snapshot"
+          label={currentTenant ? "Current plan" : "Current monthly total"}
+          value={currentTenant ? activePlan?.name ?? "Workspace" : `${saasPricingModel.currency} ${pricingSnapshot.total}`}
+          note={
+            currentTenant
+              ? `${formatPlanAmount(activePlan ?? getSaasPlan("starter"))} / month`
+              : "Combined view of internal seats and external accounts."
+          }
+          trend={currentTenant ? currentTenant.subscriptionStatus : "Billing snapshot"}
         />
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-3">
-        <CrmSectionCard title="Account" description="Workspace identity and tenancy structure.">
-          <div className="space-y-3">
-            <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <Building2 className="size-4" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">{branding.companyName}</p>
-                  <p className="text-sm leading-6 text-muted-foreground">Tenant ID: {workspace.tenantId}</p>
-                </div>
-              </div>
+      <section className="grid gap-5 xl:grid-cols-[1.14fr_0.86fr]">
+        <div className="app-surface rounded-[26px] px-6 py-6 md:px-8 md:py-7">
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-300">Workspace structure</p>
+              <h2 className="font-serif text-[2rem] tracking-[-0.035em] text-white">Identity, pricing, and limits</h2>
+              <p className="max-w-2xl text-sm leading-7 text-slate-300">
+                The workspace model stays explicit here: one firm identity, separate internal and external account layers, and clear room for branding and workflow customisation.
+              </p>
             </div>
-            <Button asChild variant="outline" className="rounded-full">
-              <Link href="/settings/branding">
-                <Palette className="size-4" />
-                Open branding
-              </Link>
-            </Button>
-          </div>
-        </CrmSectionCard>
 
-        <CrmSectionCard title="Billing" description="Seat and account pricing prepared for later plan expansion.">
-          <div className="space-y-3">
-            <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <CreditCard className="size-4" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">Two account layers</p>
-                  <p className="text-sm leading-6 text-muted-foreground">
-                    Internal seats and external client accounts are priced separately so firms can scale the operational layer and the client portal independently.
-                  </p>
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="app-subtle-card-strong rounded-[22px] px-5 py-5">
+                <div className="flex items-start gap-4">
+                  <div className="mt-0.5 flex size-11 items-center justify-center rounded-[18px] bg-[var(--app-brand-surface-tint-strong)] text-white">
+                    <Building2 className="size-5" />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-white">Account</p>
+                    <p className="text-base font-medium text-slate-100">{branding.companyName}</p>
+                    <p className="text-sm leading-6 text-slate-300">Tenant ID: {currentTenant?.id ?? workspace.tenantId}</p>
+                    <p className="text-sm leading-6 text-slate-300">
+                      {mode === "demo"
+                        ? "This is the shared demo environment."
+                        : activePlan
+                          ? `${activePlan.name} plan workspace`
+                          : "Custom branding is available for this workspace."}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </CrmSectionCard>
 
-        <CrmSectionCard title="Limits" description="Current capability and future-ready controls.">
-          <div className="space-y-3">
-            {[
-              {
-                label: "Custom branding",
-                value: workspace.allowsCustomBranding ? "Available" : "Not enabled",
-              },
-              {
-                label: "Client-specific workflows",
-                value: workspace.allowsClientSpecificWorkflows ? "Enabled" : "Not enabled",
-              },
-              {
-                label: "Internal seats",
-                value: `${workspace.internalSeats} active`,
-              },
-              {
-                label: "External accounts",
-                value: `${workspace.externalAccounts} active`,
-              },
-            ].map((item) => (
-              <div key={item.label} className="rounded-[20px] border border-border/70 bg-background px-4 py-3 shadow-sm">
-                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{item.label}</p>
-                <p className="mt-1 text-sm font-medium text-foreground">{item.value}</p>
-              </div>
-            ))}
-          </div>
-        </CrmSectionCard>
-      </div>
-
-      <CrmSectionCard
-        title="Reminder and automation settings"
-        description="Workflow-triggered reminders stay configurable without breaking the calm, client-facing tone of the platform."
-      >
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {reminderSettings.map((setting) => (
-            <div key={setting.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <BellRing className="size-4" />
+              <div className="app-subtle-card rounded-[22px] px-5 py-5">
+                <div className="flex items-start gap-4">
+                  <div className="mt-0.5 flex size-11 items-center justify-center rounded-[18px] bg-[var(--app-brand-surface-tint-strong)] text-white">
+                    <CreditCard className="size-5" />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-white">Billing</p>
+                    <p className="text-base font-medium text-slate-100">{activePlan?.name ?? "Two account layers"}</p>
+                    <p className="text-sm leading-6 text-slate-300">
+                      {currentTenant
+                        ? `This workspace currently sits on the ${activePlan?.name} plan with ${currentTenant.subscriptionStatus.toLowerCase()} subscription status.`
+                        : "Internal operating seats and external client accounts are priced separately so firms can scale operations and portal access independently."}
+                    </p>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">{setting.name}</p>
-                  <p className="text-sm leading-6 text-muted-foreground">{setting.trigger}</p>
-                  <p className="text-sm leading-6 text-muted-foreground">{setting.audience}</p>
-                  <div className="pt-1">
-                    <CrmStatusBadge status={setting.status} />
+              </div>
+
+              <div className="app-subtle-card rounded-[22px] px-5 py-5">
+                <div className="space-y-3">
+                  <p className="text-sm font-semibold text-white">Limits</p>
+                  <div className="space-y-3">
+                    {[
+                      {
+                        label: "Client-specific workflows",
+                        value: workspace.allowsClientSpecificWorkflows ? "Enabled" : "Not enabled",
+                      },
+                      {
+                        label: "Internal seats",
+                        value: currentTenant
+                          ? `${currentTenant.internalSeatCount} active / ${currentTenant.internalSeatLimit ?? "custom"} allowed`
+                          : `${workspace.internalSeats} active`,
+                      },
+                      {
+                        label: "External accounts",
+                        value: currentTenant
+                          ? `${currentTenant.clientAccountCount} active / ${currentTenant.clientAccountLimit ?? "custom"} allowed`
+                          : `${workspace.externalAccounts} active`,
+                      },
+                    ].map((item) => (
+                      <div key={item.label} className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-3">
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{item.label}</p>
+                        <p className="mt-1 text-sm font-medium text-slate-100">{item.value}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-        <div className="pt-2">
-          <div className="flex flex-wrap gap-2">
-            <Button asChild variant="outline" className="rounded-full">
-              <Link href="/settings/email">Open email settings</Link>
-            </Button>
-            <Button asChild variant="outline" className="rounded-full">
-              <Link href="/settings/branding">Open branding</Link>
-            </Button>
           </div>
+        </div>
+
+        <div className="app-surface rounded-[26px] px-6 py-6 md:px-8 md:py-7">
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-300">Admin shortcuts</p>
+              <h2 className="font-serif text-[2rem] tracking-[-0.035em] text-white">Common configuration routes</h2>
+              <p className="text-sm leading-7 text-slate-300">
+                Move quickly into the settings that change how the workspace looks, sends messages, and presents itself to clients.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              {[
+                {
+                  title: "Branding and portal identity",
+                  body: "Adjust company name, visual accents, logos, and the branded client-facing environment.",
+                  href: "/settings/branding",
+                  icon: Palette,
+                },
+                {
+                  title: "Email and sender setup",
+                  body: "Review mailbox details, sender identity, and connection settings for reminders and updates.",
+                  href: "/settings/email",
+                  icon: BellRing,
+                },
+              ].map((item) => (
+                <Link
+                  key={item.title}
+                  href={item.href}
+                  className="app-subtle-card block rounded-[22px] px-5 py-5 transition-colors hover:bg-white/[0.07]"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="mt-0.5 flex size-11 items-center justify-center rounded-[18px] bg-[var(--app-brand-surface-tint-strong)] text-white">
+                      <item.icon className="size-5" />
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-semibold text-white">{item.title}</p>
+                      <p className="text-sm leading-6 text-slate-300">{item.body}</p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <Button asChild variant="outline" className="rounded-full border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08] hover:text-white">
+                <Link href="/settings/branding">Open branding</Link>
+              </Button>
+              <Button asChild variant="outline" className="rounded-full border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08] hover:text-white">
+                <Link href="/settings/email">Open email settings</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <CrmSectionCard
+        title="Reminder and automation settings"
+        description="Workflow-triggered reminders are grouped here with stronger contrast, clearer descriptions, and a quieter status treatment."
+        className="app-surface"
+      >
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {reminderSettings.map((setting) => (
+            <div key={setting.id} className="app-subtle-card rounded-[22px] px-5 py-5">
+              <div className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="mt-0.5 flex size-11 items-center justify-center rounded-[18px] bg-[var(--app-brand-surface-tint-strong)] text-white">
+                    <BellRing className="size-5" />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-white">{setting.name}</p>
+                    <p className="text-sm leading-6 text-slate-300">{setting.trigger}</p>
+                    <p className="text-sm leading-6 text-slate-400">{setting.audience}</p>
+                  </div>
+                </div>
+                <CrmStatusBadge status={setting.status} />
+              </div>
+            </div>
+          ))}
         </div>
       </CrmSectionCard>
 
       <CrmSectionCard
         title="Role model"
-        description="The platform keeps internal operators and external client users separate, while preserving one visual system."
+        description="Internal operators and external clients remain separate by design, while using one premium interface language."
+        className="app-surface"
       >
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-            <div className="flex items-start gap-3">
-              <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <Users className="size-4" />
+          <div className="app-subtle-card rounded-[22px] px-5 py-5">
+            <div className="flex items-start gap-4">
+              <div className="mt-0.5 flex size-11 items-center justify-center rounded-[18px] bg-[var(--app-brand-surface-tint-strong)] text-white">
+                <Users className="size-5" />
               </div>
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-foreground">Internal roles</p>
-                <p className="text-sm leading-6 text-muted-foreground">
-                  Account managers, case coordinators, finance, and admin roles work inside the full workflow layer.
+              <div className="space-y-2">
+                <p className="text-sm font-semibold text-white">Internal roles</p>
+                <p className="text-sm leading-6 text-slate-300">
+                  Account managers, finance, coordinators, and admin roles work inside the full operational layer with review, payment, and communication controls.
                 </p>
               </div>
             </div>
           </div>
-          <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-            <div className="flex items-start gap-3">
-              <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <Users className="size-4" />
+
+          <div className="app-subtle-card rounded-[22px] px-5 py-5">
+            <div className="flex items-start gap-4">
+              <div className="mt-0.5 flex size-11 items-center justify-center rounded-[18px] bg-[var(--app-brand-surface-tint-strong)] text-white">
+                <Users className="size-5" />
               </div>
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-foreground">External client users</p>
-                <p className="text-sm leading-6 text-muted-foreground">
-                  Applicants and approved client-side contacts see only quotations, payments, documents, updates, and profile details relevant to them.
+              <div className="space-y-2">
+                <p className="text-sm font-semibold text-white">External client users</p>
+                <p className="text-sm leading-6 text-slate-300">
+                  Applicants and approved client-side contacts see only the quotation, payment, document, update, and profile information relevant to their file.
                 </p>
               </div>
             </div>

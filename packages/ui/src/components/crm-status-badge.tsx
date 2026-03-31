@@ -63,7 +63,11 @@ export function CrmStatusBadge({ status, className }: CrmStatusBadgeProps) {
   return (
     <Badge
       variant="outline"
-      className={cn("rounded-full border px-3 py-1 text-[0.7rem] uppercase tracking-[0.16em]", tone, className)}
+      className={cn(
+        "rounded-full border px-3.5 py-1.5 text-[0.72rem] font-semibold leading-none tracking-[0.03em]",
+        tone,
+        className,
+      )}
     >
       {status}
     </Badge>

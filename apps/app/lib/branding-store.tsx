@@ -9,6 +9,8 @@ import {
   type ReactNode,
 } from "react"
 import { workspace } from "@/lib/mock-data"
+import { buildScopedStorageKey } from "@/lib/platform-access"
+import { usePlatformAccess } from "@/lib/platform-access-store"
 
 export interface BrandingSettings {
   companyName: string
@@ -373,45 +375,81 @@ function applyBrandingToDocument(branding: BrandingSettings) {
   favicon.href = branding.appIconUrl || defaultBrandingSettings.appIconUrl
 }
 
+function getInitialBrandingSettings(seed?: Partial<BrandingSettings> | null) {
+  return normaliseBrandingSettings({
+    ...defaultBrandingSettings,
+    ...seed,
+  })
+}
+
 export function BrandingProvider({ children }: { children: ReactNode }) {
-  const [branding, setBranding] = useState<BrandingSettings>(defaultBrandingSettings)
+  const { currentTenant, mode, storageScope, updateTenantBrandingSeed } = usePlatformAccess()
+  const [branding, setBranding] = useState<BrandingSettings>(() =>
+    getInitialBrandingSettings(currentTenant?.branding),
+  )
+  const scopedStorageKey = buildScopedStorageKey(STORAGE_KEY, storageScope)
 
   useEffect(() => {
     if (typeof window === "undefined") return
-    const saved = window.localStorage.getItem(STORAGE_KEY)
-    if (!saved) return
+    const saved = window.localStorage.getItem(scopedStorageKey)
+    if (!saved) {
+      setBranding(getInitialBrandingSettings(currentTenant?.branding))
+      return
+    }
 
     try {
       const parsed = JSON.parse(saved) as BrandingSettings
-      setBranding(normaliseBrandingSettings({ ...defaultBrandingSettings, ...parsed }))
+      setBranding(getInitialBrandingSettings(parsed))
     } catch {
-      window.localStorage.removeItem(STORAGE_KEY)
+      window.localStorage.removeItem(scopedStorageKey)
     }
-  }, [])
+  }, [currentTenant?.branding, scopedStorageKey])
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(branding))
+      window.localStorage.setItem(scopedStorageKey, JSON.stringify(branding))
     }
     applyBrandingToDocument(branding)
-  }, [branding])
+  }, [branding, scopedStorageKey])
 
   const value = useMemo<BrandingContextValue>(
     () => ({
       branding,
       presets: brandingPresets,
       updateBranding: (patch) =>
-        setBranding((current) => normaliseBrandingSettings({ ...current, ...patch })),
-      replaceBranding: (next) => setBranding(normaliseBrandingSettings(next)),
+        setBranding((current) => {
+          const next = normaliseBrandingSettings({ ...current, ...patch })
+          if (mode === "workspace" && currentTenant) {
+            updateTenantBrandingSeed(currentTenant.id, next)
+          }
+          return next
+        }),
+      replaceBranding: (next) => {
+        const normalised = normaliseBrandingSettings(next)
+        if (mode === "workspace" && currentTenant) {
+          updateTenantBrandingSeed(currentTenant.id, normalised)
+        }
+        setBranding(normalised)
+      },
       applyPreset: (presetId) => {
         const preset = brandingPresets.find((item) => item.id === presetId)
         if (preset) {
-          setBranding(normaliseBrandingSettings(preset))
+          const normalised = normaliseBrandingSettings(preset)
+          if (mode === "workspace" && currentTenant) {
+            updateTenantBrandingSeed(currentTenant.id, normalised)
+          }
+          setBranding(normalised)
         }
       },
-      resetBranding: () => setBranding(defaultBrandingSettings),
+      resetBranding: () => {
+        const resetTo = getInitialBrandingSettings(currentTenant?.branding)
+        if (mode === "workspace" && currentTenant) {
+          updateTenantBrandingSeed(currentTenant.id, resetTo)
+        }
+        setBranding(resetTo)
+      },
     }),
-    [branding],
+    [branding, currentTenant, mode, updateTenantBrandingSeed],
   )
 
   return <BrandingContext.Provider value={value}>{children}</BrandingContext.Provider>

@@ -1,5 +1,4 @@
-import { ArabicLandingLeadForm } from "@/components/forms/arabic-landing-lead-form"
-import { EnglishLandingLeadForm } from "@/components/forms/english-landing-lead-form"
+import { InvestorIntakeForm } from "@/components/forms/investor-intake-form"
 import type { LandingLeadSourceCategory } from "@/lib/landing-form"
 import type { Locale } from "@/lib/i18n/routing"
 
@@ -14,9 +13,13 @@ interface LocalizedLandingLeadFormProps {
 }
 
 export function LocalizedLandingLeadForm({ locale = "en", ...props }: LocalizedLandingLeadFormProps) {
-  if (locale === "ar") {
-    return <ArabicLandingLeadForm {...props} />
-  }
-
-  return <EnglishLandingLeadForm {...props} />
+  return (
+    <InvestorIntakeForm
+      title={props.title}
+      description={props.description}
+      submitLabel={props.submitLabel}
+      sourcePage={props.sourcePage ?? props.sourceCategory}
+      className={props.className}
+    />
+  )
 }

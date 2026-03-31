@@ -53,18 +53,18 @@ export default function PricingPage() {
   const copy = {
     en: {
       eyebrow: "Solutions",
-      title: "Clear solutions for professional firms.",
+      title: "Clear SaaS plans for specialist firms.",
       description:
-        "This page outlines the main solution structures in a straightforward way. It should give firms enough context for an informed first view, while leaving room for a more tailored discussion where that proves appropriate.",
-      primary: "Request a private overview",
-      secondary: "Contact us directly",
+        "This page explains the self-serve and sales-led paths into the CBI Deal platform. It should make the next step unambiguous: view the demo, create a workspace, or request a more tailored enterprise setup.",
+      primary: "View Demo",
+      secondary: "Request Demo",
       plansEyebrow: "Solutions",
-      plansTitle: "Three clear structures are enough for a calm and credible solutions page.",
+      plansTitle: "Three clear plan paths, with the right action attached to each one.",
       plansDescription:
-        "The figures below are there to provide orientation rather than pressure. They should help firms understand the main structures, compare the available solutions, and decide whether a more detailed conversation would be useful.",
-      enterpriseTitle: "Need a wider structure or a more tailored arrangement?",
+        "Starter and Growth move through self-serve onboarding and billing. Enterprise remains a higher-touch route so broader teams can be configured with more care from the outset.",
+      enterpriseTitle: "Need a broader rollout or a more tailored setup?",
       enterpriseDescription:
-        "Wider arrangements can include tailored access, implementation planning, and a more bespoke way of working. This final section is intended to show where the standard solutions end and where a more tailored conversation may begin.",
+        "Enterprise is handled separately so implementation, access structure, and commercial scope can be discussed properly before any account is provisioned.",
     },
     ar: {
       eyebrow: "خيارات التعامل",
@@ -104,8 +104,8 @@ export default function PricingPage() {
         eyebrow={copy.eyebrow}
         title={copy.title}
         description={copy.description}
-        primaryAction={{ href: ctaLinks.requestDemo, label: copy.primary }}
-        secondaryAction={{ href: ctaLinks.contactSales, label: copy.secondary }}
+        primaryAction={{ href: ctaLinks.appDemo, label: copy.primary }}
+        secondaryAction={{ href: ctaLinks.requestProductDemo, label: copy.secondary }}
         stats={[
           { value: locale === "ar" ? "لكل مستخدم" : "Per user", label: locale === "ar" ? "تسعير واضح للمقاعد" : "clear seat-based pricing" },
           { value: locale === "ar" ? "توفير سنوي" : "Annual savings", label: locale === "ar" ? "عند اختيار الفوترة السنوية" : "with yearly billing" },
@@ -140,7 +140,7 @@ export default function PricingPage() {
             eyebrow={locale === "ar" ? "ملاحظة حول Enterprise" : "Enterprise note"}
             title={copy.enterpriseTitle}
             description={copy.enterpriseDescription}
-            primaryAction={{ href: ctaLinks.contactSales, label: copy.secondary }}
+            primaryAction={{ href: ctaLinks.enterpriseSetup, label: locale === "ar" ? "Ø§Ø·Ù„Ø¨ Ø¥Ø¹Ø¯Ø§Ø¯ Enterprise" : "Request enterprise setup" }}
             secondaryAction={{ href: routeLinks.forCompanies, label: locale === "ar" ? "العودة إلى صفحة الشركات" : locale === "ru" ? "Назад к странице для компаний" : "Back to company overview" }}
           />
         </div>

@@ -91,7 +91,7 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <div className="app-subtle-card rounded-[22px] px-5 py-5">
+              <div className="app-subtle-card-strong rounded-[22px] px-5 py-5">
                 <div className="flex items-start gap-4">
                   <div className="mt-0.5 flex size-11 items-center justify-center rounded-[18px] bg-[var(--app-brand-surface-tint-strong)] text-white">
                     <CreditCard className="size-5" />
@@ -108,7 +108,7 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              <div className="app-subtle-card rounded-[22px] px-5 py-5">
+              <div className="app-subtle-card-strong rounded-[22px] px-5 py-5">
                 <div className="space-y-3">
                   <p className="text-sm font-semibold text-white">Limits</p>
                   <div className="space-y-3">
@@ -130,9 +130,9 @@ export default function SettingsPage() {
                           : `${workspace.externalAccounts} active`,
                       },
                     ].map((item) => (
-                      <div key={item.label} className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-3">
+                      <div key={item.label} className="rounded-[18px] border border-white/8 bg-white/[0.04] px-4 py-4">
                         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{item.label}</p>
-                        <p className="mt-1 text-sm font-medium text-slate-100">{item.value}</p>
+                        <p className="mt-2 text-sm font-medium leading-6 text-slate-100">{item.value}</p>
                       </div>
                     ))}
                   </div>
@@ -170,7 +170,7 @@ export default function SettingsPage() {
                 <Link
                   key={item.title}
                   href={item.href}
-                  className="app-subtle-card block rounded-[22px] px-5 py-5 transition-colors hover:bg-white/[0.07]"
+                  className="app-subtle-card-strong block rounded-[22px] px-5 py-5 transition-colors hover:bg-white/[0.08]"
                 >
                   <div className="flex items-start gap-4">
                     <div className="mt-0.5 flex size-11 items-center justify-center rounded-[18px] bg-[var(--app-brand-surface-tint-strong)] text-white">
@@ -186,10 +186,10 @@ export default function SettingsPage() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Button asChild variant="outline" className="rounded-full border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08] hover:text-white">
+              <Button asChild variant="outline" className="app-button-secondary rounded-full">
                 <Link href="/settings/branding">Open branding</Link>
               </Button>
-              <Button asChild variant="outline" className="rounded-full border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08] hover:text-white">
+              <Button asChild variant="outline" className="app-button-secondary rounded-full">
                 <Link href="/settings/email">Open email settings</Link>
               </Button>
             </div>
@@ -204,7 +204,7 @@ export default function SettingsPage() {
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {reminderSettings.map((setting) => (
-            <div key={setting.id} className="app-subtle-card rounded-[22px] px-5 py-5">
+            <div key={setting.id} className="app-subtle-card-strong rounded-[22px] px-5 py-5">
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
                   <div className="mt-0.5 flex size-11 items-center justify-center rounded-[18px] bg-[var(--app-brand-surface-tint-strong)] text-white">
@@ -213,7 +213,7 @@ export default function SettingsPage() {
                   <div className="space-y-2">
                     <p className="text-sm font-semibold text-white">{setting.name}</p>
                     <p className="text-sm leading-6 text-slate-300">{setting.trigger}</p>
-                    <p className="text-sm leading-6 text-slate-400">{setting.audience}</p>
+                    <p className="text-sm leading-6 text-slate-300">{setting.audience}</p>
                   </div>
                 </div>
                 <CrmStatusBadge status={setting.status} />
@@ -229,7 +229,7 @@ export default function SettingsPage() {
         className="app-surface"
       >
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="app-subtle-card rounded-[22px] px-5 py-5">
+          <div className="app-subtle-card-strong rounded-[22px] px-5 py-5">
             <div className="flex items-start gap-4">
               <div className="mt-0.5 flex size-11 items-center justify-center rounded-[18px] bg-[var(--app-brand-surface-tint-strong)] text-white">
                 <Users className="size-5" />
@@ -243,7 +243,7 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          <div className="app-subtle-card rounded-[22px] px-5 py-5">
+          <div className="app-subtle-card-strong rounded-[22px] px-5 py-5">
             <div className="flex items-start gap-4">
               <div className="mt-0.5 flex size-11 items-center justify-center rounded-[18px] bg-[var(--app-brand-surface-tint-strong)] text-white">
                 <Users className="size-5" />

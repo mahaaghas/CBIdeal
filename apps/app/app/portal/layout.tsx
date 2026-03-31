@@ -105,6 +105,7 @@ export default function ClientPortalLayout({ children }: { children: ReactNode }
                   emptyBody="You will see approvals, requests, and payment updates here as your case progresses."
                   onMarkRead={markNotificationRead}
                   onMarkAllRead={markNotificationsRead}
+                  viewAllHref="/portal/messages"
                 />
                 <Link
                   href="/portal/profile"

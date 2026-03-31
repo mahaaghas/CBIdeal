@@ -19,7 +19,7 @@ export function CrmTableCard({
 }: CrmTableCardProps) {
   return (
     <Card className={cn("section-card", className)}>
-      <CardContent className="space-y-6 p-5 md:p-6">
+      <CardContent className="space-y-6 p-6 md:p-7">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-2">
             <h2 className="card-title text-foreground">{title}</h2>

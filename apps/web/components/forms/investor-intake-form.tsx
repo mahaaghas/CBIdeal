@@ -43,31 +43,44 @@ interface InvestorIntakeFormProps {
   className?: string
 }
 
+type InvestorIntakeFormContentProps = Omit<InvestorIntakeFormProps, "display" | "triggerLabel"> & {
+  mode?: "embedded" | "modal"
+}
+
 const steps = [
   {
     title: "Profile",
-    summary: "Capture identity and residence context.",
+    summary: "Identity, nationality, and residence context.",
     fields: ["fullName", "nationality", "countryOfResidence"] as const,
   },
   {
     title: "Planning",
-    summary: "Record investment range, family scope, and timing.",
+    summary: "Budget range, family scope, and timing.",
     fields: ["investmentRange", "familyApplication", "timeline"] as const,
   },
   {
     title: "Contact",
-    summary: "Choose the reply method and leave any useful note.",
+    summary: "Reply preference and anything useful to know.",
     fields: ["fullName", "email", "phoneWhatsApp", "preferredContactMethod"] as const,
   },
 ] as const
 
+const fieldClassName =
+  "h-12 rounded-[1.15rem] border border-[#d7cebf] bg-white text-[#1d2430] shadow-[inset_0_1px_0_rgba(255,255,255,0.78)] placeholder:text-[#8b8191] focus-visible:border-[#415776] focus-visible:ring-[#415776]/20"
+
+const selectTriggerClassName =
+  "h-12 rounded-[1.15rem] border border-[#d7cebf] bg-white text-[#1d2430] shadow-[inset_0_1px_0_rgba(255,255,255,0.78)] data-[placeholder]:text-[#8b8191] focus:ring-[#415776]/20"
+
+const labelClassName = "text-[0.82rem] font-semibold uppercase tracking-[0.14em] text-[#5f6472]"
+
 function InvestorIntakeFormContent({
   title = "Request a private consultation",
-  description = "A short, structured form to help narrow the field before a more considered advisory discussion.",
+  description = "A short confidential intake designed to clarify fit, timing, and the most sensible next conversation.",
   sourcePage,
-  submitLabel = "Request consultation",
+  submitLabel = "Request a private consultation",
   className,
-}: Omit<InvestorIntakeFormProps, "display" | "triggerLabel">) {
+  mode = "embedded",
+}: InvestorIntakeFormContentProps) {
   const [step, setStep] = useState(0)
   const [isPending, startTransition] = useTransition()
   const [referenceId, setReferenceId] = useState<string | null>(null)
@@ -113,25 +126,25 @@ function InvestorIntakeFormContent({
   const content = useMemo(() => {
     if (step === 0) {
       return (
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid gap-4">
           <FormField control={form.control} name="fullName" render={({ field }) => (
             <FormItem>
-              <FormLabel>Full name</FormLabel>
-              <FormControl><Input className="h-12 rounded-2xl" placeholder="Your full name" {...field} /></FormControl>
+              <FormLabel className={labelClassName}>Full name</FormLabel>
+              <FormControl><Input className={fieldClassName} placeholder="Your full name" {...field} /></FormControl>
               <FormMessage />
             </FormItem>
           )} />
           <FormField control={form.control} name="nationality" render={({ field }) => (
             <FormItem>
-              <FormLabel>Nationality</FormLabel>
-              <FormControl><Input className="h-12 rounded-2xl" placeholder="Current nationality" {...field} /></FormControl>
+              <FormLabel className={labelClassName}>Nationality</FormLabel>
+              <FormControl><Input className={fieldClassName} placeholder="Current nationality" {...field} /></FormControl>
               <FormMessage />
             </FormItem>
           )} />
           <FormField control={form.control} name="countryOfResidence" render={({ field }) => (
             <FormItem>
-              <FormLabel>Country of residence</FormLabel>
-              <FormControl><Input className="h-12 rounded-2xl" placeholder="Where you live now" {...field} /></FormControl>
+              <FormLabel className={labelClassName}>Country of residence</FormLabel>
+              <FormControl><Input className={fieldClassName} placeholder="Where you live now" {...field} /></FormControl>
               <FormMessage />
             </FormItem>
           )} />
@@ -141,13 +154,13 @@ function InvestorIntakeFormContent({
 
     if (step === 1) {
       return (
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid gap-4">
           <FormField control={form.control} name="investmentRange" render={({ field }) => (
             <FormItem>
-              <FormLabel>Investment range</FormLabel>
+              <FormLabel className={labelClassName}>Investment range</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger className="h-12 rounded-2xl"><SelectValue placeholder="Select range" /></SelectTrigger>
+                  <SelectTrigger className={selectTriggerClassName}><SelectValue placeholder="Select range" /></SelectTrigger>
                 </FormControl>
                 <SelectContent>{investorInvestmentRanges.map((option) => <SelectItem key={option} value={option}>{option}</SelectItem>)}</SelectContent>
               </Select>
@@ -156,10 +169,10 @@ function InvestorIntakeFormContent({
           )} />
           <FormField control={form.control} name="familyApplication" render={({ field }) => (
             <FormItem>
-              <FormLabel>Family size</FormLabel>
+              <FormLabel className={labelClassName}>Family application</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger className="h-12 rounded-2xl"><SelectValue placeholder="Select scope" /></SelectTrigger>
+                  <SelectTrigger className={selectTriggerClassName}><SelectValue placeholder="Select scope" /></SelectTrigger>
                 </FormControl>
                 <SelectContent>{investorFamilyScopes.map((option) => <SelectItem key={option} value={option}>{option}</SelectItem>)}</SelectContent>
               </Select>
@@ -168,10 +181,10 @@ function InvestorIntakeFormContent({
           )} />
           <FormField control={form.control} name="timeline" render={({ field }) => (
             <FormItem>
-              <FormLabel>Timeline</FormLabel>
+              <FormLabel className={labelClassName}>Timeline</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
-                  <SelectTrigger className="h-12 rounded-2xl"><SelectValue placeholder="Select timeline" /></SelectTrigger>
+                  <SelectTrigger className={selectTriggerClassName}><SelectValue placeholder="Select timeline" /></SelectTrigger>
                 </FormControl>
                 <SelectContent>{investorTimelines.map((option) => <SelectItem key={option} value={option}>{option}</SelectItem>)}</SelectContent>
               </Select>
@@ -183,27 +196,27 @@ function InvestorIntakeFormContent({
     }
 
     return (
-      <div className="grid gap-5 md:grid-cols-2">
+      <div className="grid gap-4">
         <FormField control={form.control} name="email" render={({ field }) => (
           <FormItem>
-            <FormLabel>Email</FormLabel>
-            <FormControl><Input className="h-12 rounded-2xl" placeholder="name@example.com" {...field} /></FormControl>
+            <FormLabel className={labelClassName}>Email</FormLabel>
+            <FormControl><Input className={fieldClassName} placeholder="name@example.com" {...field} /></FormControl>
             <FormMessage />
           </FormItem>
         )} />
         <FormField control={form.control} name="phoneWhatsApp" render={({ field }) => (
           <FormItem>
-            <FormLabel>Phone / WhatsApp</FormLabel>
-            <FormControl><Input className="h-12 rounded-2xl" placeholder="+971 ..." {...field} /></FormControl>
+            <FormLabel className={labelClassName}>Phone / WhatsApp</FormLabel>
+            <FormControl><Input className={fieldClassName} placeholder="+971 ..." {...field} /></FormControl>
             <FormMessage />
           </FormItem>
         )} />
         <FormField control={form.control} name="preferredContactMethod" render={({ field }) => (
           <FormItem>
-            <FormLabel>Preferred contact method</FormLabel>
+            <FormLabel className={labelClassName}>Preferred contact method</FormLabel>
             <Select onValueChange={field.onChange} value={field.value}>
               <FormControl>
-                <SelectTrigger className="h-12 rounded-2xl"><SelectValue placeholder="Select contact method" /></SelectTrigger>
+                <SelectTrigger className={selectTriggerClassName}><SelectValue placeholder="Select contact method" /></SelectTrigger>
               </FormControl>
               <SelectContent>{investorContactMethods.map((option) => <SelectItem key={option} value={option}>{option}</SelectItem>)}</SelectContent>
             </Select>
@@ -211,10 +224,10 @@ function InvestorIntakeFormContent({
           </FormItem>
         )} />
         <FormField control={form.control} name="additionalNotes" render={({ field }) => (
-          <FormItem className="md:col-span-2">
-            <FormLabel>Additional notes</FormLabel>
+          <FormItem>
+            <FormLabel className={labelClassName}>Additional notes</FormLabel>
             <FormControl>
-              <Textarea className="min-h-32 rounded-3xl" placeholder="Anything useful about your situation, timing, or jurisdictions under consideration." {...field} />
+              <Textarea className="min-h-32 rounded-[1.3rem] border border-[#d7cebf] bg-white text-[#1d2430] shadow-[inset_0_1px_0_rgba(255,255,255,0.78)] placeholder:text-[#8b8191] focus-visible:border-[#415776] focus-visible:ring-[#415776]/20" placeholder="Anything useful about your situation, timing, family structure, or jurisdictions under consideration." {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -224,36 +237,45 @@ function InvestorIntakeFormContent({
   }, [form.control, step])
 
   return (
-    <IntakeFormShell title={title} description={description} step={step} steps={steps as unknown as Array<{ title: string; summary: string }>} className={className}>
+    <IntakeFormShell title={title} description={description} step={step} steps={steps as unknown as Array<{ title: string; summary: string }>} className={className} mode={mode}>
       <Form {...form}>
         <form onSubmit={handleSubmit} className="space-y-6">
           {content}
-          {submitError ? <p className="text-sm text-destructive">{submitError}</p> : null}
+          {submitError ? <p className="text-sm font-medium text-[#b44b52]">{submitError}</p> : null}
           {referenceId ? (
-            <div className="flex items-start gap-3 rounded-[24px] border border-emerald-500/20 bg-emerald-500/10 px-4 py-4 text-sm leading-7 text-foreground">
-              <CheckCircle2 className="mt-1 size-4 text-emerald-500" />
+            <div className="flex items-start gap-3 rounded-[1.4rem] border border-emerald-300/45 bg-emerald-50 px-4 py-4 text-sm leading-7 text-[#1d2430]">
+              <CheckCircle2 className="mt-1 size-4 text-emerald-600" />
               <div>
                 <p className="font-medium">Your request has been received.</p>
-                <p className="text-muted-foreground">Reference: <span className="font-medium text-foreground">{referenceId}</span></p>
+                <p className="text-[#67707f]">Reference: <span className="font-medium text-[#1d2430]">{referenceId}</span></p>
               </div>
             </div>
           ) : null}
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <Button type="button" variant="outline" className="rounded-full" onClick={() => setStep((current) => Math.max(current - 1, 0))} disabled={step === 0 || isPending}>
+          <div className="flex flex-col gap-3 pt-1">
+            <Button
+              type={step < steps.length - 1 ? "button" : "submit"}
+              className="h-12 rounded-full bg-[#243041] text-white shadow-[0_18px_36px_rgba(24,31,43,0.18)] hover:bg-[#1d2735]"
+              onClick={step < steps.length - 1 ? handleNext : undefined}
+              disabled={isPending}
+            >
+              {step < steps.length - 1 ? "Continue" : submitLabel}
+              {isPending ? <LoaderCircle className="size-4 animate-spin" /> : <ChevronRight className="size-4" />}
+            </Button>
+            <div className="flex items-center justify-between gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-11 rounded-full border border-[#d6ccbc] bg-white/75 px-5 text-[#243041] hover:bg-white"
+                onClick={() => setStep((current) => Math.max(current - 1, 0))}
+                disabled={step === 0 || isPending}
+              >
               <ChevronLeft className="size-4" />
               Back
-            </Button>
-            {step < steps.length - 1 ? (
-              <Button type="button" className="rounded-full" onClick={handleNext} disabled={isPending}>
-                Continue
-                <ChevronRight className="size-4" />
               </Button>
-            ) : (
-              <Button type="submit" className="rounded-full" disabled={isPending}>
-                {isPending ? <LoaderCircle className="size-4 animate-spin" /> : null}
-                {submitLabel}
-              </Button>
-            )}
+              <p className="text-right text-[0.82rem] leading-6 text-[#6d7484]">
+                Reviewed discreetly before any reply is arranged.
+              </p>
+            </div>
           </div>
         </form>
       </Form>
@@ -272,11 +294,11 @@ export function InvestorIntakeForm({
         <DialogTrigger asChild><Button className="rounded-full">{triggerLabel}</Button></DialogTrigger>
         <DialogContent className="max-h-[92vh] overflow-y-auto border-0 bg-transparent p-0 shadow-none sm:max-w-4xl">
           <DialogHeader className="sr-only"><DialogTitle>{props.title ?? "Request a private consultation"}</DialogTitle></DialogHeader>
-          <InvestorIntakeFormContent {...props} />
+          <InvestorIntakeFormContent {...props} mode="modal" />
         </DialogContent>
       </Dialog>
     )
   }
 
-  return <InvestorIntakeFormContent {...props} />
+  return <InvestorIntakeFormContent {...props} mode="embedded" />
 }

@@ -84,7 +84,7 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
             <Button
               type="button"
               variant="outline"
-              className="rounded-full border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08] hover:text-white"
+              className="app-button-secondary rounded-full"
               onClick={handleExport}
               disabled={isExporting}
             >
@@ -140,9 +140,7 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
                   type="button"
                   onClick={() => setStatusFilter(status)}
                   className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-                    statusFilter === status
-                      ? "bg-[var(--app-brand-primary)] text-[var(--app-brand-on-primary)]"
-                      : "border border-white/10 bg-white/[0.04] text-slate-200 hover:bg-white/[0.08]"
+                    statusFilter === status ? "app-filter-chip-active" : "app-filter-chip"
                   }`}
                 >
                   {status}
@@ -168,11 +166,11 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
                 return (
                   <TableRow key={quotation.id}>
                     <TableCell className="min-w-[16rem]">
-                      <div className="space-y-2">
-                        <p className="text-[0.98rem] font-semibold text-white">{quotation.id.toUpperCase()}</p>
-                        <p className="text-sm leading-6 text-slate-300">{quotation.title ?? quotation.note}</p>
-                      </div>
-                    </TableCell>
+                    <div className="space-y-2">
+                      <p className="text-[0.98rem] font-semibold text-white">{quotation.id.toUpperCase()}</p>
+                      <p className="text-sm leading-6 text-slate-200">{quotation.title ?? quotation.note}</p>
+                    </div>
+                  </TableCell>
                     <TableCell className="min-w-[15rem]">
                       <div className="space-y-2">
                         <p className="font-semibold text-slate-100">{quotation.client}</p>
@@ -203,7 +201,7 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button asChild variant="ghost" className="rounded-full text-slate-200 hover:bg-white/[0.08] hover:text-white">
+                      <Button asChild variant="outline" size="sm" className="app-button-secondary rounded-full">
                         <Link href={`/clients/${quotation.clientId}`}>Open record</Link>
                       </Button>
                     </TableCell>
@@ -221,7 +219,7 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
         >
           <div className="space-y-3">
             {quotations.slice(0, 3).map((quotation) => (
-              <div key={quotation.id} className="app-subtle-card rounded-[22px] px-5 py-5">
+              <div key={quotation.id} className="app-subtle-card-strong rounded-[22px] px-5 py-5">
                 <div className="space-y-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="space-y-2">
@@ -288,9 +286,9 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
                       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{group.title}</p>
                       <div className="mt-3 space-y-2">
                         {group.items.map((item) => (
-                          <div key={`${group.title}-${item.label}`} className="space-y-1 text-sm">
-                            <div className="flex items-start justify-between gap-3">
-                              <span className="leading-6 text-slate-200">{item.label}</span>
+                            <div key={`${group.title}-${item.label}`} className="space-y-1 text-sm">
+                              <div className="flex items-start justify-between gap-3">
+                                <span className="leading-6 text-slate-200">{item.label}</span>
                               <span className="shrink-0 font-medium text-white">
                                 {item.amount ? formatMoney(quotation.currency, item.amount * (item.quantity ?? 1)) : "Included"}
                               </span>
@@ -327,7 +325,7 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <Button asChild variant="outline" className="w-full rounded-full border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08] hover:text-white">
+                  <Button asChild variant="outline" className="app-button-secondary w-full rounded-full">
                     <Link href={`/clients/${quotation.clientId}`}>
                       View client record
                       <ReceiptText className="size-4" />

@@ -25,6 +25,7 @@ interface NotificationsPanelProps {
   emptyBody: string
   onMarkRead: (id: string) => void
   onMarkAllRead: (ids: string[]) => void
+  viewAllHref?: string
 }
 
 function getGroupLabel(timestamp: string) {
@@ -52,6 +53,7 @@ export function NotificationsPanel({
   emptyBody,
   onMarkRead,
   onMarkAllRead,
+  viewAllHref = "/notifications",
 }: NotificationsPanelProps) {
   const groups = useMemo(() => {
     return items.reduce<Record<string, WorkflowNotificationFeedItem[]>>((accumulator, item) => {
@@ -127,12 +129,10 @@ export function NotificationsPanel({
 
                     <div className="space-y-3">
                       {groups[label].map((item) => (
-                        <Link
+                        <div
                           key={item.id}
-                          href={item.href}
-                          onClick={() => onMarkRead(item.id)}
                           className={cn(
-                            "block rounded-[22px] border px-4 py-4 transition-colors hover:bg-white/[0.07]",
+                            "rounded-[22px] border px-4 py-4 transition-colors",
                             item.unread
                               ? "border-white/12 bg-white/[0.07] shadow-[0_18px_40px_rgba(7,12,19,0.18)]"
                               : "border-white/8 bg-white/[0.03]",
@@ -141,19 +141,33 @@ export function NotificationsPanel({
                           <div className="space-y-3">
                             <div className="flex items-start justify-between gap-3">
                               <div className="space-y-1">
-                                <p className="text-sm font-semibold text-white">{item.title}</p>
+                                <div className="flex items-center gap-2">
+                                  {item.unread ? <span className="size-2 rounded-full bg-[var(--app-brand-secondary)]" /> : null}
+                                  <p className="text-sm font-semibold text-white">{item.title}</p>
+                                </div>
                                 <p className="text-sm leading-6 text-slate-200">{item.description}</p>
                               </div>
-                              <span
-                                className={cn(
-                                  "shrink-0 rounded-full px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.18em]",
-                                  item.unread
-                                    ? "bg-[var(--app-brand-surface-tint-strong)] text-white"
-                                    : "bg-white/[0.06] text-slate-300",
-                                )}
-                              >
-                                {item.status}
-                              </span>
+                              <div className="flex flex-col items-end gap-2">
+                                <span
+                                  className={cn(
+                                    "shrink-0 rounded-full px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.18em]",
+                                    item.unread
+                                      ? "bg-[var(--app-brand-surface-tint-strong)] text-white"
+                                      : "bg-white/[0.06] text-slate-300",
+                                  )}
+                                >
+                                  {item.status}
+                                </span>
+                                {item.unread ? (
+                                  <button
+                                    type="button"
+                                    onClick={() => onMarkRead(item.id)}
+                                    className="text-[0.72rem] font-semibold text-slate-300 transition-colors hover:text-white"
+                                  >
+                                    Mark read
+                                  </button>
+                                ) : null}
+                              </div>
                             </div>
 
                             <div className="flex items-center justify-between gap-4 text-sm">
@@ -161,10 +175,17 @@ export function NotificationsPanel({
                                 <p className="truncate text-slate-300">{item.context}</p>
                                 <p className="text-slate-400">{item.timestamp}</p>
                               </div>
-                              <ChevronRight className="size-4 shrink-0 text-slate-400" />
+                              <Link
+                                href={item.href}
+                                onClick={() => onMarkRead(item.id)}
+                                className="inline-flex items-center gap-2 rounded-full px-3 py-2 font-semibold text-slate-200 transition-colors hover:bg-white/[0.07] hover:text-white"
+                              >
+                                Open
+                                <ChevronRight className="size-4 shrink-0 text-slate-400" />
+                              </Link>
                             </div>
                           </div>
-                        </Link>
+                        </div>
                       ))}
                     </div>
                   </section>
@@ -174,9 +195,14 @@ export function NotificationsPanel({
         </div>
 
         <SheetFooter className="border-t border-white/8 px-6 py-4">
-          <p className="text-sm leading-6 text-slate-300">
-            Recent workflow movement is kept here so approvals, uploads, and quotation changes stay visible without leaving the current workspace.
-          </p>
+          <div className="flex w-full items-center justify-between gap-4">
+            <p className="text-sm leading-6 text-slate-300">
+              Recent workflow movement is kept here so approvals, uploads, and quotation changes stay visible without leaving the current workspace.
+            </p>
+            <Button asChild variant="outline" className="app-button-secondary rounded-full">
+              <Link href={viewAllHref}>View all notifications</Link>
+            </Button>
+          </div>
         </SheetFooter>
       </SheetContent>
     </Sheet>

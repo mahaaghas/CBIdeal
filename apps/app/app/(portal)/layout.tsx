@@ -41,6 +41,7 @@ export default function PortalLayout({ children }: { children: ReactNode }) {
             emptyBody="Approvals, uploads, and other system activity will appear here as the workspace moves."
             onMarkRead={markNotificationRead}
             onMarkAllRead={markNotificationsRead}
+            viewAllHref="/notifications"
           />
         }
         profileInitials={initials}

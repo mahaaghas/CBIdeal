@@ -28,15 +28,23 @@ export function DocumentReviewControls({
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <Button size="sm" className="rounded-full" onClick={() => approveDocument(checklistItemId)}>
+    <div className="flex flex-wrap items-center gap-2">
+      <Button
+        size="sm"
+        className="rounded-full shadow-[0_16px_30px_rgba(17,28,43,0.18)]"
+        onClick={() => approveDocument(checklistItemId)}
+      >
         <Check className="size-4" />
         Approve
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button size="sm" variant="outline" className="rounded-full border-rose-300/40 text-rose-100 hover:bg-rose-500/10 hover:text-rose-50">
+          <Button
+            size="sm"
+            variant="outline"
+            className="app-button-danger-outline rounded-full"
+          >
             <X className="size-4" />
             Reject
           </Button>
@@ -57,11 +65,15 @@ export function DocumentReviewControls({
           />
 
           <DialogFooter>
-            <Button variant="outline" className="rounded-full" onClick={() => setOpen(false)}>
+            <Button
+              variant="outline"
+              className="app-button-secondary rounded-full"
+              onClick={() => setOpen(false)}
+            >
               Cancel
             </Button>
             <Button
-              className="rounded-full"
+              className="app-button-danger-solid rounded-full"
               disabled={!reason.trim()}
               onClick={() => {
                 rejectDocument(checklistItemId, reason)
@@ -90,15 +102,23 @@ export function PaymentReviewControls({
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <Button size="sm" className="rounded-full" onClick={() => approvePaymentProof(paymentId)}>
+    <div className="flex flex-wrap items-center gap-2">
+      <Button
+        size="sm"
+        className="rounded-full shadow-[0_16px_30px_rgba(17,28,43,0.18)]"
+        onClick={() => approvePaymentProof(paymentId)}
+      >
         <Check className="size-4" />
         Approve
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button size="sm" variant="outline" className="rounded-full border-rose-300/40 text-rose-100 hover:bg-rose-500/10 hover:text-rose-50">
+          <Button
+            size="sm"
+            variant="outline"
+            className="app-button-danger-outline rounded-full"
+          >
             <X className="size-4" />
             Reject
           </Button>
@@ -119,11 +139,15 @@ export function PaymentReviewControls({
           />
 
           <DialogFooter>
-            <Button variant="outline" className="rounded-full" onClick={() => setOpen(false)}>
+            <Button
+              variant="outline"
+              className="app-button-secondary rounded-full"
+              onClick={() => setOpen(false)}
+            >
               Cancel
             </Button>
             <Button
-              className="rounded-full"
+              className="app-button-danger-solid rounded-full"
               disabled={!reason.trim()}
               onClick={() => {
                 rejectPaymentProof(paymentId, reason)
@@ -182,7 +206,11 @@ export function DocumentUploadControl({
         />
 
         <DialogFooter>
-          <Button variant="outline" className="rounded-full" onClick={() => setOpen(false)}>
+          <Button
+            variant="outline"
+            className="app-button-secondary rounded-full"
+            onClick={() => setOpen(false)}
+          >
             Cancel
           </Button>
           <Button
@@ -241,7 +269,11 @@ export function PaymentProofUploadControl({
         />
 
         <DialogFooter>
-          <Button variant="outline" className="rounded-full" onClick={() => setOpen(false)}>
+          <Button
+            variant="outline"
+            className="app-button-secondary rounded-full"
+            onClick={() => setOpen(false)}
+          >
             Cancel
           </Button>
           <Button

@@ -94,16 +94,17 @@ export function LeadsPageClient({ initialLeads }: { initialLeads: CrmLeadRecord[
       <CrmTableCard
         title="Website submissions"
         description="A single register for the B2C and B2B website forms, designed for assignment, qualification, and early-stage review."
+        className="app-surface"
         action={
           <div className="flex w-full flex-col gap-3 lg:w-auto lg:flex-row lg:items-center">
-            <div className="flex w-full max-w-md items-center gap-3 rounded-full border border-border/70 bg-background px-4 py-2.5 shadow-sm">
-              <Search className="size-4 text-muted-foreground" />
+            <div className="flex w-full max-w-md items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2.5 shadow-sm">
+              <Search className="size-4 text-slate-400" />
               <Input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 aria-label="Search lead inbox"
                 placeholder="Search names, companies, countries, or source pages"
-                className="h-auto border-0 bg-transparent px-0 py-0 text-sm shadow-none focus-visible:ring-0"
+                className="h-auto border-0 bg-transparent px-0 py-0 text-sm text-white shadow-none placeholder:text-slate-400 focus-visible:ring-0"
               />
             </div>
           </div>
@@ -122,17 +123,17 @@ export function LeadsPageClient({ initialLeads }: { initialLeads: CrmLeadRecord[
                 className={cn(
                   "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
                   active
-                    ? "border-[color:var(--app-accent-strong)] bg-[color:var(--app-accent)]/16 text-foreground"
-                    : "border-border/70 bg-background text-muted-foreground hover:text-foreground",
+                    ? "app-filter-chip-active"
+                    : "app-filter-chip",
                 )}
               >
-                {filter} <span className="ml-1 text-xs text-muted-foreground">{count}</span>
+                {filter} <span className="ml-1 text-xs text-slate-400">{count}</span>
               </button>
             )
           })}
         </div>
 
-        <div className="overflow-hidden rounded-[26px] border border-border/70 bg-background">
+        <div className="overflow-hidden rounded-[26px] border border-white/8 bg-[#263248]">
           <Table className="app-grid-table">
             <TableHeader>
               <TableRow>
@@ -149,31 +150,31 @@ export function LeadsPageClient({ initialLeads }: { initialLeads: CrmLeadRecord[
             </TableHeader>
             <TableBody>
               {filteredLeads.map((lead) => (
-                <TableRow key={lead.recordKey} className="transition-colors hover:bg-background/80 focus-within:bg-background/80">
+                <TableRow key={lead.recordKey}>
                   <TableCell>
-                    <span className="rounded-full border border-border/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                    <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-300">
                       {lead.type}
                     </span>
                   </TableCell>
                   <TableCell>
                     <div className="space-y-1">
-                      <p className="font-medium text-foreground">{lead.name}</p>
-                      {lead.companyName ? <p className="text-sm text-muted-foreground">{lead.companyName}</p> : null}
+                      <p className="font-medium text-white">{lead.name}</p>
+                      {lead.companyName ? <p className="text-sm text-slate-300">{lead.companyName}</p> : null}
                     </div>
                   </TableCell>
-                  <TableCell className="text-foreground">{lead.interest}</TableCell>
-                  <TableCell>{lead.country}</TableCell>
-                  <TableCell>{lead.submittedAt}</TableCell>
+                  <TableCell className="text-slate-100">{lead.interest}</TableCell>
+                  <TableCell className="text-slate-300">{lead.country}</TableCell>
+                  <TableCell className="text-slate-300">{lead.submittedAt}</TableCell>
                   <TableCell>
-                    <span className="font-mono text-xs text-muted-foreground">{lead.sourcePage}</span>
+                    <span className="font-mono text-xs text-slate-400">{lead.sourcePage}</span>
                   </TableCell>
-                  <TableCell>{lead.assignedManagerName ?? "Unassigned"}</TableCell>
+                  <TableCell className="text-slate-300">{lead.assignedManagerName ?? "Unassigned"}</TableCell>
                   <TableCell>
                     <CrmStatusBadge status={lead.status} />
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center justify-end gap-2">
-                      <Button asChild variant="outline" size="sm" className="rounded-full">
+                      <Button asChild variant="outline" size="sm" className="app-button-secondary rounded-full">
                         <a href={`mailto:${lead.email}`}>
                           <Mail className="size-4" />
                           Email

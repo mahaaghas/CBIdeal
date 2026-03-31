@@ -69,7 +69,7 @@ export function PageHero({
             className={cn(
               "page-hero-grid relative grid gap-8 md:gap-10",
               hasAside
-                ? "lg:grid-cols-[minmax(0,1.76fr)_minmax(17.5rem,0.64fr)] lg:items-stretch lg:gap-12 xl:grid-cols-[minmax(0,1.84fr)_minmax(18.5rem,0.6fr)] xl:gap-14"
+                ? "lg:grid-cols-[minmax(0,1.72fr)_minmax(20.75rem,0.72fr)] lg:items-stretch lg:gap-12 xl:grid-cols-[minmax(0,1.8fr)_minmax(22.5rem,0.74fr)] xl:gap-14"
                 : "content-measure",
             )}
           >
@@ -161,7 +161,7 @@ export function PageHero({
             {hasAside ? (
               <div
                 className={cn(
-                  "page-hero-aside w-full max-w-[19.75rem] self-start xl:max-w-[20.5rem]",
+                  "page-hero-aside w-full max-w-[22rem] self-start xl:max-w-[23rem]",
                   isRtl ? "lg:justify-self-start" : "lg:justify-self-end",
                 )}
               >

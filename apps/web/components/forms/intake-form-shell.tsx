@@ -12,6 +12,7 @@ interface IntakeFormShellProps {
   children: ReactNode
   trustNote?: string
   className?: string
+  mode?: "embedded" | "modal"
 }
 
 export function IntakeFormShell({
@@ -22,29 +23,46 @@ export function IntakeFormShell({
   children,
   trustNote = "Submissions are reviewed privately and routed to the appropriate advisory team before any reply is arranged.",
   className,
+  mode = "embedded",
 }: IntakeFormShellProps) {
   const progress = ((step + 1) / steps.length) * 100
+  const activeStep = steps[step]
 
   return (
-    <div className={cn("section-card overflow-hidden p-6 md:p-8", className)}>
-      <div className="space-y-5">
+    <div
+      className={cn(
+        "overflow-hidden rounded-[2rem] border border-[#d9d0c0] bg-[linear-gradient(180deg,#fbf8f2_0%,#f6f1e7_100%)] shadow-[0_32px_80px_rgba(16,22,35,0.22)]",
+        mode === "embedded" ? "p-6 md:p-7" : "p-7 md:p-9",
+        className,
+      )}
+    >
+      <div className="space-y-6">
         <div className="space-y-3">
-          <span className="eyebrow">Structured enquiry</span>
-          <h3 className="max-w-[18ch] text-[1.9rem] leading-[1.12] text-foreground md:text-[2.25rem]">{title}</h3>
-          <p className="max-w-[38rem] text-sm leading-7 text-muted-foreground md:text-[0.98rem] md:leading-8">
+          <span className="inline-flex rounded-full border border-[#ddd2c0] bg-white/65 px-3.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#7a6b58]">
+            Private advisory intake
+          </span>
+          <h3 className="max-w-[16ch] text-[2rem] leading-[1.08] tracking-[-0.03em] text-[#1d2430] md:text-[2.3rem]">
+            {title}
+          </h3>
+          <p className="max-w-[34rem] text-[0.96rem] leading-7 text-[#5f6472] md:text-[1rem] md:leading-8">
             {description}
           </p>
         </div>
 
-        <div className="space-y-4 rounded-[28px] border border-border/70 bg-muted/35 p-4 md:p-5">
-          <div className="flex items-center justify-between gap-4">
-            <p className="text-sm font-medium text-foreground">
-              Step {step + 1} of {steps.length}
+        <div className="space-y-4 rounded-[1.6rem] border border-[#dfd5c6] bg-white/72 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.65)] md:p-5">
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold text-[#243041]">
+                Step {step + 1} of {steps.length}
+              </p>
+              <p className="text-sm leading-6 text-[#6d7484]">{activeStep?.summary}</p>
+            </div>
+            <p className="rounded-full bg-[#243041] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white">
+              {activeStep?.title}
             </p>
-            <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{steps[step]?.title}</p>
           </div>
-          <Progress value={progress} className="h-2.5 rounded-full bg-primary/10" />
-          <div className="grid gap-3 md:grid-cols-3">
+          <Progress value={progress} className="h-2 rounded-full bg-[#e8dfd1]" />
+          <div className={cn("grid gap-2.5", mode === "embedded" ? "grid-cols-3" : "grid-cols-3")}>
             {steps.map((item, index) => {
               const active = index === step
               const completed = index < step
@@ -53,28 +71,29 @@ export function IntakeFormShell({
                 <div
                   key={item.title}
                   className={cn(
-                    "rounded-[24px] border px-4 py-4 transition-colors",
+                    "rounded-[1.15rem] border px-3 py-3 transition-colors",
                     active
-                      ? "border-primary/20 bg-background text-foreground shadow-sm"
+                      ? "border-[#243041]/12 bg-[#243041] text-white shadow-[0_14px_26px_rgba(24,31,43,0.16)]"
                       : completed
-                        ? "border-primary/12 bg-primary/5 text-foreground"
-                        : "border-border/60 bg-transparent text-muted-foreground",
+                        ? "border-[#d9cfbf] bg-[#efe8dc] text-[#243041]"
+                        : "border-[#e1d7c9] bg-transparent text-[#6d7484]",
                   )}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2.5">
                     <span
                       className={cn(
-                        "flex size-7 items-center justify-center rounded-full text-xs font-semibold",
-                        active || completed
-                          ? "bg-primary text-primary-foreground"
-                          : "border border-border/70 bg-background text-muted-foreground",
+                        "flex size-6 shrink-0 items-center justify-center rounded-full text-[0.7rem] font-semibold",
+                        active
+                          ? "bg-white/18 text-white"
+                          : completed
+                            ? "bg-[#243041] text-white"
+                            : "border border-[#d7ccbd] bg-white/75 text-[#7c7381]",
                       )}
                     >
                       {index + 1}
                     </span>
-                    <p className="text-sm font-medium">{item.title}</p>
+                    <p className="text-[0.78rem] font-semibold leading-5 md:text-[0.82rem]">{item.title}</p>
                   </div>
-                  <p className="mt-3 text-sm leading-6">{item.summary}</p>
                 </div>
               )
             })}
@@ -83,7 +102,7 @@ export function IntakeFormShell({
 
         {children}
 
-        <div className="rounded-[24px] border border-border/60 bg-background px-4 py-4 text-sm leading-7 text-muted-foreground">
+        <div className="rounded-[1.4rem] border border-[#dfd5c6] bg-white/68 px-4 py-4 text-sm leading-7 text-[#666d7b]">
           {trustNote}
         </div>
       </div>

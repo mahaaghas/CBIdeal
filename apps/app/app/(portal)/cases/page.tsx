@@ -1,11 +1,13 @@
+"use client"
+
 import Link from "next/link"
-import { ArrowRight, Filter, FolderClock, ShieldCheck } from "lucide-react"
+import { useMemo, useState } from "react"
+import { ArrowRight, FolderClock, Search, ShieldCheck } from "lucide-react"
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
 import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
 import { CrmStatCard } from "@cbideal/ui/components/crm-stat-card"
 import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
 import { CrmTableCard } from "@cbideal/ui/components/crm-table-card"
-import { CrmToolbar } from "@cbideal/ui/components/crm-toolbar"
 import { Button } from "@cbideal/ui/components/ui/button"
 import { Progress } from "@cbideal/ui/components/ui/progress"
 import {
@@ -19,6 +21,29 @@ import {
 import { cases, getChecklistForCase, getPaymentsForClient } from "@/lib/mock-data"
 
 export default function CasesPage() {
+  const [query, setQuery] = useState("")
+  const [filter, setFilter] = useState<"All" | "Active" | "Review" | "Strategy">("All")
+
+  const visibleCases = useMemo(() => {
+    return cases.filter((item) => {
+      const matchesQuery = [item.route, item.client, item.stage, item.region]
+        .join(" ")
+        .toLowerCase()
+        .includes(query.toLowerCase())
+
+      const matchesFilter =
+        filter === "All"
+          ? true
+          : filter === "Active"
+            ? item.progress < 100
+            : filter === "Review"
+              ? item.stage === "Government review"
+              : item.stage === "Jurisdiction comparison" || item.stage === "Jurisdiction reassessment"
+
+      return matchesQuery && matchesFilter
+    })
+  }, [filter, query])
+
   return (
     <div className="section-stack">
       <CrmPageHeader
@@ -42,7 +67,7 @@ export default function CasesPage() {
         />
         <CrmStatCard
           label="Comparison and reassessment"
-          value={`${cases.filter((item) => item.stage === "Jurisdiction comparison").length}`}
+          value={`${cases.filter((item) => item.stage === "Jurisdiction comparison" || item.stage === "Jurisdiction reassessment").length}`}
           note="Cases where the route is still being narrowed or recalibrated."
           trend="Strategy work"
         />
@@ -51,29 +76,42 @@ export default function CasesPage() {
       <CrmTableCard
         title="Case register"
         description="A structured register for current applications, residence files, and relocation matters."
+        className="app-surface"
         action={
-          <CrmToolbar
-            searchPlaceholder="Search routes, case references, or clients"
-            actions={
-              <>
-                <Button asChild variant="outline" className="rounded-full">
-                  <Link href="/cases?filter=active">
-                    <Filter className="size-4" />
-                    Filter
-                  </Link>
-                </Button>
-                <Button asChild className="rounded-full">
-                  <Link href="/documents">
-                    Review document queue
-                    <ArrowRight className="size-4" />
-                  </Link>
-                </Button>
-              </>
-            }
-          />
+          <div className="flex w-full flex-col gap-3 lg:w-auto lg:flex-row lg:items-center">
+            <div className="relative w-full min-w-0 lg:w-[23rem]">
+              <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                className="app-search h-12 w-full rounded-full px-11 text-sm outline-none"
+                placeholder="Search route, client, stage, or region"
+              />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {(["All", "Active", "Review", "Strategy"] as const).map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => setFilter(option)}
+                  className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                    filter === option ? "app-filter-chip-active" : "app-filter-chip"
+                  }`}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+            <Button asChild className="rounded-full">
+              <Link href="/documents">
+                Review document queue
+                <ArrowRight className="size-4" />
+              </Link>
+            </Button>
+          </div>
         }
       >
-        <Table>
+        <Table className="app-grid-table">
           <TableHeader>
             <TableRow>
               <TableHead>Case</TableHead>
@@ -84,18 +122,18 @@ export default function CasesPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {cases.map((row) => (
+            {visibleCases.map((row) => (
               <TableRow key={row.id}>
-                <TableCell className="font-medium text-foreground">{row.route}</TableCell>
-                <TableCell>{row.client}</TableCell>
+                <TableCell className="font-medium text-white">{row.route}</TableCell>
+                <TableCell className="text-slate-300">{row.client}</TableCell>
                 <TableCell>
                   <CrmStatusBadge status={row.stage} />
                 </TableCell>
-                <TableCell>{row.nextMilestone}</TableCell>
+                <TableCell className="text-slate-300">{row.nextMilestone}</TableCell>
                 <TableCell className="min-w-40">
                   <div className="space-y-2">
                     <Progress value={row.progress} className="h-2.5" />
-                    <p className="text-xs text-muted-foreground">{row.progress}% complete</p>
+                    <p className="text-xs text-slate-400">{row.progress}% complete</p>
                   </div>
                 </TableCell>
               </TableRow>
@@ -105,7 +143,7 @@ export default function CasesPage() {
       </CrmTableCard>
 
       <div className="grid gap-5 xl:grid-cols-2">
-        {cases.map((item) => {
+        {visibleCases.map((item) => {
           const checklist = getChecklistForCase(item.id)
           const payments = getPaymentsForClient(item.clientId)
           const openItems = checklist.filter((entry) => entry.status !== "Approved").length
@@ -115,52 +153,53 @@ export default function CasesPage() {
               key={item.id}
               title={item.route}
               description={`${item.client} · ${item.region} · next milestone ${item.nextMilestone}`}
+              className="app-surface"
             >
               <div className="grid gap-3 md:grid-cols-3">
-                <div className="rounded-[18px] border border-border/70 bg-background px-4 py-3 shadow-sm">
-                  <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Stage</p>
+                <div className="app-subtle-card rounded-[18px] px-4 py-4">
+                  <p className="text-xs uppercase tracking-[0.16em] text-slate-400">Stage</p>
                   <div className="mt-2">
                     <CrmStatusBadge status={item.stage} />
                   </div>
                 </div>
-                <div className="rounded-[18px] border border-border/70 bg-background px-4 py-3 shadow-sm">
-                  <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Payment stages</p>
-                  <p className="mt-2 text-sm font-medium text-foreground">{payments.length} linked stages</p>
+                <div className="app-subtle-card rounded-[18px] px-4 py-4">
+                  <p className="text-xs uppercase tracking-[0.16em] text-slate-400">Payment stages</p>
+                  <p className="mt-2 text-sm font-medium text-white">{payments.length} linked stages</p>
                 </div>
-                <div className="rounded-[18px] border border-border/70 bg-background px-4 py-3 shadow-sm">
-                  <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Open checklist items</p>
-                  <p className="mt-2 text-sm font-medium text-foreground">{openItems}</p>
+                <div className="app-subtle-card rounded-[18px] px-4 py-4">
+                  <p className="text-xs uppercase tracking-[0.16em] text-slate-400">Open checklist items</p>
+                  <p className="mt-2 text-sm font-medium text-white">{openItems}</p>
                 </div>
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium text-foreground">Case progress</p>
-                  <p className="text-sm text-muted-foreground">{item.progress}%</p>
+                  <p className="text-sm font-medium text-white">Case progress</p>
+                  <p className="text-sm text-slate-300">{item.progress}%</p>
                 </div>
                 <Progress value={item.progress} className="h-2.5" />
               </div>
 
               <div className="grid gap-3 md:grid-cols-2">
-                <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+                <div className="app-subtle-card rounded-[20px] px-4 py-4">
                   <div className="flex items-start gap-3">
-                    <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-[var(--app-brand-surface-tint-strong)] text-white">
                       <FolderClock className="size-4" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm font-medium text-foreground">Operational next step</p>
-                      <p className="text-sm leading-6 text-muted-foreground">{item.applicationStatus}</p>
+                      <p className="text-sm font-medium text-white">Operational next step</p>
+                      <p className="text-sm leading-6 text-slate-300">{item.applicationStatus}</p>
                     </div>
                   </div>
                 </div>
-                <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+                <div className="app-subtle-card rounded-[20px] px-4 py-4">
                   <div className="flex items-start gap-3">
-                    <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-[var(--app-brand-surface-tint-strong)] text-white">
                       <ShieldCheck className="size-4" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm font-medium text-foreground">Case integrity</p>
-                      <p className="text-sm leading-6 text-muted-foreground">
+                      <p className="text-sm font-medium text-white">Case integrity</p>
+                      <p className="text-sm leading-6 text-slate-300">
                         Quotation, payment stages, and documents remain linked to the same case record.
                       </p>
                     </div>

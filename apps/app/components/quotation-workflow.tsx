@@ -167,7 +167,7 @@ function QuotationLineEditor({
                   <Button
                     type="button"
                     variant="ghost"
-                    className="rounded-full text-slate-300 hover:bg-white/[0.08] hover:text-white"
+                    className="rounded-full text-slate-200 hover:bg-white/[0.08] hover:text-white"
                     onClick={() => onChange(items.filter((entry) => entry.id !== item.id))}
                     disabled={items.length === 1}
                   >
@@ -182,7 +182,7 @@ function QuotationLineEditor({
         <Button
           type="button"
           variant="outline"
-          className="rounded-full border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08] hover:text-white"
+          className="app-button-secondary rounded-full"
           onClick={() => onChange([...items, createLineItem(title.toLowerCase().replace(/\s+/g, "-"))])}
         >
           <Plus className="size-4" />
@@ -356,7 +356,7 @@ export function QuotationWorkflow({
                       <div className="space-y-2">
                         <p className="text-base font-semibold text-white">{client.name}</p>
                         <p className="text-sm leading-6 text-slate-300">{detail?.summary ?? client.summary}</p>
-                        <p className="text-sm leading-6 text-slate-400">
+                        <p className="text-sm leading-6 text-slate-300">
                           {caseRecord?.route ?? client.context} / {client.owner}
                         </p>
                       </div>
@@ -408,8 +408,8 @@ export function QuotationWorkflow({
                       className="h-12 rounded-2xl border-white/10 bg-white/[0.04] text-white"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-200">Quotation ID</label>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-slate-200">Quotation ID</label>
                     <div className="flex h-12 items-center rounded-2xl border border-white/10 bg-white/[0.04] px-4 text-sm text-slate-300">
                       Assigned on save
                     </div>

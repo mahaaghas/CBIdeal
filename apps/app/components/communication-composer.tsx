@@ -244,7 +244,7 @@ export function CommunicationComposer({
               ) : null}
 
               {templateId ? (
-                <Button asChild variant="outline" className="w-full rounded-full border-white/10 bg-white/[0.03] text-white hover:bg-white/[0.06] hover:text-white">
+                <Button asChild variant="outline" className="app-button-secondary w-full rounded-full">
                   <Link href={`/templates/${templateId}`}>Open template editor</Link>
                 </Button>
               ) : null}
@@ -297,17 +297,17 @@ export function CommunicationComposer({
 
         <DialogFooter className="border-t border-white/10 px-6 py-4">
           <div className="flex w-full flex-wrap items-center justify-between gap-3">
-            <Button variant="outline" className="rounded-full" onClick={() => setOpen(false)}>
+            <Button variant="outline" className="app-button-secondary rounded-full" onClick={() => setOpen(false)}>
               Close
             </Button>
             <div className="flex flex-wrap gap-2">
-              <Button variant="outline" className="rounded-full" onClick={() => runAction("Draft", "Workspace send")} disabled={!templateId}>
+              <Button variant="outline" className="app-button-secondary rounded-full" onClick={() => runAction("Draft", "Workspace send")} disabled={!templateId}>
                 Save draft
               </Button>
-              <Button variant="outline" className="rounded-full" onClick={() => runAction("Prepared", "Outlook draft")} disabled={!templateId}>
+              <Button variant="outline" className="app-button-secondary rounded-full" onClick={() => runAction("Prepared", "Outlook draft")} disabled={!templateId}>
                 Open in Outlook
               </Button>
-              <Button variant="outline" className="rounded-full" onClick={() => runAction("Scheduled", "Scheduled send")} disabled={!templateId || !scheduledFor}>
+              <Button variant="outline" className="app-button-secondary rounded-full" onClick={() => runAction("Scheduled", "Scheduled send")} disabled={!templateId || !scheduledFor}>
                 <CalendarClock className="size-4" />
                 Schedule
               </Button>

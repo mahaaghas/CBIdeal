@@ -5,12 +5,16 @@ import { cn } from "../lib/utils"
 
 interface CrmToolbarProps {
   searchPlaceholder?: string
+  searchValue?: string
+  onSearchChange?: (value: string) => void
   actions?: ReactNode
   className?: string
 }
 
 export function CrmToolbar({
   searchPlaceholder = "Search",
+  searchValue,
+  onSearchChange,
   actions,
   className,
 }: CrmToolbarProps) {
@@ -21,7 +25,11 @@ export function CrmToolbar({
         <Input
           aria-label={searchPlaceholder}
           placeholder={searchPlaceholder}
-          className="h-auto border-0 bg-transparent px-0 py-0 text-sm shadow-none focus-visible:ring-0"
+          value={searchValue}
+          onChange={(event) => onSearchChange?.(event.target.value)}
+          disabled={!onSearchChange}
+          readOnly={!onSearchChange}
+          className="h-auto border-0 bg-transparent px-0 py-0 text-sm shadow-none focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-70"
         />
       </div>
       {actions ? <div className="flex flex-wrap items-center gap-3">{actions}</div> : null}

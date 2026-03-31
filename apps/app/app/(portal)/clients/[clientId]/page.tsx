@@ -314,6 +314,25 @@ export default function ClientDetailPage() {
           description="Prepared drafts, sent reminders, and scheduled updates linked to this client."
         >
           <div className="space-y-3">
+            <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-foreground">Communication overview</p>
+                  <p className="text-sm leading-6 text-muted-foreground">
+                    {communicationHistory.length} logged message{communicationHistory.length === 1 ? "" : "s"} across drafts, scheduled reminders, and sent updates.
+                  </p>
+                </div>
+                <CommunicationComposer
+                  clientId={clientId}
+                  caseId={caseRecord.id}
+                  quotationId={quotation?.id}
+                  defaultCategory="Application progress update"
+                  triggerLabel="Send custom update"
+                  className="rounded-full"
+                />
+              </div>
+            </div>
+
             {communicationHistory.map((item) => (
               <div key={item.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
                 <div className="flex items-start gap-3">
@@ -326,8 +345,12 @@ export default function ClientDetailPage() {
                       <CrmStatusBadge status={item.status} />
                     </div>
                     <p className="text-sm leading-6 text-muted-foreground">{item.subject}</p>
+                    <p className="text-sm leading-6 text-muted-foreground">{item.contextSummary}</p>
                     <p className="text-sm leading-6 text-muted-foreground">{item.sender}</p>
                     <p className="text-sm leading-6 text-muted-foreground">{item.createdAt}</p>
+                    {item.scheduledFor ? (
+                      <p className="text-sm leading-6 text-muted-foreground">Scheduled for {item.scheduledFor}</p>
+                    ) : null}
                   </div>
                 </div>
               </div>

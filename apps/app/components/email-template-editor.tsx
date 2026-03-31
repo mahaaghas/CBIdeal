@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useMemo, useState } from "react"
+import { useMemo, useState, type ReactNode } from "react"
 import { ArrowLeft, Copy, Save, Trash2 } from "lucide-react"
 import { Button } from "@cbideal/ui/components/ui/button"
 import { Input } from "@cbideal/ui/components/ui/input"
@@ -25,6 +25,26 @@ const categories: TemplateCategory[] = [
   "Consultation confirmation",
   "Application progress update",
 ]
+
+function FieldBlock({
+  label,
+  hint,
+  children,
+}: {
+  label: string
+  hint?: string
+  children: ReactNode
+}) {
+  return (
+    <div className="space-y-2.5">
+      <div className="space-y-1">
+        <p className="text-xs uppercase tracking-[0.18em] text-slate-400">{label}</p>
+        {hint ? <p className="text-sm leading-6 text-slate-300">{hint}</p> : null}
+      </div>
+      {children}
+    </div>
+  )
+}
 
 export function EmailTemplateEditor({ templateId }: { templateId: string }) {
   const { getTemplateById, updateTemplate, duplicateTemplate, deleteTemplate, renderTemplate } = useCommunication()
@@ -107,16 +127,14 @@ export function EmailTemplateEditor({ templateId }: { templateId: string }) {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Template name</p>
+            <FieldBlock label="Template name" hint="Use a clear internal name so the team can find this quickly.">
               <Input
                 value={template.name}
                 onChange={(event) => updateTemplate(template.id, { name: event.target.value })}
                 className="rounded-2xl border-white/10 bg-white/[0.04] text-white"
               />
-            </div>
-            <div className="space-y-2">
-              <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Category</p>
+            </FieldBlock>
+            <FieldBlock label="Category" hint="Keep the template aligned with the workflow where it is triggered.">
               <Select value={template.category} onValueChange={(value) => updateTemplate(template.id, { category: value as TemplateCategory })}>
                 <SelectTrigger className="w-full rounded-2xl border-white/10 bg-white/[0.04] text-white">
                   <SelectValue />
@@ -129,44 +147,40 @@ export function EmailTemplateEditor({ templateId }: { templateId: string }) {
                   ))}
                 </SelectContent>
               </Select>
-            </div>
+            </FieldBlock>
           </div>
 
-          <div className="space-y-2">
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Subject line</p>
+          <FieldBlock label="Subject line" hint="Keep it brief and anchored to the exact client context.">
             <Input
               value={template.subject}
               onChange={(event) => updateTemplate(template.id, { subject: event.target.value })}
               className="rounded-2xl border-white/10 bg-white/[0.04] text-white"
             />
-          </div>
+          </FieldBlock>
 
-          <div className="space-y-2">
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Preview text</p>
+          <FieldBlock label="Preview text" hint="This becomes the short line clients see before opening the email.">
             <Input
               value={template.previewText}
               onChange={(event) => updateTemplate(template.id, { previewText: event.target.value })}
               className="rounded-2xl border-white/10 bg-white/[0.04] text-white"
             />
-          </div>
+          </FieldBlock>
 
-          <div className="space-y-2">
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-400">HTML body</p>
+          <FieldBlock label="HTML body" hint="Use placeholders where the CRM should insert client, case, payment, or document details.">
             <Textarea
               value={template.htmlBody}
               onChange={(event) => updateTemplate(template.id, { htmlBody: event.target.value })}
               className="min-h-[260px] rounded-2xl border-white/10 bg-white/[0.04] text-white"
             />
-          </div>
+          </FieldBlock>
 
-          <div className="space-y-2">
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Plain text version</p>
+          <FieldBlock label="Plain text version" hint="Keep the text fallback as direct and readable as the HTML version.">
             <Textarea
               value={template.textBody}
               onChange={(event) => updateTemplate(template.id, { textBody: event.target.value })}
               className="min-h-[180px] rounded-2xl border-white/10 bg-white/[0.04] text-white"
             />
-          </div>
+          </FieldBlock>
 
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-[20px] border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-slate-300">
             <div className="space-y-1">
@@ -197,6 +211,24 @@ export function EmailTemplateEditor({ templateId }: { templateId: string }) {
 
           {preview ? (
             <>
+              <div className="rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Preview context</p>
+                <div className="mt-3 grid gap-3 md:grid-cols-2">
+                  {[
+                    ["Client", preview.variables.client_name],
+                    ["Case", preview.variables.case_name],
+                    ["Document", preview.variables.document_name],
+                    ["Payment", preview.variables.payment_amount],
+                    ["Due date", preview.variables.payment_due_date],
+                    ["Recipient", preview.recipient],
+                  ].map(([label, value]) => (
+                    <div key={label} className="rounded-[16px] border border-white/10 bg-white/[0.03] px-3 py-3">
+                      <p className="text-[11px] uppercase tracking-[0.16em] text-slate-400">{label}</p>
+                      <p className="mt-1 text-sm leading-6 text-white">{value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
               <div className="rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Subject</p>
                 <p className="mt-2 text-sm text-white">{preview.subject}</p>
@@ -210,6 +242,10 @@ export function EmailTemplateEditor({ templateId }: { templateId: string }) {
                   className="rounded-[18px] bg-white shadow-sm"
                   dangerouslySetInnerHTML={{ __html: preview.htmlBody }}
                 />
+              </div>
+              <div className="rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Plain text fallback</p>
+                <pre className="mt-3 whitespace-pre-wrap text-sm leading-7 text-slate-300">{preview.textBody}</pre>
               </div>
             </>
           ) : null}

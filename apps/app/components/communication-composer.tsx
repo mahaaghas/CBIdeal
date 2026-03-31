@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, type ReactNode } from "react"
 import { CalendarClock, Mail, Send, Sparkles } from "lucide-react"
 import { Button } from "@cbideal/ui/components/ui/button"
 import {
@@ -35,6 +35,26 @@ type CommunicationComposerProps = {
   availableCategories?: TemplateCategory[]
   triggerLabel?: string
   className?: string
+}
+
+function DetailBlock({
+  label,
+  hint,
+  children,
+}: {
+  label: string
+  hint?: string
+  children: ReactNode
+}) {
+  return (
+    <div className="space-y-2.5">
+      <div className="space-y-1">
+        <p className="text-xs uppercase tracking-[0.18em] text-slate-400">{label}</p>
+        {hint ? <p className="text-sm leading-6 text-slate-300">{hint}</p> : null}
+      </div>
+      {children}
+    </div>
+  )
 }
 
 export function CommunicationComposer({
@@ -148,8 +168,7 @@ export function CommunicationComposer({
             </DialogHeader>
 
             <div className="mt-6 space-y-5">
-              <div className="space-y-2">
-                <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Category</p>
+              <DetailBlock label="Category" hint="Choose the communication type that fits the current workflow step.">
                 <Select value={category} onValueChange={(value) => setCategory(value as TemplateCategory)}>
                   <SelectTrigger className="w-full rounded-2xl border-white/10 bg-white/[0.04] text-white">
                     <SelectValue placeholder="Select category" />
@@ -162,10 +181,9 @@ export function CommunicationComposer({
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
+              </DetailBlock>
 
-              <div className="space-y-2">
-                <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Template</p>
+              <DetailBlock label="Template" hint="Templates are filled automatically from the selected client, case, document, or payment context.">
                 <Select value={templateId} onValueChange={setTemplateId}>
                   <SelectTrigger className="w-full rounded-2xl border-white/10 bg-white/[0.04] text-white">
                     <SelectValue placeholder="Select template" />
@@ -178,17 +196,16 @@ export function CommunicationComposer({
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
+              </DetailBlock>
 
-              <div className="space-y-2">
-                <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Schedule for later</p>
+              <DetailBlock label="Schedule for later" hint="Use this when the message should go out at a later checkpoint.">
                 <Input
                   type="datetime-local"
                   value={scheduledFor}
                   onChange={(event) => setScheduledFor(event.target.value)}
                   className="rounded-2xl border-white/10 bg-white/[0.04] text-white"
                 />
-              </div>
+              </DetailBlock>
 
               <div className="rounded-[20px] border border-white/10 bg-white/[0.03] p-4">
                 <div className="flex items-start gap-3">
@@ -204,6 +221,28 @@ export function CommunicationComposer({
                 </div>
               </div>
 
+              {rendered ? (
+                <div className="rounded-[20px] border border-white/10 bg-white/[0.03] p-4">
+                  <div className="space-y-3">
+                    <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Resolved context</p>
+                    <div className="grid gap-3">
+                      {[
+                        ["Recipient", rendered.recipient],
+                        ["Client", rendered.variables.client_name],
+                        ["Matter", rendered.variables.case_name],
+                        ["Document", rendered.variables.document_name],
+                        ["Payment", rendered.variables.payment_amount],
+                      ].map(([label, value]) => (
+                        <div key={label} className="flex items-center justify-between gap-3 text-sm">
+                          <span className="text-slate-400">{label}</span>
+                          <span className="text-right text-white">{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
               {templateId ? (
                 <Button asChild variant="outline" className="w-full rounded-full border-white/10 bg-white/[0.03] text-white hover:bg-white/[0.06] hover:text-white">
                   <Link href={`/templates/${templateId}`}>Open template editor</Link>
@@ -215,29 +254,32 @@ export function CommunicationComposer({
           <div className="p-6">
             {rendered ? (
               <div className="space-y-5">
-                <div className="space-y-2">
-                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Subject</p>
+                <DetailBlock label="Subject">
                   <div className="rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white">
                     {rendered.subject}
                   </div>
-                </div>
+                </DetailBlock>
 
-                <div className="space-y-2">
-                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Preview text</p>
+                <DetailBlock label="Preview text">
                   <div className="rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-300">
                     {rendered.previewText}
                   </div>
-                </div>
+                </DetailBlock>
 
-                <div className="space-y-2">
-                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Rendered email</p>
+                <DetailBlock label="Rendered email" hint="This is the branded HTML version the client will see.">
                   <div className="max-h-[420px] overflow-auto rounded-[22px] border border-white/10 bg-[#f4f1ea] p-3">
                     <div
                       className="rounded-[18px] bg-white shadow-sm"
                       dangerouslySetInnerHTML={{ __html: rendered.htmlBody }}
                     />
                   </div>
-                </div>
+                </DetailBlock>
+
+                <DetailBlock label="Plain text version" hint="Used for mail clients that do not display the HTML layout.">
+                  <div className="rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-4">
+                    <pre className="whitespace-pre-wrap text-sm leading-7 text-slate-300">{rendered.textBody}</pre>
+                  </div>
+                </DetailBlock>
 
                 {result ? (
                   <div className="rounded-[18px] border border-emerald-300/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-50">

@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useMemo, useState } from "react"
+import { useMemo, useState, type ReactNode } from "react"
 import { Copy, Eye, MailPlus, Trash2 } from "lucide-react"
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
 import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
@@ -36,6 +36,26 @@ const categories: TemplateCategory[] = [
   "Consultation confirmation",
   "Application progress update",
 ]
+
+function FieldBlock({
+  label,
+  hint,
+  children,
+}: {
+  label: string
+  hint?: string
+  children: ReactNode
+}) {
+  return (
+    <div className="space-y-2.5">
+      <div className="space-y-1">
+        <p className="text-xs uppercase tracking-[0.18em] text-slate-400">{label}</p>
+        {hint ? <p className="text-sm leading-6 text-slate-300">{hint}</p> : null}
+      </div>
+      {children}
+    </div>
+  )
+}
 
 export default function TemplatesPage() {
   const { state, createTemplate, duplicateTemplate, deleteTemplate } = useCommunication()
@@ -76,25 +96,83 @@ export default function TemplatesPage() {
                   Create email template
                 </DialogTitle>
               </DialogHeader>
-              <div className="grid gap-4 md:grid-cols-2">
-                <Input value={name} onChange={(event) => setName(event.target.value)} className="rounded-2xl border-white/10 bg-white/[0.04] text-white" />
-                <Select value={category} onValueChange={(value) => setCategory(value as TemplateCategory)}>
-                  <SelectTrigger className="w-full rounded-2xl border-white/10 bg-white/[0.04] text-white">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="border-white/10 bg-[#233047] text-white">
-                    {categories.map((item) => (
-                      <SelectItem key={item} value={item}>
-                        {item}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="space-y-5">
+                <div className="grid gap-4 md:grid-cols-2">
+                  <FieldBlock label="Template name" hint="Use a clear internal name that teams can find quickly.">
+                    <Input
+                      value={name}
+                      onChange={(event) => setName(event.target.value)}
+                      className="rounded-2xl border-white/10 bg-white/[0.04] text-white"
+                    />
+                  </FieldBlock>
+                  <FieldBlock label="Category" hint="Attach the template to the workflow where it will be used.">
+                    <Select value={category} onValueChange={(value) => setCategory(value as TemplateCategory)}>
+                      <SelectTrigger className="w-full rounded-2xl border-white/10 bg-white/[0.04] text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="border-white/10 bg-[#233047] text-white">
+                        {categories.map((item) => (
+                          <SelectItem key={item} value={item}>
+                            {item}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FieldBlock>
+                </div>
+
+                <FieldBlock label="Subject line" hint="Keep this concise and specific to the client context.">
+                  <Input
+                    value={subject}
+                    onChange={(event) => setSubject(event.target.value)}
+                    className="rounded-2xl border-white/10 bg-white/[0.04] text-white"
+                  />
+                </FieldBlock>
+
+                <FieldBlock label="Preview text" hint="This appears as the short summary before the email is opened.">
+                  <Input
+                    value={previewText}
+                    onChange={(event) => setPreviewText(event.target.value)}
+                    className="rounded-2xl border-white/10 bg-white/[0.04] text-white"
+                  />
+                </FieldBlock>
+
+                <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+                  <FieldBlock label="HTML body" hint="Use branded copy and placeholders to keep the message ready for client use.">
+                    <Textarea
+                      value={htmlBody}
+                      onChange={(event) => setHtmlBody(event.target.value)}
+                      className="min-h-[200px] rounded-2xl border-white/10 bg-white/[0.04] text-white"
+                    />
+                  </FieldBlock>
+                  <div className="rounded-[22px] border border-white/10 bg-white/[0.03] px-5 py-5">
+                    <div className="space-y-2">
+                      <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Useful variables</p>
+                      <p className="text-sm leading-6 text-slate-300">
+                        Client, case, document, payment, quotation, and portal values are filled automatically when the template is opened from the relevant record.
+                      </p>
+                    </div>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {["{{client_name}}", "{{case_name}}", "{{document_name}}", "{{payment_due_date}}", "{{portal_link}}"].map((token) => (
+                        <span
+                          key={token}
+                          className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium text-slate-200"
+                        >
+                          {token}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <FieldBlock label="Plain text fallback" hint="Used for mail clients that cannot render the HTML version.">
+                  <Textarea
+                    value={textBody}
+                    onChange={(event) => setTextBody(event.target.value)}
+                    className="min-h-[140px] rounded-2xl border-white/10 bg-white/[0.04] text-white"
+                  />
+                </FieldBlock>
               </div>
-              <Input value={subject} onChange={(event) => setSubject(event.target.value)} className="rounded-2xl border-white/10 bg-white/[0.04] text-white" />
-              <Input value={previewText} onChange={(event) => setPreviewText(event.target.value)} className="rounded-2xl border-white/10 bg-white/[0.04] text-white" />
-              <Textarea value={htmlBody} onChange={(event) => setHtmlBody(event.target.value)} className="min-h-[180px] rounded-2xl border-white/10 bg-white/[0.04] text-white" />
-              <Textarea value={textBody} onChange={(event) => setTextBody(event.target.value)} className="min-h-[120px] rounded-2xl border-white/10 bg-white/[0.04] text-white" />
               <DialogFooter>
                 <Button variant="outline" className="rounded-full" onClick={() => setOpen(false)}>
                   Cancel
@@ -138,19 +216,39 @@ export default function TemplatesPage() {
         </CrmSectionCard>
       </div>
 
-      <CrmSectionCard
-        title="Template categories"
-        description="A quick read on where template coverage already exists."
-      >
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {groupedCounts.map((item) => (
-            <div key={item.label} className="rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-4">
-              <p className="text-xs uppercase tracking-[0.16em] text-slate-400">{item.label}</p>
-              <p className="mt-3 text-[1.9rem] font-semibold text-white">{item.value}</p>
-            </div>
-          ))}
-        </div>
-      </CrmSectionCard>
+      <div className="grid gap-5 xl:grid-cols-[1.15fr_0.85fr]">
+        <CrmSectionCard
+          title="Template categories"
+          description="A quick read on where coverage already exists and which reminders are ready for use."
+        >
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {groupedCounts.map((item) => (
+              <div key={item.label} className="rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-4">
+                <p className="text-xs uppercase tracking-[0.16em] text-slate-400">{item.label}</p>
+                <p className="mt-3 text-[1.9rem] font-semibold text-white">{item.value}</p>
+              </div>
+            ))}
+          </div>
+        </CrmSectionCard>
+
+        <CrmSectionCard
+          title="Library standards"
+          description="The same structure should hold across payment reminders, document requests, and progress updates."
+        >
+          <div className="space-y-3">
+            {[
+              "Keep subject lines specific to the client context.",
+              "Use preview text to explain the purpose before opening.",
+              "Keep body copy calm, short, and decisive.",
+              "Always include a clear next step or portal action.",
+            ].map((item) => (
+              <div key={item} className="rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-4 text-sm leading-6 text-slate-300">
+                {item}
+              </div>
+            ))}
+          </div>
+        </CrmSectionCard>
+      </div>
 
       <div className="grid gap-5 xl:grid-cols-2">
         {state.templates.map((template) => (
@@ -160,6 +258,12 @@ export default function TemplatesPage() {
             description={`${template.category} / last edited ${template.lastEdited}`}
           >
             <div className="space-y-4">
+              <div className="flex flex-wrap items-center gap-2">
+                <CrmStatusBadge status={template.category} className="border-white/10 bg-white/[0.06] text-white" />
+                <span className="text-sm text-slate-300">
+                  Last used {template.lastUsed ?? "not yet"}
+                </span>
+              </div>
               <div className="space-y-2 rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-4">
                 <p className="text-xs uppercase tracking-[0.16em] text-slate-400">Subject</p>
                 <p className="text-sm text-white">{template.subject}</p>

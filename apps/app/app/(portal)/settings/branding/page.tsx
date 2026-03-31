@@ -10,6 +10,7 @@ import { Button } from "@cbideal/ui/components/ui/button"
 import { Input } from "@cbideal/ui/components/ui/input"
 import {
   defaultBrandingSettings,
+  getBrandingUiTokens,
   normaliseBrandingSettings,
   useBranding,
   type BrandingSettings,
@@ -95,6 +96,7 @@ function ColorField({
           type="color"
           value={value}
           onChange={(event) => onChange(event.target.value)}
+          aria-label={label}
           className="h-11 w-14 rounded-xl border border-white/10 bg-transparent"
         />
         <Input
@@ -120,6 +122,7 @@ export default function BrandingSettingsPage() {
   }, [branding])
 
   const preview = normaliseBrandingSettings(draft)
+  const previewTokens = getBrandingUiTokens(preview)
 
   const handleFile =
     (field: keyof BrandingSettings) =>
@@ -314,7 +317,7 @@ export default function BrandingSettingsPage() {
                     className="rounded-2xl px-4 py-3 text-sm font-medium"
                     style={
                       index === 0
-                        ? { backgroundColor: preview.primaryColor, color: "#ffffff" }
+                        ? { backgroundColor: preview.primaryColor, color: previewTokens.onPrimary }
                         : { backgroundColor: "rgba(255,255,255,0.04)", color: "#c7d3e4" }
                     }
                   >
@@ -339,7 +342,7 @@ export default function BrandingSettingsPage() {
                   <button
                     type="button"
                     className="rounded-full px-5 py-2.5 text-sm font-semibold"
-                    style={{ backgroundColor: preview.primaryColor, color: "#ffffff" }}
+                    style={{ backgroundColor: preview.primaryColor, color: previewTokens.onPrimary }}
                   >
                     Primary action
                   </button>
@@ -395,7 +398,12 @@ export default function BrandingSettingsPage() {
                       className="h-10 w-auto max-w-[220px] object-contain object-left"
                     />
                   ) : (
-                    <p className="font-serif text-[2rem] tracking-[-0.04em] text-white">{preview.companyName}</p>
+                    <p
+                      className="font-serif text-[2rem] tracking-[-0.04em]"
+                      style={{ color: previewTokens.onPrimary }}
+                    >
+                      {preview.companyName}
+                    </p>
                   )}
                 </div>
                 <div className="space-y-4 px-6 py-6">
@@ -408,7 +416,7 @@ export default function BrandingSettingsPage() {
                   <button
                     type="button"
                     className="rounded-full px-5 py-2.5 text-sm font-semibold"
-                    style={{ backgroundColor: preview.primaryColor, color: "#ffffff" }}
+                    style={{ backgroundColor: preview.primaryColor, color: previewTokens.onPrimary }}
                   >
                     Open your portal
                   </button>

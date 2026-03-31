@@ -177,7 +177,7 @@ export default function ClientPortalPage() {
                     <div className="space-y-1">
                       <p className="text-[1.02rem] font-semibold text-white">{payment.label}</p>
                       <p className="text-sm text-slate-300">
-                        {payment.currency} {payment.amount.toLocaleString()} · due {payment.dueDate}
+                        {payment.currency} {payment.amount.toLocaleString()} � due {payment.dueDate}
                       </p>
                     </div>
                     <CrmStatusBadge status={payment.status} className="border-white/10 bg-white/[0.07] text-white" />
@@ -224,3 +224,4 @@ export default function ClientPortalPage() {
     </div>
   )
 }
+

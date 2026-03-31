@@ -24,20 +24,20 @@ export function AppBrand({
       <div className={cn("inline-flex flex-col gap-2", compact && "gap-1", className)}>
         <div
           className={cn(
-            "flex items-center overflow-hidden rounded-[22px] border border-white/10 bg-white/[0.04] px-3 py-2",
-            compact ? "max-w-[200px]" : "max-w-[220px]",
+            "flex items-center overflow-hidden rounded-[22px] border border-white/10 bg-white/[0.08] px-3 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]",
+            compact ? "min-h-[48px] max-w-[180px]" : "min-h-[60px] max-w-[220px]",
           )}
         >
           <img
             src={activeLogo}
             alt={name}
             className={cn(
-              "h-10 w-auto max-w-full object-contain object-left",
-              compact && "h-8",
+              "block w-auto max-w-full object-contain object-left",
+              compact ? "h-7 max-w-[150px]" : "h-9 max-w-[188px]",
             )}
           />
         </div>
-        {subtitle ? (
+        {subtitle && !compact ? (
           <span className="pl-1 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-200">
             {subtitle}
           </span>
@@ -47,16 +47,16 @@ export function AppBrand({
   }
 
   return (
-    <div className={cn("inline-flex flex-col leading-none", className)}>
+    <div className={cn("inline-flex max-w-[220px] flex-col leading-none", className)}>
       <span
         className={cn(
           "font-serif tracking-[-0.05em] text-white",
-          compact ? "text-[1.45rem] leading-tight" : "text-[2.35rem] leading-tight",
+          compact ? "text-[1.2rem] leading-tight" : "text-[2rem] leading-tight",
         )}
       >
         {name}
       </span>
-      {subtitle ? (
+      {subtitle && !compact ? (
         <span className="mt-2 pl-1 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-200">
           {subtitle}
         </span>

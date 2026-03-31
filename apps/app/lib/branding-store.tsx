@@ -182,10 +182,19 @@ function shade(hex: string, amount: number) {
   return rgbToHex(rgb.r, rgb.g, rgb.b)
 }
 
-function getReadableForeground(hex: string) {
+export function getReadableForeground(hex: string) {
   const { r, g, b } = hexToRgb(hex)
   const luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255
   return luminance > 0.58 ? "#132033" : "#ffffff"
+}
+
+export function getBrandingUiTokens(branding: BrandingSettings) {
+  return {
+    onPrimary: getReadableForeground(branding.primaryColor),
+    primaryStrong: shade(branding.primaryColor, -9),
+    surfaceTintSoft: withAlpha(branding.surfaceTint, 0.16),
+    surfaceTintStrong: withAlpha(branding.surfaceTint, 0.22),
+  }
 }
 
 function getInitials(name: string) {
@@ -340,19 +349,19 @@ function applyBrandingToDocument(branding: BrandingSettings) {
   if (typeof document === "undefined") return
 
   const root = document.documentElement
-  const onPrimary = getReadableForeground(branding.primaryColor)
+  const tokens = getBrandingUiTokens(branding)
 
   root.style.setProperty("--primary", branding.primaryColor)
-  root.style.setProperty("--primary-foreground", onPrimary)
+  root.style.setProperty("--primary-foreground", tokens.onPrimary)
   root.style.setProperty("--ring", branding.primaryColor)
   root.style.setProperty("--accent", branding.secondaryColor)
   root.style.setProperty("--secondary", branding.secondaryColor)
   root.style.setProperty("--app-brand-primary", branding.primaryColor)
-  root.style.setProperty("--app-brand-primary-strong", shade(branding.primaryColor, -9))
+  root.style.setProperty("--app-brand-primary-strong", tokens.primaryStrong)
   root.style.setProperty("--app-brand-secondary", branding.secondaryColor)
-  root.style.setProperty("--app-brand-surface-tint", withAlpha(branding.surfaceTint, 0.16))
-  root.style.setProperty("--app-brand-surface-tint-strong", withAlpha(branding.surfaceTint, 0.22))
-  root.style.setProperty("--app-brand-on-primary", onPrimary)
+  root.style.setProperty("--app-brand-surface-tint", tokens.surfaceTintSoft)
+  root.style.setProperty("--app-brand-surface-tint-strong", tokens.surfaceTintStrong)
+  root.style.setProperty("--app-brand-on-primary", tokens.onPrimary)
   root.style.setProperty("--app-brand-outline", withAlpha(branding.primaryColor, 0.22))
 
   let favicon = document.querySelector("link[rel='icon']") as HTMLLinkElement | null

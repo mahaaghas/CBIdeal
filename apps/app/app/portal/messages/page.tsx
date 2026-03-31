@@ -50,7 +50,7 @@ export default function PortalMessagesPage() {
                       <CrmStatusBadge status={item.status} />
                     </div>
                     <p className="text-sm leading-6 text-muted-foreground">
-                      {item.channel} · {item.sentAt}
+                      {item.channel} � {item.sentAt}
                     </p>
                   </div>
                 </div>
@@ -62,3 +62,4 @@ export default function PortalMessagesPage() {
     </div>
   )
 }
+

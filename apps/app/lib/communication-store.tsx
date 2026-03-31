@@ -18,7 +18,7 @@ import {
   type EmailTemplateRecord,
   type TemplateCategory,
 } from "@/lib/communication-data"
-import { useBranding } from "@/lib/branding-store"
+import { getBrandingUiTokens, useBranding } from "@/lib/branding-store"
 import { externalUsers, workspace } from "@/lib/mock-data"
 import { useWorkflow } from "@/lib/workflow-store"
 
@@ -153,6 +153,7 @@ export function CommunicationProvider({ children }: { children: ReactNode }) {
         ? `${payment.currency} ${payment.amount.toLocaleString()}`
         : "Payment amount"
       const recipient = externalUser?.email ?? `${context.clientId}@samplemail.com`
+      const tokens = getBrandingUiTokens(branding)
       const brandLogo = branding.darkLogoUrl || branding.companyLogoUrl
       const brandHeaderMarkup = brandLogo
         ? `<img src="${brandLogo}" alt="${branding.companyName}" style="display:block;max-width:220px;height:42px;width:auto;object-fit:contain;object-position:left;" />`
@@ -179,8 +180,8 @@ export function CommunicationProvider({ children }: { children: ReactNode }) {
         reply_to: state.integration.replyTo,
         recipient_email: recipient,
         brand_primary: branding.primaryColor,
-        brand_primary_strong: branding.primaryColor,
-        brand_on_primary: "#ffffff",
+        brand_primary_strong: tokens.primaryStrong,
+        brand_on_primary: tokens.onPrimary,
         brand_header_markup: brandHeaderMarkup,
       }
     }

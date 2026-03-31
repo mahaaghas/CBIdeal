@@ -1,4 +1,5 @@
 export { BrandMark } from "./components/brand-mark"
+export { AppBrand } from "./components/app-brand"
 export { CrmShell } from "./components/crm-shell"
 export { CrmPageHeader } from "./components/crm-page-header"
 export { CrmSectionCard } from "./components/crm-section-card"

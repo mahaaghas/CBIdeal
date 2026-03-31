@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { type ReactNode } from "react"
 import { Mail, PlugZap, Send, ShieldCheck } from "lucide-react"
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
@@ -7,6 +8,7 @@ import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
 import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
 import { Button } from "@cbideal/ui/components/ui/button"
 import { Input } from "@cbideal/ui/components/ui/input"
+import { useBranding } from "@/lib/branding-store"
 import { useCommunication } from "@/lib/communication-store"
 
 function FieldBlock({
@@ -31,6 +33,7 @@ function FieldBlock({
 
 export default function EmailSettingsPage() {
   const { state, updateEmailIntegration, testEmailIntegration } = useCommunication()
+  const { branding } = useBranding()
 
   return (
     <div className="space-y-8">
@@ -107,16 +110,21 @@ export default function EmailSettingsPage() {
 
         <CrmSectionCard
           title="Sender identity"
-          description="Set the sender name, mailbox, and reply-to details used by template actions."
+          description="Mailbox and reply settings live here, while the branded sender name is managed in workspace branding."
         >
           <div className="space-y-4">
-            <FieldBlock label="Sender name" hint="This is the name clients see in their inbox and history.">
-              <Input
-                value={state.integration.senderName}
-                onChange={(event) => updateEmailIntegration({ senderName: event.target.value })}
-                className="rounded-2xl border-white/10 bg-white/[0.04] text-white"
-              />
-            </FieldBlock>
+            <div className="rounded-[20px] border border-white/10 bg-white/[0.03] px-4 py-4">
+              <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Branded sender name</p>
+              <p className="mt-2 text-sm font-medium text-white">{branding.senderDisplayName}</p>
+              <p className="mt-2 text-sm leading-6 text-slate-300">
+                Update the visible sender name, logo, and accent colours from the branding settings area.
+              </p>
+              <div className="mt-3">
+                <Button asChild variant="outline" className="rounded-full">
+                  <Link href="/settings/branding">Open branding</Link>
+                </Button>
+              </div>
+            </div>
             <FieldBlock label="Sender mailbox" hint="Prepared drafts and logged sends use this address.">
               <Input
                 value={state.integration.senderMailbox}

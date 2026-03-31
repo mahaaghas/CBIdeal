@@ -9,6 +9,7 @@
     "./hooks/use-toast": "./src/hooks/use-toast.ts",
     "./components/ui/*": "./src/components/ui/*.tsx",
     "./components/brand-mark": "./src/components/brand-mark.tsx",
+    "./components/app-brand": "./src/components/app-brand.tsx",
     "./components/crm-shell": "./src/components/crm-shell.tsx",
     "./components/crm-page-header": "./src/components/crm-page-header.tsx",
     "./components/crm-stat-card": "./src/components/crm-stat-card.tsx",

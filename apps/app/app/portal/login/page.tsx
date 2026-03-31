@@ -1,14 +1,26 @@
+"use client"
+
 import { LockKeyhole, ShieldCheck } from "lucide-react"
+import { AppBrand } from "@cbideal/ui/components/app-brand"
 import { Button } from "@cbideal/ui/components/ui/button"
 import { Card, CardContent } from "@cbideal/ui/components/ui/card"
 import { Input } from "@cbideal/ui/components/ui/input"
+import { useBranding } from "@/lib/branding-store"
 
 export default function ClientPortalLoginPage() {
+  const { branding } = useBranding()
+
   return (
     <div className="mx-auto max-w-2xl py-8 md:py-12">
       <Card className="section-card overflow-hidden">
         <CardContent className="grid gap-0 lg:grid-cols-[0.92fr_1.08fr]">
           <div className="hero-panel card-stack rounded-none p-6 md:p-8">
+            <AppBrand
+              name={branding.companyName}
+              subtitle="Client portal"
+              logoUrl={branding.companyLogoUrl}
+              darkLogoUrl={branding.darkLogoUrl}
+            />
             <span className="eyebrow border-white/16 bg-white/[0.06] text-primary-foreground/75">
               Client sign in
             </span>

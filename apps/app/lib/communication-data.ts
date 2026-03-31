@@ -61,8 +61,8 @@ const shell = (headline: string, body: string, ctaLabel = "Open your portal", ct
     <td align="center">
       <table role="presentation" width="640" cellpadding="0" cellspacing="0" style="width:640px;max-width:640px;background:#ffffff;border-radius:20px;overflow:hidden;">
         <tr>
-          <td style="background:#223047;padding:24px 32px;">
-            <div style="font-family:Cormorant Garamond,Georgia,serif;font-size:32px;line-height:1.05;color:#ffffff;">CBI Deal</div>
+          <td style="background:{{brand_primary_strong}};padding:24px 32px;">
+            <div>{{brand_header_markup}}</div>
             <div style="margin-top:10px;font-size:12px;letter-spacing:0.24em;text-transform:uppercase;color:#d7dce6;">Private client communication</div>
           </td>
         </tr>
@@ -71,7 +71,7 @@ const shell = (headline: string, body: string, ctaLabel = "Open your portal", ct
             <h1 style="margin:0 0 16px;font-family:Cormorant Garamond,Georgia,serif;font-size:34px;line-height:1.08;color:#223047;">${headline}</h1>
             <div style="font-size:16px;line-height:1.8;color:#4e5a6f;">${body}</div>
             <div style="margin-top:28px;">
-              <a href="${ctaHref}" style="display:inline-block;background:#223047;color:#ffffff;text-decoration:none;padding:13px 22px;border-radius:999px;font-size:14px;font-weight:600;">${ctaLabel}</a>
+              <a href="${ctaHref}" style="display:inline-block;background:{{brand_primary}};color:{{brand_on_primary}};text-decoration:none;padding:13px 22px;border-radius:999px;font-size:14px;font-weight:600;">${ctaLabel}</a>
             </div>
             <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e7ebf2;font-size:13px;line-height:1.8;color:#66728a;">
               {{sender_name}}<br/>

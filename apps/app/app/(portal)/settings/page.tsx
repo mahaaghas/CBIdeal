@@ -1,14 +1,19 @@
+"use client"
+
 import Link from "next/link"
 import { saasPricingModel } from "@cbideal/config/pricing"
-import { BellRing, Building2, CreditCard, Users } from "lucide-react"
+import { BellRing, Building2, CreditCard, Palette, Users } from "lucide-react"
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
 import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
 import { CrmStatCard } from "@cbideal/ui/components/crm-stat-card"
 import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
 import { Button } from "@cbideal/ui/components/ui/button"
+import { useBranding } from "@/lib/branding-store"
 import { pricingSnapshot, reminderSettings, workspace } from "@/lib/mock-data"
 
 export default function SettingsPage() {
+  const { branding } = useBranding()
+
   return (
     <div className="section-stack">
       <CrmPageHeader
@@ -47,11 +52,17 @@ export default function SettingsPage() {
                   <Building2 className="size-4" />
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">{workspace.workspaceName}</p>
+                  <p className="text-sm font-medium text-foreground">{branding.companyName}</p>
                   <p className="text-sm leading-6 text-muted-foreground">Tenant ID: {workspace.tenantId}</p>
                 </div>
               </div>
             </div>
+            <Button asChild variant="outline" className="rounded-full">
+              <Link href="/settings/branding">
+                <Palette className="size-4" />
+                Open branding
+              </Link>
+            </Button>
           </div>
         </CrmSectionCard>
 
@@ -126,9 +137,14 @@ export default function SettingsPage() {
           ))}
         </div>
         <div className="pt-2">
-          <Button asChild variant="outline" className="rounded-full">
-            <Link href="/settings/email">Open email settings</Link>
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline" className="rounded-full">
+              <Link href="/settings/email">Open email settings</Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full">
+              <Link href="/settings/branding">Open branding</Link>
+            </Button>
+          </div>
         </div>
       </CrmSectionCard>
 

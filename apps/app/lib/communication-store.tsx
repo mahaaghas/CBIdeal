@@ -18,6 +18,7 @@ import {
   type EmailTemplateRecord,
   type TemplateCategory,
 } from "@/lib/communication-data"
+import { useBranding } from "@/lib/branding-store"
 import { externalUsers, workspace } from "@/lib/mock-data"
 import { useWorkflow } from "@/lib/workflow-store"
 
@@ -89,6 +90,7 @@ function replaceTokens(input: string, variables: Record<string, string>) {
 }
 
 export function CommunicationProvider({ children }: { children: ReactNode }) {
+  const { branding } = useBranding()
   const workflow = useWorkflow()
   const [state, setState] = useState<CommunicationState>({
     templates: clone(initialTemplates),
@@ -151,10 +153,14 @@ export function CommunicationProvider({ children }: { children: ReactNode }) {
         ? `${payment.currency} ${payment.amount.toLocaleString()}`
         : "Payment amount"
       const recipient = externalUser?.email ?? `${context.clientId}@samplemail.com`
+      const brandLogo = branding.darkLogoUrl || branding.companyLogoUrl
+      const brandHeaderMarkup = brandLogo
+        ? `<img src="${brandLogo}" alt="${branding.companyName}" style="display:block;max-width:220px;height:42px;width:auto;object-fit:contain;object-position:left;" />`
+        : `<div style="font-family:Cormorant Garamond,Georgia,serif;font-size:32px;line-height:1.05;color:#ffffff;">${branding.companyName}</div>`
 
       return {
         client_name: clientName,
-        company_name: workspace.firmName,
+        company_name: branding.companyName,
         account_manager_name:
           caseRecord?.owner ?? quotation?.owner ?? clientDetail?.owner ?? client?.owner ?? "Account manager",
         document_name: checklistItem?.item ?? "document",
@@ -169,9 +175,13 @@ export function CommunicationProvider({ children }: { children: ReactNode }) {
         portal_link: `https://${workspace.appHost}/portal`,
         upload_link: `https://${workspace.appHost}/portal/documents`,
         case_name: caseRecord?.route ?? quotation?.client ?? clientName,
-        sender_name: state.integration.senderName,
+        sender_name: branding.senderDisplayName,
         reply_to: state.integration.replyTo,
         recipient_email: recipient,
+        brand_primary: branding.primaryColor,
+        brand_primary_strong: branding.primaryColor,
+        brand_on_primary: "#ffffff",
+        brand_header_markup: brandHeaderMarkup,
       }
     }
 
@@ -292,7 +302,7 @@ export function CommunicationProvider({ children }: { children: ReactNode }) {
             previewText: rendered.previewText,
             renderedHtml: rendered.htmlBody,
             renderedText: rendered.textBody,
-            sender: `${current.integration.senderName} <${current.integration.senderMailbox}>`,
+            sender: `${branding.senderDisplayName} <${current.integration.senderMailbox}>`,
             recipient: rendered.recipient,
             createdAt: formatDateTime(),
             scheduledFor: input.scheduledFor ?? null,
@@ -351,7 +361,7 @@ export function CommunicationProvider({ children }: { children: ReactNode }) {
       updateEmailIntegration,
       testEmailIntegration,
     }
-  }, [state, workflow])
+  }, [branding, state, workflow])
 
   return <CommunicationContext.Provider value={value}>{children}</CommunicationContext.Provider>
 }

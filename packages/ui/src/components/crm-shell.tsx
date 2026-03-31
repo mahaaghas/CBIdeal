@@ -20,6 +20,7 @@ import {
   Users,
 } from "lucide-react"
 import { cn } from "../lib/utils"
+import { AppBrand } from "./app-brand"
 
 const navigation = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
@@ -39,12 +40,20 @@ interface CrmShellProps {
   children: ReactNode
   notificationCount?: number
   profileInitials?: string
+  brandName?: string
+  brandLogoUrl?: string | null
+  brandDarkLogoUrl?: string | null
+  brandSubtitle?: string
 }
 
 export function CrmShell({
   children,
   notificationCount = 3,
   profileInitials = "AD",
+  brandName = "CBI Deal Advisory",
+  brandLogoUrl,
+  brandDarkLogoUrl,
+  brandSubtitle = "Advisory workspace",
 }: CrmShellProps) {
   const pathname = usePathname()
 
@@ -53,11 +62,13 @@ export function CrmShell({
       <div className="grid min-h-screen xl:grid-cols-[244px_minmax(0,1fr)]">
         <aside className="app-sidebar hidden xl:flex xl:flex-col">
           <div className="app-sidebar-brand px-8 py-7">
-            <Link href="/dashboard" className="inline-flex flex-col leading-none">
-              <span className="font-serif text-[3.1rem] tracking-[-0.05em] text-white">CBI</span>
-              <span className="mt-2 pl-1 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-200">
-                Deal Platform
-              </span>
+            <Link href="/dashboard">
+              <AppBrand
+                name={brandName}
+                subtitle={brandSubtitle}
+                logoUrl={brandLogoUrl}
+                darkLogoUrl={brandDarkLogoUrl}
+              />
             </Link>
           </div>
 
@@ -106,7 +117,13 @@ export function CrmShell({
           <div className="mx-auto flex min-h-full w-full max-w-[1280px] flex-col gap-6">
             <header className="flex items-center justify-between xl:justify-end">
               <Link href="/dashboard" className="xl:hidden">
-                <span className="font-serif text-[2.2rem] tracking-[-0.05em] text-white">CBI Deal</span>
+                <AppBrand
+                  name={brandName}
+                  subtitle={brandSubtitle}
+                  logoUrl={brandLogoUrl}
+                  darkLogoUrl={brandDarkLogoUrl}
+                  compact
+                />
               </Link>
 
               <div className="flex items-center gap-3">

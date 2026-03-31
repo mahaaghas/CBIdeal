@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Cormorant_Garamond, Manrope } from "next/font/google"
 import "@cbideal/config/globals.css"
 import "./app-globals.css"
+import { BrandingProvider } from "@/lib/branding-store"
 import { CommunicationProvider } from "@/lib/communication-store"
 import { WorkflowProvider } from "@/lib/workflow-store"
 
@@ -31,9 +32,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className={`app-workspace ${manrope.variable} ${cormorant.variable} font-sans antialiased`}>
-        <WorkflowProvider>
-          <CommunicationProvider>{children}</CommunicationProvider>
-        </WorkflowProvider>
+        <BrandingProvider>
+          <WorkflowProvider>
+            <CommunicationProvider>{children}</CommunicationProvider>
+          </WorkflowProvider>
+        </BrandingProvider>
       </body>
     </html>
   )

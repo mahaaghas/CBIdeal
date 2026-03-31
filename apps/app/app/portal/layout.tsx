@@ -4,6 +4,8 @@ import type { ReactNode } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Bell, CreditCard, FileStack, FolderKanban, LogOut, Settings } from "lucide-react"
+import { AppBrand } from "@cbideal/ui/components/app-brand"
+import { useBranding } from "@/lib/branding-store"
 import { useWorkflow } from "@/lib/workflow-store"
 
 const portalNavigation = [
@@ -16,6 +18,7 @@ const portalNavigation = [
 
 export default function ClientPortalLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
+  const { branding } = useBranding()
   const { currentPortalClientId, getClientDetail, getNotificationsForClient } = useWorkflow()
   const client = getClientDetail(currentPortalClientId)
   const initials = client?.name
@@ -33,11 +36,13 @@ export default function ClientPortalLayout({ children }: { children: ReactNode }
       <div className="grid min-h-screen xl:grid-cols-[244px_minmax(0,1fr)]">
         <aside className="app-sidebar hidden xl:flex xl:flex-col">
           <div className="app-sidebar-brand px-8 py-7">
-            <Link href="/portal" className="inline-flex flex-col leading-none">
-              <span className="font-serif text-[3.1rem] tracking-[-0.05em] text-white">CBI</span>
-              <span className="mt-2 pl-1 text-[0.72rem] font-semibold uppercase tracking-[0.28em] text-slate-200">
-                Client Portal
-              </span>
+            <Link href="/portal">
+              <AppBrand
+                name={branding.companyName}
+                subtitle="Client portal"
+                logoUrl={branding.companyLogoUrl}
+                darkLogoUrl={branding.darkLogoUrl}
+              />
             </Link>
           </div>
 
@@ -74,7 +79,13 @@ export default function ClientPortalLayout({ children }: { children: ReactNode }
           <div className="mx-auto flex min-h-full w-full max-w-[1280px] flex-col gap-6">
             <header className="flex items-center justify-between xl:justify-end">
               <Link href="/portal" className="xl:hidden">
-                <span className="font-serif text-[2.2rem] tracking-[-0.05em] text-white">CBI Deal</span>
+                <AppBrand
+                  name={branding.companyName}
+                  subtitle="Client portal"
+                  logoUrl={branding.companyLogoUrl}
+                  darkLogoUrl={branding.darkLogoUrl}
+                  compact
+                />
               </Link>
 
               <div className="flex items-center gap-3">

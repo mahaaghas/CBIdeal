@@ -6,6 +6,7 @@ import { getRequestDirection, getRequestLocale } from "@/lib/i18n/request"
 import { getConversionCtaCopy } from "@/lib/conversion"
 import { getMessages } from "@/lib/i18n/messages"
 import { getLocalizedMainNavLinks, getLocalizedRouteLinks } from "@/lib/site"
+import { siteConfig } from "@/lib/site-config"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -17,6 +18,7 @@ export function SiteHeader() {
   const mainNavLinks = getLocalizedMainNavLinks(locale)
   const routeLinks = getLocalizedRouteLinks(locale)
   const conversionCopy = getConversionCtaCopy(locale)
+  const appLoginLabel = locale === "ar" ? "تسجيل الدخول" : locale === "ru" ? "Войти" : "Login"
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-xl">
@@ -49,8 +51,8 @@ export function SiteHeader() {
                   {conversionCopy.primary}
                 </Link>
               </Button>
-              <Link href={routeLinks.insights} className="quiet-link hidden xl:inline-flex">
-                {conversionCopy.tertiary}
+              <Link href={siteConfig.saas.loginUrl} className="quiet-link hidden xl:inline-flex">
+                {appLoginLabel}
               </Link>
             </div>
           </div>

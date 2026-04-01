@@ -159,17 +159,48 @@ export default function CitizenshipByInvestmentPage() {
           },
         ]}
         highlightsLabel="Why serious investors use this page"
-        aside={
-          <LocalizedLandingLeadForm
-            locale={locale}
-            title="Request a private consultation"
-            description="Share the basics and we will help you understand which routes deserve a closer look before the conversation becomes more formal."
-            submitLabel="Request a private consultation"
-            sourceCategory="pillar"
-            sourcePage="citizenship-by-investment"
-          />
-        }
       />
+
+      <section className="section-padding pt-0">
+        <div className="container-shell">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-start">
+            <Card className="section-card border-0 shadow-none">
+              <CardContent className="space-y-6 p-7 md:p-8 lg:p-9">
+                <span className="eyebrow">Private advisory intake</span>
+                <div className="space-y-3">
+                  <h2 className="section-title max-w-[16ch]">
+                    Request a more considered review once the shortlist starts to make sense.
+                  </h2>
+                  <p className="max-w-[34rem] text-base leading-8 text-muted-foreground">
+                    This intake is designed for investors who want to move beyond general reading and into a calmer first conversation shaped around profile, timing, and route fit.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  {[
+                    "Useful once you have moved past general curiosity and want a more private next step.",
+                    "Structured to clarify profile, residence, family scope, budget, and timing before a reply is arranged.",
+                    "Reviewed discreetly so the next conversation starts from context instead of repeating the basics.",
+                  ].map((item) => (
+                    <div key={item} className="rounded-[22px] bg-background px-5 py-5">
+                      <p className="text-sm leading-7 text-muted-foreground">{item}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            <LocalizedLandingLeadForm
+              locale={locale}
+              title="Request a private consultation"
+              description="Share the basics and we will help you understand which routes deserve a closer look before the conversation becomes more formal."
+              submitLabel="Request a private consultation"
+              sourceCategory="pillar"
+              sourcePage="citizenship-by-investment"
+            />
+          </div>
+        </div>
+      </section>
 
       <section className="section-padding pt-0">
         <div className="container-shell space-y-10">

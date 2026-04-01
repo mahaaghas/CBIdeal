@@ -49,10 +49,10 @@ export function DocumentReviewControls({
             Reject
           </Button>
         </DialogTrigger>
-        <DialogContent className="rounded-[24px] border-white/10 bg-[#233047] text-white">
+        <DialogContent className="app-dialog-panel text-white">
           <DialogHeader>
             <DialogTitle>Return document for re-upload</DialogTitle>
-            <DialogDescription className="text-slate-300">
+            <DialogDescription className="app-type-caption">
               Add a clear reason for returning {itemLabel.toLowerCase()}. The client update and email placeholder will be created automatically.
             </DialogDescription>
           </DialogHeader>
@@ -61,7 +61,7 @@ export function DocumentReviewControls({
             value={reason}
             onChange={(event) => setReason(event.target.value)}
             placeholder="Explain what needs to be corrected or re-uploaded."
-            className="min-h-28 rounded-2xl border-white/10 bg-white/[0.04] text-white placeholder:text-slate-400"
+            className="app-textarea min-h-28"
           />
 
           <DialogFooter>
@@ -123,10 +123,10 @@ export function PaymentReviewControls({
             Reject
           </Button>
         </DialogTrigger>
-        <DialogContent className="rounded-[24px] border-white/10 bg-[#233047] text-white">
+        <DialogContent className="app-dialog-panel text-white">
           <DialogHeader>
             <DialogTitle>Reject payment proof</DialogTitle>
-            <DialogDescription className="text-slate-300">
+            <DialogDescription className="app-type-caption">
               Add the reason for returning the proof on {paymentLabel.toLowerCase()}. The portal notice and email placeholder will update immediately.
             </DialogDescription>
           </DialogHeader>
@@ -135,7 +135,7 @@ export function PaymentReviewControls({
             value={reason}
             onChange={(event) => setReason(event.target.value)}
             placeholder="Explain what is missing from the proof of payment."
-            className="min-h-28 rounded-2xl border-white/10 bg-white/[0.04] text-white placeholder:text-slate-400"
+            className="app-textarea min-h-28"
           />
 
           <DialogFooter>
@@ -190,10 +190,10 @@ export function DocumentUploadControl({
           {label}
         </Button>
       </DialogTrigger>
-      <DialogContent className="rounded-[24px] border-white/10 bg-[#233047] text-white">
+      <DialogContent className="app-dialog-panel text-white">
         <DialogHeader>
           <DialogTitle>Upload document</DialogTitle>
-          <DialogDescription className="text-slate-300">
+          <DialogDescription className="app-type-caption">
             Add the file name for {itemLabel.toLowerCase()}. This will move the item into review and notify the assigned account manager.
           </DialogDescription>
         </DialogHeader>
@@ -202,7 +202,7 @@ export function DocumentUploadControl({
           value={fileName}
           onChange={(event) => setFileName(event.target.value)}
           placeholder="example-file.pdf"
-          className="rounded-2xl border-white/10 bg-white/[0.04] text-white placeholder:text-slate-400"
+          className="app-field"
         />
 
         <DialogFooter>
@@ -253,10 +253,10 @@ export function PaymentProofUploadControl({
           {triggerLabel}
         </Button>
       </DialogTrigger>
-      <DialogContent className="rounded-[24px] border-white/10 bg-[#233047] text-white">
+      <DialogContent className="app-dialog-panel text-white">
         <DialogHeader>
           <DialogTitle>Upload proof of payment</DialogTitle>
-          <DialogDescription className="text-slate-300">
+          <DialogDescription className="app-type-caption">
             Add the file name for {paymentLabel.toLowerCase()}. The payment stage will move into review and the account manager will be notified.
           </DialogDescription>
         </DialogHeader>
@@ -265,7 +265,7 @@ export function PaymentProofUploadControl({
           value={fileName}
           onChange={(event) => setFileName(event.target.value)}
           placeholder="wire-confirmation.pdf"
-          className="rounded-2xl border-white/10 bg-white/[0.04] text-white placeholder:text-slate-400"
+          className="app-field"
         />
 
         <DialogFooter>

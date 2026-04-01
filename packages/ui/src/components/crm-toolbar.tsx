@@ -20,7 +20,7 @@ export function CrmToolbar({
 }: CrmToolbarProps) {
   return (
     <div className={cn("flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between", className)}>
-      <div className="flex w-full max-w-md items-center gap-3 rounded-full border border-border/70 bg-background px-4 py-2.5 shadow-sm">
+      <div className="app-search flex w-full max-w-md items-center gap-3 rounded-full px-4 py-2.5 shadow-sm">
         <Search className="size-4 text-muted-foreground" />
         <Input
           aria-label={searchPlaceholder}

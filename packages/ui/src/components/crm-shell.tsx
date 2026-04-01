@@ -141,7 +141,7 @@ export function CrmShell({
                   >
                     <Bell className="size-5" />
                     {notificationCount > 0 ? (
-                      <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full bg-[#f04f4f] text-[0.68rem] font-semibold text-white">
+                      <span className="app-notification-count absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full text-[0.68rem] font-semibold">
                         {notificationCount}
                       </span>
                     ) : null}

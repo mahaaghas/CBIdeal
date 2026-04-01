@@ -17,10 +17,10 @@ export function CrmSectionCard({
 }: CrmSectionCardProps) {
   return (
     <Card className={cn("section-card h-full", className)}>
-      <CardContent className="card-stack p-5 md:p-6">
+      <CardContent className="card-stack p-6">
         <div className="space-y-2">
-          <h2 className="card-title text-foreground">{title}</h2>
-          {description ? <p className="fine-print">{description}</p> : null}
+          <h2 className="app-type-title">{title}</h2>
+          {description ? <p className="app-type-caption">{description}</p> : null}
         </div>
         <div className="space-y-4">{children}</div>
       </CardContent>

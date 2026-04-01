@@ -106,16 +106,16 @@ function QuotationLineEditor({
   onChange: (items: BuilderLineItem[]) => void
 }) {
   return (
-    <div className="app-subtle-card rounded-[22px] px-5 py-5">
+    <div className="app-subtle-card rounded-[22px] px-6 py-6">
       <div className="space-y-4">
         <div className="space-y-2">
           <p className="text-sm font-semibold text-white">{title}</p>
-          <p className="text-sm leading-6 text-slate-300">{description}</p>
+          <p className="app-type-caption text-sm">{description}</p>
         </div>
 
         <div className="space-y-3">
           {items.map((item) => (
-            <div key={item.id} className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4">
+            <div key={item.id} className="app-note-panel">
               <div className="grid gap-3 md:grid-cols-[minmax(0,1.3fr)_0.55fr_0.7fr_auto]">
                 <Input
                   value={item.label}
@@ -127,7 +127,7 @@ function QuotationLineEditor({
                     )
                   }
                   placeholder="Line item description"
-                  className="border-white/10 bg-white/[0.04] text-white placeholder:text-slate-400"
+                  className="app-field"
                 />
                 <Input
                   type="number"
@@ -143,7 +143,7 @@ function QuotationLineEditor({
                     )
                   }
                   placeholder="Qty"
-                  className="border-white/10 bg-white/[0.04] text-white placeholder:text-slate-400"
+                  className="app-field"
                 />
                 <Input
                   type="number"
@@ -160,14 +160,14 @@ function QuotationLineEditor({
                     )
                   }
                   placeholder="Amount"
-                  className="border-white/10 bg-white/[0.04] text-white placeholder:text-slate-400"
+                  className="app-field"
                 />
                 <div className="flex items-center justify-between gap-3 md:justify-end">
                   <p className="text-sm font-semibold text-white">{lineTotal(item).toLocaleString()}</p>
                   <Button
                     type="button"
                     variant="ghost"
-                    className="rounded-full text-slate-200 hover:bg-white/[0.08] hover:text-white"
+                    className="rounded-full text-[var(--text-secondary)] hover:bg-white/[0.08] hover:text-white"
                     onClick={() => onChange(items.filter((entry) => entry.id !== item.id))}
                     disabled={items.length === 1}
                   >
@@ -308,10 +308,10 @@ export function QuotationWorkflow({
       </Button>
 
       <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
-        <DialogContent className="app-surface max-w-3xl border-white/10 p-0 text-white">
-          <DialogHeader className="border-b border-white/8 px-6 py-6 text-left">
-            <DialogTitle className="font-serif text-[2rem] tracking-[-0.03em] text-white">Select a client</DialogTitle>
-            <DialogDescription className="max-w-2xl text-sm leading-7 text-slate-300">
+        <DialogContent className="app-dialog-panel max-w-3xl p-0 text-white">
+          <DialogHeader className="app-panel-header text-left">
+            <DialogTitle className="app-type-title">Select a client</DialogTitle>
+            <DialogDescription className="app-type-body max-w-2xl text-sm">
               Choose an existing client to start a quotation, or move into the new client flow first if the record has not yet been opened.
             </DialogDescription>
           </DialogHeader>
@@ -323,18 +323,18 @@ export function QuotationWorkflow({
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search client, region, route, or account manager"
-                className="h-12 rounded-2xl border-white/10 bg-white/[0.04] pl-11 text-white placeholder:text-slate-400"
+                className="app-field h-12 pl-11"
               />
             </div>
 
             <div className="grid gap-3">
               <Link
                 href="/clients?create=new&returnTo=/quotations"
-                className="app-subtle-card-strong flex items-center justify-between rounded-[22px] px-5 py-5 transition-colors hover:bg-white/[0.08]"
+                className="app-subtle-card-strong app-interactive-card flex items-center justify-between rounded-[22px] px-6 py-6"
               >
                 <div className="space-y-1">
                   <p className="text-base font-semibold text-white">+ New client</p>
-                  <p className="text-sm leading-6 text-slate-300">Open the client creation flow before preparing a new quotation.</p>
+                  <p className="app-type-caption text-sm">Open the client creation flow before preparing a new quotation.</p>
                 </div>
                 <Plus className="size-4 text-white" />
               </Link>
@@ -348,19 +348,19 @@ export function QuotationWorkflow({
                     type="button"
                     onClick={() => openBuilderForClient(client.id)}
                     className={cn(
-                      "app-subtle-card rounded-[22px] px-5 py-5 text-left transition-colors hover:bg-white/[0.07]",
+                      "app-subtle-card app-interactive-card rounded-[22px] px-6 py-6 text-left",
                       selectedClientId === client.id && "border-[var(--app-brand-outline)] bg-white/[0.07]",
                     )}
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="space-y-2">
                         <p className="text-base font-semibold text-white">{client.name}</p>
-                        <p className="text-sm leading-6 text-slate-300">{detail?.summary ?? client.summary}</p>
-                        <p className="text-sm leading-6 text-slate-300">
+                        <p className="app-type-caption text-sm">{detail?.summary ?? client.summary}</p>
+                        <p className="app-type-caption text-sm">
                           {caseRecord?.route ?? client.context} / {client.owner}
                         </p>
                       </div>
-                      <span className="rounded-full bg-white/[0.08] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-200">
+                      <span className="app-pill-count text-xs uppercase tracking-[0.18em]">
                         {client.type}
                       </span>
                     </div>
@@ -373,10 +373,10 @@ export function QuotationWorkflow({
       </Dialog>
 
       <Dialog open={builderOpen} onOpenChange={setBuilderOpen}>
-        <DialogContent className="app-surface max-h-[92vh] max-w-[1180px] overflow-y-auto border-white/10 p-0 text-white">
-          <DialogHeader className="border-b border-white/8 px-6 py-6 text-left">
-            <DialogTitle className="font-serif text-[2rem] tracking-[-0.03em] text-white">Quotation builder</DialogTitle>
-            <DialogDescription className="max-w-3xl text-sm leading-7 text-slate-300">
+        <DialogContent className="app-dialog-panel max-h-[92vh] max-w-[1180px] overflow-y-auto p-0 text-white">
+          <DialogHeader className="app-panel-header text-left">
+            <DialogTitle className="app-type-title">Quotation builder</DialogTitle>
+            <DialogDescription className="app-type-body max-w-3xl text-sm">
               Build a quotation around the selected client, route, and fee structure. Totals update live as scope, discount, and VAT are adjusted.
             </DialogDescription>
           </DialogHeader>
@@ -384,17 +384,17 @@ export function QuotationWorkflow({
           {selectedClient && builder ? (
             <div className="grid gap-6 px-6 py-6 xl:grid-cols-[1.08fr_0.92fr]">
               <div className="space-y-5">
-                <div className="app-subtle-card-strong rounded-[22px] px-5 py-5">
+                <div className="app-subtle-card-strong rounded-[22px] px-6 py-6">
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="space-y-2">
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Selected client</p>
+                      <p className="app-type-overline">Selected client</p>
                       <p className="text-base font-semibold text-white">{selectedClient.name}</p>
-                      <p className="text-sm leading-6 text-slate-300">{selectedDetail?.summary ?? selectedClient.summary}</p>
+                      <p className="app-type-caption text-sm">{selectedDetail?.summary ?? selectedClient.summary}</p>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Case context</p>
-                      <p className="text-sm font-medium text-slate-100">{selectedCase?.route ?? selectedClient.context}</p>
-                      <p className="text-sm leading-6 text-slate-300">{selectedClient.region}</p>
+                      <p className="app-type-overline">Case context</p>
+                      <p className="text-sm font-medium text-[var(--text-primary)]">{selectedCase?.route ?? selectedClient.context}</p>
+                      <p className="app-type-caption text-sm">{selectedClient.region}</p>
                     </div>
                   </div>
                 </div>
@@ -405,12 +405,12 @@ export function QuotationWorkflow({
                     <Input
                       value={builder.title}
                       onChange={(event) => setBuilder((current) => current ? { ...current, title: event.target.value } : current)}
-                      className="h-12 rounded-2xl border-white/10 bg-white/[0.04] text-white"
+                      className="app-field h-12"
                     />
                   </div>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-slate-200">Quotation ID</label>
-                    <div className="flex h-12 items-center rounded-2xl border border-white/10 bg-white/[0.04] px-4 text-sm text-slate-300">
+                    <div className="app-field flex h-12 items-center px-4 text-sm text-[var(--text-muted)]">
                       Assigned on save
                     </div>
                   </div>
@@ -420,7 +420,7 @@ export function QuotationWorkflow({
                       type="date"
                       value={builder.quotationDate}
                       onChange={(event) => setBuilder((current) => current ? { ...current, quotationDate: event.target.value } : current)}
-                      className="h-12 rounded-2xl border-white/10 bg-white/[0.04] text-white"
+                      className="app-field h-12"
                     />
                   </div>
                   <div className="space-y-2">
@@ -428,7 +428,7 @@ export function QuotationWorkflow({
                     <select
                       value={builder.advisorName}
                       onChange={(event) => setBuilder((current) => current ? { ...current, advisorName: event.target.value } : current)}
-                      className="h-12 w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 text-sm text-white outline-none"
+                      className="app-select h-12 w-full px-4 text-sm outline-none"
                     >
                       {internalUsers.map((user) => (
                         <option key={user.id} value={user.name} className="text-slate-950">
@@ -459,12 +459,12 @@ export function QuotationWorkflow({
                 />
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div className="app-subtle-card rounded-[22px] px-5 py-5">
+                  <div className="app-subtle-card rounded-[22px] px-6 py-6">
                     <div className="space-y-4">
                       <div className="flex items-center justify-between gap-4">
                         <div>
                           <p className="text-sm font-semibold text-white">Discount</p>
-                          <p className="text-sm leading-6 text-slate-300">Apply a specific reduction and keep the reason visible.</p>
+                          <p className="app-type-caption text-sm">Apply a specific reduction and keep the reason visible.</p>
                         </div>
                       </div>
                       <Input
@@ -477,23 +477,23 @@ export function QuotationWorkflow({
                             current ? { ...current, discountAmount: Math.max(0, Number(event.target.value) || 0) } : current,
                           )
                         }
-                        className="h-12 rounded-2xl border-white/10 bg-white/[0.04] text-white"
+                        className="app-field h-12"
                       />
                       <Textarea
                         value={builder.discountReason}
                         onChange={(event) => setBuilder((current) => current ? { ...current, discountReason: event.target.value } : current)}
                         placeholder="Explain the reason for the discount, if one is applied."
-                        className="min-h-24 rounded-2xl border-white/10 bg-white/[0.04] text-white placeholder:text-slate-400"
+                        className="app-textarea min-h-24"
                       />
                     </div>
                   </div>
 
-                  <div className="app-subtle-card rounded-[22px] px-5 py-5">
+                  <div className="app-subtle-card rounded-[22px] px-6 py-6">
                     <div className="space-y-4">
                       <div className="flex items-center justify-between gap-4">
                         <div>
                           <p className="text-sm font-semibold text-white">VAT</p>
-                          <p className="text-sm leading-6 text-slate-300">Add or remove VAT and keep the impact visible in the total.</p>
+                          <p className="app-type-caption text-sm">Add or remove VAT and keep the impact visible in the total.</p>
                         </div>
                         <Switch
                           checked={builder.vatApplied}
@@ -513,7 +513,7 @@ export function QuotationWorkflow({
                               current ? { ...current, vatPercentage: Math.max(0, Number(event.target.value) || 0) } : current,
                             )
                           }
-                          className="h-12 rounded-2xl border-white/10 bg-white/[0.04] text-white disabled:opacity-50"
+                          className="app-field h-12 disabled:opacity-50"
                         />
                       </div>
                     </div>
@@ -526,7 +526,7 @@ export function QuotationWorkflow({
                     <Textarea
                       value={builder.notes}
                       onChange={(event) => setBuilder((current) => current ? { ...current, notes: event.target.value } : current)}
-                      className="min-h-28 rounded-2xl border-white/10 bg-white/[0.04] text-white"
+                      className="app-textarea min-h-28"
                     />
                   </div>
                   <div className="space-y-2">
@@ -534,18 +534,18 @@ export function QuotationWorkflow({
                     <Textarea
                       value={builder.terms}
                       onChange={(event) => setBuilder((current) => current ? { ...current, terms: event.target.value } : current)}
-                      className="min-h-28 rounded-2xl border-white/10 bg-white/[0.04] text-white"
+                      className="app-textarea min-h-28"
                     />
                   </div>
                 </div>
               </div>
 
               <div className="space-y-5">
-                <div className="app-subtle-card-strong rounded-[24px] px-5 py-5">
+                <div className="app-subtle-card-strong rounded-[24px] px-6 py-6">
                   <div className="space-y-5">
                     <div className="space-y-2">
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Live totals</p>
-                      <h3 className="font-serif text-[2rem] tracking-[-0.03em] text-white">Quotation summary</h3>
+                      <p className="app-type-overline">Live totals</p>
+                      <h3 className="app-type-title">Quotation summary</h3>
                     </div>
 
                     <div className="space-y-3">
@@ -563,7 +563,7 @@ export function QuotationWorkflow({
                       </div>
                     </div>
 
-                    <div className="h-px bg-white/8" />
+                    <div className="app-quiet-divider" />
 
                     <div className="flex items-center justify-between gap-4">
                       <span className="text-base font-semibold text-white">Final total</span>
@@ -572,32 +572,32 @@ export function QuotationWorkflow({
                       </span>
                     </div>
 
-                    <div className="rounded-[20px] border border-white/8 bg-white/[0.03] px-4 py-4">
+                    <div className="app-note-panel">
                       <p className="text-sm font-semibold text-white">How VAT and discount work</p>
-                      <p className="mt-2 text-sm leading-7 text-slate-300">
+                      <p className="app-type-caption mt-2 text-sm leading-7">
                         The discount is taken off the subtotal first. If VAT is enabled, the VAT percentage is then applied to the discounted amount so the final total is explicit and easy to justify.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="app-subtle-card rounded-[24px] px-5 py-5">
+                <div className="app-subtle-card rounded-[24px] px-6 py-6">
                   <div className="space-y-3">
                     <p className="text-sm font-semibold text-white">Selected file</p>
-                    <p className="text-sm leading-6 text-slate-300">{selectedClient.name}</p>
-                    <p className="text-sm leading-6 text-slate-400">{selectedCase?.route ?? selectedClient.context}</p>
-                    <p className="text-sm leading-6 text-slate-400">{selectedDetail?.region ?? selectedClient.region}</p>
+                    <p className="app-type-caption text-sm">{selectedClient.name}</p>
+                    <p className="app-copy-muted text-sm leading-6">{selectedCase?.route ?? selectedClient.context}</p>
+                    <p className="app-copy-muted text-sm leading-6">{selectedDetail?.region ?? selectedClient.region}</p>
                   </div>
                 </div>
               </div>
             </div>
           ) : null}
 
-          <DialogFooter className="border-t border-white/8 px-6 py-5 sm:justify-between">
+          <DialogFooter className="app-panel-footer sm:justify-between">
             <Button
               type="button"
               variant="outline"
-              className="rounded-full border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08] hover:text-white"
+              className="app-button-secondary rounded-full"
               onClick={() => {
                 setBuilderOpen(false)
                 setPickerOpen(true)
@@ -609,7 +609,7 @@ export function QuotationWorkflow({
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-full border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08] hover:text-white"
+                className="app-button-secondary rounded-full"
                 onClick={() => setBuilderOpen(false)}
               >
                 Close

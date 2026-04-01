@@ -71,7 +71,7 @@ export default function TasksPage() {
   const clientDependentCount = tasks.filter((task) => task.status === "Waiting on client").length
 
   return (
-    <div className="section-stack">
+    <div className="app-page-stack">
       <CrmPageHeader
         eyebrow="Tasks"
         title="Operational follow-up kept visible, ordered, and easy to move."
@@ -96,10 +96,10 @@ export default function TasksPage() {
             note: "Tasks that need a client-side step before they can move.",
           },
         ].map((item) => (
-          <div key={item.label} className="app-subtle-card-strong rounded-[22px] px-5 py-5">
-            <p className="text-sm font-semibold text-white">{item.label}</p>
-            <p className="mt-3 font-serif text-[2.35rem] leading-none tracking-[-0.04em] text-white">{item.value}</p>
-            <p className="mt-3 text-sm leading-6 text-slate-300">{item.note}</p>
+          <div key={item.label} className="app-subtle-card-strong rounded-[22px] px-6 py-6">
+            <p className="app-type-overline">{item.label}</p>
+            <p className="app-type-metric mt-3">{item.value}</p>
+            <p className="app-type-caption mt-3 text-sm">{item.note}</p>
           </div>
         ))}
       </div>
@@ -111,14 +111,14 @@ export default function TasksPage() {
       >
         <div className="grid gap-4 xl:grid-cols-3">
           {taskGroups.map((group) => (
-            <div key={group.title} className="app-subtle-card-strong rounded-[22px] px-5 py-5">
+            <div key={group.title} className="app-subtle-card-strong rounded-[22px] px-6 py-6">
               <div className="space-y-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-2">
                     <h3 className="text-base font-semibold text-white">{group.title}</h3>
-                    <p className="text-sm leading-6 text-slate-300">{group.note}</p>
+                    <p className="app-type-caption text-sm">{group.note}</p>
                   </div>
-                  <span className="rounded-full bg-white/[0.08] px-3 py-1 text-sm font-semibold text-white">
+                  <span className="app-pill-count">
                     {group.items.length}
                   </span>
                 </div>
@@ -130,14 +130,14 @@ export default function TasksPage() {
                       <Link
                         key={task.id}
                         href={`/clients/${caseRecord?.clientId ?? ""}`}
-                        className="block rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4 shadow-[0_12px_24px_rgba(10,15,23,0.12)] transition-colors hover:bg-white/[0.08]"
+                        className="app-note-panel app-interactive-card block"
                       >
                         <div className="space-y-2">
                           <div className="flex items-start justify-between gap-3">
                             <p className="text-sm font-semibold text-white">{task.name}</p>
                             <span className={getPriorityTone(task.priority)}>{task.priority}</span>
                           </div>
-                          <p className="text-sm leading-6 text-slate-300">
+                          <p className="app-type-caption text-sm">
                             {caseRecord?.client} / {task.owner}
                           </p>
                         </div>
@@ -249,11 +249,11 @@ export default function TasksPage() {
           </TableBody>
         </Table>
 
-        <div className="flex items-start gap-3 rounded-[20px] border border-white/8 bg-white/[0.03] px-5 py-4">
-          <div className="mt-0.5 flex size-10 items-center justify-center rounded-[16px] bg-[var(--app-brand-surface-tint-strong)] text-white">
-            <ListChecks className="size-4" />
-          </div>
-          <p className="text-sm leading-7 text-slate-300">
+          <div className="app-note-panel flex items-start gap-3">
+            <div className="mt-0.5 flex size-10 items-center justify-center rounded-[16px] bg-[var(--app-brand-surface-tint-strong)] text-white">
+              <ListChecks className="size-4" />
+            </div>
+          <p className="app-type-caption text-sm leading-7">
             The register stays concise on purpose. It keeps daily task pressure readable without turning the page into a noisy generic operations board.
           </p>
         </div>

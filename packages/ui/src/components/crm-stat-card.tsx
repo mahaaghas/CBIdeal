@@ -12,21 +12,21 @@ interface CrmStatCardProps {
 export function CrmStatCard({ label, value, note, icon, trend }: CrmStatCardProps) {
   return (
     <Card className="section-card h-full">
-      <CardContent className="card-stack justify-between p-5 md:p-6">
+      <CardContent className="card-stack justify-between p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-2">
-            <p className="text-sm font-medium uppercase tracking-[0.18em] text-muted-foreground">{label}</p>
-            <p className="text-3xl font-semibold tracking-[-0.03em] text-foreground">{value}</p>
+            <p className="app-type-overline">{label}</p>
+            <p className="app-type-metric">{value}</p>
           </div>
           {icon ? (
-            <div className="flex size-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <div className="app-kpi-icon flex size-11 items-center justify-center rounded-[18px] text-white">
               {icon}
             </div>
           ) : null}
         </div>
         <div className="space-y-2">
-          <p className="fine-print">{note}</p>
-          {trend ? <p className="text-sm font-medium text-primary">{trend}</p> : null}
+          <p className="app-type-caption">{note}</p>
+          {trend ? <p className="text-sm font-medium text-[var(--state-success)]">{trend}</p> : null}
         </div>
       </CardContent>
     </Card>

@@ -73,7 +73,7 @@ export default function DocumentsPage() {
   }, [filter, rows, searchTerm])
 
   return (
-    <div className="section-stack">
+    <div className="app-page-stack">
       <CrmPageHeader
         eyebrow="Documents"
         title="Document review kept visible, structured, and easy to act on."
@@ -94,14 +94,14 @@ export default function DocumentsPage() {
             value: `${pendingReviews}`,
             note: "Uploaded items currently waiting on an internal decision.",
             icon: Bell,
-            iconClass: "bg-[#d8891a]",
+            iconClass: "app-kpi-icon-warning",
           },
           {
             label: "Approved documents",
             value: `${approvedDocs}`,
             note: "Checklist items already cleared across active matters.",
             icon: FileCheck2,
-            iconClass: "bg-[#46b264]",
+            iconClass: "app-kpi-icon-success",
           },
           {
             label: "Returned items",
@@ -114,9 +114,9 @@ export default function DocumentsPage() {
           <div key={item.label} className="app-kpi rounded-[22px] px-6 py-6">
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-3">
-                <p className="text-[1.02rem] font-medium text-slate-300">{item.label}</p>
-                <p className="font-serif text-[2.75rem] leading-none tracking-[-0.04em] text-white">{item.value}</p>
-                <p className="text-sm leading-6 text-slate-300">{item.note}</p>
+                <p className="app-kpi-label text-[1.02rem] font-medium">{item.label}</p>
+                <p className="app-type-metric">{item.value}</p>
+                <p className="app-type-caption text-sm">{item.note}</p>
               </div>
               <div className={`flex size-12 items-center justify-center rounded-[18px] text-white ${item.iconClass}`}>
                 <item.icon className="size-5" />

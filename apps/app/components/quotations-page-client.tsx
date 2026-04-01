@@ -75,7 +75,7 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
   }
 
   return (
-    <div className="section-stack">
+    <div className="app-page-stack">
       <CrmPageHeader
         eyebrow="Quotations"
         title="Quotations built around client context, fee clarity, and operational readiness."
@@ -176,14 +176,14 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
                     <TableCell className="min-w-[16rem]">
                     <div className="space-y-2">
                       <p className="text-[0.98rem] font-semibold text-white">{quotation.id.toUpperCase()}</p>
-                      <p className="text-sm leading-6 text-slate-200">{quotation.title ?? quotation.note}</p>
+                      <p className="app-type-caption text-sm">{quotation.title ?? quotation.note}</p>
                     </div>
                   </TableCell>
                     <TableCell className="min-w-[15rem]">
                       <div className="space-y-2">
-                        <p className="font-semibold text-slate-100">{quotation.client}</p>
-                        <p className="text-sm leading-6 text-slate-300">{caseRecord?.route ?? quotation.note}</p>
-                        <p className="text-sm leading-6 text-slate-400">{quotation.advisorName ?? quotation.owner}</p>
+                        <p className="font-semibold text-[var(--text-primary)]">{quotation.client}</p>
+                        <p className="app-type-caption text-sm">{caseRecord?.route ?? quotation.note}</p>
+                        <p className="text-sm leading-6 text-[var(--text-muted)]">{quotation.advisorName ?? quotation.owner}</p>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -192,18 +192,18 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
                     <TableCell>
                       <div className="space-y-1 text-sm">
                         <p className="font-semibold text-white">{formatMoney(quotation.currency, quotation.total ?? 0)}</p>
-                        <p className="text-slate-300">
+                        <p className="app-copy-secondary">
                           Subtotal {formatMoney(quotation.currency, quotation.subtotal ?? 0)}
                         </p>
-                        <p className="text-slate-400">
+                        <p className="app-copy-muted">
                           VAT {quotation.vatApplied ? `${quotation.vatPercentage}%` : "not applied"} / Discount {formatMoney(quotation.currency, quotation.discountAmount ?? 0)}
                         </p>
                       </div>
                     </TableCell>
                     <TableCell>
                       <div className="space-y-1 text-sm">
-                        <p className="font-medium text-slate-100">{quotation.validUntil}</p>
-                        <p className="text-slate-400">
+                        <p className="font-medium text-[var(--text-primary)]">{quotation.validUntil}</p>
+                        <p className="app-copy-muted">
                           {quotation.sentDate ? `Sent ${quotation.sentDate}` : "Not yet sent"}
                         </p>
                       </div>
@@ -227,17 +227,17 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
         >
           <div className="space-y-3">
             {quotations.slice(0, 3).map((quotation) => (
-              <div key={quotation.id} className="app-subtle-card-strong rounded-[22px] px-5 py-5">
+              <div key={quotation.id} className="app-subtle-card-strong rounded-[22px] px-6 py-6">
                 <div className="space-y-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="space-y-2">
                       <p className="text-sm font-semibold text-white">{quotation.client}</p>
-                      <p className="text-sm leading-6 text-slate-300">{quotation.title ?? quotation.note}</p>
+                      <p className="app-type-caption text-sm">{quotation.title ?? quotation.note}</p>
                     </div>
                     <CrmStatusBadge status={quotation.status} />
                   </div>
                   <div className="flex items-center justify-between gap-3 text-sm">
-                    <span className="text-slate-300">{quotation.id.toUpperCase()}</span>
+                    <span className="app-copy-secondary">{quotation.id.toUpperCase()}</span>
                     <span className="font-semibold text-white">{formatMoney(quotation.currency, quotation.total ?? 0)}</span>
                   </div>
                   {quotation.status !== "Paid" ? (
@@ -264,13 +264,13 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
       >
         <div className="grid gap-4 xl:grid-cols-2">
           {visibleQuotations.slice(0, 4).map((quotation) => (
-            <div key={quotation.id} className="app-subtle-card rounded-[24px] px-5 py-5">
+            <div key={quotation.id} className="app-subtle-card rounded-[24px] px-6 py-6">
               <div className="space-y-5">
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-2">
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{quotation.id.toUpperCase()}</p>
+                    <p className="app-type-overline">{quotation.id.toUpperCase()}</p>
                     <h3 className="text-lg font-semibold tracking-[-0.02em] text-white">{quotation.client}</h3>
-                    <p className="text-sm leading-6 text-slate-300">{quotation.notes ?? quotation.note}</p>
+                    <p className="app-type-caption text-sm">{quotation.notes ?? quotation.note}</p>
                   </div>
                   <CrmStatusBadge status={quotation.status} />
                 </div>
@@ -290,19 +290,19 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
                       items: quotation.optionalItems.length ? quotation.optionalItems : [{ label: "No optional items", amount: 0, quantity: 1 }],
                     },
                   ].map((group) => (
-                    <div key={group.title} className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4">
-                      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{group.title}</p>
+                    <div key={group.title} className="app-note-panel">
+                      <p className="app-type-overline">{group.title}</p>
                       <div className="mt-3 space-y-2">
                         {group.items.map((item) => (
                             <div key={`${group.title}-${item.label}`} className="space-y-1 text-sm">
                               <div className="flex items-start justify-between gap-3">
-                                <span className="leading-6 text-slate-200">{item.label}</span>
+                                <span className="leading-6 text-[var(--text-secondary)]">{item.label}</span>
                               <span className="shrink-0 font-medium text-white">
                                 {item.amount ? formatMoney(quotation.currency, item.amount * (item.quantity ?? 1)) : "Included"}
                               </span>
                             </div>
                             {(item.quantity ?? 1) > 1 ? (
-                              <p className="text-slate-400">{item.quantity} units</p>
+                              <p className="app-copy-muted">{item.quantity} units</p>
                             ) : null}
                           </div>
                         ))}
@@ -312,21 +312,21 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
                 </div>
 
                 <div className="grid gap-3 md:grid-cols-2">
-                  <div className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4">
-                    <p className="text-sm font-medium text-slate-200">VAT and discount</p>
-                    <p className="mt-2 text-sm leading-6 text-slate-300">
+                  <div className="app-note-panel">
+                    <p className="text-sm font-medium text-[var(--text-secondary)]">VAT and discount</p>
+                    <p className="app-type-caption mt-2 text-sm">
                       VAT {quotation.vatApplied ? `${quotation.vatPercentage}% applied` : "not applied"} / Discount {formatMoney(quotation.currency, quotation.discountAmount ?? 0)}
                     </p>
                     {quotation.discountReason ? (
-                      <p className="mt-1 text-sm leading-6 text-slate-400">{quotation.discountReason}</p>
+                      <p className="app-copy-muted mt-1 text-sm leading-6">{quotation.discountReason}</p>
                     ) : null}
                   </div>
-                  <div className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-4">
-                    <p className="text-sm font-medium text-slate-200">Final total</p>
+                  <div className="app-note-panel">
+                    <p className="text-sm font-medium text-[var(--text-secondary)]">Final total</p>
                     <p className="mt-2 font-serif text-[2rem] leading-none tracking-[-0.04em] text-white">
                       {formatMoney(quotation.currency, quotation.total ?? 0)}
                     </p>
-                    <p className="mt-2 text-sm leading-6 text-slate-400">
+                    <p className="app-copy-muted mt-2 text-sm leading-6">
                       Subtotal {formatMoney(quotation.currency, quotation.subtotal ?? 0)} / VAT {formatMoney(quotation.currency, quotation.vatAmount ?? 0)}
                     </p>
                   </div>

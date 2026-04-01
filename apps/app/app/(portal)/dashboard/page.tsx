@@ -230,15 +230,13 @@ export default function DashboardPage() {
     .slice(0, 4)
 
   return (
-    <div className="space-y-8">
+    <div className="app-page-stack">
       <div className="space-y-3">
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="font-serif text-[2.9rem] leading-[1.02] tracking-[-0.045em] text-white md:text-[3.5rem]">
-            Overview
-          </h1>
+          <h1 className="app-type-headline">Overview</h1>
           <span className="app-pill rounded-full px-4 py-1.5 text-sm font-semibold">Operational dashboard</span>
         </div>
-        <p className="max-w-3xl text-[1.05rem] text-slate-200/82">
+        <p className="app-type-body max-w-3xl">
           A high-level view of active matters, immediate priorities, and recent movement across the workspace.
         </p>
       </div>
@@ -257,14 +255,14 @@ export default function DashboardPage() {
             value: `${pendingReviews}`,
             change: "Documents and proof waiting on a decision",
             icon: Bell,
-            iconClass: "bg-[#d8891a]",
+            iconClass: "app-kpi-icon-warning",
           },
           {
             label: "Approved documents",
             value: `${approvedDocs}`,
             change: "Checklist items cleared across active files",
             icon: FileCheck2,
-            iconClass: "bg-[#46b264]",
+            iconClass: "app-kpi-icon-success",
           },
           {
             label: "Revenue",
@@ -277,9 +275,9 @@ export default function DashboardPage() {
           <div key={item.label} className="app-kpi rounded-[22px] px-6 py-6">
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-3">
-                <p className="text-[1.05rem] font-medium text-slate-300">{item.label}</p>
-                <p className="font-serif text-[3rem] leading-none tracking-[-0.04em] text-white">{item.value}</p>
-                <p className="text-base font-medium text-[#54de82]">{item.change}</p>
+                <p className="app-kpi-label text-[1.05rem] font-medium">{item.label}</p>
+                <p className="app-type-metric">{item.value}</p>
+                <p className="app-kpi-note-positive text-base font-medium">{item.change}</p>
               </div>
               <div className={`flex size-12 items-center justify-center rounded-[18px] text-white ${item.iconClass}`}>
                 <item.icon className="size-5" />
@@ -295,8 +293,8 @@ export default function DashboardPage() {
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-300">Action required</p>
-                <h2 className="font-serif text-[2.05rem] tracking-[-0.035em] text-white">What needs attention first</h2>
-                <p className="max-w-2xl text-sm leading-7 text-slate-300">
+                <h2 className="app-type-title">What needs attention first</h2>
+                <p className="app-type-body max-w-2xl text-sm">
                   The overview keeps the current pressure points together so reviews, missing documents, payments, and commercial items are visible without opening multiple modules.
                 </p>
               </div>
@@ -313,17 +311,17 @@ export default function DashboardPage() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="app-surface-soft rounded-[22px] px-5 py-5 transition-colors hover:bg-white/[0.08]"
+                  className="app-surface-soft app-interactive-card rounded-[22px] px-5 py-5"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between gap-3">
                       <p className="text-sm font-semibold text-white">{item.label}</p>
-                      <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-sm font-semibold text-white">
+                      <span className="app-pill-count">
                         {item.value}
                       </span>
                     </div>
-                    <p className="text-sm leading-6 text-slate-300">{item.note}</p>
-                    <span className="inline-flex items-center gap-2 text-sm font-semibold text-slate-200">
+                    <p className="app-type-caption text-sm">{item.note}</p>
+                    <span className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--text-secondary)]">
                       Open
                       <ChevronRight className="size-4" />
                     </span>
@@ -338,8 +336,8 @@ export default function DashboardPage() {
           <div className="space-y-5">
             <div className="space-y-2">
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-300">Quick actions</p>
-              <h2 className="font-serif text-[2.05rem] tracking-[-0.035em] text-white">Direct shortcuts</h2>
-              <p className="text-sm leading-7 text-slate-300">
+              <h2 className="app-type-title">Direct shortcuts</h2>
+              <p className="app-type-body text-sm">
                 Fast entry points for the actions used most often during daily casework.
               </p>
             </div>
@@ -349,13 +347,13 @@ export default function DashboardPage() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="flex items-center justify-between gap-4 rounded-[20px] border border-white/10 bg-white/[0.03] px-5 py-4 transition-colors hover:bg-white/[0.06]"
+                  className="app-note-panel app-interactive-row flex items-center justify-between gap-4"
                 >
                   <div className="space-y-1">
                     <p className="text-sm font-semibold text-white">{item.label}</p>
-                    <p className="text-sm leading-6 text-slate-300">{item.body}</p>
+                    <p className="app-type-caption text-sm">{item.body}</p>
                   </div>
-                  <ArrowRight className="size-4 shrink-0 text-slate-200" />
+                  <ArrowRight className="size-4 shrink-0 text-[var(--text-secondary)]" />
                 </Link>
               ))}
             </div>
@@ -368,7 +366,7 @@ export default function DashboardPage() {
           <div className="space-y-5">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-300">Case stage distribution</p>
-              <h2 className="mt-2 font-serif text-[1.9rem] tracking-[-0.03em] text-white">Where active matters sit</h2>
+              <h2 className="app-type-title mt-2">Where active matters sit</h2>
             </div>
 
             <div className="space-y-4">
@@ -378,9 +376,9 @@ export default function DashboardPage() {
                     <span className="font-medium text-white">{item.label}</span>
                     <span className="text-slate-300">{item.value}</span>
                   </div>
-                  <div className="h-2.5 rounded-full bg-white/[0.06]">
+                  <div className="app-meter-track">
                     <div
-                      className="h-full rounded-full bg-[#5b78a2]"
+                      className="app-meter-fill-primary h-full rounded-full"
                       style={{ width: `${Math.max(item.percentage, 8)}%` }}
                     />
                   </div>
@@ -394,15 +392,15 @@ export default function DashboardPage() {
           <div className="space-y-5">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-300">Document status</p>
-              <h2 className="mt-2 font-serif text-[1.9rem] tracking-[-0.03em] text-white">Checklist position</h2>
+              <h2 className="app-type-title mt-2">Checklist position</h2>
             </div>
 
-            <div className="overflow-hidden rounded-full bg-white/[0.05]">
+            <div className="app-meter-track">
               <div className="flex h-3 w-full">
                 {documentSegments.map((segment) => (
                   <div
                     key={segment.label}
-                    className={segment.className}
+                    className={segment.className.replace("bg-[#49b56a]", "app-meter-fill-success").replace("bg-[#d38a21]", "app-meter-fill-warning").replace("bg-[#c35a63]", "app-meter-fill-error")}
                     style={{ width: `${(segment.value / totalChecklistItems) * 100}%` }}
                   />
                 ))}
@@ -413,10 +411,10 @@ export default function DashboardPage() {
               {documentSegments.map((segment) => (
                 <div key={segment.label} className="flex items-center justify-between gap-3 text-sm">
                   <div className="flex items-center gap-3">
-                    <span className={`size-2.5 rounded-full ${segment.className}`} />
+                    <span className={`app-insight-dot ${segment.className.replace("bg-[#49b56a]", "app-insight-dot-success").replace("bg-[#d38a21]", "app-insight-dot-warning").replace("bg-[#c35a63]", "app-insight-dot-error")}`} />
                     <span className="text-white">{segment.label}</span>
                   </div>
-                  <span className="text-slate-300">{segment.value}</span>
+                  <span className="app-copy-muted">{segment.value}</span>
                 </div>
               ))}
             </div>
@@ -427,7 +425,7 @@ export default function DashboardPage() {
           <div className="space-y-5">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-300">Revenue overview</p>
-              <h2 className="mt-2 font-serif text-[1.9rem] tracking-[-0.03em] text-white">Commercial position</h2>
+              <h2 className="app-type-title mt-2">Commercial position</h2>
             </div>
 
             {[
@@ -435,6 +433,7 @@ export default function DashboardPage() {
                 label: "Collected",
                 value: collectedRevenue,
                 className: "bg-[#49b56a]",
+                
               },
               {
                 label: "Awaiting proof or review",
@@ -452,9 +451,9 @@ export default function DashboardPage() {
                   <span className="font-medium text-white">{item.label}</span>
                   <span className="text-slate-300">{formatCurrency(item.value)}</span>
                 </div>
-                <div className="h-2.5 rounded-full bg-white/[0.06]">
+                <div className="app-meter-track">
                   <div
-                    className={`h-full rounded-full ${item.className}`}
+                    className={`h-full rounded-full ${item.className.replace("bg-[#49b56a]", "app-meter-fill-success").replace("bg-[#d38a21]", "app-meter-fill-warning").replace("bg-[#5b78a2]", "app-meter-fill-primary")}`}
                     style={{ width: `${Math.max((item.value / revenueTotal) * 100, item.value > 0 ? 8 : 0)}%` }}
                   />
                 </div>
@@ -470,7 +469,7 @@ export default function DashboardPage() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-300">Recent activity</p>
-                <h2 className="mt-2 font-serif text-[1.9rem] tracking-[-0.03em] text-white">Latest movement</h2>
+                <h2 className="app-type-title mt-2">Latest movement</h2>
               </div>
               <Button asChild variant="outline" className="rounded-full border-white/10 bg-white/[0.03] text-white hover:bg-white/[0.06] hover:text-white">
                 <Link href="/documents">Open reviews</Link>
@@ -482,13 +481,13 @@ export default function DashboardPage() {
                 <Link
                   key={item.id}
                   href={item.href}
-                  className="flex items-start justify-between gap-4 rounded-[20px] border border-white/10 bg-white/[0.03] px-5 py-4 transition-colors hover:bg-white/[0.06]"
+                  className="app-note-panel app-interactive-row flex items-start justify-between gap-4"
                 >
                   <div className="space-y-1">
                     <p className="text-sm font-semibold text-white">{item.title}</p>
-                    <p className="text-sm leading-6 text-slate-300">{item.detail}</p>
+                    <p className="app-type-caption text-sm">{item.detail}</p>
                   </div>
-                  <span className="shrink-0 text-sm text-slate-400">{item.when}</span>
+                  <span className="shrink-0 text-sm text-[var(--text-muted)]">{item.when}</span>
                 </Link>
               ))}
             </div>
@@ -500,7 +499,7 @@ export default function DashboardPage() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-300">Case snapshot</p>
-                <h2 className="mt-2 font-serif text-[1.9rem] tracking-[-0.03em] text-white">Active matters in view</h2>
+                <h2 className="app-type-title mt-2">Active matters in view</h2>
               </div>
               <Button asChild variant="outline" className="rounded-full border-white/10 bg-white/[0.03] text-white hover:bg-white/[0.06] hover:text-white">
                 <Link href="/cases">Open applications</Link>
@@ -512,7 +511,7 @@ export default function DashboardPage() {
                 <Link
                   key={caseRecord.id}
                   href={`/clients/${caseRecord.clientId}`}
-                  className="block rounded-[20px] border border-white/10 bg-white/[0.03] px-5 py-4 transition-colors hover:bg-white/[0.06]"
+                  className="app-note-panel app-interactive-card block"
                 >
                   <div className="space-y-4">
                     <div className="flex items-start justify-between gap-4">
@@ -525,13 +524,13 @@ export default function DashboardPage() {
 
                     <div className="space-y-2">
                       <div className="flex items-center justify-between gap-3 text-sm">
-                        <span className="text-slate-300">Progress</span>
+                        <span className="app-copy-muted">Progress</span>
                         <span className="text-white">{caseRecord.progress}%</span>
                       </div>
                       <Progress value={caseRecord.progress} className="h-2.5" />
                     </div>
 
-                    <div className="flex items-center justify-between gap-3 text-sm text-slate-300">
+                    <div className="flex items-center justify-between gap-3 text-sm text-[var(--text-muted)]">
                       <span>{caseRecord.openItems} open item{caseRecord.openItems === 1 ? "" : "s"}</span>
                       <span>{caseRecord.nextMilestone}</span>
                     </div>
@@ -551,7 +550,7 @@ export default function DashboardPage() {
             </div>
             <div>
               <h2 className="text-xl font-semibold text-white">Commercial visibility</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-300">
+              <p className="app-type-caption mt-2 text-sm">
                 Revenue, quotation movement, and payment stages stay visible without opening list pages.
               </p>
             </div>
@@ -559,12 +558,12 @@ export default function DashboardPage() {
         </div>
         <div className="app-surface rounded-[22px] px-5 py-5">
           <div className="flex items-start gap-3">
-            <div className="flex size-11 items-center justify-center rounded-[18px] bg-[#46b264] text-white">
+            <div className="app-kpi-icon-success flex size-11 items-center justify-center rounded-[18px] text-white">
               <CheckCircle2 className="size-5" />
             </div>
             <div>
               <h2 className="text-xl font-semibold text-white">Operational read</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-300">
+              <p className="app-type-caption mt-2 text-sm">
                 The overview is now a decision view, with priority items and active case context instead of a registry table.
               </p>
             </div>

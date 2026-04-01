@@ -69,7 +69,7 @@ export function PageHero({
             className={cn(
               "page-hero-grid relative grid gap-8 md:gap-10",
               hasAside
-                ? "lg:grid-cols-[minmax(0,1.72fr)_minmax(20.75rem,0.72fr)] lg:items-stretch lg:gap-12 xl:grid-cols-[minmax(0,1.8fr)_minmax(22.5rem,0.74fr)] xl:gap-14"
+                ? "lg:grid-cols-[minmax(0,1.45fr)_minmax(27rem,1fr)] lg:items-stretch lg:gap-14 xl:grid-cols-[minmax(0,1.5fr)_minmax(29rem,1fr)] xl:gap-16"
                 : "content-measure",
             )}
           >
@@ -86,7 +86,7 @@ export function PageHero({
                   className={cn(
                     "text-primary-foreground",
                     hasAside
-                      ? "max-w-[19ch] text-[clamp(2.2rem,2.8vw,3.15rem)] leading-[1.07] tracking-[-0.03em]"
+                      ? "max-w-[17ch] text-[clamp(2.2rem,2.8vw,3.15rem)] leading-[1.07] tracking-[-0.03em]"
                       : "display-title max-w-[42rem]",
                     compact && !children && "max-w-[18ch] text-[clamp(2.3rem,3.35vw,3.2rem)] leading-[1.08] tracking-[-0.028em]",
                   )}
@@ -97,7 +97,7 @@ export function PageHero({
                   className={cn(
                     "text-primary-foreground/76",
                     hasAside
-                      ? "max-w-[34rem] text-[0.98rem] leading-[1.9] md:text-[1.02rem] md:leading-[1.95]"
+                      ? "max-w-[31rem] text-[0.98rem] leading-[1.9] md:text-[1.02rem] md:leading-[1.95]"
                       : "max-w-[40rem] text-base leading-7 md:text-lg md:leading-8",
                     compact && !children && "max-w-[40rem] text-[0.98rem] leading-7 md:text-base md:leading-[1.9]",
                   )}
@@ -161,7 +161,7 @@ export function PageHero({
             {hasAside ? (
               <div
                 className={cn(
-                  "page-hero-aside w-full max-w-[22rem] self-start xl:max-w-[23rem]",
+                  "page-hero-aside w-full max-w-none self-start",
                   isRtl ? "lg:justify-self-start" : "lg:justify-self-end",
                 )}
               >

@@ -126,7 +126,7 @@ function InvestorIntakeFormContent({
   const content = useMemo(() => {
     if (step === 0) {
       return (
-        <div className="rounded-[1.45rem] border border-[#e3d9cb] bg-white/62 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
+        <div className="rounded-[1.45rem] border border-[#e3d9cb] bg-white/62 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
           <div className="grid gap-4">
           <FormField control={form.control} name="nationality" render={({ field }) => (
             <FormItem>
@@ -161,7 +161,7 @@ function InvestorIntakeFormContent({
 
     if (step === 1) {
       return (
-        <div className="rounded-[1.45rem] border border-[#e3d9cb] bg-white/62 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
+        <div className="rounded-[1.45rem] border border-[#e3d9cb] bg-white/62 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
           <div className="grid gap-4">
           <FormField control={form.control} name="investmentRange" render={({ field }) => (
             <FormItem>
@@ -196,7 +196,7 @@ function InvestorIntakeFormContent({
     }
 
     return (
-      <div className="rounded-[1.45rem] border border-[#e3d9cb] bg-white/62 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
+      <div className="rounded-[1.45rem] border border-[#e3d9cb] bg-white/62 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.72)]">
         <div className="grid gap-4">
         <FormField control={form.control} name="fullName" render={({ field }) => (
           <FormItem>
@@ -260,10 +260,10 @@ function InvestorIntakeFormContent({
               </div>
             </div>
           ) : null}
-          <div className="flex flex-col gap-3 pt-1">
+          <div className="flex flex-col gap-3 pt-2">
             <Button
               type={step < steps.length - 1 ? "button" : "submit"}
-              className="h-[3.25rem] min-h-[3.25rem] rounded-full bg-[#243041] px-6 text-[0.95rem] font-semibold text-white shadow-[0_20px_38px_rgba(24,31,43,0.2)] hover:bg-[#1d2735]"
+              className="h-[3.45rem] min-h-[3.45rem] rounded-full bg-[#243041] px-6 text-[0.97rem] font-semibold text-white shadow-[0_20px_38px_rgba(24,31,43,0.2)] hover:bg-[#1d2735]"
               onClick={step < steps.length - 1 ? handleNext : undefined}
               disabled={isPending}
             >
@@ -281,7 +281,7 @@ function InvestorIntakeFormContent({
               <ChevronLeft className="size-4" />
               Back
               </Button>
-              <p className="text-right text-[0.82rem] leading-6 text-[#6d7484]">
+              <p className="max-w-[14rem] text-right text-[0.82rem] leading-6 text-[#6d7484]">
                 Reviewed discreetly before any reply is arranged.
               </p>
             </div>

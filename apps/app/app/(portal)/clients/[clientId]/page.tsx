@@ -116,7 +116,7 @@ export default function ClientDetailPage() {
         </CrmSectionCard>
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[0.92fr_1.08fr]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.02fr)_minmax(24rem,0.98fr)]">
         <CrmSectionCard
           title="Case progress"
           description="A clear read on progress, current position, and what the client will see next."
@@ -128,14 +128,14 @@ export default function ClientDetailPage() {
             </div>
             <Progress value={caseRecord.progress} className="h-2.5" />
           </div>
-          <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+          <div className="rounded-[22px] border border-border/70 bg-background px-5 py-5 shadow-sm">
             <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">Next milestone</p>
             <p className="mt-2 text-sm font-medium text-foreground">{caseRecord.nextMilestone}</p>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">Current status: {caseRecord.applicationStatus}</p>
           </div>
           <div className="space-y-3">
             {updates.slice(0, 3).map((note, index) => (
-              <div key={`${note}-${index}`} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+              <div key={`${note}-${index}`} className="rounded-[22px] border border-border/70 bg-background px-5 py-5 shadow-sm">
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5 flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <MessageSquareMore className="size-4" />
@@ -150,28 +150,52 @@ export default function ClientDetailPage() {
         <CrmSectionCard
           title="Quotation and payment structure"
           description="Commercial scope, payment stages, and finance review decisions attached to the active matter."
+          className="app-surface xl:sticky xl:top-8"
         >
           {quotation ? (
             <>
-              <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{quotation.id}</p>
-                    <p className="text-sm font-medium text-foreground">{quotation.note}</p>
+              <div className="app-subtle-card-strong rounded-[24px] px-5 py-5">
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="space-y-2">
+                    <p className="text-xs uppercase tracking-[0.16em] text-slate-300">{quotation.id}</p>
+                    <p className="text-lg font-semibold tracking-[-0.02em] text-white">{quotation.title ?? quotation.note}</p>
+                    <p className="text-sm leading-6 text-slate-300">
+                      Advisor: {quotation.advisorName ?? quotation.owner} • valid until {quotation.validUntil}
+                    </p>
                   </div>
                   <CrmStatusBadge status={quotation.status} />
                 </div>
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-[18px] border border-white/8 bg-white/[0.04] px-4 py-4">
+                    <p className="text-xs uppercase tracking-[0.16em] text-slate-400">Subtotal</p>
+                    <p className="mt-2 text-base font-semibold text-white">
+                      {quotation.currency} {(quotation.subtotal ?? 0).toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="rounded-[18px] border border-white/8 bg-white/[0.04] px-4 py-4">
+                    <p className="text-xs uppercase tracking-[0.16em] text-slate-400">VAT</p>
+                    <p className="mt-2 text-base font-semibold text-white">
+                      {quotation.vatApplied ? `${quotation.vatPercentage}% applied` : "Not applied"}
+                    </p>
+                  </div>
+                  <div className="rounded-[18px] border border-white/8 bg-white/[0.04] px-4 py-4">
+                    <p className="text-xs uppercase tracking-[0.16em] text-slate-400">Total</p>
+                    <p className="mt-2 text-base font-semibold text-white">
+                      {quotation.currency} {(quotation.total ?? 0).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {payments.map((payment) => {
                   const proof = getPaymentProofByPaymentId(payment.id)
 
                   return (
-                    <div key={payment.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="space-y-1">
-                          <p className="text-sm font-medium text-foreground">{payment.label}</p>
+                    <div key={payment.id} className="rounded-[22px] border border-border/70 bg-background px-5 py-5 shadow-sm">
+                      <div className="flex flex-wrap items-start justify-between gap-4">
+                        <div className="min-w-0 space-y-2">
+                          <p className="text-base font-semibold text-foreground">{payment.label}</p>
                           <p className="text-sm leading-6 text-muted-foreground">
                             {payment.currency} {payment.amount.toLocaleString()} · due {payment.dueDate}
                           </p>
@@ -183,7 +207,7 @@ export default function ClientDetailPage() {
                             <p className="text-sm leading-6 text-muted-foreground">Awaiting client upload.</p>
                           )}
                           {proof?.rejectionReason ? (
-                            <p className="text-sm leading-6 text-rose-700">{proof.rejectionReason}</p>
+                            <p className="text-sm leading-6 text-rose-200">{proof.rejectionReason}</p>
                           ) : null}
                         </div>
                         <CrmStatusBadge status={payment.status} />
@@ -199,7 +223,7 @@ export default function ClientDetailPage() {
                       payment.status === "Due soon" ||
                       payment.status === "Rejected" ||
                       payment.status === "Overdue" ? (
-                        <div className="mt-3">
+                        <div className="mt-4">
                           <CommunicationComposer
                             clientId={clientId}
                             caseId={caseRecord.id}
@@ -244,7 +268,7 @@ export default function ClientDetailPage() {
                   const canMessage = item.status === "Rejected" || item.status === "Not Uploaded"
 
                   return (
-                    <div key={item.id} className="rounded-[18px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+                    <div key={item.id} className="rounded-[20px] border border-border/70 bg-background px-5 py-5 shadow-sm">
                       <div className="flex items-start justify-between gap-3">
                         <div className="space-y-1">
                           <p className="text-sm font-medium text-foreground">{item.item}</p>
@@ -286,14 +310,14 @@ export default function ClientDetailPage() {
         </div>
       </CrmSectionCard>
 
-      <div className="grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <CrmSectionCard
           title="Review trail"
           description="Uploads, decisions, and comments remain visible together so nothing is lost in handover."
         >
           <div className="space-y-3">
             {reviews.map((review) => (
-              <div key={review.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+              <div key={review.id} className="rounded-[22px] border border-border/70 bg-background px-5 py-5 shadow-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-foreground">{review.item}</p>
@@ -312,9 +336,10 @@ export default function ClientDetailPage() {
         <CrmSectionCard
           title="Communication history"
           description="Prepared drafts, sent reminders, and scheduled updates linked to this client."
+          className="app-surface"
         >
           <div className="space-y-3">
-            <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+            <div className="rounded-[22px] border border-border/70 bg-background px-5 py-5 shadow-sm">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="space-y-1">
                   <p className="text-sm font-medium text-foreground">Communication overview</p>
@@ -334,7 +359,7 @@ export default function ClientDetailPage() {
             </div>
 
             {communicationHistory.map((item) => (
-              <div key={item.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+              <div key={item.id} className="rounded-[22px] border border-border/70 bg-background px-5 py-5 shadow-sm">
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <MessageSquareMore className="size-4" />
@@ -358,7 +383,7 @@ export default function ClientDetailPage() {
 
             <div className="space-y-3 border-t border-border/70 pt-4">
             {notifications.map((item) => (
-              <div key={item.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+              <div key={item.id} className="rounded-[22px] border border-border/70 bg-background px-5 py-5 shadow-sm">
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
                     <BellRing className="size-4" />
@@ -393,7 +418,7 @@ export default function ClientDetailPage() {
                   body: "Only checklist items and updates relevant to the client appear in the portal.",
                 },
               ].map((item) => (
-                <div key={item.title} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+                <div key={item.title} className="rounded-[22px] border border-border/70 bg-background px-5 py-5 shadow-sm">
                   <div className="flex items-start gap-3">
                     <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
                       <item.icon className="size-4" />

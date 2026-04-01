@@ -134,8 +134,9 @@ export function CrmShell({
 
               <div className="flex items-center gap-3">
                 {notificationsSlot ?? (
-                  <div
-                    aria-label="Notifications"
+                  <Link
+                    href="/notifications"
+                    aria-label="Open notifications"
                     className="app-top-icon relative flex size-12 items-center justify-center rounded-full"
                   >
                     <Bell className="size-5" />
@@ -144,7 +145,7 @@ export function CrmShell({
                         {notificationCount}
                       </span>
                     ) : null}
-                  </div>
+                  </Link>
                 )}
                 <Link
                   href={profileHref}

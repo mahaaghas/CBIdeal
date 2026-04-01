@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { Bell, ChevronRight } from "lucide-react"
 import { Button } from "@cbideal/ui/components/ui/button"
 import {
@@ -55,6 +55,7 @@ export function NotificationsPanel({
   onMarkAllRead,
   viewAllHref = "/notifications",
 }: NotificationsPanelProps) {
+  const [open, setOpen] = useState(false)
   const groups = useMemo(() => {
     return items.reduce<Record<string, WorkflowNotificationFeedItem[]>>((accumulator, item) => {
       const group = getGroupLabel(item.timestamp)
@@ -67,12 +68,13 @@ export function NotificationsPanel({
   const unreadIds = items.filter((item) => item.unread).map((item) => item.id)
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <button
           type="button"
           aria-label="Open notifications"
-          className="app-top-icon relative flex size-12 items-center justify-center rounded-full transition-colors"
+          aria-expanded={open}
+          className="app-top-icon relative flex size-12 items-center justify-center rounded-full"
         >
           <Bell className="size-5" />
           {unreadCount > 0 ? (
@@ -177,7 +179,10 @@ export function NotificationsPanel({
                               </div>
                               <Link
                                 href={item.href}
-                                onClick={() => onMarkRead(item.id)}
+                                onClick={() => {
+                                  onMarkRead(item.id)
+                                  setOpen(false)
+                                }}
                                 className="inline-flex items-center gap-2 rounded-full px-3 py-2 font-semibold text-slate-200 transition-colors hover:bg-white/[0.07] hover:text-white"
                               >
                                 Open
@@ -200,7 +205,9 @@ export function NotificationsPanel({
               Recent workflow movement is kept here so approvals, uploads, and quotation changes stay visible without leaving the current workspace.
             </p>
             <Button asChild variant="outline" className="app-button-secondary rounded-full">
-              <Link href={viewAllHref}>View all notifications</Link>
+              <Link href={viewAllHref} onClick={() => setOpen(false)}>
+                View all notifications
+              </Link>
             </Button>
           </div>
         </SheetFooter>

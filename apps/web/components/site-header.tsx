@@ -4,9 +4,7 @@ import { BrandMark } from "@/components/brand-mark"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { getRequestDirection, getRequestLocale } from "@/lib/i18n/request"
 import { getConversionCtaCopy } from "@/lib/conversion"
-import { getMessages } from "@/lib/i18n/messages"
 import { getLocalizedMainNavLinks, getLocalizedRouteLinks } from "@/lib/site"
-import { siteConfig } from "@/lib/site-config"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -14,11 +12,9 @@ export function SiteHeader() {
   const locale = getRequestLocale()
   const direction = getRequestDirection()
   const isRtl = direction === "rtl"
-  const messages = getMessages(locale)
   const mainNavLinks = getLocalizedMainNavLinks(locale)
   const routeLinks = getLocalizedRouteLinks(locale)
   const conversionCopy = getConversionCtaCopy(locale)
-  const appLoginLabel = locale === "ar" ? "تسجيل الدخول" : locale === "ru" ? "Войти" : "Login"
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-xl">
@@ -41,9 +37,7 @@ export function SiteHeader() {
             <div className={cn("hidden items-center gap-2 md:flex", isRtl && "md:flex-row-reverse")}>
               <LanguageSwitcher locale={locale} />
               <Button variant="outline" className="conversion-header-secondary" asChild>
-                <Link href={routeLinks.programs}>
-                  {conversionCopy.secondary}
-                </Link>
+                <Link href={routeLinks.programs}>{conversionCopy.secondary}</Link>
               </Button>
               <Button className="conversion-primary-button" data-cta-kind="primary" asChild>
                 <Link href={routeLinks.bookConsultation}>
@@ -51,8 +45,8 @@ export function SiteHeader() {
                   {conversionCopy.primary}
                 </Link>
               </Button>
-              <Link href={siteConfig.saas.loginUrl} className="quiet-link hidden xl:inline-flex">
-                {appLoginLabel}
+              <Link href={routeLinks.pricing} className="quiet-link hidden xl:inline-flex">
+                Platform
               </Link>
             </div>
           </div>

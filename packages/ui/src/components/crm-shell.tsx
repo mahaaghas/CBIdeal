@@ -121,7 +121,7 @@ export function CrmShell({
 
         <div className="min-w-0 px-5 py-5 md:px-8 md:py-7 xl:px-10 xl:py-8">
           <div className="mx-auto flex min-h-full w-full max-w-[1280px] flex-col gap-6">
-            <header className="flex items-center justify-between xl:justify-end">
+            <header className="relative z-20 flex items-center justify-between xl:justify-end">
               <Link href="/dashboard" className="xl:hidden">
                 <AppBrand
                   name={brandName}

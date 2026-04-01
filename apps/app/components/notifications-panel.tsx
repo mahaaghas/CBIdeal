@@ -11,7 +11,6 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@cbideal/ui/components/ui/sheet"
 import { cn } from "@cbideal/ui/lib/utils"
 import type { WorkflowNotificationFeedItem } from "@/lib/workflow-store"
@@ -68,22 +67,23 @@ export function NotificationsPanel({
   const unreadIds = items.filter((item) => item.unread).map((item) => item.id)
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <button
-          type="button"
-          aria-label="Open notifications"
-          aria-expanded={open}
-          className="app-top-icon relative flex size-12 items-center justify-center rounded-full"
-        >
-          <Bell className="size-5" />
-          {unreadCount > 0 ? (
-            <span className="absolute -right-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full bg-[#f04f4f] text-[0.68rem] font-semibold text-white">
-              {unreadCount}
-            </span>
-          ) : null}
-        </button>
-      </SheetTrigger>
+    <>
+      <button
+        type="button"
+        aria-label="Open notifications"
+        aria-expanded={open}
+        onClick={() => setOpen(true)}
+        className="app-top-icon relative flex size-12 items-center justify-center rounded-full"
+      >
+        <Bell className="size-5" />
+        {unreadCount > 0 ? (
+          <span className="app-notification-count absolute right-0 top-0 flex size-5 -translate-y-1/4 translate-x-1/4 items-center justify-center rounded-full text-[0.68rem] font-semibold">
+            {unreadCount}
+          </span>
+        ) : null}
+      </button>
+
+      <Sheet open={open} onOpenChange={setOpen}>
 
       <SheetContent
         side="right"
@@ -212,6 +212,7 @@ export function NotificationsPanel({
           </div>
         </SheetFooter>
       </SheetContent>
-    </Sheet>
+      </Sheet>
+    </>
   )
 }

@@ -1,12 +1,15 @@
+"use client"
+
 import { Download, ReceiptText } from "lucide-react"
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
 import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
 import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
 import { Button } from "@cbideal/ui/components/ui/button"
-import { getQuotationById, getQuotationTotal, portalSnapshot } from "@/lib/mock-data"
+import { useWorkflow } from "@/lib/workflow-store"
 
 export default function PortalQuotationsPage() {
-  const quotation = getQuotationById(portalSnapshot.quotationId)
+  const { currentPortalClientId, getQuotationByClientId } = useWorkflow()
+  const quotation = getQuotationByClientId(currentPortalClientId)
 
   if (!quotation) return null
 
@@ -74,7 +77,7 @@ export default function PortalQuotationsPage() {
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-medium text-foreground">Total quotation value</p>
               <p className="text-base font-semibold text-foreground">
-                {quotation.currency} {getQuotationTotal(quotation.id).toLocaleString()}
+                {quotation.currency} {(quotation.total ?? 0).toLocaleString()}
               </p>
             </div>
           </div>

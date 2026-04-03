@@ -1,5 +1,16 @@
 export { cbiBranding } from "./branding"
 export {
+  APP_URL,
+  buildSaasAppUrl,
+  DEFAULT_SAAS_APP_URL,
+  LEGACY_SAAS_APP_HOST,
+  normalizeSaasAppHref,
+  normalizeSaasAppUrl,
+  rewriteLegacySaasAppUrl,
+  saasAppHost,
+  saasAppUrl,
+} from "./app-url"
+export {
   buildBusinessMessage,
   buildInvestorStructuredNotes,
   buildLeadRecordKey,

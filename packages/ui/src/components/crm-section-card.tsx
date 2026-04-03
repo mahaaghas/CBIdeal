@@ -7,6 +7,10 @@ interface CrmSectionCardProps {
   description?: string
   children: ReactNode
   className?: string
+  headerClassName?: string
+  bodyClassName?: string
+  titleClassName?: string
+  descriptionClassName?: string
 }
 
 export function CrmSectionCard({
@@ -14,15 +18,19 @@ export function CrmSectionCard({
   description,
   children,
   className,
+  headerClassName,
+  bodyClassName,
+  titleClassName,
+  descriptionClassName,
 }: CrmSectionCardProps) {
   return (
     <Card className={cn("section-card h-full", className)}>
       <CardContent className="card-stack p-6">
-        <div className="space-y-2">
-          <h2 className="app-type-title">{title}</h2>
-          {description ? <p className="app-type-caption">{description}</p> : null}
+        <div className={cn("space-y-2", headerClassName)}>
+          <h2 className={cn("app-type-title", titleClassName)}>{title}</h2>
+          {description ? <p className={cn("app-type-caption", descriptionClassName)}>{description}</p> : null}
         </div>
-        <div className="space-y-4">{children}</div>
+        <div className={cn("space-y-4", bodyClassName)}>{children}</div>
       </CardContent>
     </Card>
   )

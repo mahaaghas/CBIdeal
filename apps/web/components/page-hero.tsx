@@ -142,16 +142,16 @@ export function PageHero({
                     compact && "pt-5 md:pt-6",
                   )}
                 >
-                  <div className="grid gap-4 lg:grid-cols-3">
+                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {stats.map((stat) => (
                       <div
                         key={stat.label}
-                        className="flex min-h-[152px] min-w-0 flex-col justify-between rounded-[22px] border border-white/10 bg-white/[0.04] p-5 shadow-[0_16px_38px_rgba(14,20,31,0.14)] md:min-h-[160px] md:p-6"
+                        className="flex min-h-[168px] min-w-0 flex-col justify-between rounded-[22px] border border-white/10 bg-white/[0.04] p-6 shadow-[0_16px_38px_rgba(14,20,31,0.14)] md:min-h-[176px]"
                       >
-                        <div className="min-w-0 text-[1.22rem] leading-snug text-primary-foreground md:text-[1.34rem] [overflow-wrap:anywhere]">
+                        <div className="min-w-0 max-w-[14ch] text-[1.24rem] leading-[1.2] tracking-[-0.02em] text-primary-foreground md:text-[1.36rem] break-words [hyphens:none]">
                           {stat.value}
                         </div>
-                        <p className="mt-2.5 max-w-[18rem] text-sm leading-6 text-primary-foreground/66">{stat.label}</p>
+                        <p className="mt-4 max-w-[18rem] text-sm leading-7 text-primary-foreground/66">{stat.label}</p>
                       </div>
                     ))}
                   </div>
@@ -170,19 +170,19 @@ export function PageHero({
             ) : null}
           </div>
           {renderStandaloneStats ? (
-            <div
+          <div
               dir={direction}
               className={cn(
-                "page-hero-stats relative mt-9 grid gap-4 border-t border-white/10 pt-7 md:mt-12 md:grid-cols-3 md:pt-8",
+                "page-hero-stats relative mt-9 grid gap-4 border-t border-white/10 pt-7 md:mt-12 md:grid-cols-2 md:pt-8 xl:grid-cols-3",
                 isRtl && "text-right",
               )}
             >
               {stats.map((stat) => (
-                <div key={stat.label} className="flex min-h-[152px] min-w-0 flex-col justify-center rounded-[22px] border border-white/8 bg-white/[0.03] p-5 md:min-h-[164px] md:p-6">
-                  <div className="min-w-0 text-[1.24rem] leading-snug text-primary-foreground md:text-[1.38rem] [overflow-wrap:anywhere]">
+                <div key={stat.label} className="flex min-h-[168px] min-w-0 flex-col justify-between rounded-[22px] border border-white/8 bg-white/[0.03] p-6 md:min-h-[176px]">
+                  <div className="min-w-0 max-w-[14ch] text-[1.24rem] leading-[1.2] tracking-[-0.02em] text-primary-foreground md:text-[1.38rem] break-words [hyphens:none]">
                     {stat.value}
                   </div>
-                  <p className="mt-2.5 max-w-[18rem] text-sm leading-6 text-primary-foreground/66">{stat.label}</p>
+                  <p className="mt-4 max-w-[18rem] text-sm leading-7 text-primary-foreground/66">{stat.label}</p>
                 </div>
               ))}
             </div>

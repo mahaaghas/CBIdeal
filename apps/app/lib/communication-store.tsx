@@ -1,5 +1,6 @@
 "use client"
 
+import { buildSaasAppUrl } from "@cbideal/config"
 import {
   createContext,
   useContext,
@@ -11,15 +12,15 @@ import {
 import {
   communicationHistory as initialCommunicationHistory,
   emailIntegrationSettings,
-  emailTemplates as initialTemplates,
+  emailTemplates,
   type CommunicationLogRecord,
   type CommunicationStatus,
   type EmailIntegrationRecord,
   type EmailTemplateRecord,
   type TemplateCategory,
 } from "@/lib/communication-data"
-import { getBrandingUiTokens, useBranding } from "@/lib/branding-store"
-import { externalUsers, workspace } from "@/lib/mock-data"
+import { useBranding } from "@/lib/branding-store"
+import { externalUsers } from "@/lib/mock-data"
 import { buildScopedStorageKey } from "@/lib/platform-access"
 import { usePlatformAccess } from "@/lib/platform-access-store"
 import { useWorkflow } from "@/lib/workflow-store"
@@ -33,44 +34,40 @@ type CommunicationContextInput = {
   customReason?: string | null
 }
 
-type RenderedTemplate = {
-  subject: string
-  previewText: string
-  htmlBody: string
-  textBody: string
-  variables: Record<string, string>
-  recipient: string
-}
+export type TemplateVariables = Record<string, string>
 
 type CommunicationState = {
-  templates: EmailTemplateRecord[]
   history: CommunicationLogRecord[]
   integration: EmailIntegrationRecord
 }
 
 type CommunicationContextValue = {
-  state: CommunicationState
+  state: CommunicationState & { templates: EmailTemplateRecord[] }
   getTemplateById: (templateId: string) => EmailTemplateRecord | undefined
   getTemplatesByCategory: (category?: TemplateCategory | "All") => EmailTemplateRecord[]
   getCommunicationHistory: (clientId?: string) => CommunicationLogRecord[]
-  renderTemplate: (templateId: string, context: CommunicationContextInput) => RenderedTemplate | null
-  buildOutlookDraftUrl: (templateId: string, context: CommunicationContextInput) => string | null
-  createTemplate: (input: Omit<EmailTemplateRecord, "id" | "lastEdited" | "lastUsed">) => string
-  updateTemplate: (templateId: string, patch: Partial<Omit<EmailTemplateRecord, "id">>) => void
-  duplicateTemplate: (templateId: string) => string | null
-  deleteTemplate: (templateId: string) => void
-  saveCommunication: (input: CommunicationContextInput & {
-    templateId: string
-    status: CommunicationStatus
-    channel: CommunicationLogRecord["channel"]
-    scheduledFor?: string | null
-  }) => string | null
+  getDefaultVariables: (templateId: string, context: CommunicationContextInput) => TemplateVariables
+  getRecipientForClient: (clientId: string) => string
+  saveCommunication: (
+    input: CommunicationContextInput & {
+      templateId: string
+      status: CommunicationStatus
+      channel: CommunicationLogRecord["channel"]
+      scheduledFor?: string | null
+      rendered: {
+        subject: string
+        previewText: string
+        htmlBody: string
+        textBody: string
+      }
+      recipient: string
+    },
+  ) => void
   updateEmailIntegration: (patch: Partial<EmailIntegrationRecord>) => void
   testEmailIntegration: () => void
 }
 
 const STORAGE_KEY = "cbideal-communication-state"
-
 const CommunicationContext = createContext<CommunicationContextValue | null>(null)
 
 function clone<T>(value: T): T {
@@ -80,15 +77,11 @@ function clone<T>(value: T): T {
 function formatDateTime(date = new Date()) {
   return new Intl.DateTimeFormat("en-GB", {
     day: "2-digit",
-    month: "short",
+    month: "2-digit",
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
   }).format(date)
-}
-
-function replaceTokens(input: string, variables: Record<string, string>) {
-  return input.replace(/\{\{(.*?)\}\}/g, (_, key) => variables[key.trim()] ?? "")
 }
 
 export function CommunicationProvider({ children }: { children: ReactNode }) {
@@ -96,7 +89,6 @@ export function CommunicationProvider({ children }: { children: ReactNode }) {
   const { storageScope } = usePlatformAccess()
   const workflow = useWorkflow()
   const [state, setState] = useState<CommunicationState>({
-    templates: clone(initialTemplates),
     history: clone(initialCommunicationHistory),
     integration: clone(emailIntegrationSettings),
   })
@@ -121,17 +113,22 @@ export function CommunicationProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<CommunicationContextValue>(() => {
     const getTemplateById = (templateId: string) =>
-      state.templates.find((template) => template.id === templateId)
+      emailTemplates.find((template) => template.id === templateId)
 
     const getTemplatesByCategory = (category?: TemplateCategory | "All") =>
       category && category !== "All"
-        ? state.templates.filter((template) => template.category === category)
-        : state.templates
+        ? emailTemplates.filter((template) => template.category === category)
+        : emailTemplates
 
     const getCommunicationHistory = (clientId?: string) =>
       clientId ? state.history.filter((entry) => entry.clientId === clientId) : state.history
 
-    const buildVariables = (context: CommunicationContextInput) => {
+    const getRecipientForClient = (clientId: string) => {
+      const externalUser = externalUsers.find((user) => user.clientId === clientId)
+      return externalUser?.email ?? `${clientId}@samplemail.com`
+    }
+
+    const getDefaultVariables = (templateId: string, context: CommunicationContextInput) => {
       const client = workflow.getClientById(context.clientId)
       const clientDetail = workflow.getClientDetail(context.clientId)
       const caseRecord =
@@ -150,129 +147,35 @@ export function CommunicationProvider({ children }: { children: ReactNode }) {
       const proof = context.paymentId
         ? workflow.state.paymentProofs.find((entry) => entry.paymentId === context.paymentId)
         : undefined
-      const externalUser = externalUsers.find((user) => user.clientId === context.clientId)
 
-      const clientName = clientDetail?.name ?? client?.name ?? "Client"
-      const paymentAmount = payment
-        ? `${payment.currency} ${payment.amount.toLocaleString()}`
-        : "Payment amount"
-      const recipient = externalUser?.email ?? `${context.clientId}@samplemail.com`
-      const tokens = getBrandingUiTokens(branding)
-      const brandLogo = branding.darkLogoUrl || branding.companyLogoUrl
-      const brandHeaderMarkup = brandLogo
-        ? `<img src="${brandLogo}" alt="${branding.companyName}" style="display:block;max-width:220px;height:42px;width:auto;object-fit:contain;object-position:left;" />`
-        : `<div style="font-family:Cormorant Garamond,Georgia,serif;font-size:32px;line-height:1.05;color:#ffffff;">${branding.companyName}</div>`
+      const portalBase = buildSaasAppUrl("/portal")
 
-      return {
-        client_name: clientName,
+      const defaults: TemplateVariables = {
+        client_name: clientDetail?.name ?? client?.name ?? "Client",
         company_name: branding.companyName,
         account_manager_name:
-          caseRecord?.owner ?? quotation?.owner ?? clientDetail?.owner ?? client?.owner ?? "Account manager",
-        document_name: checklistItem?.item ?? "document",
+          caseRecord?.owner ?? quotation?.owner ?? clientDetail?.owner ?? client?.owner ?? branding.senderDisplayName,
+        document_name: checklistItem?.item ?? "Requested document",
         rejection_reason:
           context.customReason ??
           checklistItem?.comment ??
           proof?.rejectionReason ??
-          "Please re-upload the item with the requested corrections.",
-        payment_amount: paymentAmount,
-        payment_due_date: payment?.dueDate ?? "the current due date",
-        quotation_name: quotation?.id ?? "quotation",
-        portal_link: `https://${workspace.appHost}/portal`,
-        upload_link: `https://${workspace.appHost}/portal/documents`,
-        case_name: caseRecord?.route ?? quotation?.client ?? clientName,
-        sender_name: branding.senderDisplayName,
-        reply_to: state.integration.replyTo,
-        recipient_email: recipient,
-        brand_primary: branding.primaryColor,
-        brand_primary_strong: tokens.primaryStrong,
-        brand_on_primary: tokens.onPrimary,
-        brand_header_markup: brandHeaderMarkup,
+          "Please upload a revised version that addresses the review note.",
+        payment_amount: payment ? `${payment.currency} ${payment.amount.toLocaleString()}` : "",
+        payment_due_date: payment?.dueDate ?? "",
+        quotation_name: quotation?.title ?? quotation?.id ?? "Current quotation",
+        portal_link: context.paymentId ? `${portalBase}/payments` : `${portalBase}/messages`,
+        upload_link: `${portalBase}/documents`,
+        case_name: caseRecord?.route ?? quotation?.title ?? clientDetail?.summary ?? "Active matter",
       }
-    }
 
-    const renderTemplate = (templateId: string, context: CommunicationContextInput) => {
       const template = getTemplateById(templateId)
-      if (!template) return null
+      if (!template) return defaults
 
-      const variables = buildVariables(context)
-
-      return {
-        subject: replaceTokens(template.subject, variables),
-        previewText: replaceTokens(template.previewText, variables),
-        htmlBody: replaceTokens(template.htmlBody, variables),
-        textBody: replaceTokens(template.textBody, variables),
-        variables,
-        recipient: variables.recipient_email,
-      }
-    }
-
-    const buildOutlookDraftUrl = (templateId: string, context: CommunicationContextInput) => {
-      const rendered = renderTemplate(templateId, context)
-      if (!rendered) return null
-
-      const query = new URLSearchParams({
-        subject: rendered.subject,
-        body: rendered.textBody,
-      })
-
-      return `mailto:${rendered.recipient}?${query.toString()}`
-    }
-
-    const createTemplate = (
-      input: Omit<EmailTemplateRecord, "id" | "lastEdited" | "lastUsed">,
-    ) => {
-      const id = `tpl-${Date.now()}`
-      setState((current) => ({
-        ...current,
-        templates: [
-          {
-            ...input,
-            id,
-            lastEdited: formatDateTime(),
-            lastUsed: null,
-          },
-          ...current.templates,
-        ],
-      }))
-      return id
-    }
-
-    const updateTemplate = (templateId: string, patch: Partial<Omit<EmailTemplateRecord, "id">>) => {
-      setState((current) => ({
-        ...current,
-        templates: current.templates.map((template) =>
-          template.id === templateId
-            ? { ...template, ...patch, lastEdited: formatDateTime() }
-            : template,
-        ),
-      }))
-    }
-
-    const duplicateTemplate = (templateId: string) => {
-      const template = getTemplateById(templateId)
-      if (!template) return null
-      const nextId = `tpl-${Date.now()}`
-      setState((current) => ({
-        ...current,
-        templates: [
-          {
-            ...template,
-            id: nextId,
-            name: `${template.name} copy`,
-            lastEdited: formatDateTime(),
-            lastUsed: null,
-          },
-          ...current.templates,
-        ],
-      }))
-      return nextId
-    }
-
-    const deleteTemplate = (templateId: string) => {
-      setState((current) => ({
-        ...current,
-        templates: current.templates.filter((template) => template.id !== templateId),
-      }))
+      return template.variables.reduce<TemplateVariables>((accumulator, variable) => {
+        accumulator[variable.key] = defaults[variable.key] ?? ""
+        return accumulator
+      }, {})
     }
 
     const saveCommunication = (
@@ -281,17 +184,20 @@ export function CommunicationProvider({ children }: { children: ReactNode }) {
         status: CommunicationStatus
         channel: CommunicationLogRecord["channel"]
         scheduledFor?: string | null
+        rendered: {
+          subject: string
+          previewText: string
+          htmlBody: string
+          textBody: string
+        }
+        recipient: string
       },
     ) => {
       const template = getTemplateById(input.templateId)
-      const rendered = renderTemplate(input.templateId, input)
-      if (!template || !rendered) return null
+      if (!template) return
 
       setState((current) => ({
         ...current,
-        templates: current.templates.map((entry) =>
-          entry.id === input.templateId ? { ...entry, lastUsed: formatDateTime() } : entry,
-        ),
         history: [
           {
             id: `comm-${Date.now()}`,
@@ -303,12 +209,12 @@ export function CommunicationProvider({ children }: { children: ReactNode }) {
             templateId: template.id,
             templateName: template.name,
             category: template.category,
-            subject: rendered.subject,
-            previewText: rendered.previewText,
-            renderedHtml: rendered.htmlBody,
-            renderedText: rendered.textBody,
+            subject: input.rendered.subject,
+            previewText: input.rendered.previewText,
+            renderedHtml: input.rendered.htmlBody,
+            renderedText: input.rendered.textBody,
             sender: `${branding.senderDisplayName} <${current.integration.senderMailbox}>`,
-            recipient: rendered.recipient,
+            recipient: input.recipient,
             createdAt: formatDateTime(),
             scheduledFor: input.scheduledFor ?? null,
             status: input.status,
@@ -325,8 +231,6 @@ export function CommunicationProvider({ children }: { children: ReactNode }) {
           ...current.history,
         ],
       }))
-
-      return buildOutlookDraftUrl(input.templateId, input)
     }
 
     const updateEmailIntegration = (patch: Partial<EmailIntegrationRecord>) => {
@@ -352,16 +256,15 @@ export function CommunicationProvider({ children }: { children: ReactNode }) {
     }
 
     return {
-      state,
+      state: {
+        ...state,
+        templates: emailTemplates,
+      },
       getTemplateById,
       getTemplatesByCategory,
       getCommunicationHistory,
-      renderTemplate,
-      buildOutlookDraftUrl,
-      createTemplate,
-      updateTemplate,
-      duplicateTemplate,
-      deleteTemplate,
+      getDefaultVariables,
+      getRecipientForClient,
       saveCommunication,
       updateEmailIntegration,
       testEmailIntegration,

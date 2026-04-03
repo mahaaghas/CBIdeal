@@ -3,7 +3,14 @@
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useMemo, useState } from "react"
-import { formatPlanAmount, getSaasPlan, isSelfServePlan, saasAppConfig, saasPlans, type SelfServePlanId } from "@cbideal/config"
+import {
+  formatPlanAmount,
+  getSaasPlan,
+  isSelfServePlan,
+  saasAppConfig,
+  saasPlans,
+  type SelfServePlanId,
+} from "@cbideal/config"
 import { AppBrand } from "@cbideal/ui/components/app-brand"
 import { useBranding } from "@/lib/branding-store"
 import { getSelfServeCheckoutUrl, usePlatformAccess } from "@/lib/platform-access-store"
@@ -63,7 +70,7 @@ function SignupPageContent() {
                 Create your firm workspace.
               </h1>
               <p className="text-base leading-8 text-slate-300">
-                Starter and Growth plans move through a clean self-serve flow: account creation, company setup, billing, and direct access to app.cbideal.nl.
+                Starter and Growth plans move through a clean self-serve flow: account creation, company setup, billing, and direct access to {saasAppConfig.appUrl}.
               </p>
             </div>
             <div className="space-y-3">

@@ -58,9 +58,52 @@ export type QuotationRecord = (typeof quotations)[number] & {
 }
 type PaymentRecord = (typeof paymentSchedules)[number]
 type PaymentProofRecord = (typeof paymentProofs)[number]
-type ChecklistRecord = (typeof documentChecklistItems)[number]
-type UploadRecord = (typeof documentUploads)[number]
-type ReviewRecord = (typeof reviewDecisions)[number]
+type PortalUserRecord = (typeof externalUsers)[number]
+export type DocumentStatus =
+  | "Not Uploaded"
+  | "Uploaded"
+  | "Under Review"
+  | "Approved"
+  | "Rejected"
+
+type ChecklistRecord = (typeof documentChecklistItems)[number] & {
+  requestedAt?: string | null
+  lastActionAt?: string | null
+  nextAction?: string | null
+}
+type UploadRecord = (typeof documentUploads)[number] & {
+  clientId: string
+  version: number
+  fileSizeLabel?: string | null
+  mimeType?: string | null
+  storagePath?: string | null
+  reviewedAt?: string | null
+  reviewNote?: string | null
+}
+type ReviewRecord = (typeof reviewDecisions)[number] & {
+  uploadId?: string | null
+}
+export type DocumentActivityRecord = {
+  id: string
+  checklistItemId: string
+  caseId: string
+  clientId: string
+  itemLabel: string
+  actorName: string
+  actorType: "Client" | "Admin" | "System"
+  eventType:
+    | "document_requested"
+    | "document_uploaded"
+    | "review_started"
+    | "document_approved"
+    | "document_rejected"
+    | "document_marked_missing"
+  fromStatus?: DocumentStatus | null
+  toStatus: DocumentStatus
+  fileName?: string | null
+  note?: string | null
+  createdAt: string
+}
 type NotificationRecord = (typeof notificationLog)[number] & { clientId?: string; isRead?: boolean }
 export type WorkspaceLeadRecord = {
   id: string
@@ -102,6 +145,7 @@ export type WorkflowNotificationFeedItem = {
 type WorkflowState = {
   leads: WorkspaceLeadRecord[]
   clients: ClientRecord[]
+  portalUsers: PortalUserRecord[]
   clientProfiles: Record<string, ClientDetailRecord>
   cases: CaseRecord[]
   quotations: QuotationRecord[]
@@ -110,9 +154,11 @@ type WorkflowState = {
   checklist: ChecklistRecord[]
   uploads: UploadRecord[]
   reviews: ReviewRecord[]
+  documentActivity: DocumentActivityRecord[]
   notifications: NotificationRecord[]
   clientUpdates: Record<string, string[]>
   importSummaries: WorkspaceImportSummary[]
+  portalSessionClientId: string
 }
 
 type WorkflowContextValue = {
@@ -122,14 +168,18 @@ type WorkflowContextValue = {
   getAllClients: () => ClientRecord[]
   getClientById: (clientId: string) => ClientRecord | undefined
   getClientDetail: (clientId: string) => ClientDetailRecord | undefined
+  getPortalUserByClientId: (clientId: string) => PortalUserRecord | undefined
   getCaseByClientId: (clientId: string) => CaseRecord | undefined
   getQuotationByClientId: (clientId: string) => QuotationRecord | undefined
   getPaymentsForClient: (clientId: string) => PaymentRecord[]
   getPaymentProofByPaymentId: (paymentId: string) => PaymentProofRecord | undefined
   getChecklistForCase: (caseId: string) => ChecklistRecord[]
   getUploadsForCase: (caseId: string) => UploadRecord[]
+  getUploadsForChecklistItem: (checklistItemId: string) => UploadRecord[]
   getLatestUploadForChecklistItem: (checklistItemId: string) => UploadRecord | undefined
   getReviewsForCase: (caseId: string) => ReviewRecord[]
+  getDocumentActivityForClient: (clientId: string) => DocumentActivityRecord[]
+  getDocumentActivityForChecklistItem: (checklistItemId: string) => DocumentActivityRecord[]
   getNotificationsForClient: (clientId: string) => NotificationRecord[]
   getClientUpdates: (clientId: string) => string[]
   getImportSummaries: () => WorkspaceImportSummary[]
@@ -139,6 +189,8 @@ type WorkflowContextValue = {
   getPortalNotificationCount: (clientId: string) => number
   markNotificationRead: (notificationId: string) => void
   markNotificationsRead: (notificationIds: string[]) => void
+  setCurrentPortalClient: (clientId: string) => void
+  loginPortalUser: (email: string, reference?: string) => { ok: boolean; clientId?: string; error?: string }
   createClient: (input: {
     name: string
     type: string
@@ -182,9 +234,26 @@ type WorkflowContextValue = {
     approvedDocuments: number
     paymentHeadline: string
   }
+  startDocumentReview: (checklistItemId: string) => void
   approveDocument: (checklistItemId: string) => void
   rejectDocument: (checklistItemId: string, reason: string) => void
-  uploadDocument: (checklistItemId: string, fileName: string, uploadedBy?: string) => void
+  markDocumentMissing: (checklistItemId: string, reason?: string) => void
+  requestAdditionalDocument: (input: {
+    clientId: string
+    caseId: string
+    category: string
+    item: string
+    note?: string
+  }) => string
+  uploadDocument: (
+    checklistItemId: string,
+    file: {
+      fileName: string
+      fileSizeLabel?: string | null
+      mimeType?: string | null
+    },
+    uploadedBy?: string,
+  ) => void
   uploadPaymentProof: (paymentId: string, fileName: string) => void
   approvePaymentProof: (paymentId: string) => void
   rejectPaymentProof: (paymentId: string, reason: string) => void
@@ -234,6 +303,131 @@ function parseDateLabel(value?: string | null) {
 
 function normaliseClientId(raw?: string | null) {
   return raw?.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") ?? ""
+}
+
+function resolveClientName(state: Pick<WorkflowState, "clients">, clientId: string) {
+  return state.clients.find((client) => client.id === clientId)?.name ?? clientId
+}
+
+function resolveAssignedManagerName(ownerId?: string) {
+  return internalUsers.find((user) => user.id === ownerId)?.name ?? "Account manager"
+}
+
+function buildUploadStoragePath(clientId: string, checklistItemId: string, fileName: string, version: number) {
+  const safeName = fileName.trim().replace(/\s+/g, "-").toLowerCase()
+  return `portal/${clientId}/${checklistItemId}/v${version}-${safeName}`
+}
+
+function appendDocumentActivity(
+  state: WorkflowState,
+  activity: Omit<DocumentActivityRecord, "id" | "createdAt"> & { createdAt?: string },
+) {
+  state.documentActivity.unshift({
+    ...activity,
+    id: `doc-activity-${Date.now()}-${Math.round(Math.random() * 1000)}`,
+    createdAt: activity.createdAt ?? formatDateTime(),
+  })
+}
+
+function buildSeedUploads(checklist: ChecklistRecord[]) {
+  const versionMap = new Map<string, number>()
+
+  return clone(documentUploads).map((upload) => {
+    const checklistItem = checklist.find((item) => item.id === upload.checklistItemId)
+    const currentVersion = (versionMap.get(upload.checklistItemId) ?? 0) + 1
+    versionMap.set(upload.checklistItemId, currentVersion)
+
+    return {
+      ...upload,
+      clientId: checklistItem?.clientId ?? CURRENT_PORTAL_CLIENT_ID,
+      version: currentVersion,
+      fileSizeLabel: null,
+      mimeType: "application/pdf",
+      storagePath: buildUploadStoragePath(
+        checklistItem?.clientId ?? CURRENT_PORTAL_CLIENT_ID,
+        upload.checklistItemId,
+        upload.fileName,
+        currentVersion,
+      ),
+      reviewedAt: null,
+      reviewNote: null,
+    } as UploadRecord
+  }) as UploadRecord[]
+}
+
+function buildSeedChecklist() {
+  return clone(documentChecklistItems).map((item) => ({
+    ...item,
+    requestedAt: item.uploadedAt ?? item.reviewedAt ?? "15 Mar 2026",
+    lastActionAt: item.reviewedAt ?? item.uploadedAt ?? null,
+    nextAction:
+      item.status === "Rejected"
+        ? "Upload a corrected version."
+        : item.status === "Not Uploaded"
+          ? "Upload the requested file."
+          : item.status === "Under Review" || item.status === "Uploaded"
+            ? "Await internal review."
+            : "No action required.",
+  })) as ChecklistRecord[]
+}
+
+function buildSeedReviews() {
+  return clone(reviewDecisions).map((review) => ({
+    ...review,
+    uploadId: null,
+  })) as ReviewRecord[]
+}
+
+function buildDocumentActivityFromState(
+  checklist: ChecklistRecord[],
+  uploads: UploadRecord[],
+  reviews: ReviewRecord[],
+) {
+  const activity: DocumentActivityRecord[] = []
+
+  uploads.forEach((upload) => {
+    const item = checklist.find((entry) => entry.id === upload.checklistItemId)
+    if (!item) return
+
+    activity.push({
+      id: `seed-upload-${upload.id}`,
+      checklistItemId: upload.checklistItemId,
+      caseId: upload.caseId,
+      clientId: upload.clientId,
+      itemLabel: item.item,
+      actorName: upload.uploadedBy,
+      actorType: "Client",
+      eventType: "document_uploaded",
+      fromStatus: "Not Uploaded",
+      toStatus: upload.status === "Uploaded" ? "Uploaded" : upload.status,
+      fileName: upload.fileName,
+      note: null,
+      createdAt: upload.uploadedAt,
+    })
+  })
+
+  reviews.forEach((review) => {
+    const item = checklist.find((entry) => entry.id === review.checklistItemId)
+    if (!item) return
+
+    activity.push({
+      id: `seed-review-${review.id}`,
+      checklistItemId: review.checklistItemId,
+      caseId: review.caseId,
+      clientId: item.clientId,
+      itemLabel: item.item,
+      actorName: review.reviewer,
+      actorType: "Admin",
+      eventType: review.decision === "Approved" ? "document_approved" : "document_rejected",
+      fromStatus: "Under Review",
+      toStatus: review.decision,
+      fileName: null,
+      note: review.note,
+      createdAt: review.decidedAt,
+    })
+  })
+
+  return activity.sort((left, right) => parseDateLabel(right.createdAt) - parseDateLabel(left.createdAt))
 }
 
 function calculateLineItemsTotal(items: QuotationLineItem[]) {
@@ -365,6 +559,10 @@ function buildInitialState(): WorkflowState {
     },
   )
 
+  const checklist = buildSeedChecklist()
+  const uploads = buildSeedUploads(checklist)
+  const reviews = buildSeedReviews()
+
   return {
     leads: clone(initialLeads).map((lead, index) => ({
       id: lead.id ?? `workspace-lead-${index + 1}`,
@@ -388,14 +586,16 @@ function buildInitialState(): WorkflowState {
       notes: `${lead.timeline} / ${lead.budget}`,
     })),
     clients: clone(clients),
+    portalUsers: clone(externalUsers),
     clientProfiles: clone(clientDetails),
     cases: clone(initialCases),
     quotations: clone(quotations).map((quotation) => buildQuotationComputedFields(quotation)),
     payments: clone(paymentSchedules),
     paymentProofs: clone(paymentProofs),
-    checklist: clone(documentChecklistItems),
-    uploads: clone(documentUploads),
-    reviews: clone(reviewDecisions),
+    checklist,
+    uploads,
+    reviews,
+    documentActivity: buildDocumentActivityFromState(checklist, uploads, reviews),
     notifications: initialNotifications,
     clientUpdates: {
       "a-rahman": clone(portalSnapshot.updates),
@@ -404,6 +604,7 @@ function buildInitialState(): WorkflowState {
       "m-el-sayed": clone(clientDetails["m-el-sayed"].notes),
     },
     importSummaries: [],
+    portalSessionClientId: CURRENT_PORTAL_CLIENT_ID,
   }
 }
 
@@ -429,6 +630,7 @@ function buildWorkspaceSeed(companyName: string, ownerName: string): WorkflowSta
         investmentRange: "Not applicable",
       },
     ],
+    portalUsers: [],
     clientProfiles: {
       [welcomeClientId]: {
         id: welcomeClientId,
@@ -471,6 +673,7 @@ function buildWorkspaceSeed(companyName: string, ownerName: string): WorkflowSta
     checklist: [],
     uploads: [],
     reviews: [],
+    documentActivity: [],
     notifications: [
       {
         id: "notif-workspace-welcome",
@@ -491,15 +694,8 @@ function buildWorkspaceSeed(companyName: string, ownerName: string): WorkflowSta
       ],
     },
     importSummaries: [],
+    portalSessionClientId: welcomeClientId,
   }
-}
-
-function getClientName(clientId: string) {
-  return clients.find((client) => client.id === clientId)?.name ?? clientId
-}
-
-function getAssignedManagerName(ownerId?: string) {
-  return internalUsers.find((user) => user.id === ownerId)?.name ?? "Account manager"
 }
 
 function getInternalUserByName(raw?: string | null) {
@@ -549,10 +745,96 @@ function clearWorkspaceSeed(state: WorkflowState) {
   if (!isWorkspaceSeedState(state)) return
 
   state.clients = []
+  state.portalUsers = []
   state.clientProfiles = {}
   state.cases = []
+  state.documentActivity = []
   state.notifications = []
   state.clientUpdates = {}
+  state.portalSessionClientId = CURRENT_PORTAL_CLIENT_ID
+}
+
+function hydrateWorkflowState(
+  raw: unknown,
+  fallback: WorkflowState,
+) {
+  if (!raw || typeof raw !== "object") return fallback
+
+  const candidate = raw as Partial<WorkflowState>
+  const clientsState = Array.isArray(candidate.clients) ? candidate.clients : fallback.clients
+  const checklistState = Array.isArray(candidate.checklist) ? candidate.checklist : fallback.checklist
+  const checklist = checklistState.map((item) => ({
+    ...item,
+    requestedAt: item.requestedAt ?? item.uploadedAt ?? item.reviewedAt ?? "15 Mar 2026",
+    lastActionAt: item.lastActionAt ?? item.reviewedAt ?? item.uploadedAt ?? null,
+    nextAction:
+      item.nextAction ??
+      (item.status === "Rejected"
+        ? "Upload a corrected version."
+        : item.status === "Not Uploaded"
+          ? "Upload the requested file."
+          : item.status === "Uploaded" || item.status === "Under Review"
+            ? "Await internal review."
+            : "No action required."),
+  })) as ChecklistRecord[]
+  const uploads = (Array.isArray(candidate.uploads) ? candidate.uploads : fallback.uploads)
+    .map((upload, index) => {
+      const relatedItem = checklist.find((item) => item.id === upload.checklistItemId)
+      const version = upload.version ?? index + 1
+
+      return {
+        ...upload,
+        clientId: upload.clientId ?? relatedItem?.clientId ?? CURRENT_PORTAL_CLIENT_ID,
+        version,
+        fileSizeLabel: upload.fileSizeLabel ?? null,
+        mimeType: upload.mimeType ?? "application/octet-stream",
+        storagePath:
+          upload.storagePath ??
+          buildUploadStoragePath(
+            upload.clientId ?? relatedItem?.clientId ?? CURRENT_PORTAL_CLIENT_ID,
+            upload.checklistItemId,
+            upload.fileName,
+            version,
+          ),
+        reviewedAt: upload.reviewedAt ?? null,
+        reviewNote: upload.reviewNote ?? null,
+      }
+    }) as UploadRecord[]
+  const reviews = (Array.isArray(candidate.reviews) ? candidate.reviews : fallback.reviews).map((review) => ({
+    ...review,
+    uploadId: review.uploadId ?? null,
+  })) as ReviewRecord[]
+
+  return {
+    ...fallback,
+    ...candidate,
+    clients: clientsState,
+    portalUsers: Array.isArray(candidate.portalUsers) ? candidate.portalUsers : fallback.portalUsers,
+    checklist,
+    uploads,
+    reviews,
+    notifications: Array.isArray(candidate.notifications)
+      ? candidate.notifications.map((notification) => ({
+          ...notification,
+          clientId: notification.clientId ?? clientsState.find((client) => client.name === notification.recipient)?.id,
+          isRead: notification.isRead ?? false,
+        }))
+      : fallback.notifications,
+    clientUpdates:
+      candidate.clientUpdates && typeof candidate.clientUpdates === "object"
+        ? candidate.clientUpdates
+        : fallback.clientUpdates,
+    documentActivity:
+      Array.isArray(candidate.documentActivity) && candidate.documentActivity.length
+        ? candidate.documentActivity
+        : buildDocumentActivityFromState(checklist, uploads, reviews),
+    importSummaries: Array.isArray(candidate.importSummaries) ? candidate.importSummaries : fallback.importSummaries,
+    portalSessionClientId:
+      typeof candidate.portalSessionClientId === "string" &&
+      clientsState.some((client) => client.id === candidate.portalSessionClientId)
+        ? candidate.portalSessionClientId
+        : clientsState.find((client) => client.id === CURRENT_PORTAL_CLIENT_ID)?.id ?? clientsState[0]?.id ?? CURRENT_PORTAL_CLIENT_ID,
+  }
 }
 
 function ensureImportedClient(
@@ -613,6 +895,17 @@ function ensureImportedClient(
         input.notes?.trim() || "Review the imported record and continue normal operations.",
       ],
     } as ClientDetailRecord
+  }
+
+  if (!state.portalUsers.some((user) => user.clientId === clientId) && input.email?.trim()) {
+    state.portalUsers.push({
+      id: `ext-${clientId}`,
+      clientId,
+      name: name,
+      role: "Primary applicant",
+      email: input.email.trim().toLowerCase(),
+      portalStatus: "Portal live",
+    })
   }
 
   if (!state.clientUpdates[clientId]) {
@@ -679,7 +972,7 @@ function pushNotification(
 ) {
   const clientId =
     draft.clientId ??
-    clients.find((client) => client.name === draft.recipient)?.id ??
+    state.clients.find((client) => client.name === draft.recipient)?.id ??
     undefined
 
   state.notifications.unshift({
@@ -908,10 +1201,15 @@ function resolveNotificationFeedItem(
 export function WorkflowProvider({ children }: { children: ReactNode }) {
   const { currentTenant, currentUser, mode, storageScope } = usePlatformAccess()
   const scopedStorageKey = buildScopedStorageKey(STORAGE_KEY, storageScope)
+  const fallbackState = useMemo(
+    () =>
+      mode === "workspace" && currentTenant
+        ? buildWorkspaceSeed(currentTenant.companyName, currentUser?.fullName ?? "Workspace owner")
+        : buildInitialState(),
+    [currentTenant, currentUser?.fullName, mode],
+  )
   const [state, setState] = useState<WorkflowState>(() =>
-    mode === "workspace" && currentTenant
-      ? buildWorkspaceSeed(currentTenant.companyName, currentUser?.fullName ?? "Workspace owner")
-      : buildInitialState(),
+    fallbackState,
   )
 
   useEffect(() => {
@@ -919,25 +1217,39 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
 
     const saved = window.localStorage.getItem(scopedStorageKey)
     if (!saved) {
-      setState(
-        mode === "workspace" && currentTenant
-          ? buildWorkspaceSeed(currentTenant.companyName, currentUser?.fullName ?? "Workspace owner")
-          : buildInitialState(),
-      )
+      setState(fallbackState)
       return
     }
 
     try {
-      setState(JSON.parse(saved) as WorkflowState)
+      setState(hydrateWorkflowState(JSON.parse(saved), fallbackState))
     } catch {
       window.localStorage.removeItem(scopedStorageKey)
+      setState(fallbackState)
     }
-  }, [currentTenant, currentUser?.fullName, mode, scopedStorageKey])
+  }, [fallbackState, scopedStorageKey])
 
   useEffect(() => {
     if (typeof window === "undefined") return
     window.localStorage.setItem(scopedStorageKey, JSON.stringify(state))
   }, [scopedStorageKey, state])
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== scopedStorageKey || !event.newValue) return
+
+      try {
+        setState((current) => hydrateWorkflowState(JSON.parse(event.newValue ?? "null"), current))
+      } catch {
+        window.localStorage.removeItem(scopedStorageKey)
+      }
+    }
+
+    window.addEventListener("storage", handleStorage)
+    return () => window.removeEventListener("storage", handleStorage)
+  }, [scopedStorageKey])
 
   const value = useMemo<WorkflowContextValue>(() => {
     const getAllLeads = () => state.leads
@@ -946,37 +1258,44 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
 
     const getClientById = (clientId: string) => state.clients.find((client) => client.id === clientId)
 
-    const getClientDetail = (clientId: string) =>
-      state.clientProfiles[clientId]
+    const getClientDetail = (clientId: string) => state.clientProfiles[clientId]
 
-    const getCaseByClientId = (clientId: string) =>
-      state.cases.find((item) => item.clientId === clientId)
+    const getPortalUserByClientId = (clientId: string) =>
+      state.portalUsers.find((user) => user.clientId === clientId)
 
-    const getQuotationByClientId = (clientId: string) =>
-      state.quotations.find((item) => item.clientId === clientId)
+    const getCaseByClientId = (clientId: string) => state.cases.find((item) => item.clientId === clientId)
 
-    const getPaymentsForClient = (clientId: string) =>
-      state.payments.filter((item) => item.clientId === clientId)
+    const getQuotationByClientId = (clientId: string) => state.quotations.find((item) => item.clientId === clientId)
 
-    const getPaymentProofByPaymentId = (paymentId: string) =>
-      state.paymentProofs.find((item) => item.paymentId === paymentId)
+    const getPaymentsForClient = (clientId: string) => state.payments.filter((item) => item.clientId === clientId)
 
-    const getChecklistForCase = (caseId: string) =>
-      state.checklist.filter((item) => item.caseId === caseId)
+    const getPaymentProofByPaymentId = (paymentId: string) => state.paymentProofs.find((item) => item.paymentId === paymentId)
 
-    const getUploadsForCase = (caseId: string) =>
-      state.uploads.filter((item) => item.caseId === caseId)
+    const getChecklistForCase = (caseId: string) => state.checklist.filter((item) => item.caseId === caseId)
+
+    const getUploadsForCase = (caseId: string) => state.uploads.filter((item) => item.caseId === caseId)
+
+    const getUploadsForChecklistItem = (checklistItemId: string) =>
+      state.uploads
+        .filter((item) => item.checklistItemId === checklistItemId)
+        .sort((left, right) => parseDateLabel(right.uploadedAt) - parseDateLabel(left.uploadedAt))
 
     const getLatestUploadForChecklistItem = (checklistItemId: string) =>
-      [...state.uploads]
+      getUploadsForChecklistItem(checklistItemId)[0]
+
+    const getReviewsForCase = (caseId: string) => state.reviews.filter((item) => item.caseId === caseId)
+
+    const getDocumentActivityForClient = (clientId: string) =>
+      state.documentActivity
+        .filter((item) => item.clientId === clientId)
+        .sort((left, right) => parseDateLabel(right.createdAt) - parseDateLabel(left.createdAt))
+
+    const getDocumentActivityForChecklistItem = (checklistItemId: string) =>
+      state.documentActivity
         .filter((item) => item.checklistItemId === checklistItemId)
-        .sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime())[0]
+        .sort((left, right) => parseDateLabel(right.createdAt) - parseDateLabel(left.createdAt))
 
-    const getReviewsForCase = (caseId: string) =>
-      state.reviews.filter((item) => item.caseId === caseId)
-
-    const getNotificationsForClient = (clientId: string) =>
-      state.notifications.filter((item) => item.clientId === clientId)
+    const getNotificationsForClient = (clientId: string) => state.notifications.filter((item) => item.clientId === clientId)
 
     const getClientUpdates = (clientId: string) => state.clientUpdates[clientId] ?? []
 
@@ -1026,6 +1345,48 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
 
         return changed ? next : current
       })
+    }
+
+    const setCurrentPortalClient = (clientId: string) => {
+      setState((current) => {
+        if (!current.clients.some((client) => client.id === clientId) || current.portalSessionClientId === clientId) {
+          return current
+        }
+
+        return {
+          ...current,
+          portalSessionClientId: clientId,
+        }
+      })
+    }
+
+    const loginPortalUser = (email: string, reference?: string) => {
+      const emailAddress = email.trim().toLowerCase()
+      const referenceValue = reference?.trim().toLowerCase()
+      const matchingUser = state.portalUsers.find((user) => {
+        const userEmail = user.email.trim().toLowerCase()
+        const userClient = state.clients.find((client) => client.id === user.clientId)
+        const userReference = userClient?.name.trim().toLowerCase()
+        return (
+          userEmail === emailAddress &&
+          (!referenceValue ||
+            userReference?.includes(referenceValue) ||
+            user.clientId.toLowerCase() === referenceValue)
+        )
+      })
+
+      if (!matchingUser) {
+        return {
+          ok: false,
+          error: "No portal access record matched that email and reference.",
+        }
+      }
+
+      setCurrentPortalClient(matchingUser.clientId)
+      return {
+        ok: true,
+        clientId: matchingUser.clientId,
+      }
     }
 
     const createClient = (input: {
@@ -1079,6 +1440,15 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
             "Awaiting next operational step.",
           ],
         } as ClientDetailRecord
+
+        next.portalUsers.unshift({
+          id: `ext-${clientId}`,
+          clientId,
+          name: input.name,
+          role: "Primary applicant",
+          email: `${clientId}@portal.cbideal.local`,
+          portalStatus: "Invitation sent",
+        })
 
         next.cases.unshift({
           id: next.clientProfiles[clientId].caseId,
@@ -1487,23 +1857,63 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
       }
     }
 
+    const startDocumentReview = (checklistItemId: string) => {
+      setState((current) => {
+        const next = clone(current)
+        const item = next.checklist.find((entry) => entry.id === checklistItemId)
+        if (!item || item.status !== "Uploaded") return current
+
+        const latestUpload = next.uploads.find((entry) => entry.checklistItemId === checklistItemId)
+        item.status = "Under Review"
+        item.comment = "Internal review is now in progress."
+        item.lastActionAt = formatDateTime()
+        item.nextAction = "Await internal review."
+
+        if (latestUpload) {
+          latestUpload.status = "Under Review"
+        }
+
+        appendDocumentActivity(next, {
+          checklistItemId,
+          caseId: item.caseId,
+          clientId: item.clientId,
+          itemLabel: item.item,
+          actorName: "Nour H.",
+          actorType: "Admin",
+          eventType: "review_started",
+          fromStatus: "Uploaded",
+          toStatus: "Under Review",
+          fileName: latestUpload?.fileName ?? null,
+          note: "Internal review started.",
+        })
+
+        pushClientUpdate(next, item.clientId, `${item.item} is now under review.`)
+        syncCaseState(next, item.caseId)
+        return next
+      })
+    }
+
     const approveDocument = (checklistItemId: string) => {
       setState((current) => {
         const next = clone(current)
         const item = next.checklist.find((entry) => entry.id === checklistItemId)
         if (!item) return current
 
+        const previousStatus = item.status
+
         item.status = "Approved"
         item.reviewer = "Nour H."
-        item.reviewedAt = formatDate()
+        item.reviewedAt = formatDateTime()
         item.comment = "Approved for use in the current file."
+        item.lastActionAt = formatDateTime()
+        item.nextAction = "No action required."
 
-        const upload = [...next.uploads]
-          .filter((entry) => entry.checklistItemId === checklistItemId)
-          .sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime())[0]
+        const upload = next.uploads.find((entry) => entry.checklistItemId === checklistItemId)
 
         if (upload) {
           upload.status = "Approved"
+          upload.reviewedAt = formatDateTime()
+          upload.reviewNote = "Approved for use in the current file."
         }
 
         next.reviews.unshift({
@@ -1514,14 +1924,29 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
           decision: "Approved",
           reviewer: "Nour H.",
           reviewerId: "usr-nour",
-          decidedAt: formatDate(),
+          decidedAt: formatDateTime(),
+          note: "Approved for the active case file.",
+          uploadId: upload?.id ?? null,
+        })
+
+        appendDocumentActivity(next, {
+          checklistItemId,
+          caseId: item.caseId,
+          clientId: item.clientId,
+          itemLabel: item.item,
+          actorName: "Nour H.",
+          actorType: "Admin",
+          eventType: "document_approved",
+          fromStatus: previousStatus,
+          toStatus: "Approved",
+          fileName: upload?.fileName ?? null,
           note: "Approved for the active case file.",
         })
 
         pushNotification(next, {
           type: "Document approved",
           channel: "Email",
-          recipient: getClientName(item.clientId),
+          recipient: resolveClientName(next, item.clientId),
           recipientType: "Client",
           relatedTo: checklistItemId,
           status: "Queued",
@@ -1543,17 +1968,21 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
         const item = next.checklist.find((entry) => entry.id === checklistItemId)
         if (!item) return current
 
+        const previousStatus = item.status
+
         item.status = "Rejected"
         item.reviewer = "Nour H."
-        item.reviewedAt = formatDate()
+        item.reviewedAt = formatDateTime()
         item.comment = trimmedReason
+        item.lastActionAt = formatDateTime()
+        item.nextAction = "Upload a corrected version."
 
-        const upload = [...next.uploads]
-          .filter((entry) => entry.checklistItemId === checklistItemId)
-          .sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime())[0]
+        const upload = next.uploads.find((entry) => entry.checklistItemId === checklistItemId)
 
         if (upload) {
           upload.status = "Rejected"
+          upload.reviewedAt = formatDateTime()
+          upload.reviewNote = trimmedReason
         }
 
         next.reviews.unshift({
@@ -1564,14 +1993,29 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
           decision: "Rejected",
           reviewer: "Nour H.",
           reviewerId: "usr-nour",
-          decidedAt: formatDate(),
+          decidedAt: formatDateTime(),
+          note: trimmedReason,
+          uploadId: upload?.id ?? null,
+        })
+
+        appendDocumentActivity(next, {
+          checklistItemId,
+          caseId: item.caseId,
+          clientId: item.clientId,
+          itemLabel: item.item,
+          actorName: "Nour H.",
+          actorType: "Admin",
+          eventType: "document_rejected",
+          fromStatus: previousStatus,
+          toStatus: "Rejected",
+          fileName: upload?.fileName ?? null,
           note: trimmedReason,
         })
 
         pushNotification(next, {
           type: "Document rejected and re-upload requested",
           channel: "Email",
-          recipient: getClientName(item.clientId),
+          recipient: resolveClientName(next, item.clientId),
           recipientType: "Client",
           relatedTo: checklistItemId,
           status: "Queued",
@@ -1584,43 +2028,195 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
       })
     }
 
-    const uploadDocument = (checklistItemId: string, fileName: string, uploadedBy = "Portal user") => {
+    const markDocumentMissing = (checklistItemId: string, reason?: string) => {
       setState((current) => {
-        const trimmedName = fileName.trim()
+        const next = clone(current)
+        const item = next.checklist.find((entry) => entry.id === checklistItemId)
+        if (!item) return current
+
+        const note = reason?.trim() || "Waiting on client upload."
+        const previousStatus = item.status
+
+        item.status = "Not Uploaded"
+        item.comment = note
+        item.reviewer = null
+        item.reviewedAt = null
+        item.lastActionAt = formatDateTime()
+        item.nextAction = "Upload the requested file."
+
+        appendDocumentActivity(next, {
+          checklistItemId,
+          caseId: item.caseId,
+          clientId: item.clientId,
+          itemLabel: item.item,
+          actorName: "Nour H.",
+          actorType: "Admin",
+          eventType: "document_marked_missing",
+          fromStatus: previousStatus,
+          toStatus: "Not Uploaded",
+          fileName: null,
+          note,
+        })
+
+        pushNotification(next, {
+          type: "Missing documents reminder",
+          channel: "Email",
+          recipient: resolveClientName(next, item.clientId),
+          recipientType: "Client",
+          relatedTo: checklistItemId,
+          status: "Queued",
+          clientId: item.clientId,
+        })
+        pushClientUpdate(next, item.clientId, `${item.item} is still required. ${note}`)
+
+        syncCaseState(next, item.caseId)
+        return next
+      })
+    }
+
+    const requestAdditionalDocument = (input: {
+      clientId: string
+      caseId: string
+      category: string
+      item: string
+      note?: string
+    }) => {
+      const documentId = `doc-${Date.now()}`
+
+      setState((current) => {
+        const next = clone(current)
+        const itemLabel = input.item.trim()
+        if (!itemLabel) return current
+
+        next.checklist.unshift({
+          id: documentId,
+          clientId: input.clientId,
+          caseId: input.caseId,
+          category: input.category.trim() || "Additional documents",
+          item: itemLabel,
+          status: "Not Uploaded",
+          reviewer: null,
+          reviewedAt: null,
+          uploadedAt: null,
+          comment: input.note?.trim() || "Additional document requested by the case team.",
+          requestedAt: formatDateTime(),
+          lastActionAt: formatDateTime(),
+          nextAction: "Upload the requested file.",
+        })
+
+        appendDocumentActivity(next, {
+          checklistItemId: documentId,
+          caseId: input.caseId,
+          clientId: input.clientId,
+          itemLabel,
+          actorName: "Nour H.",
+          actorType: "Admin",
+          eventType: "document_requested",
+          fromStatus: null,
+          toStatus: "Not Uploaded",
+          fileName: null,
+          note: input.note?.trim() || "Additional document requested by the case team.",
+        })
+
+        pushNotification(next, {
+          type: "Missing documents reminder",
+          channel: "Email",
+          recipient: resolveClientName(next, input.clientId),
+          recipientType: "Client",
+          relatedTo: documentId,
+          status: "Queued",
+          clientId: input.clientId,
+        })
+        pushClientUpdate(next, input.clientId, `${itemLabel} has been requested and is now visible in your checklist.`)
+
+        syncCaseState(next, input.caseId)
+        return next
+      })
+
+      return documentId
+    }
+
+    const uploadDocument = (
+      checklistItemId: string,
+      file: {
+        fileName: string
+        fileSizeLabel?: string | null
+        mimeType?: string | null
+      },
+      uploadedBy = "Portal user",
+    ) => {
+      setState((current) => {
+        const trimmedName = file.fileName.trim()
         if (!trimmedName) return current
 
         const next = clone(current)
         const item = next.checklist.find((entry) => entry.id === checklistItemId)
         if (!item) return current
 
+        const previousStatus = item.status
+        const nextVersion = next.uploads.filter((entry) => entry.checklistItemId === checklistItemId).length + 1
+
         item.status = "Uploaded"
-        item.uploadedAt = formatDate()
+        item.uploadedAt = formatDateTime()
+        item.requestedAt = item.requestedAt ?? formatDateTime()
         item.reviewer = null
         item.reviewedAt = null
         item.comment = null
+        item.lastActionAt = formatDateTime()
+        item.nextAction = "Await internal review."
 
         next.uploads.unshift({
           id: `upload-${Date.now()}`,
           checklistItemId,
           caseId: item.caseId,
-          client: getClientName(item.clientId),
+          clientId: item.clientId,
+          client: resolveClientName(next, item.clientId),
           fileName: trimmedName,
           uploadedBy,
-          uploadedAt: formatDate(),
+          uploadedAt: formatDateTime(),
           status: "Uploaded",
+          version: nextVersion,
+          fileSizeLabel: file.fileSizeLabel ?? null,
+          mimeType: file.mimeType ?? null,
+          storagePath: buildUploadStoragePath(item.clientId, checklistItemId, trimmedName, nextVersion),
+          reviewedAt: null,
+          reviewNote: null,
+        })
+
+        appendDocumentActivity(next, {
+          checklistItemId,
+          caseId: item.caseId,
+          clientId: item.clientId,
+          itemLabel: item.item,
+          actorName: uploadedBy,
+          actorType: "Client",
+          eventType: "document_uploaded",
+          fromStatus: previousStatus,
+          toStatus: "Uploaded",
+          fileName: trimmedName,
+          note:
+            previousStatus === "Rejected"
+              ? "A corrected version has been uploaded and is ready for review."
+              : "A new file has been uploaded and is ready for review.",
         })
 
         const caseRecord = next.cases.find((entry) => entry.id === item.caseId)
         pushNotification(next, {
           type: "Document uploaded",
           channel: "Workspace",
-          recipient: getAssignedManagerName(caseRecord?.ownerId),
+          recipient: resolveAssignedManagerName(caseRecord?.ownerId),
           recipientType: "Internal",
           relatedTo: checklistItemId,
           status: "Sent",
           clientId: item.clientId,
         })
-        pushClientUpdate(next, item.clientId, `${item.item} was uploaded and is now awaiting review.`)
+        pushClientUpdate(
+          next,
+          item.clientId,
+          previousStatus === "Rejected"
+            ? `${item.item} was uploaded again and is now awaiting review.`
+            : `${item.item} was uploaded and is now awaiting review.`,
+        )
 
         syncCaseState(next, item.caseId)
         return next
@@ -1753,19 +2349,27 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
 
     return {
       state,
-      currentPortalClientId: state.clients[0]?.id ?? CURRENT_PORTAL_CLIENT_ID,
+      currentPortalClientId:
+        state.clients.find((client) => client.id === state.portalSessionClientId)?.id ??
+        state.clients.find((client) => client.id === CURRENT_PORTAL_CLIENT_ID)?.id ??
+        state.clients[0]?.id ??
+        CURRENT_PORTAL_CLIENT_ID,
       getAllLeads,
       getAllClients,
       getClientById,
       getClientDetail,
+      getPortalUserByClientId,
       getCaseByClientId,
       getQuotationByClientId,
       getPaymentsForClient,
       getPaymentProofByPaymentId,
       getChecklistForCase,
       getUploadsForCase,
+      getUploadsForChecklistItem,
       getLatestUploadForChecklistItem,
       getReviewsForCase,
+      getDocumentActivityForClient,
+      getDocumentActivityForChecklistItem,
       getNotificationsForClient,
       getClientUpdates,
       getImportSummaries,
@@ -1775,13 +2379,18 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
       getPortalNotificationCount,
       markNotificationRead,
       markNotificationsRead,
+      setCurrentPortalClient,
+      loginPortalUser,
       createClient,
       createQuotation,
       importRecords,
       startFromScratch,
       getPortalOverview,
+      startDocumentReview,
       approveDocument,
       rejectDocument,
+      markDocumentMissing,
+      requestAdditionalDocument,
       uploadDocument,
       uploadPaymentProof,
       approvePaymentProof,

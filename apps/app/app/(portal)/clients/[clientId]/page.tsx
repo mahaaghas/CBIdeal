@@ -17,7 +17,12 @@ import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
 import { Button } from "@cbideal/ui/components/ui/button"
 import { Progress } from "@cbideal/ui/components/ui/progress"
 import { CommunicationComposer } from "@/components/communication-composer"
-import { DocumentReviewControls, PaymentReviewControls } from "@/components/workflow-controls"
+import {
+  DocumentMissingControl,
+  DocumentRequestControl,
+  DocumentReviewControls,
+  PaymentReviewControls,
+} from "@/components/workflow-controls"
 import { useCommunication } from "@/lib/communication-store"
 import { useWorkflow } from "@/lib/workflow-store"
 
@@ -31,8 +36,9 @@ export default function ClientDetailPage() {
     getPaymentsForClient,
     getPaymentProofByPaymentId,
     getChecklistForCase,
+    getUploadsForChecklistItem,
     getLatestUploadForChecklistItem,
-    getReviewsForCase,
+    getDocumentActivityForClient,
     getNotificationsForClient,
     getClientUpdates,
   } = useWorkflow()
@@ -56,7 +62,7 @@ export default function ClientDetailPage() {
   const quotation = getQuotationByClientId(clientId)
   const payments = getPaymentsForClient(clientId)
   const checklist = getChecklistForCase(caseRecord.id)
-  const reviews = getReviewsForCase(caseRecord.id)
+  const documentActivity = getDocumentActivityForClient(clientId)
   const notifications = getNotificationsForClient(clientId)
   const updates = getClientUpdates(clientId)
   const communicationHistory = getCommunicationHistory(clientId)
@@ -160,7 +166,7 @@ export default function ClientDetailPage() {
                     <p className="text-xs uppercase tracking-[0.16em] text-slate-300">{quotation.id}</p>
                     <p className="text-lg font-semibold tracking-[-0.02em] text-white">{quotation.title ?? quotation.note}</p>
                     <p className="text-sm leading-6 text-slate-300">
-                      Advisor: {quotation.advisorName ?? quotation.owner} • valid until {quotation.validUntil}
+                      Advisor: {quotation.advisorName ?? quotation.owner} · valid until {quotation.validUntil}
                     </p>
                   </div>
                   <CrmStatusBadge status={quotation.status} />
@@ -249,6 +255,14 @@ export default function ClientDetailPage() {
         title="Document checklist"
         description="Required records grouped by category, with review actions attached to the specific item."
       >
+        <div className="mb-4 flex justify-end">
+          <DocumentRequestControl
+            clientId={clientId}
+            caseId={caseRecord.id}
+            triggerLabel="Request additional document"
+            className="rounded-full"
+          />
+        </div>
         <div className="grid gap-4 xl:grid-cols-2">
           {Object.entries(checklistByCategory).map(([category, items]) => (
             <div key={category} className="surface-muted space-y-4 p-5">
@@ -264,6 +278,7 @@ export default function ClientDetailPage() {
               <div className="space-y-3">
                 {items.map((item) => {
                   const latestUpload = getLatestUploadForChecklistItem(item.id)
+                  const uploads = getUploadsForChecklistItem(item.id)
                   const canReview = item.status === "Uploaded" || item.status === "Under Review"
                   const canMessage = item.status === "Rejected" || item.status === "Not Uploaded"
 
@@ -274,17 +289,22 @@ export default function ClientDetailPage() {
                           <p className="text-sm font-medium text-foreground">{item.item}</p>
                           <p className="text-sm leading-6 text-muted-foreground">
                             {latestUpload
-                              ? `${latestUpload.fileName} · uploaded ${latestUpload.uploadedAt}`
+                              ? `${latestUpload.fileName} · uploaded ${latestUpload.uploadedAt}${latestUpload.fileSizeLabel ? ` · ${latestUpload.fileSizeLabel}` : ""}`
                               : "Awaiting upload"}
                           </p>
                           {item.comment ? <p className="text-sm leading-6 text-muted-foreground">{item.comment}</p> : null}
+                          <p className="text-sm leading-6 text-muted-foreground">
+                            {uploads.length
+                              ? `${uploads.length} upload version${uploads.length === 1 ? "" : "s"} attached to this checklist item.`
+                              : "No upload version has been attached yet."}
+                          </p>
                         </div>
                         <CrmStatusBadge status={item.status} />
                       </div>
 
                       {canReview ? (
                         <div className="mt-4">
-                          <DocumentReviewControls checklistItemId={item.id} itemLabel={item.item} />
+                          <DocumentReviewControls checklistItemId={item.id} itemLabel={item.item} status={item.status} />
                         </div>
                       ) : null}
 
@@ -297,6 +317,16 @@ export default function ClientDetailPage() {
                             defaultCategory={item.status === "Rejected" ? "Document re-upload request" : "Missing document"}
                             triggerLabel={item.status === "Rejected" ? "Request re-upload" : "Request document"}
                             customReason={item.comment}
+                            className="rounded-full"
+                          />
+                        </div>
+                      ) : null}
+
+                      {item.status !== "Not Uploaded" ? (
+                        <div className="mt-3">
+                          <DocumentMissingControl
+                            checklistItemId={item.id}
+                            itemLabel={item.item}
                             className="rounded-full"
                           />
                         </div>
@@ -316,17 +346,17 @@ export default function ClientDetailPage() {
           description="Uploads, decisions, and comments remain visible together so nothing is lost in handover."
         >
           <div className="space-y-3">
-            {reviews.map((review) => (
+            {documentActivity.map((review) => (
               <div key={review.id} className="rounded-[22px] border border-border/70 bg-background px-5 py-5 shadow-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1">
-                    <p className="text-sm font-medium text-foreground">{review.item}</p>
+                    <p className="text-sm font-medium text-foreground">{review.itemLabel}</p>
                     <p className="text-sm leading-6 text-muted-foreground">
-                      {review.reviewer} · {review.decidedAt}
+                      {review.actorName} · {review.createdAt}
                     </p>
-                    <p className="text-sm leading-6 text-muted-foreground">{review.note}</p>
+                    <p className="text-sm leading-6 text-muted-foreground">{review.note ?? "Status updated in the shared workflow."}</p>
                   </div>
-                  <CrmStatusBadge status={review.decision} />
+                  <CrmStatusBadge status={review.toStatus} />
                 </div>
               </div>
             ))}
@@ -382,22 +412,22 @@ export default function ClientDetailPage() {
             ))}
 
             <div className="space-y-3 border-t border-border/70 pt-4">
-            {notifications.map((item) => (
-              <div key={item.id} className="rounded-[22px] border border-border/70 bg-background px-5 py-5 shadow-sm">
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <BellRing className="size-4" />
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <p className="text-sm font-medium text-foreground">{item.type}</p>
-                      <CrmStatusBadge status={item.status} />
+              {notifications.map((item) => (
+                <div key={item.id} className="rounded-[22px] border border-border/70 bg-background px-5 py-5 shadow-sm">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                      <BellRing className="size-4" />
                     </div>
-                    <p className="text-sm leading-6 text-muted-foreground">{item.channel} · {item.sentAt}</p>
+                    <div className="space-y-1">
+                      <div className="flex flex-wrap items-center gap-3">
+                        <p className="text-sm font-medium text-foreground">{item.type}</p>
+                        <CrmStatusBadge status={item.status} />
+                      </div>
+                      <p className="text-sm leading-6 text-muted-foreground">{item.channel} · {item.sentAt}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
             </div>
 
             <div className="space-y-3 border-t border-border/70 pt-4">

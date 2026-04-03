@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { Suspense, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
+import { saasAppConfig } from "@cbideal/config"
 import { usePlatformAccess } from "@/lib/platform-access-store"
 
 function BillingSuccessPageContent() {
@@ -33,7 +34,7 @@ function BillingSuccessPageContent() {
             <p className="text-base leading-8 text-slate-300">
               {sandbox
                 ? "Stripe is not configured in this environment, so the flow completed through the local billing sandbox. The workspace has still been activated for end-to-end testing."
-                : "The subscription has been confirmed and the firm workspace is now active on app.cbideal.nl."}
+                : `The subscription has been confirmed and the firm workspace is now active on ${saasAppConfig.appUrl}.`}
             </p>
           </div>
           <div className="mt-8 flex flex-wrap gap-3">

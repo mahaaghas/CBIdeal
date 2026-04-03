@@ -5,6 +5,10 @@ import {
   normalizeOptionalLandingValue,
   type LandingLeadFormValues,
 } from "@/lib/landing-form"
+import {
+  buildSubmissionPageUrl,
+  sendLeadNotificationEmail,
+} from "@/lib/lead-notifications"
 import { getSupabaseServerClient } from "@/lib/supabase/server"
 
 const INVESTOR_LEADS_TABLE = "investor_leads"
@@ -51,28 +55,45 @@ export async function POST(request: Request) {
       )
     }
 
+    const values = validationResult.data
+    const timestamp = new Date().toISOString()
+    const referenceId = buildReferenceId(null)
+    const pageUrl = buildSubmissionPageUrl(request, values.sourcePage)
+
+    await sendLeadNotificationEmail({
+      category: "Landing consultation form",
+      referenceId,
+      pageUrl,
+      timestamp,
+      replyTo: values.email,
+      fields: [
+        { label: "Lead type", value: "Consultation / landing enquiry" },
+        { label: "Full name", value: values.fullName },
+        { label: "Email", value: values.email },
+        { label: "Phone", value: values.whatsapp },
+        { label: "Area of interest", value: values.areaOfInterest },
+        { label: "Region of interest", value: values.regionOfInterest },
+        { label: "Family size / dependents", value: values.applicationScope },
+        { label: "Budget / investment range", value: values.budgetRange },
+        { label: "Timeline", value: values.timeline },
+        { label: "Message / notes", value: values.notes },
+        { label: "Language", value: values.language },
+        { label: "Source category", value: values.sourceCategory },
+      ],
+    })
+
     const supabase = getSupabaseServerClient()
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from(INVESTOR_LEADS_TABLE)
-      .insert(buildInvestorLeadRow(validationResult.data))
-      .select("id")
-      .single()
+      .insert(buildInvestorLeadRow(values))
 
     if (error) {
-      console.error("Supabase landing lead insert failed:", error)
-
-      return NextResponse.json(
-        {
-          ok: false,
-          message: "We could not store your enquiry right now. Please try again shortly.",
-        },
-        { status: 500 },
-      )
+      console.error("Supabase landing lead insert failed after email notification:", error)
     }
 
     return NextResponse.json({
       ok: true,
-      referenceId: buildReferenceId(data?.id ?? null),
+      referenceId,
     })
   } catch (error) {
     console.error("Landing lead submission failed:", error)

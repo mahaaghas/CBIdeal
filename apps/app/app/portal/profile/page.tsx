@@ -1,17 +1,28 @@
+"use client"
+
 import { Mail, MapPin, ShieldCheck, UserRound } from "lucide-react"
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
 import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
-import { externalUsers, portalSnapshot } from "@/lib/mock-data"
+import { useWorkflow } from "@/lib/workflow-store"
 
 export default function PortalProfilePage() {
-  const user = externalUsers.find((item) => item.clientId === "a-rahman")
+  const {
+    currentPortalClientId,
+    getPortalUserByClientId,
+    getClientDetail,
+    getCaseByClientId,
+  } = useWorkflow()
+
+  const user = getPortalUserByClientId(currentPortalClientId)
+  const client = getClientDetail(currentPortalClientId)
+  const caseRecord = getCaseByClientId(currentPortalClientId)
 
   return (
     <div className="section-stack">
       <CrmPageHeader
         eyebrow="Profile"
         title="Account and access details"
-        description="Profile details are kept intentionally simple here so the portal stays focused on the case itself while still making account access clear."
+        description="Profile details are kept intentionally simple here so the portal stays focused on the case itself while still making access, contact details, and active matter visibility clear."
       />
 
       <div className="grid gap-5 xl:grid-cols-3">
@@ -23,8 +34,8 @@ export default function PortalProfilePage() {
                   <UserRound className="size-4" />
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">{user?.name}</p>
-                  <p className="text-sm leading-6 text-muted-foreground">{user?.role}</p>
+                  <p className="text-sm font-medium text-foreground">{user?.name ?? client?.name}</p>
+                  <p className="text-sm leading-6 text-muted-foreground">{user?.role ?? client?.profileType}</p>
                 </div>
               </div>
             </div>
@@ -39,8 +50,8 @@ export default function PortalProfilePage() {
                   <ShieldCheck className="size-4" />
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">{portalSnapshot.route}</p>
-                  <p className="text-sm leading-6 text-muted-foreground">{portalSnapshot.applicant}</p>
+                  <p className="text-sm font-medium text-foreground">{caseRecord?.route ?? "No active matter"}</p>
+                  <p className="text-sm leading-6 text-muted-foreground">{client?.applicationStatus ?? "Portal access active"}</p>
                 </div>
               </div>
             </div>
@@ -55,7 +66,7 @@ export default function PortalProfilePage() {
                   <Mail className="size-4" />
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">{user?.email}</p>
+                  <p className="text-sm font-medium text-foreground">{user?.email ?? "No portal email configured"}</p>
                   <p className="text-sm leading-6 text-muted-foreground">Primary notification address</p>
                 </div>
               </div>
@@ -67,7 +78,7 @@ export default function PortalProfilePage() {
                 </div>
                 <div className="space-y-1">
                   <p className="text-sm font-medium text-foreground">Portal access active</p>
-                  <p className="text-sm leading-6 text-muted-foreground">{user?.portalStatus}</p>
+                  <p className="text-sm leading-6 text-muted-foreground">{user?.portalStatus ?? "Portal live"}</p>
                 </div>
               </div>
             </div>

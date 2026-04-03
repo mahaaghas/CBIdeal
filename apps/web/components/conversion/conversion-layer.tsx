@@ -66,10 +66,6 @@ const householdOptions: Array<{ value: QuizHousehold; label: string; labelAr: st
   { value: "family", label: "Family", labelAr: "عائلة" },
 ]
 
-function encodeFormBody(payload: Record<string, string>) {
-  return new URLSearchParams(payload).toString()
-}
-
 async function submitQuizLead(values: {
   name: string
   email: string
@@ -78,28 +74,6 @@ async function submitQuizLead(values: {
   sourcePage: string
   language: "EN" | "AR"
 }) {
-  const payload = {
-    "form-name": "strategy-quiz-lead",
-    "bot-field": "",
-    full_name: values.name,
-    email: values.email,
-    phone_whatsapp: values.whatsapp ?? "",
-    budget_range: values.answers.budget,
-    main_goal: values.answers.goal,
-    desired_timeline: values.answers.timing,
-    household_scope: values.answers.household,
-    source_page: values.sourcePage,
-    language: values.language,
-  }
-
-  const netlifyResponse = await fetch("/__forms.html", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: encodeFormBody(payload),
-  })
-
-  if (netlifyResponse.ok) return { ok: true as const }
-
   const apiResponse = await fetch("/api/quiz-leads", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

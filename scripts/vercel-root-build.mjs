@@ -15,6 +15,13 @@ const targets = {
   },
 }
 
+const appProjectHints = [
+  "cbideal-app.vercel.app",
+  "cbideal-app",
+  "app.cbideal.nl",
+  "-app-",
+]
+
 function run(command, args, cwd = repoRoot) {
   const result = spawnSync(command, args, {
     cwd,
@@ -64,11 +71,7 @@ function inferVercelTarget() {
     .join(" ")
     .toLowerCase()
 
-  if (
-    projectHints.includes("app.cbideal") ||
-    projectHints.includes("cbideal-app") ||
-    projectHints.includes("-app-")
-  ) {
+  if (appProjectHints.some((hint) => projectHints.includes(hint))) {
     return "app"
   }
 

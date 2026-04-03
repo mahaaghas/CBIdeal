@@ -1,3 +1,5 @@
+import { buildSaasAppUrl, saasAppUrl } from "./app-url"
+
 export type SaasPlanId = "starter" | "growth" | "enterprise"
 export type SelfServePlanId = Exclude<SaasPlanId, "enterprise">
 export type SubscriptionStatus = "Pending" | "Active" | "Past due" | "Cancelled" | "Enterprise review"
@@ -19,7 +21,7 @@ export interface SaasPlanDefinition {
 
 export const saasAppConfig = {
   websiteUrl: "https://www.cbideal.nl",
-  appUrl: "https://app.cbideal.nl",
+  appUrl: saasAppUrl,
   demoPath: "/demo",
   loginPath: "/login",
   signupPath: "/signup",
@@ -97,19 +99,23 @@ export const demoWorkspaceConfig = {
 } as const
 
 export function getSaasDemoUrl() {
-  return `${saasAppConfig.appUrl}${saasAppConfig.demoPath}`
+  return buildSaasAppUrl(saasAppConfig.demoPath)
 }
 
 export function getSaasLoginUrl(planId?: SaasPlanId) {
-  if (!planId) {
-    return `${saasAppConfig.appUrl}${saasAppConfig.loginPath}`
+  const loginUrl = new URL(buildSaasAppUrl(saasAppConfig.loginPath))
+
+  if (planId) {
+    loginUrl.searchParams.set("plan", planId)
   }
 
-  return `${saasAppConfig.appUrl}${saasAppConfig.loginPath}?plan=${planId}`
+  return loginUrl.toString()
 }
 
 export function getSelfServeSignupUrl(planId: SelfServePlanId) {
-  return `${saasAppConfig.appUrl}${saasAppConfig.signupPath}?plan=${planId}`
+  const signupUrl = new URL(buildSaasAppUrl(saasAppConfig.signupPath))
+  signupUrl.searchParams.set("plan", planId)
+  return signupUrl.toString()
 }
 
 export function getSaasPlan(planId: SaasPlanId) {

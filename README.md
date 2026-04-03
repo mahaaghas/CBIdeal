@@ -117,7 +117,7 @@ Keep one GitHub repository and create two separate Vercel projects.
 - Build command: leave default or use `npm run build`
 - Install command: leave default (`npm install`)
 - Output: Next.js default
-- Domain example: `app.cbideal.nl`
+- App URL example: `https://cbideal-app.vercel.app` today, with the future custom subdomain controlled centrally through `NEXT_PUBLIC_APP_URL`
 
 ## Workspace notes
 

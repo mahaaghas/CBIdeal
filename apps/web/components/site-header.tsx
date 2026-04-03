@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Compass } from "lucide-react"
+import { APP_URL } from "@cbideal/config"
 import { BrandMark } from "@/components/brand-mark"
 import { LanguageSwitcher } from "@/components/language-switcher"
 import { getRequestDirection, getRequestLocale } from "@/lib/i18n/request"
@@ -45,8 +46,11 @@ export function SiteHeader() {
                   {conversionCopy.primary}
                 </Link>
               </Button>
-              <Link href={routeLinks.pricing} className="quiet-link hidden xl:inline-flex">
-                Platform
+              <Link
+                href={`${APP_URL}`}
+                className="quiet-link hidden cursor-pointer items-center px-1 py-2 transition-all duration-200 ease-in-out hover:opacity-75 hover:no-underline xl:inline-flex"
+              >
+                Login
               </Link>
             </div>
           </div>
@@ -79,6 +83,12 @@ export function SiteHeader() {
                 {conversionCopy.primary}
               </Link>
             </Button>
+            <Link
+              href={`${APP_URL}`}
+              className="quiet-link inline-flex min-h-12 w-full items-center justify-center rounded-full border border-border/70 bg-background/92 px-5 text-sm font-medium shadow-sm transition-all duration-200 ease-in-out hover:bg-muted/40 hover:opacity-80 hover:no-underline sm:flex-1"
+            >
+              Login
+            </Link>
           </div>
         </div>
       </div>

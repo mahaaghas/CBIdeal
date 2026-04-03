@@ -10,12 +10,16 @@ import { useWorkflow } from "@/lib/workflow-store"
 export default function ClientPortalPage() {
   const {
     currentPortalClientId,
+    getClientDetail,
+    getPortalUserByClientId,
     getCaseByClientId,
     getChecklistForCase,
     getPaymentsForClient,
     getPortalOverview,
   } = useWorkflow()
 
+  const portalUser = getPortalUserByClientId(currentPortalClientId)
+  const client = getClientDetail(currentPortalClientId)
   const overview = getPortalOverview(currentPortalClientId)
   const caseRecord = getCaseByClientId(currentPortalClientId)
   const checklist = caseRecord ? getChecklistForCase(caseRecord.id) : []
@@ -33,12 +37,12 @@ export default function ClientPortalPage() {
       <div className="space-y-3">
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="font-serif text-[2.9rem] leading-[1.02] tracking-[-0.045em] text-white md:text-[3.5rem]">
-            Welcome back, Ahmed
+            Welcome back, {portalUser?.name?.split(" ")[0] ?? client?.name?.split(" ")[0] ?? "there"}
           </h1>
-          <span className="app-pill rounded-full px-4 py-1.5 text-sm font-semibold">Private client</span>
+          <span className="app-pill rounded-full px-4 py-1.5 text-sm font-semibold">{client?.profileType ?? "Portal user"}</span>
         </div>
         <p className="max-w-3xl text-[1.02rem] leading-7 text-slate-200/82">
-          A clear view of your current route, the items that need your attention, and the next step in the process.
+          A clear view of your live case workspace, the items waiting on you, and the next step already connected to the CRM review flow.
         </p>
       </div>
 
@@ -112,6 +116,7 @@ export default function ClientPortalPage() {
                       <DocumentUploadControl
                         checklistItemId={primaryDocumentAction.id}
                         itemLabel={primaryDocumentAction.item}
+                        uploadedBy={portalUser?.name ?? client?.name ?? "Portal client"}
                         triggerLabel={primaryDocumentAction.status === "Rejected" ? "Upload corrected file" : "Upload document"}
                         className="rounded-full"
                       />

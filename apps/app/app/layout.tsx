@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import type { Metadata } from "next"
 import { Cormorant_Garamond, Manrope } from "next/font/google"
+import { saasAppConfig } from "@cbideal/config"
 import "@cbideal/config/globals.css"
 import "./app-globals.css"
 import { BrandingProvider } from "@/lib/branding-store"
@@ -21,7 +22,7 @@ const cormorant = Cormorant_Garamond({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://app.cbideal.nl"),
+  metadataBase: new URL(saasAppConfig.appUrl),
   title: {
     default: "CBI Deal Workspace",
     template: "%s | CBI Deal Workspace",

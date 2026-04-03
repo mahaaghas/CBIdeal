@@ -12,8 +12,8 @@ export default function TemplateDetailPage() {
     <div className="space-y-8">
       <CrmPageHeader
         eyebrow="Templates"
-        title="Template preview and editor"
-        description="Adjust copy, placeholders, and presentation while keeping the message aligned with the wider communication library."
+        title="Locked template preview and send"
+        description="Fill approved variables, preview the final rendered email, and send it without exposing raw HTML or editable layout code."
       />
       <EmailTemplateEditor templateId={templateId} />
     </div>

@@ -5,13 +5,18 @@ import { useMemo, useState } from "react"
 import { Bell, ChevronRight } from "lucide-react"
 import { Button } from "@cbideal/ui/components/ui/button"
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@cbideal/ui/components/ui/popover"
+import {
   Sheet,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@cbideal/ui/components/ui/sheet"
+import { useIsMobile } from "@cbideal/ui/components/ui/use-mobile"
 import { cn } from "@cbideal/ui/lib/utils"
 import type { WorkflowNotificationFeedItem } from "@/lib/workflow-store"
 
@@ -55,6 +60,7 @@ export function NotificationsPanel({
   viewAllHref = "/notifications",
 }: NotificationsPanelProps) {
   const [open, setOpen] = useState(false)
+  const isMobile = useIsMobile()
   const groups = useMemo(() => {
     return items.reduce<Record<string, WorkflowNotificationFeedItem[]>>((accumulator, item) => {
       const group = getGroupLabel(item.timestamp)
@@ -66,153 +72,188 @@ export function NotificationsPanel({
 
   const unreadIds = items.filter((item) => item.unread).map((item) => item.id)
 
-  return (
+  const trigger = (
+    <button
+      type="button"
+      aria-label="Open notifications"
+      aria-expanded={open}
+      aria-haspopup="dialog"
+      onClick={isMobile ? () => setOpen((current) => !current) : undefined}
+      className="app-top-icon relative flex size-12 cursor-pointer items-center justify-center rounded-full"
+    >
+      <Bell className="size-5" />
+      {unreadCount > 0 ? (
+        <span className="app-notification-count absolute right-0 top-0 flex size-5 -translate-y-1/4 translate-x-1/4 items-center justify-center rounded-full text-[0.68rem] font-semibold">
+          {unreadCount}
+        </span>
+      ) : null}
+    </button>
+  )
+
+  const panelBody = (
     <>
-      <button
-        type="button"
-        aria-label="Open notifications"
-        aria-expanded={open}
-        onClick={() => setOpen(true)}
-        className="app-top-icon relative flex size-12 items-center justify-center rounded-full"
-      >
-        <Bell className="size-5" />
-        {unreadCount > 0 ? (
-          <span className="app-notification-count absolute right-0 top-0 flex size-5 -translate-y-1/4 translate-x-1/4 items-center justify-center rounded-full text-[0.68rem] font-semibold">
-            {unreadCount}
-          </span>
-        ) : null}
-      </button>
-
-      <Sheet open={open} onOpenChange={setOpen}>
-
-      <SheetContent
-        side="right"
-        className="app-surface flex h-full w-full max-w-[28rem] flex-col gap-0 border-l border-white/10 p-0 text-white sm:max-w-[28rem]"
-      >
-        <SheetHeader className="border-b border-white/8 px-6 py-6">
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-2">
-              <SheetTitle className="font-serif text-[2rem] tracking-[-0.03em] text-white">{title}</SheetTitle>
-              <SheetDescription className="max-w-md text-sm leading-7 text-slate-300">
-                {description}
-              </SheetDescription>
+      <div className="flex-1 overflow-y-auto px-6 py-6">
+        {items.length === 0 ? (
+          <div className="flex h-full min-h-[16rem] items-center justify-center">
+            <div className="app-surface-soft max-w-sm rounded-[24px] px-6 py-6 text-center">
+              <p className="text-base font-semibold text-white">{emptyTitle}</p>
+              <p className="mt-3 text-sm leading-7 text-slate-300">{emptyBody}</p>
             </div>
-            {unreadIds.length > 0 ? (
-              <Button
-                type="button"
-                variant="outline"
-                className="rounded-full border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08] hover:text-white"
-                onClick={() => onMarkAllRead(unreadIds)}
-              >
-                Mark all read
-              </Button>
-            ) : null}
           </div>
-        </SheetHeader>
+        ) : (
+          <div className="space-y-7">
+            {["Today", "Yesterday", "Earlier"]
+              .filter((label) => groups[label]?.length)
+              .map((label) => (
+                <section key={label} className="space-y-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-300">{label}</p>
+                    <div className="h-px flex-1 bg-white/8" />
+                  </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-6">
-          {items.length === 0 ? (
-            <div className="flex h-full min-h-[16rem] items-center justify-center">
-              <div className="app-surface-soft max-w-sm rounded-[24px] px-6 py-6 text-center">
-                <p className="text-base font-semibold text-white">{emptyTitle}</p>
-                <p className="mt-3 text-sm leading-7 text-slate-300">{emptyBody}</p>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-7">
-              {["Today", "Yesterday", "Earlier"]
-                .filter((label) => groups[label]?.length)
-                .map((label) => (
-                  <section key={label} className="space-y-3">
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-300">{label}</p>
-                      <div className="h-px flex-1 bg-white/8" />
-                    </div>
-
-                    <div className="space-y-3">
-                      {groups[label].map((item) => (
-                        <div
-                          key={item.id}
-                          className={cn(
-                            "rounded-[22px] border px-4 py-4 transition-colors",
-                            item.unread
-                              ? "border-white/12 bg-white/[0.07] shadow-[0_18px_40px_rgba(7,12,19,0.18)]"
-                              : "border-white/8 bg-white/[0.03]",
-                          )}
-                        >
-                          <div className="space-y-3">
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="space-y-1">
-                                <div className="flex items-center gap-2">
-                                  {item.unread ? <span className="size-2 rounded-full bg-[var(--app-brand-secondary)]" /> : null}
-                                  <p className="text-sm font-semibold text-white">{item.title}</p>
-                                </div>
-                                <p className="text-sm leading-6 text-slate-200">{item.description}</p>
-                              </div>
-                              <div className="flex flex-col items-end gap-2">
-                                <span
-                                  className={cn(
-                                    "shrink-0 rounded-full px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.18em]",
-                                    item.unread
-                                      ? "bg-[var(--app-brand-surface-tint-strong)] text-white"
-                                      : "bg-white/[0.06] text-slate-300",
-                                  )}
-                                >
-                                  {item.status}
-                                </span>
+                  <div className="space-y-3">
+                    {groups[label].map((item) => (
+                      <div
+                        key={item.id}
+                        className={cn(
+                          "rounded-[22px] border px-4 py-4 transition-colors",
+                          item.unread
+                            ? "border-white/12 bg-white/[0.07] shadow-[0_18px_40px_rgba(7,12,19,0.18)]"
+                            : "border-white/8 bg-white/[0.03]",
+                        )}
+                      >
+                        <div className="space-y-3">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
                                 {item.unread ? (
-                                  <button
-                                    type="button"
-                                    onClick={() => onMarkRead(item.id)}
-                                    className="text-[0.72rem] font-semibold text-slate-300 transition-colors hover:text-white"
-                                  >
-                                    Mark read
-                                  </button>
+                                  <span className="size-2 rounded-full bg-[var(--app-brand-secondary)]" />
                                 ) : null}
+                                <p className="text-sm font-semibold text-white">{item.title}</p>
                               </div>
+                              <p className="text-sm leading-6 text-slate-200">{item.description}</p>
                             </div>
-
-                            <div className="flex items-center justify-between gap-4 text-sm">
-                              <div className="min-w-0">
-                                <p className="truncate text-slate-300">{item.context}</p>
-                                <p className="text-slate-400">{item.timestamp}</p>
-                              </div>
-                              <Link
-                                href={item.href}
-                                onClick={() => {
-                                  onMarkRead(item.id)
-                                  setOpen(false)
-                                }}
-                                className="inline-flex items-center gap-2 rounded-full px-3 py-2 font-semibold text-slate-200 transition-colors hover:bg-white/[0.07] hover:text-white"
+                            <div className="flex flex-col items-end gap-2">
+                              <span
+                                className={cn(
+                                  "shrink-0 rounded-full px-2.5 py-1 text-[0.7rem] font-semibold uppercase tracking-[0.18em]",
+                                  item.unread
+                                    ? "bg-[var(--app-brand-surface-tint-strong)] text-white"
+                                    : "bg-white/[0.06] text-slate-300",
+                                )}
                               >
-                                Open
-                                <ChevronRight className="size-4 shrink-0 text-slate-400" />
-                              </Link>
+                                {item.status}
+                              </span>
+                              {item.unread ? (
+                                <button
+                                  type="button"
+                                  onClick={() => onMarkRead(item.id)}
+                                  className="cursor-pointer text-[0.72rem] font-semibold text-slate-300 transition-colors hover:text-white"
+                                >
+                                  Mark read
+                                </button>
+                              ) : null}
                             </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  </section>
-                ))}
-            </div>
-          )}
-        </div>
 
-        <SheetFooter className="border-t border-white/8 px-6 py-4">
-          <div className="flex w-full items-center justify-between gap-4">
-            <p className="text-sm leading-6 text-slate-300">
-              Recent workflow movement is kept here so approvals, uploads, and quotation changes stay visible without leaving the current workspace.
-            </p>
-            <Button asChild variant="outline" className="app-button-secondary rounded-full">
-              <Link href={viewAllHref} onClick={() => setOpen(false)}>
-                View all notifications
-              </Link>
-            </Button>
+                          <div className="flex items-center justify-between gap-4 text-sm">
+                            <div className="min-w-0">
+                              <p className="truncate text-slate-300">{item.context}</p>
+                              <p className="text-slate-400">{item.timestamp}</p>
+                            </div>
+                            <Link
+                              href={item.href}
+                              onClick={() => {
+                                onMarkRead(item.id)
+                                setOpen(false)
+                              }}
+                              className="inline-flex items-center gap-2 rounded-full px-3 py-2 font-semibold text-slate-200 transition-colors hover:bg-white/[0.07] hover:text-white"
+                            >
+                              Open
+                              <ChevronRight className="size-4 shrink-0 text-slate-400" />
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ))}
           </div>
-        </SheetFooter>
-      </SheetContent>
-      </Sheet>
+        )}
+      </div>
+
+      <div className="border-t border-white/8 px-6 py-4">
+        <div className="flex w-full items-center justify-between gap-4">
+          <p className="text-sm leading-6 text-slate-300">
+            Recent workflow movement is kept here so approvals, uploads, and quotation changes stay visible without leaving the current workspace.
+          </p>
+          <Button asChild variant="outline" className="app-button-secondary rounded-full">
+            <Link href={viewAllHref} onClick={() => setOpen(false)}>
+              View all notifications
+            </Link>
+          </Button>
+        </div>
+      </div>
     </>
+  )
+
+  const header = (
+    <div className="border-b border-white/8 px-6 py-6">
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-2">
+          <p className="font-serif text-[2rem] tracking-[-0.03em] text-white">{title}</p>
+          <p className="max-w-md text-sm leading-7 text-slate-300">{description}</p>
+        </div>
+        {unreadIds.length > 0 ? (
+          <Button
+            type="button"
+            variant="outline"
+            className="rounded-full border-white/10 bg-white/[0.04] text-white hover:bg-white/[0.08] hover:text-white"
+            onClick={() => onMarkAllRead(unreadIds)}
+          >
+            Mark all read
+          </Button>
+        ) : null}
+      </div>
+    </div>
+  )
+
+  if (isMobile) {
+    return (
+      <>
+        {trigger}
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetContent
+            side="right"
+            onOpenAutoFocus={(event) => event.preventDefault()}
+            className="app-surface flex h-full w-full max-w-[28rem] flex-col gap-0 border-l border-white/10 p-0 text-white sm:max-w-[28rem]"
+          >
+            <SheetHeader className="sr-only">
+              <SheetTitle>{title}</SheetTitle>
+              <SheetDescription>{description}</SheetDescription>
+            </SheetHeader>
+            {header}
+            {panelBody}
+          </SheetContent>
+        </Sheet>
+      </>
+    )
+  }
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+      <PopoverContent
+        align="end"
+        side="bottom"
+        sideOffset={14}
+        onOpenAutoFocus={(event) => event.preventDefault()}
+        className="app-surface z-[70] flex h-[min(42rem,calc(100vh-8rem))] w-[min(26rem,calc(100vw-2rem))] flex-col gap-0 rounded-[28px] border border-white/10 p-0 text-white shadow-[0_30px_80px_rgba(4,9,16,0.34)]"
+      >
+        {header}
+        {panelBody}
+      </PopoverContent>
+    </Popover>
   )
 }

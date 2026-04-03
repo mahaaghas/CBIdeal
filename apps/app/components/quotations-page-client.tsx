@@ -28,6 +28,20 @@ function formatMoney(currency: string, value: number) {
   return `${currency} ${value.toLocaleString()}`
 }
 
+function buildQuotationFocusSummary({
+  route,
+  advisorName,
+  validUntil,
+}: {
+  route?: string | null
+  advisorName?: string | null
+  validUntil?: string | null
+}) {
+  return [route, advisorName ? `Advisor: ${advisorName}` : null, validUntil ? `Valid until ${validUntil}` : null]
+    .filter(Boolean)
+    .join(" · ")
+}
+
 export function QuotationsPageClient({ initialClientId }: { initialClientId?: string | null }) {
   const { branding } = useBranding()
   const { state, getAllClients, getCaseByClientId } = useWorkflow()
@@ -125,38 +139,44 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
         />
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[1.16fr_0.84fr]">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.4fr)_minmax(23rem,0.92fr)]">
         <CrmTableCard
           title="Quotation register"
           description="A live register across draft, issued, accepted, and paid quotations, with filters and direct workflow entry points that now behave like real product actions."
           className="app-surface"
+          headerClassName="gap-6 border-b border-white/8 pb-6 xl:grid xl:grid-cols-[minmax(18rem,0.9fr)_minmax(28rem,1.45fr)] xl:items-start xl:gap-8"
+          introClassName="max-w-[34rem]"
+          actionClassName="w-full xl:justify-end"
+          action={
+            <div className="flex w-full flex-col gap-4 xl:max-w-[46rem] xl:items-end">
+              <div className="flex w-full flex-col gap-4 xl:flex-row xl:flex-wrap xl:items-center">
+                <div className="relative w-full min-w-0 xl:min-w-[18rem] xl:flex-[1.25]">
+                  <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+                  <input
+                    value={searchTerm}
+                    onChange={(event) => setSearchTerm(event.target.value)}
+                    className="app-search h-12 w-full rounded-full px-11 text-sm outline-none"
+                    placeholder="Search quotation ID, client, route, or advisor"
+                  />
+                </div>
+                <div className="flex flex-wrap gap-2 xl:flex-1">
+                  {["All", "Draft", "Sent", "Accepted", "Partially Paid", "Paid"].map((status) => (
+                    <button
+                      key={status}
+                      type="button"
+                      onClick={() => setStatusFilter(status)}
+                      className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                        statusFilter === status ? "app-filter-chip-active" : "app-filter-chip"
+                      }`}
+                    >
+                      {status}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          }
         >
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="relative w-full max-w-xl">
-              <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-              <input
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-                className="app-search h-12 w-full rounded-2xl px-11 text-base outline-none"
-                placeholder="Search quotation ID, client, route, or advisor"
-              />
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {["All", "Draft", "Sent", "Accepted", "Partially Paid", "Paid"].map((status) => (
-                <button
-                  key={status}
-                  type="button"
-                  onClick={() => setStatusFilter(status)}
-                  className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-                    statusFilter === status ? "app-filter-chip-active" : "app-filter-chip"
-                  }`}
-                >
-                  {status}
-                </button>
-              ))}
-            </div>
-          </div>
-
           <Table className="app-grid-table">
             <TableHeader>
               <TableRow>
@@ -174,15 +194,15 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
                 return (
                   <TableRow key={quotation.id}>
                     <TableCell className="min-w-[16rem]">
-                    <div className="space-y-2">
-                      <p className="text-[0.98rem] font-semibold text-white">{quotation.id.toUpperCase()}</p>
-                      <p className="app-type-caption text-sm">{quotation.title ?? quotation.note}</p>
-                    </div>
-                  </TableCell>
+                      <div className="space-y-2">
+                        <p className="text-[0.98rem] font-semibold text-white">{quotation.id.toUpperCase()}</p>
+                        <p className="app-type-caption text-sm leading-6">{quotation.title ?? quotation.note}</p>
+                      </div>
+                    </TableCell>
                     <TableCell className="min-w-[15rem]">
                       <div className="space-y-2">
-                        <p className="font-semibold text-[var(--text-primary)]">{quotation.client}</p>
-                        <p className="app-type-caption text-sm">{caseRecord?.route ?? quotation.note}</p>
+                        <p className="font-semibold leading-6 text-[var(--text-primary)]">{quotation.client}</p>
+                        <p className="app-type-caption text-sm leading-6">{caseRecord?.route ?? quotation.note}</p>
                         <p className="text-sm leading-6 text-[var(--text-muted)]">{quotation.advisorName ?? quotation.owner}</p>
                       </div>
                     </TableCell>
@@ -190,26 +210,26 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
                       <CrmStatusBadge status={quotation.status} />
                     </TableCell>
                     <TableCell>
-                      <div className="space-y-1 text-sm">
+                      <div className="space-y-2 text-sm">
                         <p className="font-semibold text-white">{formatMoney(quotation.currency, quotation.total ?? 0)}</p>
-                        <p className="app-copy-secondary">
+                        <p className="app-copy-secondary leading-6">
                           Subtotal {formatMoney(quotation.currency, quotation.subtotal ?? 0)}
                         </p>
-                        <p className="app-copy-muted">
+                        <p className="app-copy-muted leading-6">
                           VAT {quotation.vatApplied ? `${quotation.vatPercentage}%` : "not applied"} / Discount {formatMoney(quotation.currency, quotation.discountAmount ?? 0)}
                         </p>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="space-y-1 text-sm">
-                        <p className="font-medium text-[var(--text-primary)]">{quotation.validUntil}</p>
-                        <p className="app-copy-muted">
+                      <div className="space-y-2 text-sm">
+                        <p className="font-medium leading-6 text-[var(--text-primary)]">{quotation.validUntil}</p>
+                        <p className="app-copy-muted leading-6">
                           {quotation.sentDate ? `Sent ${quotation.sentDate}` : "Not yet sent"}
                         </p>
                       </div>
                     </TableCell>
-                    <TableCell className="text-right">
-                      <Button asChild variant="outline" size="sm" className="app-button-secondary rounded-full">
+                    <TableCell className="align-middle text-right">
+                      <Button asChild variant="outline" size="sm" className="app-button-secondary min-w-[7.5rem] rounded-full">
                         <Link href={`/clients/${quotation.clientId}`}>Open record</Link>
                       </Button>
                     </TableCell>
@@ -224,35 +244,69 @@ export function QuotationsPageClient({ initialClientId }: { initialClientId?: st
           title="Current quotation focus"
           description="A quieter operational summary of quotations most likely to need movement or a client-facing follow-up."
           className="app-surface"
+          headerClassName="max-w-[23rem] space-y-3 border-b border-white/8 pb-5"
+          titleClassName="text-[1.7rem] leading-[1.12] md:text-[1.85rem]"
+          descriptionClassName="max-w-[21rem] text-sm leading-7 text-slate-300"
+          bodyClassName="space-y-5"
         >
-          <div className="space-y-3">
-            {quotations.slice(0, 3).map((quotation) => (
-              <div key={quotation.id} className="app-subtle-card-strong rounded-[22px] px-6 py-6">
-                <div className="space-y-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="space-y-2">
-                      <p className="text-sm font-semibold text-white">{quotation.client}</p>
-                      <p className="app-type-caption text-sm">{quotation.title ?? quotation.note}</p>
+          <div className="space-y-5">
+            {quotations.slice(0, 3).map((quotation) => {
+              const caseRecord = getCaseByClientId(quotation.clientId)
+              const summary = buildQuotationFocusSummary({
+                route: caseRecord?.route,
+                advisorName: quotation.advisorName ?? quotation.owner,
+                validUntil: quotation.validUntil,
+              })
+
+              return (
+                <div
+                  key={quotation.id}
+                  className="app-subtle-card-strong rounded-[24px] px-6 py-6 xl:px-7 xl:py-7"
+                >
+                  <div className="flex h-full flex-col gap-6">
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                      <div className="min-w-0 space-y-2.5">
+                        <p className="text-[1rem] font-semibold leading-7 text-white">{quotation.client}</p>
+                        {summary ? (
+                          <p className="app-type-caption max-w-[20rem] text-sm leading-6">{summary}</p>
+                        ) : null}
+                      </div>
+                      <CrmStatusBadge status={quotation.status} className="shrink-0 self-start lg:mt-0.5" />
                     </div>
-                    <CrmStatusBadge status={quotation.status} />
+
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      <div className="app-note-panel min-w-0">
+                        <p className="app-type-overline">Quote number</p>
+                        <p className="mt-2 text-sm font-semibold leading-6 text-white">{quotation.id.toUpperCase()}</p>
+                      </div>
+                      <div className="app-note-panel min-w-0">
+                        <p className="app-type-overline">Currency</p>
+                        <p className="mt-2 text-sm font-semibold leading-6 text-white">{quotation.currency}</p>
+                      </div>
+                      <div className="app-note-panel min-w-0">
+                        <p className="app-type-overline">Total amount</p>
+                        <p className="mt-2 text-sm font-semibold leading-6 text-white">
+                          {formatMoney(quotation.currency, quotation.total ?? 0)}
+                        </p>
+                      </div>
+                    </div>
+
+                    {quotation.status !== "Paid" ? (
+                      <div className="border-t border-white/8 pt-4">
+                        <CommunicationComposer
+                          clientId={quotation.clientId}
+                          caseId={quotation.caseId}
+                          quotationId={quotation.id}
+                          defaultCategory="Quotation follow-up"
+                          triggerLabel="Send quotation follow-up"
+                          className="app-button-secondary w-full justify-center rounded-full"
+                        />
+                      </div>
+                    ) : null}
                   </div>
-                  <div className="flex items-center justify-between gap-3 text-sm">
-                    <span className="app-copy-secondary">{quotation.id.toUpperCase()}</span>
-                    <span className="font-semibold text-white">{formatMoney(quotation.currency, quotation.total ?? 0)}</span>
-                  </div>
-                  {quotation.status !== "Paid" ? (
-                    <CommunicationComposer
-                      clientId={quotation.clientId}
-                      caseId={quotation.caseId}
-                      quotationId={quotation.id}
-                      defaultCategory="Quotation follow-up"
-                      triggerLabel="Send quotation follow-up"
-                      className="w-full rounded-full"
-                    />
-                  ) : null}
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </CrmSectionCard>
       </div>

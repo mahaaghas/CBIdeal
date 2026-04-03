@@ -16,7 +16,7 @@ import {
   TableRow,
 } from "@cbideal/ui/components/ui/table"
 import { CommunicationComposer } from "@/components/communication-composer"
-import { DocumentReviewControls } from "@/components/workflow-controls"
+import { DocumentMissingControl, DocumentReviewControls } from "@/components/workflow-controls"
 import { useWorkflow } from "@/lib/workflow-store"
 
 function formatMoney(value: number) {
@@ -30,7 +30,7 @@ function formatMoney(value: number) {
 export default function DocumentsPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filter, setFilter] = useState<"Pending" | "All" | "Rejected">("Pending")
-  const { state, getClientDetail } = useWorkflow()
+  const { state, getClientDetail, getLatestUploadForChecklistItem } = useWorkflow()
 
   const rows = useMemo(
     () =>
@@ -43,8 +43,10 @@ export default function DocumentsPage() {
         type: item.category,
         status: item.status,
         uploaded: item.uploadedAt ?? "Awaiting upload",
+        comment: item.comment,
+        latestUpload: getLatestUploadForChecklistItem(item.id),
       })),
-    [getClientDetail, state.checklist],
+    [getClientDetail, getLatestUploadForChecklistItem, state.checklist],
   )
 
   const pendingReviews = rows.filter((row) => row.status === "Uploaded" || row.status === "Under Review").length
@@ -188,6 +190,7 @@ export default function DocumentsPage() {
                           ? "Still missing from the checklist."
                           : "Present in the current review flow."}
                     </p>
+                    {row.comment ? <p className="text-sm leading-6 text-slate-400">{row.comment}</p> : null}
                   </div>
                 </TableCell>
                 <TableCell>
@@ -198,34 +201,54 @@ export default function DocumentsPage() {
                 </TableCell>
                 <TableCell>
                   <div className="space-y-1 text-sm">
-                    <p className="font-medium text-slate-100">{row.uploaded}</p>
+                    <p className="font-medium text-slate-100">{row.latestUpload?.fileName ?? row.uploaded}</p>
                     <p className="text-slate-400">
-                      {row.status === "Approved" ? "Accepted into file" : "Review timestamp"}
+                      {row.latestUpload
+                        ? `Uploaded ${row.latestUpload.uploadedAt}${row.latestUpload.fileSizeLabel ? ` · ${row.latestUpload.fileSizeLabel}` : ""}`
+                        : row.status === "Approved"
+                          ? "Accepted into file"
+                          : "Awaiting client upload"}
                     </p>
                   </div>
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex flex-wrap items-center justify-end gap-2">
                     {row.status === "Uploaded" || row.status === "Under Review" ? (
-                      <DocumentReviewControls checklistItemId={row.checklistItemId} itemLabel={row.document} />
+                      <DocumentReviewControls checklistItemId={row.checklistItemId} itemLabel={row.document} status={row.status} />
                     ) : row.status === "Rejected" || row.status === "Not Uploaded" ? (
-                      <CommunicationComposer
-                        clientId={row.clientId}
-                        caseId={row.caseId}
-                        checklistItemId={row.checklistItemId}
-                        defaultCategory={row.status === "Rejected" ? "Document re-upload request" : "Missing document"}
-                        triggerLabel={row.status === "Rejected" ? "Request re-upload" : "Request document"}
-                        className="rounded-full"
-                      />
+                      <>
+                        <CommunicationComposer
+                          clientId={row.clientId}
+                          caseId={row.caseId}
+                          checklistItemId={row.checklistItemId}
+                          defaultCategory={row.status === "Rejected" ? "Document re-upload request" : "Missing document"}
+                          triggerLabel={row.status === "Rejected" ? "Request re-upload" : "Request document"}
+                          className="rounded-full"
+                        />
+                        {row.status !== "Not Uploaded" ? (
+                          <DocumentMissingControl
+                            checklistItemId={row.checklistItemId}
+                            itemLabel={row.document}
+                            className="rounded-full"
+                          />
+                        ) : null}
+                      </>
                     ) : (
-                      <Button
-                        asChild
-                        variant="outline"
-                        size="sm"
-                        className="app-button-secondary rounded-full"
-                      >
-                        <Link href={`/clients/${row.clientId}`}>Open record</Link>
-                      </Button>
+                      <>
+                        <DocumentMissingControl
+                          checklistItemId={row.checklistItemId}
+                          itemLabel={row.document}
+                          className="rounded-full"
+                        />
+                        <Button
+                          asChild
+                          variant="outline"
+                          size="sm"
+                          className="app-button-secondary rounded-full"
+                        >
+                          <Link href={`/clients/${row.clientId}`}>Open record</Link>
+                        </Button>
+                      </>
                     )}
                   </div>
                 </TableCell>

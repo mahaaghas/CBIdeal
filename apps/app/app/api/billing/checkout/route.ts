@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import Stripe from "stripe"
-import { getSaasPlan, isSelfServePlan, type SaasPlanId } from "@cbideal/config"
+import { getSaasPlan, isSelfServePlan, normalizeSaasAppUrl, type SaasPlanId } from "@cbideal/config"
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY
 const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   }
 
   const plan = getSaasPlan(planId)
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin || "https://app.cbideal.nl"
+  const baseUrl = normalizeSaasAppUrl(process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin)
   const successUrl = `${baseUrl}/billing/success?tenant=${tenantId}&session_id={CHECKOUT_SESSION_ID}`
   const cancelUrl = `${baseUrl}/billing/cancel?tenant=${tenantId}`
 

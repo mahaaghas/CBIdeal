@@ -1,4 +1,4 @@
-import { calculateWorkspacePricing } from "@cbideal/config/pricing"
+import { calculateWorkspacePricing, saasAppHost } from "@cbideal/config"
 
 export type InternalRole = "Workspace owner" | "Account manager" | "Case coordinator" | "Finance" | "Admin"
 export type ClientRole = "Primary applicant" | "Family member" | "Family office contact" | "Counsel"
@@ -19,7 +19,7 @@ export type NotificationChannel = "Email" | "Workspace"
 export const workspace = {
   tenantId: "cbi-deal-demo",
   workspaceName: "CBI Deal Platform",
-  appHost: "app.cbideal.nl",
+  appHost: saasAppHost,
   firmName: "CBI Deal Advisory",
   internalSeats: 14,
   externalAccounts: 46,

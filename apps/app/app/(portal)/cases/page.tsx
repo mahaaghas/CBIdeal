@@ -80,44 +80,51 @@ export default function CasesPage() {
         title="Case register"
         description="A structured register for current applications, residence files, and relocation matters."
         className="app-surface"
+        headerClassName="gap-6 border-b border-white/8 pb-6 xl:grid xl:grid-cols-[minmax(18rem,0.95fr)_minmax(32rem,1.65fr)] xl:items-start xl:gap-8"
+        introClassName="max-w-[30rem] xl:max-w-[34rem]"
+        actionClassName="w-full xl:justify-end"
         action={
-          <div className="flex w-full flex-col gap-3 lg:w-auto lg:flex-row lg:items-center">
-            <div className="relative w-full min-w-0 lg:w-[23rem]">
-              <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                className="app-search h-12 w-full rounded-full px-11 text-sm outline-none"
-                placeholder="Search route, client, stage, or region"
+          <div className="flex w-full flex-col gap-4 xl:max-w-[52rem] xl:items-end">
+            <div className="flex w-full flex-col gap-4 xl:flex-row xl:flex-wrap xl:items-center xl:justify-end">
+              <div className="relative w-full min-w-0 xl:w-[21rem] xl:flex-none">
+                <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  className="app-search h-12 w-full rounded-full px-11 text-sm outline-none"
+                  placeholder="Search route, client, stage, or region"
+                />
+              </div>
+              <div className="flex flex-wrap gap-2 xl:flex-1 xl:justify-start">
+                {(["All", "Active", "Review", "Strategy"] as const).map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => setFilter(option)}
+                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                      filter === option ? "app-filter-chip-active" : "app-filter-chip"
+                    }`}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center xl:justify-end">
+              <Button asChild className="rounded-full">
+                <Link href="/documents">
+                  Review document queue
+                  <ArrowRight className="size-4" />
+                </Link>
+              </Button>
+              <DataImportWorkflow
+                source="Workspace"
+                defaultType="cases"
+                triggerLabel="Import cases"
+                title="Import cases and applications"
+                description="Upload existing cases, map the incoming columns, and confirm the records that should become live case files in this workspace."
               />
             </div>
-            <div className="flex flex-wrap gap-2">
-              {(["All", "Active", "Review", "Strategy"] as const).map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  onClick={() => setFilter(option)}
-                  className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-                    filter === option ? "app-filter-chip-active" : "app-filter-chip"
-                  }`}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-            <Button asChild className="rounded-full">
-              <Link href="/documents">
-                Review document queue
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-            <DataImportWorkflow
-              source="Workspace"
-              defaultType="cases"
-              triggerLabel="Import cases"
-              title="Import cases and applications"
-              description="Upload existing cases, map the incoming columns, and confirm the records that should become live case files in this workspace."
-            />
           </div>
         }
       >

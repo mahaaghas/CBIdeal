@@ -1,14 +1,22 @@
 "use client"
 
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { LockKeyhole, ShieldCheck } from "lucide-react"
 import { AppBrand } from "@cbideal/ui/components/app-brand"
 import { Button } from "@cbideal/ui/components/ui/button"
 import { Card, CardContent } from "@cbideal/ui/components/ui/card"
 import { Input } from "@cbideal/ui/components/ui/input"
 import { useBranding } from "@/lib/branding-store"
+import { useWorkflow } from "@/lib/workflow-store"
 
 export default function ClientPortalLoginPage() {
   const { branding } = useBranding()
+  const { loginPortalUser } = useWorkflow()
+  const router = useRouter()
+  const [email, setEmail] = useState("")
+  const [reference, setReference] = useState("")
+  const [error, setError] = useState("")
 
   return (
     <div className="mx-auto max-w-2xl py-8 md:py-12">
@@ -65,21 +73,47 @@ export default function ClientPortalLoginPage() {
                 <label className="text-sm font-medium text-foreground" htmlFor="portal-email">
                   Email address
                 </label>
-                <Input id="portal-email" type="email" placeholder="name@example.com" className="h-12 rounded-2xl px-4" />
+                <Input
+                  id="portal-email"
+                  type="email"
+                  placeholder="name@example.com"
+                  className="h-12 rounded-2xl px-4"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground" htmlFor="portal-reference">
                   Reference or invitation code
                 </label>
-                <Input id="portal-reference" placeholder="Optional" className="h-12 rounded-2xl px-4" />
+                <Input
+                  id="portal-reference"
+                  placeholder="Optional"
+                  className="h-12 rounded-2xl px-4"
+                  value={reference}
+                  onChange={(event) => setReference(event.target.value)}
+                />
               </div>
             </div>
 
             <div className="space-y-3">
-              <Button className="h-12 w-full rounded-full">
+              <Button
+                className="h-12 w-full rounded-full"
+                onClick={() => {
+                  const result = loginPortalUser(email, reference)
+                  if (!result.ok) {
+                    setError(result.error ?? "Unable to continue with this portal access.")
+                    return
+                  }
+
+                  setError("")
+                  router.push("/portal")
+                }}
+              >
                 <LockKeyhole className="size-4" />
                 Continue securely
               </Button>
+              {error ? <p className="text-sm leading-7 text-rose-300">{error}</p> : null}
               <p className="text-sm leading-7 text-muted-foreground">
                 If access has already been arranged for you, this is the quickest route back into your portal.
               </p>

@@ -118,11 +118,6 @@ export const landingLeadFormDefaults: Pick<
   notes: "",
 }
 
-function buildReferenceId() {
-  const suffix = Date.now().toString(36).slice(-6).toUpperCase()
-  return `CBI-LDG-${suffix}`
-}
-
 export function normalizeOptionalLandingValue(value: string | undefined) {
   const normalized = value?.trim()
   return normalized ? normalized : null
@@ -138,56 +133,6 @@ export function buildLandingLeadNotes(
   const note = normalizeOptionalLandingValue(values.notes ?? undefined)
 
   return note ? `${note}\n\n${trackingLine}` : trackingLine
-}
-
-function buildLandingLeadFormPayload(values: LandingLeadFormValues) {
-  return {
-    full_name: values.fullName,
-    area_of_interest: values.areaOfInterest,
-    application_scope: values.applicationScope,
-    region_of_interest: values.regionOfInterest,
-    budget_range: values.budgetRange ?? "",
-    timeline: values.timeline ?? "",
-    phone_whatsapp: values.whatsapp,
-    email: values.email ?? "",
-    notes: values.notes ?? "",
-    source_page: values.sourcePage,
-    source_category: values.sourceCategory,
-    language: values.language,
-  }
-}
-
-function encodeFormBody(payload: Record<string, string>) {
-  return new URLSearchParams(payload).toString()
-}
-
-async function submitLandingLeadToNetlify(values: LandingLeadFormValues): Promise<LandingLeadSubmissionResult | null> {
-  try {
-    const payload = {
-      "form-name": landingLeadFormName,
-      "bot-field": "",
-      ...buildLandingLeadFormPayload(values),
-    }
-
-    const response = await fetch("/__forms.html", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: encodeFormBody(payload),
-    })
-
-    if (!response.ok) {
-      return null
-    }
-
-    return {
-      ok: true,
-      referenceId: buildReferenceId(),
-    }
-  } catch {
-    return null
-  }
 }
 
 async function submitLandingLeadToApi(values: LandingLeadFormValues): Promise<LandingLeadSubmissionResult> {
@@ -227,27 +172,5 @@ async function submitLandingLeadToApi(values: LandingLeadFormValues): Promise<La
 }
 
 export async function submitLandingLeadForm(values: LandingLeadFormValues): Promise<LandingLeadSubmissionResult> {
-  const isNetlifyRuntime =
-    typeof window !== "undefined" &&
-    (window.location.hostname.endsWith(".netlify.app") ||
-      Boolean(
-        document.querySelector(
-          'meta[name="generator"][content*="Netlify"], meta[name="generator"][content*="netlify"]',
-        ),
-      ))
-
-  const netlifyResult = await submitLandingLeadToNetlify(values)
-
-  if (netlifyResult) {
-    return netlifyResult
-  }
-
-  if (isNetlifyRuntime) {
-    return {
-      ok: false,
-      message: "We could not submit your request right now. Please try again in a moment.",
-    }
-  }
-
   return submitLandingLeadToApi(values)
 }

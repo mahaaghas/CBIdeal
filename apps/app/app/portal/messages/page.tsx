@@ -7,10 +7,16 @@ import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
 import { useWorkflow } from "@/lib/workflow-store"
 
 export default function PortalMessagesPage() {
-  const { currentPortalClientId, getNotificationsForClient, getClientUpdates } = useWorkflow()
+  const {
+    currentPortalClientId,
+    getNotificationsForClient,
+    getClientUpdates,
+    getDocumentActivityForClient,
+  } = useWorkflow()
 
   const notifications = getNotificationsForClient(currentPortalClientId)
   const updates = getClientUpdates(currentPortalClientId)
+  const documentActivity = getDocumentActivityForClient(currentPortalClientId)
 
   return (
     <div className="space-y-8">
@@ -36,8 +42,27 @@ export default function PortalMessagesPage() {
           </div>
         </CrmSectionCard>
 
-        <CrmSectionCard title="Notices and email placeholders" description="System-triggered notices created when payments or documents move.">
+        <CrmSectionCard title="Notices and workflow activity" description="System notices and live document movements appear together here.">
           <div className="space-y-3">
+            {documentActivity.slice(0, 4).map((item) => (
+              <div key={item.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <MessageSquareMore className="size-4" />
+                  </div>
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <p className="text-sm font-medium text-foreground">{item.itemLabel}</p>
+                      <CrmStatusBadge status={item.toStatus} />
+                    </div>
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      {item.actorName} · {item.createdAt}
+                    </p>
+                    <p className="text-sm leading-6 text-muted-foreground">{item.note ?? "Workflow updated."}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
             {notifications.map((item) => (
               <div key={item.id} className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
                 <div className="flex items-start gap-3">

@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
+import {
+  buildSubmissionPageUrl,
+  sendLeadNotificationEmail,
+} from "@/lib/lead-notifications"
 import { getSupabaseServerClient } from "@/lib/supabase/server"
 
 const quizLeadSchema = z.object({
@@ -28,6 +32,27 @@ export async function POST(request: Request) {
     }
 
     const { name, email, whatsapp, sourcePage, language, answers } = validation.data
+    const timestamp = new Date().toISOString()
+
+    await sendLeadNotificationEmail({
+      category: "Strategy quiz lead",
+      referenceId: `CBI-QUIZ-${Date.now().toString().slice(-8)}`,
+      pageUrl: buildSubmissionPageUrl(request, `${sourcePage}-strategy-quiz`),
+      timestamp,
+      replyTo: email,
+      fields: [
+        { label: "Lead type", value: "Strategy quiz submission" },
+        { label: "Full name", value: name },
+        { label: "Email", value: email },
+        { label: "Phone", value: whatsapp },
+        { label: "Budget / investment range", value: answers.budget },
+        { label: "Selected program / goal", value: answers.goal },
+        { label: "Timeline", value: answers.timing },
+        { label: "Family size / dependents", value: answers.household },
+        { label: "Language", value: language },
+      ],
+    })
+
     const supabase = getSupabaseServerClient()
     const { error } = await supabase.from("investor_leads").insert({
       full_name: name,
@@ -51,8 +76,7 @@ export async function POST(request: Request) {
     })
 
     if (error) {
-      console.error("Quiz lead insert failed:", error)
-      return NextResponse.json({ ok: false, message: "We could not store the quiz lead." }, { status: 500 })
+      console.error("Quiz lead insert failed after email notification:", error)
     }
 
     return NextResponse.json({ ok: true })

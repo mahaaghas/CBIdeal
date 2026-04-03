@@ -1,30 +1,18 @@
 "use client"
 
 import Link from "next/link"
-import { useMemo, useState, type ReactNode } from "react"
-import { ArrowLeft, Copy, Save, Trash2 } from "lucide-react"
+import { useEffect, useMemo, useState, type ReactNode } from "react"
+import { ArrowLeft, LoaderCircle, Mail, RefreshCcw, Send } from "lucide-react"
 import { Button } from "@cbideal/ui/components/ui/button"
 import { Input } from "@cbideal/ui/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@cbideal/ui/components/ui/select"
-import { Textarea } from "@cbideal/ui/components/ui/textarea"
+import { useBranding } from "@/lib/branding-store"
+import { type EmailTemplateVariableDefinition } from "@/lib/communication-data"
 import { useCommunication } from "@/lib/communication-store"
-import type { TemplateCategory } from "@/lib/communication-data"
-
-const categories: TemplateCategory[] = [
-  "Payment reminder",
-  "Overdue payment",
-  "Missing document",
-  "Document re-upload request",
-  "Quotation follow-up",
-  "Consultation confirmation",
-  "Application progress update",
-]
+import {
+  fetchEmailPreview,
+  sendEmailPreview,
+  type RenderedEmailPreview,
+} from "@/lib/email-template-client"
 
 function FieldBlock({
   label,
@@ -46,26 +34,91 @@ function FieldBlock({
   )
 }
 
+function buildInitialValues(variables: EmailTemplateVariableDefinition[]) {
+  return variables.reduce<Record<string, string>>((accumulator, variable) => {
+    accumulator[variable.key] = variable.placeholder
+    return accumulator
+  }, {})
+}
+
+function isValidEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())
+}
+
+function validateVariables(variables: EmailTemplateVariableDefinition[], values: Record<string, string>) {
+  const errors: Record<string, string> = {}
+
+  variables.forEach((variable) => {
+    const value = values[variable.key]?.trim() ?? ""
+
+    if (variable.required && !value) {
+      errors[variable.key] = `${variable.label} is required.`
+      return
+    }
+
+    if (value && variable.type === "url") {
+      try {
+        new URL(value)
+      } catch {
+        errors[variable.key] = `${variable.label} must be a valid URL.`
+      }
+    }
+  })
+
+  return errors
+}
+
 export function EmailTemplateEditor({ templateId }: { templateId: string }) {
-  const { getTemplateById, updateTemplate, duplicateTemplate, deleteTemplate, renderTemplate } = useCommunication()
+  const { branding } = useBranding()
+  const { state, getTemplateById } = useCommunication()
   const template = getTemplateById(templateId)
 
+  const [variables, setVariables] = useState<Record<string, string>>({})
+  const [recipientEmail, setRecipientEmail] = useState("client@example.com")
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [preview, setPreview] = useState<RenderedEmailPreview | null>(null)
   const [statusMessage, setStatusMessage] = useState<string | null>(null)
+  const [isPreviewing, setIsPreviewing] = useState(false)
+  const [isSending, setIsSending] = useState(false)
 
-  const preview = useMemo(
-    () =>
-      template
-        ? renderTemplate(template.id, {
-            clientId: "a-rahman",
-            caseId: "case-2034",
-            quotationId: "quo-1001",
-            paymentId: "pay-rahman-2",
-            checklistItemId: "doc-rahman-2",
-            customReason: "The file is not fully legible and needs to be reissued.",
-          })
-        : null,
-    [renderTemplate, template],
+  useEffect(() => {
+    if (!template) return
+    setVariables(buildInitialValues(template.variables))
+  }, [template])
+
+  const brandingPayload = useMemo(
+    () => ({
+      companyName: branding.companyName,
+      senderName: branding.senderDisplayName,
+      replyTo: state.integration.replyTo,
+      primaryColor: branding.primaryColor,
+    }),
+    [branding, state.integration.replyTo],
   )
+
+  useEffect(() => {
+    if (!template) return
+
+    const run = async () => {
+      setIsPreviewing(true)
+      try {
+        const rendered = await fetchEmailPreview({
+          templateId: template.id,
+          variables,
+          branding: brandingPayload,
+        })
+        setPreview(rendered)
+        setStatusMessage(null)
+      } catch (error) {
+        setPreview(null)
+        setStatusMessage(error instanceof Error ? error.message : "Unable to render preview.")
+      } finally {
+        setIsPreviewing(false)
+      }
+    }
+
+    void run()
+  }, [brandingPayload, template, variables])
 
   if (!template) {
     return (
@@ -80,6 +133,46 @@ export function EmailTemplateEditor({ templateId }: { templateId: string }) {
     )
   }
 
+  const handleVariableChange = (key: string, value: string) => {
+    setVariables((current) => ({ ...current, [key]: value }))
+    setErrors((current) => {
+      const next = { ...current }
+      delete next[key]
+      return next
+    })
+  }
+
+  const handleSend = async () => {
+    const variableErrors = validateVariables(template.variables, variables)
+    if (!recipientEmail.trim()) {
+      variableErrors.recipientEmail = "Recipient Email is required."
+    } else if (!isValidEmail(recipientEmail)) {
+      variableErrors.recipientEmail = "Recipient Email must be a valid email address."
+    }
+
+    setErrors(variableErrors)
+    if (Object.keys(variableErrors).length > 0) {
+      setStatusMessage("Please correct the highlighted fields before sending.")
+      return
+    }
+
+    setIsSending(true)
+    try {
+      const rendered = await sendEmailPreview({
+        templateId: template.id,
+        variables,
+        recipientEmail,
+        branding: brandingPayload,
+      })
+      setPreview(rendered)
+      setStatusMessage("Email sent successfully using the locked template.")
+    } catch (error) {
+      setStatusMessage(error instanceof Error ? error.message : "Unable to send email.")
+    } finally {
+      setIsSending(false)
+    }
+  }
+
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -89,112 +182,78 @@ export function EmailTemplateEditor({ templateId }: { templateId: string }) {
             Back to templates
           </Link>
         </Button>
-
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant="outline"
-            className="rounded-full border-white/10 bg-white/[0.03] text-white hover:bg-white/[0.06] hover:text-white"
-            onClick={() => {
-              const copyId = duplicateTemplate(template.id)
-              setStatusMessage(copyId ? "Template duplicated successfully." : "Unable to duplicate this template.")
-            }}
-          >
-            <Copy className="size-4" />
-            Duplicate
-          </Button>
-          <Button
-            variant="outline"
-            className="rounded-full border-rose-300/30 bg-rose-500/10 text-rose-50 hover:bg-rose-500/20 hover:text-white"
-            onClick={() => {
-              deleteTemplate(template.id)
-              setStatusMessage("Template removed from the library.")
-            }}
-          >
-            <Trash2 className="size-4" />
-            Delete
-          </Button>
-        </div>
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[0.98fr_1.02fr]">
         <div className="space-y-5 rounded-[26px] border border-white/10 bg-white/[0.03] px-6 py-6">
           <div className="space-y-2">
-            <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Template editor</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Locked email template</p>
             <h1 className="font-serif text-[2.2rem] tracking-[-0.03em] text-white">{template.name}</h1>
             <p className="text-sm leading-7 text-slate-300">
-              Update copy, placeholders, and structure while keeping the message ready for workflow use.
+              The email layout is fixed in the backend. Teams can only fill approved variables, preview the result, and send the final message.
             </p>
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <FieldBlock label="Template name" hint="Use a clear internal name so the team can find this quickly.">
-              <Input
-                value={template.name}
-                onChange={(event) => updateTemplate(template.id, { name: event.target.value })}
-                className="rounded-2xl border-white/10 bg-white/[0.04] text-white"
-              />
-            </FieldBlock>
-            <FieldBlock label="Category" hint="Keep the template aligned with the workflow where it is triggered.">
-              <Select value={template.category} onValueChange={(value) => updateTemplate(template.id, { category: value as TemplateCategory })}>
-                <SelectTrigger className="w-full rounded-2xl border-white/10 bg-white/[0.04] text-white">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="border-white/10 bg-[#233047] text-white">
-                  {categories.map((item) => (
-                    <SelectItem key={item} value={item}>
-                      {item}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FieldBlock>
+          <div className="rounded-[20px] border border-white/10 bg-white/[0.03] px-4 py-4">
+            <div className="space-y-2">
+              <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Template metadata</p>
+              <p className="text-sm text-white">{template.subject}</p>
+              <p className="text-sm leading-6 text-slate-300">{template.previewText}</p>
+              <p className="text-sm text-slate-400">Category: {template.category}</p>
+            </div>
           </div>
 
-          <FieldBlock label="Subject line" hint="Keep it brief and anchored to the exact client context.">
+          <FieldBlock label="Recipient Email" hint="Used only for delivery. This does not affect the locked template layout.">
             <Input
-              value={template.subject}
-              onChange={(event) => updateTemplate(template.id, { subject: event.target.value })}
+              value={recipientEmail}
+              onChange={(event) => setRecipientEmail(event.target.value)}
               className="rounded-2xl border-white/10 bg-white/[0.04] text-white"
+              placeholder="client@example.com"
             />
+            {errors.recipientEmail ? <p className="text-sm text-rose-200">{errors.recipientEmail}</p> : null}
           </FieldBlock>
 
-          <FieldBlock label="Preview text" hint="This becomes the short line clients see before opening the email.">
-            <Input
-              value={template.previewText}
-              onChange={(event) => updateTemplate(template.id, { previewText: event.target.value })}
-              className="rounded-2xl border-white/10 bg-white/[0.04] text-white"
-            />
-          </FieldBlock>
-
-          <FieldBlock label="HTML body" hint="Use placeholders where the CRM should insert client, case, payment, or document details.">
-            <Textarea
-              value={template.htmlBody}
-              onChange={(event) => updateTemplate(template.id, { htmlBody: event.target.value })}
-              className="min-h-[260px] rounded-2xl border-white/10 bg-white/[0.04] text-white"
-            />
-          </FieldBlock>
-
-          <FieldBlock label="Plain text version" hint="Keep the text fallback as direct and readable as the HTML version.">
-            <Textarea
-              value={template.textBody}
-              onChange={(event) => updateTemplate(template.id, { textBody: event.target.value })}
-              className="min-h-[180px] rounded-2xl border-white/10 bg-white/[0.04] text-white"
-            />
-          </FieldBlock>
+          <div className="grid gap-4 md:grid-cols-2">
+            {template.variables.map((variable) => (
+              <FieldBlock
+                key={variable.key}
+                label={variable.label}
+                hint={variable.helpText}
+              >
+                <Input
+                  value={variables[variable.key] ?? ""}
+                  onChange={(event) => handleVariableChange(variable.key, event.target.value)}
+                  className="rounded-2xl border-white/10 bg-white/[0.04] text-white"
+                  placeholder={variable.placeholder}
+                />
+                {errors[variable.key] ? <p className="text-sm text-rose-200">{errors[variable.key]}</p> : null}
+              </FieldBlock>
+            ))}
+          </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-[20px] border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-slate-300">
             <div className="space-y-1">
               <p>Last edited: {template.lastEdited}</p>
               <p>Last used: {template.lastUsed ?? "Not yet used"}</p>
             </div>
-            <Button className="rounded-full" onClick={() => setStatusMessage("Template saved in the library.")}>
-              <Save className="size-4" />
-              Save changes
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                className="app-button-secondary rounded-full"
+                onClick={() => setVariables(buildInitialValues(template.variables))}
+              >
+                <RefreshCcw className="size-4" />
+                Reset values
+              </Button>
+              <Button className="rounded-full" onClick={handleSend} disabled={isSending || isPreviewing}>
+                {isSending ? <LoaderCircle className="size-4 animate-spin" /> : <Send className="size-4" />}
+                Send email
+              </Button>
+            </div>
           </div>
 
           {statusMessage ? (
-            <div className="rounded-[18px] border border-emerald-300/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-50">
+            <div className="rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-200">
               {statusMessage}
             </div>
           ) : null}
@@ -205,30 +264,19 @@ export function EmailTemplateEditor({ templateId }: { templateId: string }) {
             <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Rendered preview</p>
             <h2 className="font-serif text-[2rem] tracking-[-0.03em] text-white">Live email preview</h2>
             <p className="text-sm leading-7 text-slate-300">
-              The preview uses live placeholder replacement from a real client and case context.
+              This is the exact locked layout the client receives. The interface only controls approved variables.
             </p>
           </div>
 
-          {preview ? (
-            <>
-              <div className="rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-4">
-                <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Preview context</p>
-                <div className="mt-3 grid gap-3 md:grid-cols-2">
-                  {[
-                    ["Client", preview.variables.client_name],
-                    ["Case", preview.variables.case_name],
-                    ["Document", preview.variables.document_name],
-                    ["Payment", preview.variables.payment_amount],
-                    ["Due date", preview.variables.payment_due_date],
-                    ["Recipient", preview.recipient],
-                  ].map(([label, value]) => (
-                    <div key={label} className="rounded-[16px] border border-white/10 bg-white/[0.03] px-3 py-3">
-                      <p className="text-[11px] uppercase tracking-[0.16em] text-slate-400">{label}</p>
-                      <p className="mt-1 text-sm leading-6 text-white">{value}</p>
-                    </div>
-                  ))}
-                </div>
+          {isPreviewing ? (
+            <div className="rounded-[22px] border border-white/10 bg-white/[0.03] px-6 py-10 text-sm leading-7 text-slate-300">
+              <div className="flex items-center gap-3">
+                <LoaderCircle className="size-4 animate-spin" />
+                Rendering email preview
               </div>
+            </div>
+          ) : preview ? (
+            <>
               <div className="rounded-[18px] border border-white/10 bg-white/[0.03] px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Subject</p>
                 <p className="mt-2 text-sm text-white">{preview.subject}</p>
@@ -248,7 +296,14 @@ export function EmailTemplateEditor({ templateId }: { templateId: string }) {
                 <pre className="mt-3 whitespace-pre-wrap text-sm leading-7 text-slate-300">{preview.textBody}</pre>
               </div>
             </>
-          ) : null}
+          ) : (
+            <div className="rounded-[22px] border border-dashed border-white/10 bg-white/[0.03] px-6 py-10 text-sm leading-7 text-slate-300">
+              <div className="flex items-center gap-3">
+                <Mail className="size-4" />
+                Fill the approved variables to render the email preview.
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

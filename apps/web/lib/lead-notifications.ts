@@ -1,6 +1,5 @@
 import { Resend } from "resend"
 
-const DEFAULT_RECIPIENT = "sales@cbideal.nl"
 const DEFAULT_SUBJECT = "New CBI Lead - Website Submission"
 
 export interface LeadNotificationField {
@@ -14,7 +13,17 @@ interface LeadNotificationPayload {
   pageUrl: string
   timestamp: string
   replyTo?: string | null
+  subject?: string
+  to?: string | string[]
   fields: LeadNotificationField[]
+}
+
+function splitRecipients(value?: string | string[] | null) {
+  if (!value) return []
+
+  const entries = Array.isArray(value) ? value : value.split(",")
+
+  return entries.map((entry) => entry.trim()).filter(Boolean)
 }
 
 function escapeHtml(value: string) {
@@ -50,8 +59,9 @@ function buildRows(fields: LeadNotificationField[]) {
 }
 
 function buildTextBody(payload: LeadNotificationPayload) {
+  const subject = payload.subject?.trim() || DEFAULT_SUBJECT
   const lines = [
-    DEFAULT_SUBJECT,
+    subject,
     "",
     `Category: ${payload.category}`,
     `Reference: ${payload.referenceId}`,
@@ -65,13 +75,14 @@ function buildTextBody(payload: LeadNotificationPayload) {
 }
 
 function buildHtmlBody(payload: LeadNotificationPayload) {
+  const subject = payload.subject?.trim() || DEFAULT_SUBJECT
   return `
     <div style="margin:0;padding:32px 0;background:#f4f1ea;font-family:Inter,Segoe UI,Arial,sans-serif;color:#111827;">
       <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:720px;margin:0 auto;background:#ffffff;border:1px solid #e6e0d3;border-radius:24px;overflow:hidden;box-shadow:0 24px 60px rgba(15,23,42,0.08);">
         <tr>
           <td style="padding:28px 32px;background:#1e2a3d;">
             <p style="margin:0 0 8px;font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#d6dde8;">Website lead notification</p>
-            <h1 style="margin:0;font-size:28px;line-height:1.2;font-family:Georgia,'Times New Roman',serif;font-weight:600;color:#f8f6f1;">${escapeHtml(DEFAULT_SUBJECT)}</h1>
+            <h1 style="margin:0;font-size:28px;line-height:1.2;font-family:Georgia,'Times New Roman',serif;font-weight:600;color:#f8f6f1;">${escapeHtml(subject)}</h1>
           </td>
         </tr>
         <tr>
@@ -127,7 +138,10 @@ export function buildSubmissionPageUrl(request: Request, sourcePage: string) {
 export async function sendLeadNotificationEmail(payload: LeadNotificationPayload) {
   const apiKey = process.env.RESEND_API_KEY
   const from = process.env.LEAD_NOTIFICATIONS_FROM_EMAIL
-  const to = process.env.LEAD_NOTIFICATION_EMAIL?.trim() || DEFAULT_RECIPIENT
+  const configuredRecipients = splitRecipients(process.env.LEAD_NOTIFICATION_EMAIL)
+  const payloadRecipients = splitRecipients(payload.to)
+  const to = payloadRecipients.length > 0 ? payloadRecipients : configuredRecipients
+  const subject = payload.subject?.trim() || DEFAULT_SUBJECT
 
   if (!apiKey) {
     throw new Error("Missing RESEND_API_KEY for lead submission notifications.")
@@ -137,14 +151,24 @@ export async function sendLeadNotificationEmail(payload: LeadNotificationPayload
     throw new Error("Missing LEAD_NOTIFICATIONS_FROM_EMAIL for lead submission notifications.")
   }
 
+  if (to.length === 0) {
+    throw new Error("Missing notification recipient email for lead submission notifications.")
+  }
+
   const resend = new Resend(apiKey)
 
-  await resend.emails.send({
+  const { data, error } = await resend.emails.send({
     from,
     to,
-    subject: DEFAULT_SUBJECT,
+    subject,
     html: buildHtmlBody(payload),
     text: buildTextBody(payload),
     replyTo: payload.replyTo?.trim() ? payload.replyTo : undefined,
   })
+
+  if (error) {
+    throw new Error(`Resend email send failed: ${error.message}`)
+  }
+
+  return data
 }

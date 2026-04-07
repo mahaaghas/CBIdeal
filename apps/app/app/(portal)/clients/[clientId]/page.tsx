@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import {
   ArrowLeft,
   BellRing,
@@ -28,8 +28,10 @@ import { useWorkflow } from "@/lib/workflow-store"
 
 export default function ClientDetailPage() {
   const params = useParams<{ clientId: string }>()
+  const router = useRouter()
   const clientId = typeof params.clientId === "string" ? params.clientId : ""
   const {
+    grantPortalAccess,
     getClientDetail,
     getCaseByClientId,
     getQuotationByClientId,
@@ -41,11 +43,13 @@ export default function ClientDetailPage() {
     getDocumentActivityForClient,
     getNotificationsForClient,
     getClientUpdates,
+    getPortalUserByClientId,
   } = useWorkflow()
   const { getCommunicationHistory } = useCommunication()
 
   const client = getClientDetail(clientId)
   const caseRecord = getCaseByClientId(clientId)
+  const portalUser = getPortalUserByClientId(clientId)
 
   if (!client || !caseRecord) {
     return (
@@ -87,8 +91,14 @@ export default function ClientDetailPage() {
                 Back to clients
               </Link>
             </Button>
-            <Button asChild className="rounded-full">
-              <Link href="/portal">Open client portal</Link>
+            <Button
+              className="rounded-full"
+              onClick={() => {
+                grantPortalAccess(clientId)
+                router.push("/portal")
+              }}
+            >
+              {portalUser ? "Open client portal" : "Preview client portal"}
             </Button>
             <CommunicationComposer
               clientId={clientId}
@@ -118,7 +128,7 @@ export default function ClientDetailPage() {
           {quotation ? <CrmStatusBadge status={quotation.status} /> : <p className="fine-print">No quotation yet</p>}
         </CrmSectionCard>
         <CrmSectionCard title="Portal visibility" description="External access and case visibility.">
-          <CrmStatusBadge status="Portal live" />
+          <CrmStatusBadge status={portalUser?.portalStatus ?? "Portal invitation pending"} />
         </CrmSectionCard>
       </div>
 
@@ -166,7 +176,7 @@ export default function ClientDetailPage() {
                     <p className="text-xs uppercase tracking-[0.16em] text-slate-300">{quotation.id}</p>
                     <p className="text-lg font-semibold tracking-[-0.02em] text-white">{quotation.title ?? quotation.note}</p>
                     <p className="text-sm leading-6 text-slate-300">
-                      Advisor: {quotation.advisorName ?? quotation.owner} · valid until {quotation.validUntil}
+                      Advisor: {quotation.advisorName ?? quotation.owner} | valid until {quotation.validUntil}
                     </p>
                   </div>
                   <CrmStatusBadge status={quotation.status} />
@@ -203,11 +213,11 @@ export default function ClientDetailPage() {
                         <div className="min-w-0 space-y-2">
                           <p className="text-base font-semibold text-foreground">{payment.label}</p>
                           <p className="text-sm leading-6 text-muted-foreground">
-                            {payment.currency} {payment.amount.toLocaleString()} · due {payment.dueDate}
+                            {payment.currency} {payment.amount.toLocaleString()} | due {payment.dueDate}
                           </p>
                           {proof ? (
                             <p className="text-sm leading-6 text-muted-foreground">
-                              Proof: {proof.fileName} · uploaded {proof.uploadedAt}
+                              Proof: {proof.fileName} | uploaded {proof.uploadedAt}
                             </p>
                           ) : (
                             <p className="text-sm leading-6 text-muted-foreground">Awaiting client upload.</p>
@@ -289,7 +299,7 @@ export default function ClientDetailPage() {
                           <p className="text-sm font-medium text-foreground">{item.item}</p>
                           <p className="text-sm leading-6 text-muted-foreground">
                             {latestUpload
-                              ? `${latestUpload.fileName} · uploaded ${latestUpload.uploadedAt}${latestUpload.fileSizeLabel ? ` · ${latestUpload.fileSizeLabel}` : ""}`
+                              ? `${latestUpload.fileName} | uploaded ${latestUpload.uploadedAt}${latestUpload.fileSizeLabel ? ` | ${latestUpload.fileSizeLabel}` : ""}`
                               : "Awaiting upload"}
                           </p>
                           {item.comment ? <p className="text-sm leading-6 text-muted-foreground">{item.comment}</p> : null}
@@ -352,7 +362,7 @@ export default function ClientDetailPage() {
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-foreground">{review.itemLabel}</p>
                     <p className="text-sm leading-6 text-muted-foreground">
-                      {review.actorName} · {review.createdAt}
+                      {review.actorName} | {review.createdAt}
                     </p>
                     <p className="text-sm leading-6 text-muted-foreground">{review.note ?? "Status updated in the shared workflow."}</p>
                   </div>
@@ -423,7 +433,7 @@ export default function ClientDetailPage() {
                         <p className="text-sm font-medium text-foreground">{item.type}</p>
                         <CrmStatusBadge status={item.status} />
                       </div>
-                      <p className="text-sm leading-6 text-muted-foreground">{item.channel} · {item.sentAt}</p>
+                      <p className="text-sm leading-6 text-muted-foreground">{item.channel} | {item.sentAt}</p>
                     </div>
                   </div>
                 </div>

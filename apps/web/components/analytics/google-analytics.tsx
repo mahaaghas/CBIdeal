@@ -12,7 +12,6 @@ import {
   getSourcePageFromPath,
   trackBookingCtaClick,
   trackCalendlyOpen,
-  trackConsultationCtaClick,
   trackPrimaryCtaClick,
   trackPageView,
 } from "@/lib/analytics"
@@ -53,15 +52,6 @@ function AnalyticsListeners() {
       const href = anchor.getAttribute("href")
       if (!href) return
 
-      if (href === "#consultation-form") {
-        trackConsultationCtaClick({
-          source_page: sourcePage,
-          target_path: href,
-          language,
-        })
-        return
-      }
-
       let targetUrl: URL
 
       try {
@@ -90,14 +80,6 @@ function AnalyticsListeners() {
         }
 
         return
-      }
-
-      if (normalizedTargetPath === "/book-a-cbi-consultation" || targetUrl.hash === "#consultation-form") {
-        trackConsultationCtaClick({
-          source_page: sourcePage,
-          target_path: `${normalizedTargetPath}${targetUrl.hash}`,
-          language,
-        })
       }
 
       if (normalizedTargetPath === "/for-companies" && targetUrl.hash === "#meeting") {

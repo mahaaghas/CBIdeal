@@ -3,7 +3,12 @@
 import Link from "next/link"
 import { useMemo, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Bell, FileCheck2, Users, Wallet } from "lucide-react"
+import { ArrowRight, Search, ShieldCheck, Users, Wallet } from "lucide-react"
+import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
+import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
+import { CrmStatCard } from "@cbideal/ui/components/crm-stat-card"
+import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
+import { CrmTableCard } from "@cbideal/ui/components/crm-table-card"
 import { Button } from "@cbideal/ui/components/ui/button"
 import {
   Dialog,
@@ -14,21 +19,34 @@ import {
   DialogTitle,
 } from "@cbideal/ui/components/ui/dialog"
 import { Input } from "@cbideal/ui/components/ui/input"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@cbideal/ui/components/ui/table"
 import { DataImportWorkflow } from "@/components/data-import-workflow"
 import { useWorkflow } from "@/lib/workflow-store"
 
-function toneClass(tone: string) {
-  if (tone === "green") return "app-status-pill app-status-green"
-  if (tone === "amber") return "app-status-pill app-status-amber"
-  if (tone === "red") return "app-status-pill app-status-red"
-  return "app-status-pill app-status-blue"
+function getToneClass(status: string) {
+  if (status.includes("Awaiting") || status.includes("Rejected")) {
+    return "border-[#9f7a33]/36 bg-[#9f7a33]/16 text-[#f5e7c2]"
+  }
+
+  if (status.includes("Formal") || status.includes("Approved")) {
+    return "border-[#4a8d5d]/32 bg-[#4a8d5d]/18 text-[#dff6e5]"
+  }
+
+  return "border-white/10 bg-white/[0.07] text-white"
 }
 
 export function ClientsPageClient() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [searchTerm, setSearchTerm] = useState("")
-  const [actionNeededOnly, setActionNeededOnly] = useState(false)
+  const [filter, setFilter] = useState<"All" | "Needs attention" | "On track">("All")
   const [newClientForm, setNewClientForm] = useState({
     name: "",
     type: "Private client",
@@ -48,51 +66,42 @@ export function ClientsPageClient() {
     () =>
       allClients.map((client) => {
         const caseRecord = getCaseByClientId(client.id)
-        const actionNeeded =
-          caseRecord?.applicationStatus.includes("Awaiting") ||
-          caseRecord?.applicationStatus.includes("Rejected")
+        const detail = getClientDetail(client.id)
+        const stage = caseRecord?.applicationStatus ?? client.context
+        const needsAttention = stage.includes("Awaiting") || stage.includes("Rejected")
 
         return {
           clientId: client.id,
           name: client.name,
-          email: getClientDetail(client.id)?.contact ?? client.owner,
-          country: client.region,
-          progress: caseRecord?.applicationStatus ?? client.context,
-          progressTone:
-            caseRecord?.applicationStatus.includes("Awaiting") || caseRecord?.applicationStatus.includes("Rejected")
-              ? "amber"
-              : caseRecord?.applicationStatus.includes("Formal") || caseRecord?.applicationStatus.includes("Approved")
-                ? "green"
-                : "blue",
-          status:
-            actionNeeded
-              ? "Action needed"
-              : caseRecord?.applicationStatus === "Formal review"
-                ? "In review"
-                : "On track",
-          statusTone:
-            actionNeeded ? "amber" : caseRecord?.applicationStatus === "Formal review" ? "green" : "blue",
-          joined: caseRecord?.nextMilestone ?? "Active file",
-          actionNeeded,
+          email: detail?.contact ?? client.owner,
+          region: client.region,
+          profileType: detail?.profileType ?? client.type,
+          route: caseRecord?.route ?? client.context,
+          stage,
+          nextMilestone: caseRecord?.nextMilestone ?? "Active file",
+          needsAttention,
         }
       }),
     [allClients, getCaseByClientId, getClientDetail],
   )
 
   const visibleRows = rows.filter((row) => {
-    const matchesSearch = [row.name, row.email, row.country, row.progress, row.status]
+    const matchesSearch = [row.name, row.email, row.region, row.route, row.stage, row.profileType]
       .join(" ")
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
 
-    return matchesSearch && (!actionNeededOnly || row.actionNeeded)
+    const matchesFilter =
+      filter === "All" ? true : filter === "Needs attention" ? row.needsAttention : !row.needsAttention
+
+    return matchesSearch && matchesFilter
   })
 
-  const pendingReviews = state.checklist.filter((item) => item.status === "Uploaded" || item.status === "Under Review").length
-  const approvedDocs = state.checklist.filter((item) => item.status === "Approved").length
   const totalRevenue = state.payments
     .filter((payment) => payment.status === "Paid" || payment.status === "Approved")
     .reduce((sum, payment) => sum + payment.amount, 0)
+
+  const attentionRows = rows.filter((row) => row.needsAttention).slice(0, 3)
 
   const closeCreateDialog = () => {
     const params = new URLSearchParams(searchParams.toString())
@@ -127,49 +136,16 @@ export function ClientsPageClient() {
 
   return (
     <>
-      <div className="space-y-8">
-        <div className="space-y-3">
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="font-serif text-[2.9rem] leading-[1.02] tracking-[-0.045em] text-white md:text-[3.5rem]">
-              Welcome back, Admin
-            </h1>
-            <span className="app-pill rounded-full px-4 py-1.5 text-sm font-semibold">Admin workspace</span>
-          </div>
-          <p className="max-w-3xl text-[1.05rem] text-slate-200/82">
-            Review live client status, case position, and where attention is currently needed.
-          </p>
-        </div>
-
-        <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
-          {[
-            { label: "Total clients", value: `${allClients.length}`, change: "Live client relationships", iconBg: "app-kpi-icon", icon: Users },
-            { label: "Pending reviews", value: `${pendingReviews}`, change: "Checklist items awaiting review", iconBg: "bg-[#d8891a]", icon: Bell },
-            { label: "Approved docs", value: `${approvedDocs}`, change: "Approved checklist items", iconBg: "bg-[#46b264]", icon: FileCheck2 },
-            { label: "Collected revenue", value: `EUR ${(totalRevenue / 1000).toFixed(0)}k`, change: "Paid and approved stages", iconBg: "app-kpi-icon", icon: Wallet },
-          ].map((item) => (
-            <div key={item.label} className="app-kpi rounded-[22px] px-6 py-6">
-              <div className="flex items-start justify-between gap-4">
-                <div className="space-y-3">
-                  <p className="text-[1.05rem] font-medium text-slate-300">{item.label}</p>
-                  <p className="font-serif text-[3rem] leading-none tracking-[-0.04em] text-white">{item.value}</p>
-                  <p className="text-base font-medium text-[#54de82]">{item.change}</p>
-                </div>
-                <div className={`${item.iconBg} flex size-12 items-center justify-center rounded-[18px] text-white`}>
-                  <item.icon className="size-5" />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <section className="app-surface rounded-[26px] px-6 py-6 md:px-8 md:py-7">
-          <div className="space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="app-tabbar inline-flex rounded-2xl p-1">
-                <span className="app-tab app-tab-active rounded-[14px] px-10 py-2.5 text-lg font-medium">Clients</span>
-                <Link href="/documents" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">Documents</Link>
-                <Link href="/payments" className="app-tab rounded-[14px] px-10 py-2.5 text-lg font-medium">Payments</Link>
-              </div>
+      <div className="app-page-stack">
+        <CrmPageHeader
+          eyebrow="Clients"
+          title="Client records kept aligned with case stage, commercial progress, and portal readiness."
+          description="This register is meant to be operational rather than decorative: each client stays linked to the current route, next milestone, and whether anything needs immediate follow-up."
+          actions={
+            <>
+              <Button asChild variant="outline" className="app-button-secondary rounded-full">
+                <Link href="/clients?create=new">Create client</Link>
+              </Button>
               <DataImportWorkflow
                 source="Workspace"
                 defaultType="clients"
@@ -177,63 +153,152 @@ export function ClientsPageClient() {
                 title="Import client records"
                 description="Bring existing clients into the workspace, map the uploaded columns, review the preview, and confirm the records that should be created."
               />
-            </div>
+            </>
+          }
+        />
 
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div className="relative min-w-0 flex-1">
+        <div className="grid gap-4 md:grid-cols-3">
+          <CrmStatCard
+            label="Total clients"
+            value={`${rows.length}`}
+            note="Live client records currently present in the workspace."
+            trend="Active relationships"
+          />
+          <CrmStatCard
+            label="Needs attention"
+            value={`${rows.filter((row) => row.needsAttention).length}`}
+            note="Clients with a current stage that suggests follow-up, re-upload, or review pressure."
+            trend="Priority watch"
+          />
+          <CrmStatCard
+            label="Collected revenue"
+            value={`EUR ${Math.round(totalRevenue / 1000)}k`}
+            note="Paid and approved payment stages linked to the current register."
+            trend="Commercial view"
+          />
+        </div>
+
+        <CrmTableCard
+          title="Client register"
+          description="A calmer register for active clients, their current route, and the exact status that matters right now."
+          className="app-surface"
+          action={
+            <div className="flex w-full flex-col gap-3 xl:w-auto xl:flex-row xl:items-center">
+              <div className="relative w-full min-w-0 xl:w-[24rem]">
+                <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
                 <input
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
-                  className="app-search h-14 w-full rounded-2xl px-12 text-base outline-none"
-                  placeholder="Search clients..."
+                  className="app-search h-12 w-full rounded-full px-11 text-sm outline-none"
+                  placeholder="Search client, region, route, or status"
                 />
               </div>
-              <button
-                type="button"
-                onClick={() => setActionNeededOnly((current) => !current)}
-                className="app-search inline-flex h-14 items-center gap-2 rounded-2xl px-5 text-base font-semibold text-white"
-              >
-                {actionNeededOnly ? "Show all clients" : "Show action needed"}
-              </button>
+              <div className="flex flex-wrap gap-2">
+                {(["All", "Needs attention", "On track"] as const).map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => setFilter(option)}
+                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                      filter === option ? "app-filter-chip-active" : "app-filter-chip"
+                    }`}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
             </div>
+          }
+        >
+          <Table className="app-grid-table">
+            <TableHeader>
+              <TableRow>
+                <TableHead>Client</TableHead>
+                <TableHead>Profile</TableHead>
+                <TableHead>Region</TableHead>
+                <TableHead>Route</TableHead>
+                <TableHead>Current stage</TableHead>
+                <TableHead>Next milestone</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {visibleRows.map((row) => (
+                <TableRow key={row.clientId}>
+                  <TableCell className="min-w-[16rem]">
+                    <div className="space-y-1.5">
+                      <p className="text-[0.98rem] font-semibold text-white">{row.name}</p>
+                      <p className="text-sm leading-6 text-slate-400">{row.email}</p>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-slate-300">{row.profileType}</TableCell>
+                  <TableCell className="text-slate-300">{row.region}</TableCell>
+                  <TableCell className="min-w-[15rem] text-slate-300">{row.route}</TableCell>
+                  <TableCell>
+                    <CrmStatusBadge status={row.stage} className={getToneClass(row.stage)} />
+                  </TableCell>
+                  <TableCell className="text-slate-300">{row.nextMilestone}</TableCell>
+                  <TableCell className="text-right">
+                    <Button asChild variant="outline" size="sm" className="app-button-secondary rounded-full">
+                      <Link href={`/clients/${row.clientId}`}>Open record</Link>
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CrmTableCard>
 
-            <div className="app-grid-table bg-[#263248]">
-              <table className="w-full">
-                <thead>
-                  <tr>
-                    <th>User</th>
-                    <th>Country</th>
-                    <th>Progress</th>
-                    <th>Status</th>
-                    <th>Next milestone</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {visibleRows.map((row) => (
-                    <tr key={row.clientId}>
-                      <td>
-                        <div className="space-y-1">
-                          <p className="text-[1.05rem] font-semibold text-white">{row.name}</p>
-                          <p className="text-sm text-slate-400">{row.email}</p>
-                        </div>
-                      </td>
-                      <td>{row.country}</td>
-                      <td><span className={toneClass(row.progressTone)}>{row.progress}</span></td>
-                      <td><span className={toneClass(row.statusTone)}>{row.status}</span></td>
-                      <td className="text-slate-400">{row.joined}</td>
-                      <td>
-                        <Link href={`/clients/${row.clientId}`} className="text-slate-300 underline-offset-4 hover:text-white hover:underline">
-                          Open record
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+        <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+          <CrmSectionCard
+            title="Priority follow-up"
+            description="The clearest cases where the register suggests an immediate next action."
+            className="app-surface"
+          >
+            <div className="space-y-3">
+              {attentionRows.length > 0 ? (
+                attentionRows.map((row) => (
+                  <Link
+                    key={row.clientId}
+                    href={`/clients/${row.clientId}`}
+                    className="app-note-panel app-interactive-row flex items-center justify-between gap-4"
+                  >
+                    <div className="space-y-1">
+                      <p className="text-sm font-semibold text-white">{row.name}</p>
+                      <p className="text-sm leading-6 text-slate-300">{row.stage}</p>
+                    </div>
+                    <ArrowRight className="size-4 shrink-0 text-[var(--text-secondary)]" />
+                  </Link>
+                ))
+              ) : (
+                <div className="app-note-panel">
+                  <p className="text-sm leading-7 text-slate-300">No client record is currently flagging an urgent follow-up need.</p>
+                </div>
+              )}
             </div>
-          </div>
-        </section>
+          </CrmSectionCard>
+
+          <CrmSectionCard
+            title="Register notes"
+            description="A more usable client register keeps the advisory workflow and the client-facing portal aligned."
+            className="app-surface"
+          >
+            <div className="space-y-3">
+              {[
+                "Case stage, next milestone, and client record now sit in one readable register instead of a generic admin table.",
+                "The route into each client detail page stays direct so documents, payments, and communications remain one click away.",
+                "The visual language now matches the broader workspace surfaces instead of dropping into an older, narrower table style.",
+              ].map((item) => (
+                <div key={item} className="app-note-panel flex items-start gap-3">
+                  <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-white/[0.06] text-white">
+                    <ShieldCheck className="size-4" />
+                  </div>
+                  <p className="text-sm leading-7 text-slate-300">{item}</p>
+                </div>
+              ))}
+            </div>
+          </CrmSectionCard>
+        </div>
       </div>
 
       <Dialog open={createOpen} onOpenChange={(open) => !open && closeCreateDialog()}>
@@ -241,7 +306,8 @@ export function ClientsPageClient() {
           <DialogHeader className="border-b border-white/8 px-6 py-6 text-left">
             <DialogTitle className="font-serif text-[2rem] tracking-[-0.03em] text-white">New client</DialogTitle>
             <DialogDescription className="max-w-2xl text-sm leading-7 text-slate-300">
-              Open a new client record so the quotation workflow can continue with the correct context, ownership, and client-facing structure.
+              Create a new client record with the right case context so quotation, document, and portal workflows start
+              from the same source of truth.
             </DialogDescription>
           </DialogHeader>
 

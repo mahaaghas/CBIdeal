@@ -1,8 +1,7 @@
 "use client"
 
 import { Mail, MapPin, ShieldCheck, UserRound } from "lucide-react"
-import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
-import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
+import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
 import { useWorkflow } from "@/lib/workflow-store"
 
 export default function PortalProfilePage() {
@@ -18,73 +17,94 @@ export default function PortalProfilePage() {
   const caseRecord = getCaseByClientId(currentPortalClientId)
 
   return (
-    <div className="section-stack">
-      <CrmPageHeader
-        eyebrow="Profile"
-        title="Account and access details"
-        description="Profile details are kept intentionally simple here so the portal stays focused on the case itself while still making access, contact details, and active matter visibility clear."
-      />
+    <div className="space-y-8">
+      <section className="app-surface rounded-[28px] px-7 py-8 md:px-8">
+        <div className="max-w-3xl space-y-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-300">Profile</p>
+          <h1 className="font-serif text-[2.25rem] tracking-[-0.04em] text-white">Account and access details</h1>
+          <p className="text-sm leading-7 text-slate-300">
+            Profile details stay intentionally simple here so the portal remains focused on the case itself while still
+            making contact information and access scope easy to confirm.
+          </p>
+        </div>
+      </section>
 
-      <div className="grid gap-5 xl:grid-cols-3">
-        <CrmSectionCard title="Portal user" description="Current signed-in profile.">
-          <div className="space-y-3">
-            <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <UserRound className="size-4" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">{user?.name ?? client?.name}</p>
-                  <p className="text-sm leading-6 text-muted-foreground">{user?.role ?? client?.profileType}</p>
+      <section className="grid gap-6 xl:grid-cols-3">
+        <div className="app-surface rounded-[24px] px-6 py-6 md:px-7">
+          <div className="space-y-5">
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-white/[0.06] text-white">
+                <UserRound className="size-4" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-white">Portal user</p>
+                <p className="text-sm leading-6 text-slate-300">The current signed-in contact for this portal view.</p>
+              </div>
+            </div>
+
+            <div className="app-surface-soft rounded-[18px] px-5 py-4">
+              <p className="text-base font-semibold text-white">{user?.name ?? client?.name ?? "Portal user"}</p>
+              <p className="mt-1 text-sm leading-6 text-slate-300">{user?.role ?? client?.profileType ?? "Client contact"}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="app-surface rounded-[24px] px-6 py-6 md:px-7">
+          <div className="space-y-5">
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-white/[0.06] text-white">
+                <ShieldCheck className="size-4" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-white">Case profile</p>
+                <p className="text-sm leading-6 text-slate-300">The active matter currently attached to this account.</p>
+              </div>
+            </div>
+
+            <div className="app-surface-soft rounded-[18px] px-5 py-4">
+              <p className="text-base font-semibold text-white">{caseRecord?.route ?? "No active matter"}</p>
+              <div className="mt-3">
+                <CrmStatusBadge
+                  status={client?.applicationStatus ?? "Portal access active"}
+                  className="border-white/10 bg-white/[0.07] text-white"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="app-surface rounded-[24px] px-6 py-6 md:px-7">
+          <div className="space-y-5">
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-white/[0.06] text-white">
+                <Mail className="size-4" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-white">Contact details</p>
+                <p className="text-sm leading-6 text-slate-300">The address used for portal notices and updates.</p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div className="app-surface-soft rounded-[18px] px-5 py-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-slate-400">Email</p>
+                <p className="mt-2 text-sm font-semibold text-white">{user?.email ?? "No portal email configured"}</p>
+              </div>
+              <div className="app-surface-soft rounded-[18px] px-5 py-4">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 flex size-9 items-center justify-center rounded-full bg-white/[0.06] text-white">
+                    <MapPin className="size-4" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-semibold text-white">Portal access status</p>
+                    <p className="text-sm leading-6 text-slate-300">{user?.portalStatus ?? "Portal access is active."}</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </CrmSectionCard>
-
-        <CrmSectionCard title="Case profile" description="Matter currently associated with this account.">
-          <div className="space-y-3">
-            <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <ShieldCheck className="size-4" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">{caseRecord?.route ?? "No active matter"}</p>
-                  <p className="text-sm leading-6 text-muted-foreground">{client?.applicationStatus ?? "Portal access active"}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CrmSectionCard>
-
-        <CrmSectionCard title="Contact details" description="Contact information used for portal updates and notices.">
-          <div className="space-y-3">
-            <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <Mail className="size-4" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">{user?.email ?? "No portal email configured"}</p>
-                  <p className="text-sm leading-6 text-muted-foreground">Primary notification address</p>
-                </div>
-              </div>
-            </div>
-            <div className="rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
-              <div className="flex items-start gap-3">
-                <div className="mt-0.5 flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <MapPin className="size-4" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm font-medium text-foreground">Portal access active</p>
-                  <p className="text-sm leading-6 text-muted-foreground">{user?.portalStatus ?? "Portal live"}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CrmSectionCard>
-      </div>
+        </div>
+      </section>
     </div>
   )
 }

@@ -14,6 +14,7 @@ interface LeadQualificationFormProps {
 }
 
 export function LeadQualificationForm({
+  locale,
   formType,
   title,
   description,
@@ -23,10 +24,12 @@ export function LeadQualificationForm({
   if (formType === "investor") {
     return (
       <InvestorIntakeForm
+        locale={locale}
         title={title}
         description={description}
         submitLabel={submitLabel}
         sourcePage={source}
+        sourceCategory="contact"
       />
     )
   }

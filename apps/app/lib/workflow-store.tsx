@@ -159,11 +159,13 @@ type WorkflowState = {
   clientUpdates: Record<string, string[]>
   importSummaries: WorkspaceImportSummary[]
   portalSessionClientId: string
+  portalAccessGranted: boolean
 }
 
 type WorkflowContextValue = {
   state: WorkflowState
   currentPortalClientId: string
+  hasPortalAccess: boolean
   getAllLeads: () => WorkspaceLeadRecord[]
   getAllClients: () => ClientRecord[]
   getClientById: (clientId: string) => ClientRecord | undefined
@@ -190,6 +192,8 @@ type WorkflowContextValue = {
   markNotificationRead: (notificationId: string) => void
   markNotificationsRead: (notificationIds: string[]) => void
   setCurrentPortalClient: (clientId: string) => void
+  grantPortalAccess: (clientId: string) => void
+  clearPortalAccess: () => void
   loginPortalUser: (email: string, reference?: string) => { ok: boolean; clientId?: string; error?: string }
   createClient: (input: {
     name: string
@@ -605,6 +609,7 @@ function buildInitialState(): WorkflowState {
     },
     importSummaries: [],
     portalSessionClientId: CURRENT_PORTAL_CLIENT_ID,
+    portalAccessGranted: false,
   }
 }
 
@@ -695,6 +700,7 @@ function buildWorkspaceSeed(companyName: string, ownerName: string): WorkflowSta
     },
     importSummaries: [],
     portalSessionClientId: welcomeClientId,
+    portalAccessGranted: false,
   }
 }
 
@@ -752,6 +758,7 @@ function clearWorkspaceSeed(state: WorkflowState) {
   state.notifications = []
   state.clientUpdates = {}
   state.portalSessionClientId = CURRENT_PORTAL_CLIENT_ID
+  state.portalAccessGranted = false
 }
 
 function hydrateWorkflowState(
@@ -834,6 +841,7 @@ function hydrateWorkflowState(
       clientsState.some((client) => client.id === candidate.portalSessionClientId)
         ? candidate.portalSessionClientId
         : clientsState.find((client) => client.id === CURRENT_PORTAL_CLIENT_ID)?.id ?? clientsState[0]?.id ?? CURRENT_PORTAL_CLIENT_ID,
+    portalAccessGranted: candidate.portalAccessGranted === true,
   }
 }
 
@@ -1360,6 +1368,37 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
       })
     }
 
+    const grantPortalAccess = (clientId: string) => {
+      setState((current) => {
+        if (!current.clients.some((client) => client.id === clientId)) {
+          return current
+        }
+
+        if (current.portalSessionClientId === clientId && current.portalAccessGranted) {
+          return current
+        }
+
+        return {
+          ...current,
+          portalSessionClientId: clientId,
+          portalAccessGranted: true,
+        }
+      })
+    }
+
+    const clearPortalAccess = () => {
+      setState((current) => {
+        if (!current.portalAccessGranted) {
+          return current
+        }
+
+        return {
+          ...current,
+          portalAccessGranted: false,
+        }
+      })
+    }
+
     const loginPortalUser = (email: string, reference?: string) => {
       const emailAddress = email.trim().toLowerCase()
       const referenceValue = reference?.trim().toLowerCase()
@@ -1382,7 +1421,7 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      setCurrentPortalClient(matchingUser.clientId)
+      grantPortalAccess(matchingUser.clientId)
       return {
         ok: true,
         clientId: matchingUser.clientId,
@@ -2349,6 +2388,7 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
 
     return {
       state,
+      hasPortalAccess: state.portalAccessGranted,
       currentPortalClientId:
         state.clients.find((client) => client.id === state.portalSessionClientId)?.id ??
         state.clients.find((client) => client.id === CURRENT_PORTAL_CLIENT_ID)?.id ??
@@ -2380,6 +2420,8 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
       markNotificationRead,
       markNotificationsRead,
       setCurrentPortalClient,
+      grantPortalAccess,
+      clearPortalAccess,
       loginPortalUser,
       createClient,
       createQuotation,

@@ -28,6 +28,10 @@ export {
   investorTimelines,
   parseInvestorStructuredNotes,
 } from "./lead-intake"
+export {
+  consultationSubmissionsTable,
+  formatConsultationDateTime,
+} from "./consultation-integrity"
 export { calculateWorkspacePricing, saasPricingModel } from "./pricing"
 export {
   demoWorkspaceConfig,
@@ -42,6 +46,12 @@ export {
   saasPlans,
 } from "./saas"
 export type {
+  ConsultationConversionStatus,
+  ConsultationCrmSyncStatus,
+  ConsultationEmailStatus,
+  ConsultationSubmissionRecord,
+  ConsultationSubmissionStatus,
+  ConsultationThankYouStatus,
   BusinessLeadSubmission,
   CrmLeadRecord,
   InvestorLeadSubmission,

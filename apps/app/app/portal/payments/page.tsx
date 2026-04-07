@@ -62,7 +62,7 @@ export default function PortalPaymentsPage() {
             <CrmSectionCard
               key={payment.id}
               title={payment.label}
-              description={`${payment.currency} ${payment.amount.toLocaleString()} � due ${payment.dueDate}`}
+              description={`${payment.currency} ${payment.amount.toLocaleString()} | due ${payment.dueDate}`}
             >
               <div className="space-y-4 rounded-[20px] border border-border/70 bg-background px-4 py-4 shadow-sm">
                 <div className="flex items-start justify-between gap-3">
@@ -70,7 +70,7 @@ export default function PortalPaymentsPage() {
                     <p className="text-sm font-medium text-foreground">Current stage status</p>
                     <p className="text-sm leading-6 text-muted-foreground">
                       {proof
-                        ? `Latest proof: ${proof.fileName} � uploaded ${proof.uploadedAt}`
+                        ? `Latest proof: ${proof.fileName} | uploaded ${proof.uploadedAt}`
                         : "No proof of payment has been uploaded yet."}
                     </p>
                   </div>

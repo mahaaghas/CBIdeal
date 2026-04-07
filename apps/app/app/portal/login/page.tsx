@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { LockKeyhole, ShieldCheck } from "lucide-react"
 import { AppBrand } from "@cbideal/ui/components/app-brand"
@@ -12,11 +12,15 @@ import { useWorkflow } from "@/lib/workflow-store"
 
 export default function ClientPortalLoginPage() {
   const { branding } = useBranding()
-  const { loginPortalUser } = useWorkflow()
+  const { clearPortalAccess, loginPortalUser } = useWorkflow()
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [reference, setReference] = useState("")
   const [error, setError] = useState("")
+
+  useEffect(() => {
+    clearPortalAccess()
+  }, [clearPortalAccess])
 
   return (
     <div className="mx-auto max-w-2xl py-8 md:py-12">

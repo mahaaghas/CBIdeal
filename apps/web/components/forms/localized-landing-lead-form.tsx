@@ -15,10 +15,12 @@ interface LocalizedLandingLeadFormProps {
 export function LocalizedLandingLeadForm({ locale = "en", ...props }: LocalizedLandingLeadFormProps) {
   return (
     <InvestorIntakeForm
+      locale={locale}
       title={props.title}
       description={props.description}
       submitLabel={props.submitLabel}
       sourcePage={props.sourcePage ?? props.sourceCategory}
+      sourceCategory={props.sourceCategory}
       className={props.className}
     />
   )

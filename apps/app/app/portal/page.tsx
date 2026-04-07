@@ -42,7 +42,7 @@ export default function ClientPortalPage() {
           <span className="app-pill rounded-full px-4 py-1.5 text-sm font-semibold">{client?.profileType ?? "Portal user"}</span>
         </div>
         <p className="max-w-3xl text-[1.02rem] leading-7 text-slate-200/82">
-          A clear view of your live case workspace, the items waiting on you, and the next step already connected to the CRM review flow.
+          A clear view of your active case workspace, the items waiting on you, and the next step in the shared review process.
         </p>
       </div>
 
@@ -182,7 +182,7 @@ export default function ClientPortalPage() {
                     <div className="space-y-1">
                       <p className="text-[1.02rem] font-semibold text-white">{payment.label}</p>
                       <p className="text-sm text-slate-300">
-                        {payment.currency} {payment.amount.toLocaleString()} � due {payment.dueDate}
+                        {payment.currency} {payment.amount.toLocaleString()} | due {payment.dueDate}
                       </p>
                     </div>
                     <CrmStatusBadge status={payment.status} className="border-white/10 bg-white/[0.07] text-white" />

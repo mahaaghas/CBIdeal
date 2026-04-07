@@ -1,13 +1,12 @@
 import type { Metadata } from "next"
-import { LockKeyhole, MessageSquareQuote, ShieldCheck, TimerReset } from "lucide-react"
+import Link from "next/link"
+import { ArrowRight, LockKeyhole, MessageSquareQuote, ShieldCheck, TimerReset } from "lucide-react"
 import { LocalizedLandingLeadForm } from "@/components/forms/localized-landing-lead-form"
 import { LandingCtaSection } from "@/components/landing/landing-cta-section"
 import { LandingFaqSection } from "@/components/landing/landing-faq-section"
-import { LandingHero } from "@/components/landing/landing-hero"
 import { LandingLinkGrid } from "@/components/landing/landing-link-grid"
 import { SectionHeading } from "@/components/section-heading"
 import { SiteShell } from "@/components/site-shell"
-import { TrustGrid } from "@/components/trust-grid"
 import { Card, CardContent } from "@/components/ui/card"
 import { getRequestLocale } from "@/lib/i18n/request"
 import { localizeHref } from "@/lib/i18n/routing"
@@ -168,89 +167,182 @@ export default function BookConsultationPage() {
           ctaSecondary: "العودة إلى خيارات المستثمرين",
         }
       : null
+  const processSteps = [
+    {
+      step: "01",
+      title: "Profile",
+      description: "We begin with your current nationality, residence position, and any family context shaping the enquiry.",
+    },
+    {
+      step: "02",
+      title: "Planning",
+      description: "We review timing, budget, and what you are actually trying to solve before any route is treated as the answer.",
+    },
+    {
+      step: "03",
+      title: "Contact",
+      description: "We confirm the best reply format and whether a broader advisory step appears appropriate after review.",
+    },
+  ]
+  const coverageCards =
+    copy?.valueCards ?? [
+      {
+        icon: MessageSquareQuote,
+        title: "Area of interest",
+        text: "Whether the stronger fit appears to be citizenship by investment, residency by investment, or a wider relocation strategy.",
+      },
+      {
+        icon: TimerReset,
+        title: "Timing",
+        text: "Whether there is a genuine need to move now, or whether a more measured pace would be wiser.",
+      },
+      {
+        icon: ShieldCheck,
+        title: "Suitability",
+        text: "Whether the direction under consideration appears coherent with your current position and wider objectives.",
+      },
+      {
+        icon: LockKeyhole,
+        title: "Next step",
+        text: "Whether a more detailed discussion, a written introduction, or a pause for reflection would be more appropriate.",
+      },
+    ]
+  const reassuranceItems = copy?.trustItems ?? trustItems
 
   return (
     <SiteShell>
-      <LandingHero
-        eyebrow={copy?.heroEyebrow ?? "Private consultation"}
-        title={copy?.heroTitle ?? "Request a private consultation"}
-        description={
-          copy?.heroDescription ??
-          "This page explains what a private consultation is for, what the first exchange tends to cover, and when it makes sense to request it. The initial conversation itself allows us to understand your situation, priorities, and timeline, and to determine whether there is a sensible basis for a more detailed discussion."
-        }
-        primaryAction={{ href: "#consultation-form", label: copy?.heroPrimary ?? "Request a consultation" }}
-        secondaryAction={{ href: routes.programs, label: copy?.heroSecondary ?? "Explore your options" }}
-        stats={
-          copy?.stats ?? [
-            { value: "Private", label: "handled with discretion from the outset" },
-            { value: "Measured", label: "focused on suitability rather than speed or premature certainty" },
-            { value: "Clear", label: "designed to bring structure to the next step and the wider decision" },
-          ]
-        }
-        aside={
-          <LocalizedLandingLeadForm
-            locale={locale}
-            title={copy?.formTitle ?? "Request a private consultation"}
-            description={
-            copy?.formDescription ??
-              "Share the essentials below so the first conversation begins with the right context. The form is intended to clarify what should be discussed first, and whether a more detailed exchange appears appropriate."
-            }
-          submitLabel={copy?.heroPrimary ?? "Request a consultation"}
-            sourceCategory="consultation"
-            sourcePage="book-a-cbi-consultation"
-          />
-        }
-      />
-
-      <section className="section-padding pt-0">
+      <section className="section-padding pb-10 md:pb-14">
         <div className="container-shell">
-          <TrustGrid items={copy?.trustItems ?? trustItems} />
+          <div className="hero-panel relative overflow-hidden px-7 py-8 sm:px-9 sm:py-10 md:px-12 md:py-11 lg:px-[4.3rem] lg:py-[4rem]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(214,187,131,0.16),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_34%)]" />
+            <div className="relative grid gap-10 xl:grid-cols-[minmax(0,1.02fr)_minmax(39rem,1fr)] xl:items-start xl:gap-12">
+              <div className="space-y-8">
+                <div className="space-y-5">
+                  <span className="eyebrow border-white/20 bg-white/10 text-primary-foreground/80">
+                    {copy?.heroEyebrow ?? "Private consultation"}
+                  </span>
+                  <h1 className="max-w-[14ch] text-[clamp(2.35rem,3.3vw,3.45rem)] leading-[1.03] tracking-[-0.04em] text-primary-foreground">
+                    {copy?.heroTitle ?? "Request a private consultation"}
+                  </h1>
+                  <p className="max-w-[38rem] text-[1rem] leading-8 text-primary-foreground/76 md:text-[1.05rem]">
+                    {copy?.heroDescription ??
+                      "This page explains what a private consultation is for, what the first exchange tends to cover, and when it makes sense to request it. The initial conversation itself allows us to understand your situation, priorities, and timeline, and to determine whether there is a sensible basis for a more detailed discussion."}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <Link href="#consultation-request-form" className="conversion-primary-button w-full sm:w-auto">
+                    {copy?.heroPrimary ?? "Request a consultation"}
+                  </Link>
+                  <Link href={routes.programs} className="conversion-secondary-button w-full sm:w-auto">
+                    {copy?.heroSecondary ?? "Explore your options"}
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </div>
+
+                <div className="rounded-[30px] border border-white/10 bg-white/[0.05] p-6 shadow-[0_18px_52px_rgba(9,15,24,0.12)] backdrop-blur md:p-7">
+                  <div className="space-y-3">
+                    <p className="text-[0.74rem] font-semibold uppercase tracking-[0.18em] text-primary-foreground/66">
+                      {copy?.valueEyebrow ?? "What this first step is for"}
+                    </p>
+                    <h2 className="max-w-[20ch] text-[1.75rem] leading-[1.08] tracking-[-0.03em] text-primary-foreground">
+                      {copy?.valueTitle ?? "A more considered first exchange, before anything more involved is discussed."}
+                    </h2>
+                    <p className="max-w-[42rem] text-sm leading-7 text-primary-foreground/72 md:text-[0.98rem] md:leading-8">
+                      {copy?.valueDescription ??
+                        "The purpose is to clarify the broader picture: route preference, readiness, family considerations, and whether a more detailed next step makes sense."}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 grid gap-4 md:grid-cols-2">
+                    {coverageCards.map((item) => (
+                      <div
+                        key={item.title}
+                        className="rounded-[24px] border border-white/8 bg-white/[0.04] px-5 py-5"
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className="mt-0.5 flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white/[0.08] text-[#d6bb83]">
+                            <item.icon className="size-5" />
+                          </div>
+                          <div className="space-y-2">
+                            <h3 className="text-[1.08rem] leading-6 text-primary-foreground">{item.title}</h3>
+                            <p className="text-sm leading-7 text-primary-foreground/70">{item.text}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-3">
+                  {reassuranceItems.map((item) => (
+                    <div key={item.title} className="rounded-[24px] border border-white/10 bg-white/[0.03] px-5 py-5">
+                      <p className="text-[1.08rem] leading-6 text-primary-foreground">{item.title}</p>
+                      <p className="mt-3 text-sm leading-7 text-primary-foreground/68">{item.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div id="consultation-request-form" className="xl:pl-2">
+                <LocalizedLandingLeadForm
+                  locale={locale}
+                  title={copy?.formTitle ?? "Request a private consultation"}
+                  description={
+                    copy?.formDescription ??
+                    "Share the essentials below so the first conversation begins with the right context. The form is intended to clarify what should be discussed first, and whether a more detailed exchange appears appropriate."
+                  }
+                  submitLabel={copy?.heroPrimary ?? "Request a consultation"}
+                  sourceCategory="consultation"
+                  sourcePage="book-a-cbi-consultation"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section id="consultation-form" className="section-padding bg-muted/30">
-        <div className="container-shell space-y-10">
-          <SectionHeading
-            eyebrow={copy?.valueEyebrow ?? "What this first step is for"}
-            title={copy?.valueTitle ?? "A more considered first exchange, before anything more involved is discussed."}
-            description={
-              copy?.valueDescription ??
-              "The purpose is to clarify the broader picture: route preference, readiness, family considerations, and whether a more detailed next step makes sense."
-            }
-          />
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {(copy?.valueCards ?? [
-              {
-                icon: MessageSquareQuote,
-                title: "Area of interest",
-                text: "Whether the stronger fit appears to be citizenship by investment, residency by investment, or a wider relocation strategy.",
-              },
-              {
-                icon: TimerReset,
-                title: "Timing",
-                text: "Whether there is a genuine need to move now, or whether a more measured pace would be wiser.",
-              },
-              {
-                icon: ShieldCheck,
-                title: "Suitability",
-                text: "Whether the direction under consideration appears coherent with your current position and wider objectives.",
-              },
-              {
-                icon: LockKeyhole,
-                title: "Next step",
-                text: "Whether a more detailed discussion, a written introduction, or a pause for reflection would be more appropriate.",
-              },
-            ]).map((item) => (
-              <Card key={item.title} className="section-card h-full">
-                <CardContent className="space-y-4 p-6 md:p-7">
-                  <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <item.icon className="size-6" />
-                  </div>
-                  <h2 className="text-xl leading-tight text-foreground">{item.title}</h2>
-                  <p className="text-sm leading-7 text-muted-foreground">{item.text}</p>
-                </CardContent>
-              </Card>
-            ))}
+      <section className="section-padding pt-0 bg-muted/30">
+        <div className="container-shell">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,0.94fr)_minmax(0,1.06fr)] lg:items-start">
+            <Card className="section-card border-0 shadow-none">
+              <CardContent className="space-y-5 p-7 md:p-8 lg:p-9">
+                <span className="eyebrow">Intake structure</span>
+                <h2 className="section-title max-w-[18ch] text-foreground">
+                  A cleaner three-part review, outside the form itself.
+                </h2>
+                <p className="max-w-[40rem] text-base leading-8 text-muted-foreground">
+                  The form should feel calm and direct. The explanation sits here instead: first we understand the
+                  profile, then the planning context, then the best reply format and next step.
+                </p>
+                <div className="rounded-[24px] border border-border/70 bg-background px-5 py-5">
+                  <p className="text-[0.75rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                    Private reassurance
+                  </p>
+                  <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                    This is a private advisory intake, not an automated funnel stage. Requests are reviewed before any
+                    further conversation is arranged, and weak or unclear submissions are not treated as automatic next
+                    steps.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid gap-4">
+              {processSteps.map((item) => (
+                <Card key={item.step} className="section-card border-0 shadow-none">
+                  <CardContent className="flex flex-col gap-4 p-6 md:flex-row md:items-start md:gap-5 md:p-7">
+                    <div className="inline-flex w-fit rounded-full bg-primary px-3.5 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-primary-foreground">
+                      Step {item.step}
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-[1.18rem] leading-6 text-foreground">{item.title}</h3>
+                      <p className="text-sm leading-7 text-muted-foreground">{item.description}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </section>

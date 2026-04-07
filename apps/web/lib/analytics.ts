@@ -2,6 +2,8 @@ import { stripLocalePrefix } from "@/lib/i18n/routing"
 
 export const GA_MEASUREMENT_ID = "G-9KX85B0FMX"
 export const GOOGLE_ADS_ID = "AW-18036841344"
+export const GOOGLE_ADS_CONSULTATION_CONVERSION_LABEL =
+  process.env.NEXT_PUBLIC_GOOGLE_ADS_CONSULTATION_CONVERSION_LABEL
 
 type AnalyticsValue = string | number | boolean | undefined
 type AnalyticsParams = Record<string, AnalyticsValue>
@@ -42,10 +44,6 @@ export function trackFormSubmit(params: AnalyticsParams = {}) {
   trackEvent("form_submit", params)
 }
 
-export function trackConsultationCtaClick(params: AnalyticsParams = {}) {
-  trackEvent("consultation_cta_click", params)
-}
-
 export function trackCalendlyOpen(params: AnalyticsParams = {}) {
   trackEvent("calendly_open", params)
 }
@@ -68,6 +66,28 @@ export function trackQuizCompleted(params: AnalyticsParams = {}) {
 
 export function trackLeadGenerated(params: AnalyticsParams = {}) {
   trackEvent("lead_generated", params)
+}
+
+export function trackConsultationRequestSuccess(params: AnalyticsParams = {}) {
+  const customEventAttempted = canTrack()
+  let adsConversionAttempted = false
+
+  if (customEventAttempted) {
+    window.gtag?.("event", "consultation_request_success", params)
+  }
+
+  if (customEventAttempted && GOOGLE_ADS_CONSULTATION_CONVERSION_LABEL?.trim()) {
+    window.gtag?.("event", "conversion", {
+      send_to: `${GOOGLE_ADS_ID}/${GOOGLE_ADS_CONSULTATION_CONVERSION_LABEL.trim()}`,
+      ...params,
+    })
+    adsConversionAttempted = true
+  }
+
+  return {
+    customEventAttempted,
+    adsConversionAttempted,
+  }
 }
 
 export function getLanguageCode(lang: string | null | undefined) {

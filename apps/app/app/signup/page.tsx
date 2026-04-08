@@ -151,7 +151,7 @@ function SignupPageContent() {
         </section>
 
         <section className="section-card rounded-[32px] p-8 md:p-10 lg:p-11">
-          <div className="mx-auto max-w-[680px] space-y-8">
+          <div className="mx-auto max-w-[860px] space-y-8">
             <div className="space-y-4">
               <span className="eyebrow">Workspace onboarding</span>
               <h2 className="font-serif text-[2.25rem] leading-[1.04] tracking-[-0.045em] text-white">
@@ -261,7 +261,7 @@ function SignupPageContent() {
 
               <div className="space-y-3">
                 <p className="text-sm font-medium text-slate-100">Choose a plan</p>
-                <div className="grid gap-4 xl:grid-cols-3">
+                <div className="grid gap-5 xl:grid-cols-3">
                   {saasPlans
                     .filter((plan) => plan.id !== "enterprise")
                     .map((plan) => {
@@ -271,21 +271,28 @@ function SignupPageContent() {
                           key={plan.id}
                           type="button"
                           onClick={() => setPlanId(plan.id as SelfServePlanId)}
-                          className={`rounded-[26px] border p-5 text-left shadow-[0_18px_44px_rgba(8,13,24,0.12)] transition ${selected ? "border-[var(--app-brand-primary)] bg-[var(--app-brand-surface-tint)]" : "border-white/10 bg-white/[0.05] hover:border-white/24 hover:bg-white/[0.08]"}`}
+                          className={`rounded-[28px] border p-6 text-left shadow-[0_22px_52px_rgba(8,13,24,0.14)] transition ${selected ? "border-[var(--app-brand-primary)] bg-[linear-gradient(180deg,rgba(108,132,164,0.22),rgba(255,255,255,0.05))]" : "border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] hover:border-white/24 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.04))]"}`}
                         >
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="space-y-2">
-                              <p className="text-lg font-semibold text-white">{plan.name}</p>
-                              <p className="text-sm leading-7 text-slate-300">{plan.description}</p>
+                          <div className="space-y-5">
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="space-y-2">
+                                <p className="text-[1.55rem] font-semibold tracking-[-0.03em] text-white">{plan.name}</p>
+                                <p className="max-w-[20rem] text-[0.96rem] leading-7 text-slate-300">{plan.description}</p>
+                              </div>
+                              <div className="shrink-0 rounded-[20px] border border-white/10 bg-slate-950/38 px-4 py-3 text-right shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+                                <p className="text-[1.65rem] font-semibold leading-none text-white">{renderPlanPrice(plan)}</p>
+                                <p className="mt-2 text-[0.64rem] uppercase tracking-[0.24em] text-slate-400">monthly</p>
+                              </div>
                             </div>
-                            <div className="rounded-[18px] border border-white/10 bg-slate-950/34 px-3.5 py-2.5 text-right">
-                              <p className="text-lg font-semibold leading-none text-white">{renderPlanPrice(plan)}</p>
-                              <p className="mt-1 text-[0.62rem] uppercase tracking-[0.18em] text-slate-400">monthly</p>
+                            <div className="h-px bg-white/8" />
+                            <div className="grid gap-3">
+                              <div className="rounded-[18px] border border-white/8 bg-slate-950/20 px-4 py-3 text-sm font-medium text-slate-200">
+                                {plan.internalSeatLimit} internal users
+                              </div>
+                              <div className="rounded-[18px] border border-white/8 bg-slate-950/20 px-4 py-3 text-sm font-medium text-slate-200">
+                                {plan.clientAccountLimit} client accounts
+                              </div>
                             </div>
-                          </div>
-                          <div className="mt-5 space-y-3 text-sm leading-7 text-slate-300">
-                            <p>Up to {plan.internalSeatLimit} internal users</p>
-                            <p>Up to {plan.clientAccountLimit} client accounts</p>
                           </div>
                         </button>
                       )
@@ -297,24 +304,24 @@ function SignupPageContent() {
                 <SetupStatusNotice tone="warning" title="We couldn't continue setup" description={error} />
               ) : null}
 
-              <div className="rounded-[26px] border border-white/10 bg-white/[0.05] p-6 shadow-[0_18px_44px_rgba(8,13,24,0.12)]">
+              <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-6 shadow-[0_22px_52px_rgba(8,13,24,0.14)]">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
                     <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Selected plan</p>
-                    <p className="mt-3 text-xl font-semibold text-white">{activePlan.name}</p>
-                    <p className="mt-2 max-w-xl text-sm leading-7 text-slate-300">{activePlan.description}</p>
+                    <p className="mt-3 text-[1.6rem] font-semibold tracking-[-0.03em] text-white">{activePlan.name}</p>
+                    <p className="mt-2 max-w-2xl text-[0.96rem] leading-7 text-slate-300">{activePlan.description}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[2rem] font-semibold text-white">{renderPlanPrice(activePlan)}</p>
+                    <p className="text-[2.2rem] font-semibold text-white">{renderPlanPrice(activePlan)}</p>
                     <p className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-400">monthly</p>
                   </div>
                 </div>
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-[20px] border border-white/8 bg-slate-950/22 px-4 py-4 text-sm text-slate-300">
-                    Up to {activePlan.internalSeatLimit} internal users
+                  <div className="rounded-[20px] border border-white/8 bg-slate-950/22 px-4 py-4 text-sm font-medium text-slate-200">
+                    {activePlan.internalSeatLimit} internal users
                   </div>
-                  <div className="rounded-[20px] border border-white/8 bg-slate-950/22 px-4 py-4 text-sm text-slate-300">
-                    Up to {activePlan.clientAccountLimit} client accounts
+                  <div className="rounded-[20px] border border-white/8 bg-slate-950/22 px-4 py-4 text-sm font-medium text-slate-200">
+                    {activePlan.clientAccountLimit} client accounts
                   </div>
                 </div>
               </div>

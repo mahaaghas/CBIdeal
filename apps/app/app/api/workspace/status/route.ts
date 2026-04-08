@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
-import { getStripeBillingConfigIssues, getWorkspaceStatus } from "@/lib/workspace-billing"
+import { getCustomerSafeMessage } from "@/lib/customer-safe-errors"
+import { getWorkspaceStatus } from "@/lib/workspace-billing"
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -12,16 +13,19 @@ export async function GET(request: Request) {
   try {
     const workspace = await getWorkspaceStatus(tenantId)
     if (!workspace) {
-      return NextResponse.json({ error: "Workspace billing record not found." }, { status: 404 })
+      return NextResponse.json({ error: getCustomerSafeMessage("status", "not found") }, { status: 404 })
     }
 
     return NextResponse.json({
       ...workspace,
-      stripeConfigIssues: getStripeBillingConfigIssues(),
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to load workspace status."
+    console.error("[workspace.status] failed", {
+      tenantId,
+      error: message,
+    })
     const status = message.includes("missing") ? 503 : 500
-    return NextResponse.json({ error: message }, { status })
+    return NextResponse.json({ error: getCustomerSafeMessage("status", message) }, { status })
   }
 }

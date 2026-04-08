@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react"
 import { getSaasPlan, isSelfServePlan, saasAppConfig, type SelfServePlanId } from "@cbideal/config"
+import { customerSafeMessages } from "@/lib/customer-safe-errors"
 import {
   createEmptyPlatformState,
   DEMO_SCOPE_KEY,
@@ -106,26 +107,30 @@ export function PlatformAccessProvider({ children }: { children: ReactNode }) {
 
   const syncTenantStatus = useCallback(
     async (tenantId: string) => {
-      const response = await fetch(`/api/workspace/status?tenant=${encodeURIComponent(tenantId)}`, {
-        method: "GET",
-        cache: "no-store",
-      })
+      try {
+        const response = await fetch(`/api/workspace/status?tenant=${encodeURIComponent(tenantId)}`, {
+          method: "GET",
+          cache: "no-store",
+        })
 
-      const payload = (await response.json()) as {
-        tenant?: PlatformTenantRecord
-        user?: PlatformUserRecord
-        signup?: PlatformSignupRecord
-        error?: string
+        const payload = (await response.json()) as {
+          tenant?: PlatformTenantRecord
+          user?: PlatformUserRecord
+          signup?: PlatformSignupRecord
+          error?: string
+        }
+
+        const tenant = payload.tenant
+        const user = payload.user
+        if (!response.ok || !tenant || !user) {
+          return { ok: false, error: payload.error ?? customerSafeMessages.workspaceAccessFailed }
+        }
+
+        setState((current) => mergeWorkspacePayload(current, { tenant, user, signup: payload.signup }))
+        return { ok: true, tenant }
+      } catch {
+        return { ok: false, error: customerSafeMessages.workspaceAccessFailed }
       }
-
-      const tenant = payload.tenant
-      const user = payload.user
-      if (!response.ok || !tenant || !user) {
-        return { ok: false, error: payload.error ?? "Unable to load the current billing status." }
-      }
-
-      setState((current) => mergeWorkspacePayload(current, { tenant, user, signup: payload.signup }))
-      return { ok: true, tenant }
     },
     [setState],
   )
@@ -170,77 +175,85 @@ export function PlatformAccessProvider({ children }: { children: ReactNode }) {
     }
 
     const login = async (email: string, password: string) => {
-      const response = await fetch("/api/workspace/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      })
+      try {
+        const response = await fetch("/api/workspace/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        })
 
-      const payload = (await response.json()) as {
-        tenant?: PlatformTenantRecord
-        user?: PlatformUserRecord
-        signup?: PlatformSignupRecord
-        error?: string
-      }
+        const payload = (await response.json()) as {
+          tenant?: PlatformTenantRecord
+          user?: PlatformUserRecord
+          signup?: PlatformSignupRecord
+          error?: string
+        }
 
-      const tenant = payload.tenant
-      const user = payload.user
-      if (!response.ok || !tenant || !user) {
-        return { ok: false, error: payload.error ?? "Unable to sign in." }
-      }
+        const tenant = payload.tenant
+        const user = payload.user
+        if (!response.ok || !tenant || !user) {
+          return { ok: false, error: payload.error ?? customerSafeMessages.loginFailed }
+        }
 
-      setState((current) => ({
-        ...mergeWorkspacePayload(current, { tenant, user, signup: payload.signup }),
-        session: {
-          mode: "workspace",
-          tenantId: tenant.id,
-          userId: user.id,
-          startedAt: new Date().toISOString(),
-        },
-      }))
+        setState((current) => ({
+          ...mergeWorkspacePayload(current, { tenant, user, signup: payload.signup }),
+          session: {
+            mode: "workspace",
+            tenantId: tenant.id,
+            userId: user.id,
+            startedAt: new Date().toISOString(),
+          },
+        }))
 
-      return {
-        ok: true,
-        nextPath:
-          tenant.subscriptionStatus === "Active" && tenant.paymentStatus === "Paid"
-            ? "/dashboard"
-            : isSelfServePlan(tenant.planId)
-              ? getSelfServeCheckoutUrl(tenant.planId, tenant.id)
-              : saasAppConfig.enterprisePath,
+        return {
+          ok: true,
+          nextPath:
+            tenant.subscriptionStatus === "Active" && tenant.paymentStatus === "Paid"
+              ? "/dashboard"
+              : isSelfServePlan(tenant.planId)
+                ? getSelfServeCheckoutUrl(tenant.planId, tenant.id)
+                : saasAppConfig.enterprisePath,
+        }
+      } catch {
+        return { ok: false, error: customerSafeMessages.loginFailed }
       }
     }
 
     const registerWorkspace = async (input: RegistrationInput) => {
-      const response = await fetch("/api/workspace/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(input),
-      })
+      try {
+        const response = await fetch("/api/workspace/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(input),
+        })
 
-      const payload = (await response.json()) as {
-        tenant?: PlatformTenantRecord
-        user?: PlatformUserRecord
-        signup?: PlatformSignupRecord
-        error?: string
+        const payload = (await response.json()) as {
+          tenant?: PlatformTenantRecord
+          user?: PlatformUserRecord
+          signup?: PlatformSignupRecord
+          error?: string
+        }
+
+        const tenant = payload.tenant
+        const user = payload.user
+        if (!response.ok || !tenant || !user) {
+          return { ok: false, error: payload.error ?? customerSafeMessages.setupUnavailable }
+        }
+
+        setState((current) => ({
+          ...mergeWorkspacePayload(current, { tenant, user, signup: payload.signup }),
+          session: {
+            mode: "workspace",
+            tenantId: tenant.id,
+            userId: user.id,
+            startedAt: new Date().toISOString(),
+          },
+        }))
+
+        return { ok: true, tenantId: tenant.id }
+      } catch {
+        return { ok: false, error: customerSafeMessages.setupUnavailable }
       }
-
-      const tenant = payload.tenant
-      const user = payload.user
-      if (!response.ok || !tenant || !user) {
-        return { ok: false, error: payload.error ?? "We could not create the workspace." }
-      }
-
-      setState((current) => ({
-        ...mergeWorkspacePayload(current, { tenant, user, signup: payload.signup }),
-        session: {
-          mode: "workspace",
-          tenantId: tenant.id,
-          userId: user.id,
-          startedAt: new Date().toISOString(),
-        },
-      }))
-
-      return { ok: true, tenantId: tenant.id }
     }
 
     const markCheckoutPending = (tenantId: string, checkoutSessionId?: string | null) => {

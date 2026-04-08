@@ -4,12 +4,9 @@ import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useEffect, useState } from "react"
 import { saasAppConfig } from "@cbideal/config"
+import { SetupStatusNotice } from "@/components/setup-status-notice"
+import { customerSafeMessages } from "@/lib/customer-safe-errors"
 import { usePlatformAccess } from "@/lib/platform-access-store"
-
-type BillingRuntimePayload = {
-  hardFail?: boolean
-  issues?: string[]
-}
 
 function BillingSuccessPageContent() {
   const router = useRouter()
@@ -19,57 +16,28 @@ function BillingSuccessPageContent() {
   const planId = searchParams.get("plan")
   const sandbox = searchParams.get("sandbox") === "1"
   const checkoutPath = tenantId ? `/signup/checkout?tenant=${tenantId}${planId ? `&plan=${planId}` : ""}` : "/signup"
+
   const [status, setStatus] = useState<"checking" | "active" | "pending" | "error">("checking")
   const [error, setError] = useState<string | null>(null)
   const [navigating, setNavigating] = useState(false)
-  const [hardFailError, setHardFailError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!sandbox) return
-    console.error("[billing.success.ui] sandbox query detected in production-style flow", {
+
+    console.error("[billing.success.ui] invalid sandbox success path detected", {
       tenantId,
       planId,
-      sandbox,
     })
     setStatus("error")
-    setError("The old sandbox success path is invalid. Workspace activation requires confirmed Stripe payment.")
+    setError(customerSafeMessages.missingBillingReference)
   }, [planId, sandbox, tenantId])
 
   useEffect(() => {
-    let cancelled = false
+    if (sandbox) return
 
-    void fetch("/api/billing/runtime", { cache: "no-store" })
-      .then(async (response) => {
-        const payload = (await response.json()) as BillingRuntimePayload
-        if (cancelled) return
-        if (payload.hardFail) {
-          const message =
-            payload.issues?.join(" ") ??
-            "Billing is unavailable because Stripe or workspace storage is not configured."
-          console.error("[billing.success.ui] hard fail", payload)
-          setHardFailError(message)
-          setStatus("error")
-        }
-      })
-      .catch((runtimeError) => {
-        if (cancelled) return
-        const message =
-          runtimeError instanceof Error ? runtimeError.message : "Unable to verify the billing runtime."
-        console.error("[billing.success.ui] runtime check failed", runtimeError)
-        setHardFailError(message)
-        setStatus("error")
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  useEffect(() => {
-    if (sandbox || hardFailError) return
     if (!tenantId) {
       setStatus("error")
-      setError("The billing confirmation is missing a workspace reference.")
+      setError(customerSafeMessages.missingBillingReference)
       return
     }
 
@@ -78,17 +46,16 @@ function BillingSuccessPageContent() {
     let attempts = 0
 
     const confirmStatus = async () => {
-      console.info("[billing.success.ui] checking workspace activation status", { tenantId })
       const result = await syncTenantStatus(tenantId)
       if (cancelled) return
 
       if (!result.ok || !result.tenant) {
         console.error("[billing.success.ui] status sync failed", {
           tenantId,
-          error: result.error ?? "We could not confirm the Stripe payment yet.",
+          error: result.error ?? customerSafeMessages.billingConfirmationFailed,
         })
         setStatus("error")
-        setError(result.error ?? "We could not confirm the Stripe payment yet.")
+        setError(result.error ?? customerSafeMessages.billingConfirmationFailed)
         return
       }
 
@@ -100,7 +67,6 @@ function BillingSuccessPageContent() {
 
       attempts += 1
       if (attempts >= 8) {
-        console.warn("[billing.success.ui] activation still pending after retries", { tenantId })
         setStatus("pending")
         return
       }
@@ -116,15 +82,15 @@ function BillingSuccessPageContent() {
       cancelled = true
       if (timeout) clearTimeout(timeout)
     }
-  }, [hardFailError, sandbox, syncTenantStatus, tenantId])
+  }, [sandbox, syncTenantStatus, tenantId])
 
   const continueToSetup = () => {
     console.info("[billing.success.ui] continue setup clicked", {
       tenantId,
       planId,
       status,
-      hardFailError,
     })
+
     if (status === "active") {
       setNavigating(true)
       router.push("/setup")
@@ -132,88 +98,84 @@ function BillingSuccessPageContent() {
     }
 
     if (status === "checking") {
-      console.error("[billing.success.ui] continue setup blocked while status is still checking", {
-        tenantId,
-        status,
-        hardFailError,
-      })
       return
     }
 
-    console.warn("[billing.success.ui] routing back to checkout because workspace is not active", {
-      tenantId,
-      planId,
-      status,
-    })
     setNavigating(true)
     router.push(checkoutPath)
   }
 
   return (
     <div className="app-shell min-h-screen px-5 py-6 md:px-8 md:py-8">
-      <div className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-[860px] items-center">
+      <div className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-[900px] items-center">
         <div className="section-card w-full rounded-[32px] p-10 md:p-12">
-          <div className="space-y-5">
-            <span className="app-pill inline-flex rounded-full px-4 py-1.5 text-sm font-semibold">
-              {status === "active" ? "Subscription active" : "Payment confirmation"}
-            </span>
-            <h1 className="font-serif text-[2.5rem] leading-[1.02] tracking-[-0.04em] text-white md:text-[3rem]">
-              {status === "active" ? "Your workspace is ready." : "We are confirming the Stripe payment."}
-            </h1>
-            <p className="text-base leading-8 text-slate-300">
-              {status === "active"
-                ? `The subscription has been confirmed and the firm workspace is now active on ${saasAppConfig.appUrl}.`
-                : "Stripe has returned successfully, but workspace access stays blocked until the webhook confirms the payment on the server."}
-            </p>
-          </div>
-
-          {error ? (
-            <div className="mt-6 rounded-2xl border border-[#f04f4f]/30 bg-[#f04f4f]/10 px-4 py-3 text-sm text-[#f9c7c7]">
-              {error}
+          <div className="space-y-6">
+            <div className="space-y-5">
+              <span className="app-pill inline-flex rounded-full px-4 py-1.5 text-sm font-semibold">
+                {status === "active" ? "Subscription active" : "Payment confirmation"}
+              </span>
+              <h1 className="font-serif text-[2.6rem] leading-[1.01] tracking-[-0.045em] text-white md:text-[3.1rem]">
+                {status === "active" ? "Your workspace is ready." : "We’re confirming the payment now."}
+              </h1>
+              <p className="max-w-2xl text-base leading-8 text-slate-300">
+                {status === "active"
+                  ? `The subscription has been confirmed and your firm workspace is now active on ${saasAppConfig.appUrl}.`
+                  : "Stripe has returned successfully, but workspace access stays blocked until payment confirmation is recorded on the server."}
+              </p>
             </div>
-          ) : null}
 
-          {hardFailError ? (
-            <div className="mt-6 rounded-2xl border border-[#f04f4f]/35 bg-[#f04f4f]/12 px-4 py-3 text-sm text-[#f9c7c7]">
-              Billing is blocked in this environment. {hardFailError}
+            {error ? (
+              <SetupStatusNotice tone="warning" title="We couldn't complete this step" description={error} />
+            ) : null}
+
+            {status === "pending" ? (
+              <SetupStatusNotice
+                title="Payment is still being confirmed"
+                description="If the charge has already gone through, the confirmation may still be finishing in the background. Please refresh this page in a few seconds, or return to billing if the delay continues."
+              />
+            ) : null}
+
+            <div className="rounded-[28px] border border-white/10 bg-white/[0.05] p-6 shadow-[0_20px_55px_rgba(8,13,24,0.14)]">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-[20px] border border-white/8 bg-slate-950/22 px-4 py-4 text-sm text-slate-300">
+                  Access opens only after payment confirmation
+                </div>
+                <div className="rounded-[20px] border border-white/8 bg-slate-950/22 px-4 py-4 text-sm text-slate-300">
+                  Setup continues directly into your own workspace flow
+                </div>
+              </div>
             </div>
-          ) : null}
 
-          {status === "pending" ? (
-            <div className="mt-6 rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm text-slate-300">
-              Payment is still being confirmed. If Stripe already charged the card, the webhook may still be processing. Refresh this page in a few seconds, or contact support if the delay continues.
+            <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={continueToSetup}
+                disabled={status === "checking" || navigating}
+                className="rounded-full bg-[var(--app-brand-primary)] px-5 py-3.5 text-sm font-semibold text-[var(--app-brand-on-primary)] transition hover:bg-[var(--app-brand-primary-strong)] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {status === "checking"
+                  ? "Confirming payment..."
+                  : navigating
+                    ? status === "active"
+                      ? "Opening setup..."
+                      : "Returning to billing..."
+                    : status === "active"
+                      ? "Continue workspace setup"
+                      : "Return to billing"}
+              </button>
+              <Link
+                href={checkoutPath}
+                className="rounded-full border border-white/12 px-5 py-3.5 text-sm font-semibold text-white transition hover:border-white/28"
+              >
+                Return to billing
+              </Link>
+              <Link
+                href="https://www.cbideal.nl/contact"
+                className="rounded-full border border-white/12 px-5 py-3.5 text-sm font-semibold text-slate-300 transition hover:border-white/28 hover:text-white"
+              >
+                Contact support
+              </Link>
             </div>
-          ) : null}
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={continueToSetup}
-              disabled={status === "checking" || navigating}
-              className="rounded-full bg-[var(--app-brand-primary)] px-5 py-3.5 text-sm font-semibold text-[var(--app-brand-on-primary)] transition hover:bg-[var(--app-brand-primary-strong)] disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {status === "checking"
-                ? "Confirming payment..."
-                : navigating
-                  ? status === "active"
-                    ? "Opening setup..."
-                    : "Returning to checkout..."
-                  : status === "active"
-                    ? "Continue workspace setup"
-                    : "Return to checkout"}
-            </button>
-            <Link
-              href={checkoutPath}
-              className="rounded-full border border-white/12 px-5 py-3.5 text-sm font-semibold text-white transition hover:border-white/28"
-            >
-              Return to billing
-            </Link>
-            <Link
-              href="/dashboard"
-              className={`rounded-full border border-white/12 px-5 py-3.5 text-sm font-semibold transition hover:border-white/28 ${status === "active" ? "text-white" : "pointer-events-none text-slate-500 opacity-60"}`}
-            >
-              Open workspace now
-            </Link>
           </div>
         </div>
       </div>

@@ -29,6 +29,7 @@ interface PageHeroProps {
   useConversionLabels?: boolean
   secondaryActionStyle?: "button" | "text"
   showGuideLink?: boolean
+  surface?: "panel" | "bare"
 }
 
 export function PageHero({
@@ -44,6 +45,7 @@ export function PageHero({
   useConversionLabels = false,
   secondaryActionStyle = "button",
   showGuideLink = true,
+  surface = "panel",
 }: PageHeroProps) {
   const locale = getRequestLocale()
   const direction = getRequestDirection()
@@ -59,35 +61,50 @@ export function PageHero({
       <div className="container-shell">
         <div
           className={cn(
-            "hero-panel relative overflow-hidden px-7 py-8 sm:px-9 sm:py-10 md:px-12 md:py-11 lg:px-[4.75rem] lg:py-[4.15rem]",
-            compact && "px-7 py-7 sm:px-8 sm:py-8 md:px-10 md:py-9 lg:px-12 lg:py-10",
+            surface === "panel"
+              ? "hero-panel relative overflow-hidden px-7 py-8 sm:px-9 sm:py-10 md:px-12 md:py-11 lg:px-[4.75rem] lg:py-[4.15rem]"
+              : "relative px-0 py-4 md:py-8 lg:py-12",
+            compact && surface === "panel" && "px-7 py-7 sm:px-8 sm:py-8 md:px-10 md:py-9 lg:px-12 lg:py-10",
           )}
         >
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(214,187,131,0.14),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_34%)]" />
+          {surface === "panel" ? (
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(214,187,131,0.14),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_34%)]" />
+          ) : null}
           <div
             dir={direction}
             className={cn(
               "page-hero-grid relative grid gap-8 md:gap-10",
               hasAside
                 ? "lg:grid-cols-[minmax(0,1.45fr)_minmax(27rem,1fr)] lg:items-stretch lg:gap-14 xl:grid-cols-[minmax(0,1.5fr)_minmax(29rem,1fr)] xl:gap-16"
-                : "content-measure",
+                : surface === "bare"
+                  ? "max-w-[48rem]"
+                  : "content-measure",
             )}
           >
             <div
               className={cn(
                 "page-hero-copy flex min-w-0 flex-col justify-start space-y-7 md:space-y-9 lg:h-full",
+                surface === "bare" && "space-y-9 md:space-y-12",
                 compact && "space-y-5 md:space-y-6",
                 isRtl && "text-right",
               )}
             >
               <span className="eyebrow border-white/20 bg-white/10 text-primary-foreground/80">{eyebrow}</span>
-              <div className={cn("space-y-4 md:space-y-6", compact && "space-y-[0.875rem] md:space-y-[1.125rem]")}>
+              <div
+                className={cn(
+                  "space-y-4 md:space-y-6",
+                  surface === "bare" && "space-y-5 md:space-y-7",
+                  compact && "space-y-[0.875rem] md:space-y-[1.125rem]",
+                )}
+              >
                 <h1
                   className={cn(
                     "text-primary-foreground",
                     hasAside
                       ? "max-w-[17ch] text-[clamp(2.2rem,2.8vw,3.15rem)] leading-[1.07] tracking-[-0.03em]"
-                      : "display-title max-w-[42rem]",
+                      : surface === "bare"
+                        ? "max-w-[14ch] text-[clamp(3.2rem,6vw,5.4rem)] leading-[0.97] tracking-[-0.045em]"
+                        : "display-title max-w-[42rem]",
                     compact && !children && "max-w-[18ch] text-[clamp(2.3rem,3.35vw,3.2rem)] leading-[1.08] tracking-[-0.028em]",
                   )}
                 >
@@ -98,7 +115,9 @@ export function PageHero({
                     "text-primary-foreground/76",
                     hasAside
                       ? "max-w-[31rem] text-[0.98rem] leading-[1.9] md:text-[1.02rem] md:leading-[1.95]"
-                      : "max-w-[40rem] text-base leading-7 md:text-lg md:leading-8",
+                      : surface === "bare"
+                        ? "max-w-[38rem] text-[1.02rem] leading-8 md:text-[1.12rem] md:leading-[2.05rem]"
+                        : "max-w-[40rem] text-base leading-7 md:text-lg md:leading-8",
                     compact && !children && "max-w-[40rem] text-[0.98rem] leading-7 md:text-base md:leading-[1.9]",
                   )}
                 >
@@ -108,6 +127,7 @@ export function PageHero({
               <div
                 className={cn(
                   "page-hero-actions flex flex-col gap-3.5 pt-2 sm:flex-row sm:items-center",
+                  surface === "bare" && "gap-4 pt-4 md:pt-5",
                   compact && "gap-3 pt-[0.125rem]",
                   isRtl && "sm:flex-row-reverse",
                 )}

@@ -1,14 +1,16 @@
 import { createClient } from "@supabase/supabase-js"
+import { getSupabaseServerConfig } from "@/lib/supabase/config"
 
 export function getSupabaseServerClient() {
-  const supabaseUrl = process.env.SUPABASE_URL
-  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const { url, secretKey } = getSupabaseServerConfig()
 
-  if (!supabaseUrl || !supabaseServiceRoleKey) {
-    throw new Error("Missing Supabase server environment variables.")
+  if (!url || !secretKey) {
+    throw new Error(
+      "Missing Supabase server environment variables. Configure NEXT_PUBLIC_SUPABASE_URL plus SUPABASE_SECRET_KEY, or use the legacy SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY aliases.",
+    )
   }
 
-  return createClient(supabaseUrl, supabaseServiceRoleKey, {
+  return createClient(url, secretKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,

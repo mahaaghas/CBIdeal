@@ -28,7 +28,7 @@ export function PricingSection({ locale = "en", preview = false }: PricingSectio
         : locale === "ru"
           ? "Самостоятельное оформление доступно для Solo, Team и Business. Enterprise остаётся отдельным маршрутом, чтобы масштаб, внедрение и структура доступа были согласованы заранее."
           : "Solo, Team, and Business move through the self-serve signup and Stripe flow. Enterprise stays on a contact-led route so scope, integration, and rollout can be handled properly.",
-    priceSuffix: locale === "ar" ? "شهرياً" : locale === "ru" ? "в месяц" : "per month",
+    priceSuffix: locale === "ar" ? "شهرياً" : locale === "ru" ? "в месяц" : "monthly",
     customPrice: locale === "ar" ? "Custom" : locale === "ru" ? "Custom" : "Custom",
     customNote:
       locale === "ar"
@@ -54,15 +54,18 @@ export function PricingSection({ locale = "en", preview = false }: PricingSectio
           <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
             Public plan structure
           </p>
-          <div className="mt-3 grid gap-3 sm:grid-cols-3">
-            {pricingPlans
-              .filter((plan) => plan.monthlyPrice !== null)
-              .map((plan) => (
-                <div key={plan.id} className="rounded-[20px] border border-border/60 bg-background/88 px-4 py-4">
-                  <p className="text-sm font-semibold text-foreground">{plan.name}</p>
-                  <p className="mt-2 text-2xl text-foreground">USD {plan.monthlyPrice}</p>
-                </div>
-              ))}
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {pricingPlans.map((plan) => (
+              <div key={plan.id} className="rounded-[20px] border border-border/60 bg-background/88 px-4 py-4">
+                <p className="text-sm font-semibold text-foreground">{plan.name}</p>
+                <p className="mt-2 text-2xl text-foreground">
+                  {plan.monthlyPrice === null ? copy.customPrice : `$${plan.monthlyPrice}`}
+                </p>
+                <p className="mt-1 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                  {plan.id === "enterprise" ? "Contact us" : copy.priceSuffix}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -105,7 +108,7 @@ export function PricingSection({ locale = "en", preview = false }: PricingSectio
                 {plan.monthlyPrice !== null ? (
                   <>
                     <div className="flex items-end gap-2">
-                      <span className="text-[2.55rem] leading-none text-foreground">USD {plan.monthlyPrice}</span>
+                      <span className="text-[2.55rem] leading-none text-foreground">${plan.monthlyPrice}</span>
                       <span className="pb-1 text-sm text-muted-foreground">{copy.priceSuffix}</span>
                     </div>
                     <p className="mt-3 text-sm leading-6 text-muted-foreground">{plan.capacityLabel}</p>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import Stripe from "stripe"
 import { getSaasPlan, isSelfServePlan, normalizeSaasAppUrl, type SaasPlanId } from "@cbideal/config"
+import { customerSafeMessages, getCustomerSafeMessage } from "@/lib/customer-safe-errors"
 import {
   getBillingRuntimeDiagnostics,
   getStripeBillingConfigIssues,
@@ -34,7 +35,9 @@ export async function POST(request: Request) {
     const diagnostics = logBillingRuntimeState("checkout-blocked")
     const issues = getStripeBillingConfigIssues()
     if (!diagnostics.supabaseConfigured) {
-      issues.push("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY.")
+      issues.push(
+        "Missing NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SECRET_KEY. Legacy SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY aliases are also supported during migration.",
+      )
     }
     console.error("[billing.checkout] blocked because Stripe billing is not configured", {
       tenantId,
@@ -43,9 +46,7 @@ export async function POST(request: Request) {
     })
     return NextResponse.json(
       {
-        error:
-          issues[0] ??
-          "Stripe billing is not configured in this environment. Workspace activation is blocked until live billing is available.",
+        error: customerSafeMessages.billingUnavailable,
       },
       { status: 503 },
     )
@@ -121,6 +122,6 @@ export async function POST(request: Request) {
       error: message,
     })
     const status = message.includes("missing") ? 503 : 500
-    return NextResponse.json({ error: message }, { status })
+    return NextResponse.json({ error: getCustomerSafeMessage("checkout", message) }, { status })
   }
 }

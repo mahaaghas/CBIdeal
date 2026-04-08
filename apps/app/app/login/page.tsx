@@ -6,6 +6,7 @@ import { Suspense, useState } from "react"
 import { AppBrand } from "@cbideal/ui/components/app-brand"
 import { getSaasPlan, saasAppConfig } from "@cbideal/config"
 import { useBranding } from "@/lib/branding-store"
+import { customerSafeMessages } from "@/lib/customer-safe-errors"
 import { usePlatformAccess } from "@/lib/platform-access-store"
 
 function LoginPageContent() {
@@ -29,7 +30,7 @@ function LoginPageContent() {
 
     const result = await login(email, password)
     if (!result.ok) {
-      setError(result.error ?? "Unable to sign in.")
+      setError(result.error ?? customerSafeMessages.loginFailed)
       setSubmitting(false)
       return
     }

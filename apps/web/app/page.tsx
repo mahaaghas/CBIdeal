@@ -10,7 +10,6 @@ import { SectionHeading } from "@/components/section-heading"
 import { SiteShell } from "@/components/site-shell"
 import { TrustGrid } from "@/components/trust-grid"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { fallbackInsightPosts } from "@/lib/insights/fallback-posts"
 import { getRequestLocale } from "@/lib/i18n/request"
 import { localizeHref, type Locale } from "@/lib/i18n/routing"
@@ -200,10 +199,6 @@ function getHomeCopy(locale: Locale) {
         primary: "اطلب استشارة",
         secondary: "استكشف خياراتك",
       },
-      scarcity: {
-        title: "نعمل مع عدد محدود من الملفات في الوقت نفسه.",
-        description: "وتُعطى الأولوية للحالات ذات الأهداف الواضحة والنية الجادة والمسار القابل للتنفيذ.",
-      },
     }
   }
 
@@ -317,10 +312,6 @@ function getHomeCopy(locale: Locale) {
         primary: "Запросить консультацию",
         secondary: "Изучить варианты",
       },
-      scarcity: {
-        title: "Одновременно мы работаем с ограниченным числом дел.",
-        description: "Приоритет получают случаи с ясной задачей, серьёзным намерением и реалистичной структурой дальнейшего движения.",
-      },
     }
   }
 
@@ -329,7 +320,7 @@ function getHomeCopy(locale: Locale) {
       eyebrow: "Private advisory platform",
       title: "Structured guidance for citizenship and residency decisions",
       description:
-        "CBI Deal supports investors and internationally mobile families in approaching citizenship and residency pathways with greater clarity, discretion, and structure. This page sets out the main route types, the way the process is framed, and the points at which a more private conversation may become useful.",
+        "CBI Deal supports investors and internationally mobile families in approaching citizenship and residency pathways with greater clarity, discretion, and structure.",
       primary: "Explore your options",
       secondary: "Request a consultation",
       stats: [
@@ -433,10 +424,6 @@ function getHomeCopy(locale: Locale) {
       primary: "Request a consultation",
       secondary: "Explore your options",
     },
-    scarcity: {
-      title: "We work with a limited number of cases at any one time.",
-      description: "This final note clarifies how access is approached. Priority is given to applicants with clear objectives, serious intent, and a considered approach to citizenship, residency, or wider international planning.",
-    },
   }
 }
 
@@ -471,37 +458,8 @@ export default async function HomePage() {
         primaryAction={{ href: routeLinks.programs, label: copy.hero.primary }}
         secondaryAction={{ href: routeLinks.bookConsultation, label: copy.hero.secondary }}
         showGuideLink={false}
-        stats={copy.hero.stats}
-      >
-        <div className="space-y-5">
-          <Card className="section-card border-white/10 bg-white/8 text-primary-foreground shadow-none">
-            <CardContent className="space-y-4 p-6 md:p-7">
-              <span className="eyebrow border-white/15 bg-white/10 text-primary-foreground/80">
-                {copy.hero.asideEyebrow}
-              </span>
-              <h2 className="text-[1.55rem] leading-[1.18] text-primary-foreground">{copy.hero.asideTitle}</h2>
-              <p className="text-sm leading-7 text-primary-foreground/72">{copy.hero.asideDescription}</p>
-              <div className="space-y-3 border-t border-white/10 pt-4">
-                {copy.hero.asidePoints.map((point) => (
-                  <div key={point} className="flex items-start gap-3 text-sm leading-6 text-primary-foreground/74">
-                    <span className="mt-2 size-1.5 rounded-full bg-[#d6bb83]" />
-                    <span>{point}</span>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="section-card border-white/10 bg-primary-foreground/[0.04] text-primary-foreground shadow-none">
-            <CardContent className="space-y-3 p-6 md:p-7">
-              <p className="text-sm font-medium uppercase tracking-[0.22em] text-primary-foreground/62">
-                {copy.hero.noteTitle}
-              </p>
-              <p className="text-sm leading-7 text-primary-foreground/74">{copy.hero.noteDescription}</p>
-            </CardContent>
-          </Card>
-        </div>
-      </PageHero>
+        surface="bare"
+      />
 
       <section className="section-flow">
         <div className="container-shell">
@@ -560,7 +518,7 @@ export default async function HomePage() {
       </section>
 
       <section className="section-flow">
-        <div className="container-shell space-y-6">
+        <div className="container-shell">
           <CtaPanel
             eyebrow={copy.consultation.eyebrow}
             title={copy.consultation.title}
@@ -569,13 +527,6 @@ export default async function HomePage() {
             secondaryAction={{ href: routeLinks.programs, label: copy.consultation.secondary }}
             showGuideLink={false}
           />
-
-          <Card className="section-card bg-muted/25">
-            <CardContent className="space-y-3 p-6 md:p-7">
-              <p className="text-[1.15rem] leading-7 text-foreground md:text-[1.28rem]">{copy.scarcity.title}</p>
-              <p className="max-w-[42rem] text-sm leading-7 text-muted-foreground">{copy.scarcity.description}</p>
-            </CardContent>
-          </Card>
         </div>
       </section>
     </SiteShell>

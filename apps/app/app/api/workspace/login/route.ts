@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { getCustomerSafeMessage } from "@/lib/customer-safe-errors"
 import { verifyWorkspaceCredentials } from "@/lib/workspace-billing"
 
 export async function POST(request: Request) {
@@ -15,12 +16,16 @@ export async function POST(request: Request) {
     return NextResponse.json(workspace)
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to sign in."
+    console.error("[workspace.login] failed", {
+      email,
+      error: message,
+    })
     const status =
       message.includes("No account") || message.includes("did not match")
         ? 401
         : message.includes("missing")
           ? 503
           : 500
-    return NextResponse.json({ error: message }, { status })
+    return NextResponse.json({ error: getCustomerSafeMessage("login", message) }, { status })
   }
 }

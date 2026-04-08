@@ -1,4 +1,4 @@
-import { calculateWorkspacePricing, saasAppHost } from "@cbideal/config"
+import { saasAppHost } from "@cbideal/config"
 
 export type InternalRole = "Workspace owner" | "Account manager" | "Case coordinator" | "Finance" | "Admin"
 export type ClientRole = "Primary applicant" | "Family member" | "Family office contact" | "Counsel"
@@ -27,11 +27,6 @@ export const workspace = {
   allowsClientSpecificWorkflows: true,
   currencies: ["EUR", "USD", "GBP"] as const,
 }
-
-export const pricingSnapshot = calculateWorkspacePricing(
-  workspace.internalSeats,
-  workspace.externalAccounts,
-)
 
 export const internalUsers = [
   {

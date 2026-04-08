@@ -1,14 +1,14 @@
 import { createClient } from "@supabase/supabase-js"
+import { getSupabaseServerConfig } from "@/lib/supabase/config"
 
 export function getSupabaseServerClient() {
-  const supabaseUrl = process.env.SUPABASE_URL
-  const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const { url, secretKey } = getSupabaseServerConfig()
 
-  if (!supabaseUrl || !supabaseServiceRoleKey) {
+  if (!url || !secretKey) {
     return null
   }
 
-  return createClient(supabaseUrl, supabaseServiceRoleKey, {
+  return createClient(url, secretKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,

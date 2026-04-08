@@ -8,6 +8,7 @@ import {
   type PlatformTenantRecord,
   type PlatformUserRecord,
 } from "@/lib/platform-access"
+import { hasSupabaseServerConfig } from "@/lib/supabase/config"
 import { getSupabaseServerClient } from "@/lib/supabase/server"
 
 const workspaceSignupsTable = "workspace_signups"
@@ -142,7 +143,7 @@ export function getBillingRuntimeDiagnostics(): BillingRuntimeDiagnostics {
     stripeSoloPricePresent: Boolean(process.env.STRIPE_PRICE_ID_SOLO?.trim()),
     stripeTeamPricePresent: Boolean(process.env.STRIPE_PRICE_ID_TEAM?.trim()),
     stripeBusinessPricePresent: Boolean(process.env.STRIPE_PRICE_ID_BUSINESS?.trim()),
-    supabaseConfigured: Boolean(process.env.SUPABASE_URL?.trim() && process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()),
+    supabaseConfigured: hasSupabaseServerConfig(),
     appUrlPresent: Boolean(process.env.NEXT_PUBLIC_APP_URL?.trim()),
     productionMode: process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production",
     issues,
@@ -159,7 +160,7 @@ function requireSupabaseServerClient() {
   const supabase = getSupabaseServerClient()
   if (!supabase) {
     throw new Error(
-      "Supabase server credentials are missing. Workspace billing is blocked until SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are configured.",
+      "Supabase server credentials are missing. Workspace billing is blocked until NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SECRET_KEY are configured. Legacy SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY aliases are still supported during migration.",
     )
   }
 

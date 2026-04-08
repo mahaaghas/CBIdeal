@@ -1,8 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { saasPricingModel } from "@cbideal/config/pricing"
-import { formatPlanAmount, getSaasPlan } from "@cbideal/config/saas"
+import { demoWorkspaceConfig, formatPlanAmount, getSaasPlan } from "@cbideal/config/saas"
 import { BellRing, Building2, CreditCard, Database, Palette, Users } from "lucide-react"
 import { CrmPageHeader } from "@cbideal/ui/components/crm-page-header"
 import { CrmSectionCard } from "@cbideal/ui/components/crm-section-card"
@@ -10,13 +9,13 @@ import { CrmStatCard } from "@cbideal/ui/components/crm-stat-card"
 import { CrmStatusBadge } from "@cbideal/ui/components/crm-status-badge"
 import { Button } from "@cbideal/ui/components/ui/button"
 import { useBranding } from "@/lib/branding-store"
-import { pricingSnapshot, reminderSettings, workspace } from "@/lib/mock-data"
+import { reminderSettings, workspace } from "@/lib/mock-data"
 import { usePlatformAccess } from "@/lib/platform-access-store"
 
 export default function SettingsPage() {
   const { branding } = useBranding()
   const { currentTenant, mode } = usePlatformAccess()
-  const activePlan = currentTenant ? getSaasPlan(currentTenant.planId) : null
+  const resolvedPlan = getSaasPlan(currentTenant?.planId ?? demoWorkspaceConfig.planId)
 
   return (
     <div className="section-stack">
@@ -33,7 +32,7 @@ export default function SettingsPage() {
           note={
             currentTenant
               ? `${currentTenant.internalSeatCount} active of ${currentTenant.internalSeatLimit ?? "custom"} available`
-              : `${saasPricingModel.currency} ${saasPricingModel.internalSeatMonthly} per seat monthly`
+              : "Capacity follows the active workspace plan."
           }
           trend="Operating users"
         />
@@ -43,19 +42,17 @@ export default function SettingsPage() {
           note={
             currentTenant
               ? `${currentTenant.clientAccountCount} active of ${currentTenant.clientAccountLimit ?? "custom"} available`
-              : `${saasPricingModel.currency} ${saasPricingModel.externalClientMonthly} per account monthly`
+              : "Client access capacity follows the active workspace plan."
           }
           trend="Portal access"
         />
         <CrmStatCard
-          label={currentTenant ? "Current plan" : "Current monthly total"}
-          value={currentTenant ? activePlan?.name ?? "Workspace" : `${saasPricingModel.currency} ${pricingSnapshot.total}`}
+          label="Current plan"
+          value={resolvedPlan.name}
           note={
-            currentTenant
-              ? `${formatPlanAmount(activePlan ?? getSaasPlan("solo"))} / month`
-              : "Combined view of internal seats and external accounts."
+            resolvedPlan.id === "enterprise" ? "Custom pricing handled through direct advisory contact." : formatPlanAmount(resolvedPlan)
           }
-          trend={currentTenant ? currentTenant.subscriptionStatus : "Billing snapshot"}
+          trend={currentTenant ? currentTenant.subscriptionStatus : "Plan-based billing"}
         />
       </div>
 
@@ -83,8 +80,8 @@ export default function SettingsPage() {
                     <p className="text-sm leading-6 text-slate-300">
                       {mode === "demo"
                         ? "This is the shared demo environment."
-                        : activePlan
-                          ? `${activePlan.name} plan workspace`
+                        : resolvedPlan
+                          ? `${resolvedPlan.name} plan workspace`
                           : "Custom branding is available for this workspace."}
                     </p>
                   </div>
@@ -98,11 +95,13 @@ export default function SettingsPage() {
                   </div>
                   <div className="space-y-2">
                     <p className="text-sm font-semibold text-white">Billing</p>
-                    <p className="text-base font-medium text-slate-100">{activePlan?.name ?? "Two account layers"}</p>
+                    <p className="text-base font-medium text-slate-100">{resolvedPlan.name}</p>
                     <p className="text-sm leading-6 text-slate-300">
                       {currentTenant
-                        ? `This workspace currently sits on the ${activePlan?.name} plan with ${currentTenant.subscriptionStatus.toLowerCase()} subscription status.`
-                        : "Internal operating seats and external client accounts are priced separately so firms can scale operations and portal access independently."}
+                        ? `This workspace currently sits on the ${resolvedPlan.name} plan with ${currentTenant.subscriptionStatus.toLowerCase()} subscription status.`
+                        : resolvedPlan.id === "enterprise"
+                          ? "Enterprise access is handled through a direct advisory route before provisioning."
+                          : `${resolvedPlan.name} follows the live Stripe-backed public plan structure at ${formatPlanAmount(resolvedPlan)}.`}
                     </p>
                   </div>
                 </div>

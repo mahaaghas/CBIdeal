@@ -32,7 +32,6 @@ export {
   consultationSubmissionsTable,
   formatConsultationDateTime,
 } from "./consultation-integrity"
-export { calculateWorkspacePricing, saasPricingModel } from "./pricing"
 export {
   demoWorkspaceConfig,
   formatPlanAmount,

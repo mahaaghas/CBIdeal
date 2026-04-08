@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { isSelfServePlan, type SelfServePlanId } from "@cbideal/config"
-import { createWorkspaceSignup } from "@/lib/workspace-billing"
+import { customerSafeMessages, getCustomerSafeMessage } from "@/lib/customer-safe-errors"
+import { createWorkspaceSignup, getBillingRuntimeDiagnostics, logBillingRuntimeState } from "@/lib/workspace-billing"
 
 export async function POST(request: Request) {
   const body = (await request.json()) as {
@@ -28,6 +29,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Passwords must contain at least 8 characters." }, { status: 400 })
   }
 
+  const diagnostics = getBillingRuntimeDiagnostics()
+  const setupBlocked = diagnostics.issues.length > 0 || !diagnostics.supabaseConfigured
+
+  if (setupBlocked) {
+    console.error("[workspace.register] setup blocked before workspace creation", {
+      email,
+      planId,
+      diagnostics: logBillingRuntimeState("register-blocked"),
+    })
+    return NextResponse.json({ error: customerSafeMessages.setupUnavailable }, { status: 503 })
+  }
+
   try {
     const workspace = await createWorkspaceSignup({
       fullName,
@@ -40,7 +53,12 @@ export async function POST(request: Request) {
     return NextResponse.json(workspace)
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to create the workspace."
+    console.error("[workspace.register] failed", {
+      email,
+      planId,
+      error: message,
+    })
     const status = message.includes("already exists") ? 409 : message.includes("missing") ? 503 : 500
-    return NextResponse.json({ error: message }, { status })
+    return NextResponse.json({ error: getCustomerSafeMessage("register", message) }, { status })
   }
 }

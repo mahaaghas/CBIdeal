@@ -3,6 +3,7 @@
 import type { ReactNode } from "react"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { customerSafeMessages } from "@/lib/customer-safe-errors"
 import { usePlatformAccess } from "@/lib/platform-access-store"
 
 export function WorkspaceAccessGuard({ children }: { children: ReactNode }) {
@@ -36,7 +37,7 @@ export function WorkspaceAccessGuard({ children }: { children: ReactNode }) {
       .then((result) => {
         if (cancelled) return
         if (!result.ok || !result.tenant) {
-          setStatusError(result.error ?? "Unable to confirm workspace access.")
+          setStatusError(result.error ?? customerSafeMessages.workspaceAccessFailed)
           router.replace(`/signup/checkout?tenant=${currentTenant.id}&plan=${currentTenant.planId}`)
           return
         }
@@ -50,7 +51,11 @@ export function WorkspaceAccessGuard({ children }: { children: ReactNode }) {
       })
       .catch((error) => {
         if (cancelled) return
-        setStatusError(error instanceof Error ? error.message : "Unable to confirm workspace access.")
+        console.error("[workspace.access] status check failed", {
+          tenantId: currentTenant.id,
+          error: error instanceof Error ? error.message : "Unknown access failure",
+        })
+        setStatusError(customerSafeMessages.workspaceAccessFailed)
         router.replace(`/signup/checkout?tenant=${currentTenant.id}&plan=${currentTenant.planId}`)
       })
 

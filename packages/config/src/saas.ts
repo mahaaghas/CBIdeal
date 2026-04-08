@@ -144,7 +144,7 @@ export function isSelfServePlan(planId: SaasPlanId): planId is SelfServePlanId {
 export function formatPlanAmount(plan: SaasPlanDefinition, billingCycle: "monthly" | "yearly" = "monthly") {
   const amount = billingCycle === "yearly" ? plan.yearlyPrice : plan.monthlyPrice
   if (amount == null) return "Custom"
-  return `USD ${amount}`
+  return `$${amount}`
 }
 
 export function getPlanLimits(planId: SaasPlanId) {

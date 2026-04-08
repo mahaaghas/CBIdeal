@@ -2,24 +2,81 @@
 
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Suspense, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { formatPlanAmount, getSaasPlan, saasAppConfig, type SelfServePlanId } from "@cbideal/config"
 import { usePlatformAccess } from "@/lib/platform-access-store"
+
+type BillingRuntimePayload = {
+  hardFail?: boolean
+  issues?: string[]
+}
 
 function SignupCheckoutPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { currentTenant, markCheckoutPending } = usePlatformAccess()
+  const { currentTenant, markCheckoutPending, syncTenantStatus } = usePlatformAccess()
   const tenantId = searchParams.get("tenant")
-  const planId = (searchParams.get("plan") as SelfServePlanId | null) ?? "starter"
+  const rawPlanId = searchParams.get("plan")
+  const planId = rawPlanId && (rawPlanId === "solo" || rawPlanId === "team" || rawPlanId === "business") ? rawPlanId : "solo"
   const plan = getSaasPlan(planId)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [hardFailError, setHardFailError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!tenantId) return
+    void syncTenantStatus(tenantId).then((result) => {
+      if (result.ok && result.tenant?.subscriptionStatus === "Active" && result.tenant.paymentStatus === "Paid") {
+        router.replace("/setup")
+      }
+    })
+  }, [router, syncTenantStatus, tenantId])
+
+  useEffect(() => {
+    let cancelled = false
+
+    void fetch("/api/billing/runtime", { cache: "no-store" })
+      .then(async (response) => {
+        const payload = (await response.json()) as BillingRuntimePayload
+        if (cancelled) return
+        if (payload.hardFail) {
+          const message =
+            payload.issues?.join(" ") ??
+            "Billing is unavailable because Stripe or workspace storage is not configured."
+          console.error("[billing.checkout.ui] hard fail", payload)
+          setHardFailError(message)
+        }
+      })
+      .catch((runtimeError) => {
+        if (cancelled) return
+        const message =
+          runtimeError instanceof Error ? runtimeError.message : "Unable to verify the billing runtime."
+        console.error("[billing.checkout.ui] runtime check failed", runtimeError)
+        setHardFailError(message)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const handleCheckout = async () => {
     if (!tenantId) return
+    if (hardFailError) {
+      console.error("[billing.checkout.ui] blocked checkout click due to hard fail", {
+        tenantId,
+        planId,
+        hardFailError,
+      })
+      return
+    }
     setSubmitting(true)
     setError(null)
+
+    console.info("[billing.checkout.ui] requesting checkout session", {
+      tenantId,
+      planId,
+    })
 
     const response = await fetch("/api/billing/checkout", {
       method: "POST",
@@ -29,6 +86,11 @@ function SignupCheckoutPageContent() {
 
     const payload = (await response.json()) as { url?: string; checkoutSessionId?: string | null; error?: string }
     if (!response.ok || !payload.url) {
+      console.error("[billing.checkout.ui] checkout request failed", {
+        tenantId,
+        planId,
+        error: payload.error ?? "Unable to begin checkout.",
+      })
       setError(payload.error ?? "Unable to begin checkout.")
       setSubmitting(false)
       return
@@ -48,7 +110,7 @@ function SignupCheckoutPageContent() {
               Confirm the plan before secure checkout.
             </h1>
             <p className="text-base leading-8 text-slate-300">
-              This step reviews the workspace being created, the plan limits, and the billing path before the Stripe handoff or local billing sandbox redirect.
+              This step reviews the workspace being created, the plan limits, and the live Stripe handoff that must complete before the workspace can be activated.
             </p>
           </div>
           <div className="mt-8 space-y-3 rounded-[24px] border border-white/10 bg-white/6 p-5">
@@ -67,10 +129,14 @@ function SignupCheckoutPageContent() {
               <h2 className="font-serif text-[2.05rem] leading-[1.08] tracking-[-0.04em] text-white">
                 {plan.name} plan
               </h2>
-              <p className="text-sm leading-7 text-slate-300">
-                Clear pricing and limits before the billing handoff.
-              </p>
+              <p className="text-sm leading-7 text-slate-300">Clear USD pricing, limits, and Stripe handoff details before activation.</p>
             </div>
+
+            {hardFailError ? (
+              <div className="rounded-2xl border border-[#f04f4f]/35 bg-[#f04f4f]/12 px-4 py-3 text-sm text-[#f9c7c7]">
+                Billing is blocked in this environment. {hardFailError}
+              </div>
+            ) : null}
 
             <div className="rounded-[24px] border border-white/10 bg-white/6 p-6">
               <div className="flex items-start justify-between gap-4">
@@ -80,7 +146,7 @@ function SignupCheckoutPageContent() {
                 </div>
                 <div className="text-right">
                   <p className="text-3xl font-semibold text-white">{formatPlanAmount(plan)}</p>
-                  <p className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-400">per month</p>
+                  <p className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-400">monthly</p>
                 </div>
               </div>
               <div className="mt-5 grid gap-3 md:grid-cols-2">
@@ -102,10 +168,10 @@ function SignupCheckoutPageContent() {
               <button
                 type="button"
                 onClick={handleCheckout}
-                disabled={!tenantId || submitting}
+                disabled={!tenantId || submitting || Boolean(hardFailError)}
                 className="rounded-full bg-[var(--app-brand-primary)] px-5 py-3.5 text-sm font-semibold text-[var(--app-brand-on-primary)] transition hover:bg-[var(--app-brand-primary-strong)] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {submitting ? "Opening checkout…" : "Continue to secure checkout"}
+                {submitting ? "Opening checkout..." : "Continue to secure checkout"}
               </button>
               <Link
                 href="/demo"
@@ -117,7 +183,7 @@ function SignupCheckoutPageContent() {
                 href={saasAppConfig.enterprisePath}
                 className="rounded-full border border-white/12 px-5 py-3.5 text-sm font-semibold text-slate-300 transition hover:border-white/28 hover:text-white"
               >
-                Request enterprise setup
+                Contact us
               </Link>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { getSaasDemoUrl, getSaasLoginUrl, getSelfServeSignupUrl, saasAppConfig } from "@cbideal/config"
+import { getSaasDemoUrl, getSaasLoginUrl, getSelfServeSignupUrl, saasAppConfig, saasPlans } from "@cbideal/config"
 
 const routeLinks = {
   home: "/",
@@ -38,74 +38,44 @@ const ctaLinks = {
   returnHome: routeLinks.home,
   appDemo: getSaasDemoUrl(),
   appLogin: getSaasLoginUrl(),
-  appSignupStarter: getSelfServeSignupUrl("starter"),
-  appSignupGrowth: getSelfServeSignupUrl("growth"),
-  enterpriseSetup: saasAppConfig.enterprisePath,
+  appSignupSolo: getSelfServeSignupUrl("solo"),
+  appSignupTeam: getSelfServeSignupUrl("team"),
+  appSignupBusiness: getSelfServeSignupUrl("business"),
+  enterpriseContact: saasAppConfig.enterprisePath,
   requestProductDemo: saasAppConfig.requestDemoPath,
 } as const
 
-const pricingPlans = [
-  {
-    name: "Starter",
-    monthlyPrice: 189,
-    yearlyPrice: 169,
-    description:
-      "For smaller citizenship and residency teams that want a clear operational workspace without a long implementation cycle.",
-    seats: "Up to 3 internal users",
-    ctaLabel: "Get Started",
-    ctaHref: ctaLinks.appSignupStarter,
-    secondaryLabel: "View Demo",
-    secondaryHref: ctaLinks.appDemo,
-    featured: false,
-    features: [
-      "Up to 40 client accounts",
-      "Quotations, documents, and payments",
-      "Branded client portal",
-      "Email templates and reminders",
-      "Self-serve onboarding",
-    ],
-  },
-  {
-    name: "Growth",
-    monthlyPrice: 429,
-    yearlyPrice: 389,
-    description:
-      "For established firms that need broader capacity, stronger coordination, and a more developed branded client experience.",
-    seats: "Up to 10 internal users",
-    ctaLabel: "Get Started",
-    ctaHref: ctaLinks.appSignupGrowth,
-    secondaryLabel: "View Demo",
-    secondaryHref: ctaLinks.appDemo,
-    featured: true,
-    features: [
-      "Up to 180 client accounts",
-      "Advanced review and reminder workflows",
-      "Branding personalisation",
-      "Priority onboarding guidance",
-      "Self-serve billing and activation",
-    ],
-  },
-  {
-    name: "Enterprise",
-    monthlyPrice: null,
-    yearlyPrice: null,
-    description:
-      "For wider structures that require manual setup, tailored limits, and a more deliberate implementation path.",
-    seats: "Custom structure",
-    ctaLabel: "Contact Sales",
-    ctaHref: ctaLinks.enterpriseSetup,
-    secondaryLabel: "Request Demo",
-    secondaryHref: ctaLinks.requestProductDemo,
-    featured: false,
-    features: [
-      "Custom user and client-account limits",
-      "Manual rollout and enterprise onboarding",
-      "Tailored implementation planning",
-      "Sales-led setup and support",
-      "Custom commercial structure",
-    ],
-  },
-] as const
+const pricingPlanCtas = {
+  solo: ctaLinks.appSignupSolo,
+  team: ctaLinks.appSignupTeam,
+  business: ctaLinks.appSignupBusiness,
+  enterprise: ctaLinks.enterpriseContact,
+} as const
+
+const pricingPlans = saasPlans.map((plan) => ({
+  id: plan.id,
+  name: plan.name,
+  monthlyPrice: plan.monthlyPrice,
+  description: plan.description,
+  capacityLabel:
+    plan.id === "enterprise"
+      ? "Tailored implementation"
+      : plan.internalSeatLimit === 1
+        ? "Single operator workspace"
+        : `Up to ${plan.internalSeatLimit} internal users`,
+  ctaLabel: plan.id === "enterprise" ? "Contact us" : "Start subscription",
+  ctaHref: pricingPlanCtas[plan.id],
+  secondaryLabel: plan.secondaryLabel,
+  secondaryHref: plan.id === "enterprise" ? ctaLinks.requestPrivateConsultation : ctaLinks.appDemo,
+  featured: plan.id === "business",
+  badge:
+    plan.id === "business"
+      ? "Most complete"
+      : plan.id === "enterprise"
+        ? "Tailored"
+        : null,
+  features: plan.features,
+})) as const
 
 export const siteConfig = {
   siteName: "CBI Deal",
@@ -140,8 +110,9 @@ export const siteConfig = {
     appUrl: saasAppConfig.appUrl,
     loginUrl: ctaLinks.appLogin,
     demoUrl: ctaLinks.appDemo,
-    signupStarterUrl: ctaLinks.appSignupStarter,
-    signupGrowthUrl: ctaLinks.appSignupGrowth,
+    signupSoloUrl: ctaLinks.appSignupSolo,
+    signupTeamUrl: ctaLinks.appSignupTeam,
+    signupBusinessUrl: ctaLinks.appSignupBusiness,
   },
   socialLinks: {
     linkedin: "https://www.linkedin.com/company/cbideal",

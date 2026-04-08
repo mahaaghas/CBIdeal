@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useState } from "react"
 import { AppBrand } from "@cbideal/ui/components/app-brand"
-import { getSaasPlan, isSelfServePlan, saasAppConfig } from "@cbideal/config"
+import { getSaasPlan, saasAppConfig } from "@cbideal/config"
 import { useBranding } from "@/lib/branding-store"
 import { usePlatformAccess } from "@/lib/platform-access-store"
 
@@ -18,7 +18,9 @@ function LoginPageContent() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const requestedPlan = searchParams.get("plan")
-  const selectedPlan = requestedPlan && isSelfServePlan(requestedPlan) ? getSaasPlan(requestedPlan) : null
+  const selectedPlanId =
+    requestedPlan === "solo" || requestedPlan === "team" || requestedPlan === "business" ? requestedPlan : null
+  const selectedPlan = selectedPlanId ? getSaasPlan(selectedPlanId) : null
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -32,7 +34,7 @@ function LoginPageContent() {
       return
     }
 
-    router.push("/dashboard")
+    router.push(result.nextPath ?? "/dashboard")
   }
 
   const startDemo = () => {
@@ -52,7 +54,7 @@ function LoginPageContent() {
                 One clear place to sign in, start, or explore.
               </h1>
               <p className="max-w-xl text-base leading-8 text-slate-300">
-                Existing teams can sign in immediately. New firms can start a Starter or Growth workspace, open the demo environment, or request a more tailored enterprise setup.
+                Existing teams can sign in immediately. New firms can start a Solo, Team, or Business workspace, open the demo environment, or move into a separate Enterprise contact route.
               </p>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
@@ -65,7 +67,7 @@ function LoginPageContent() {
               <div className="rounded-[24px] border border-white/10 bg-white/6 p-5">
                 <p className="text-sm font-semibold text-white">Self-serve onboarding</p>
                 <p className="mt-2 text-sm leading-7 text-slate-300">
-                  Starter and Growth move from account creation to billing and live workspace access in one direct path.
+                  Solo, Team, and Business move from account creation to billing and live workspace access in one direct path.
                 </p>
               </div>
               <div className="rounded-[24px] border border-white/10 bg-white/6 p-5">
@@ -102,11 +104,11 @@ function LoginPageContent() {
                 href={saasAppConfig.enterprisePath}
                 className="rounded-full border border-white/14 px-5 py-3 text-sm font-semibold text-slate-300 transition hover:border-white/30 hover:text-white"
               >
-                Request enterprise setup
+                Contact us
               </Link>
             </div>
             <p className="max-w-xl text-sm leading-7 text-slate-400">
-              Starter and Growth are self-serve. Enterprise stays separate so the setup can be handled more deliberately.
+              Solo, Team, and Business are self-serve. Enterprise stays separate so rollout and support can be handled more deliberately.
             </p>
           </div>
         </section>
@@ -195,7 +197,7 @@ function LoginPageContent() {
             <div className="rounded-[24px] border border-white/10 bg-white/6 p-5">
               <p className="text-sm font-semibold text-white">New to the platform?</p>
               <p className="mt-2 text-sm leading-7 text-slate-300">
-                Create a Starter or Growth workspace, open the demo environment first, or move through a sales-led enterprise setup.
+                Create a Solo, Team, or Business workspace, open the demo environment first, or move through a direct Enterprise contact route.
               </p>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <Link
@@ -215,7 +217,7 @@ function LoginPageContent() {
                   href={saasAppConfig.enterprisePath}
                   className="rounded-full border border-white/12 px-4 py-2.5 text-center text-sm font-semibold text-slate-300 transition hover:border-white/28 hover:text-white sm:col-span-2"
                 >
-                  Request enterprise setup
+                  Contact us
                 </Link>
               </div>
             </div>

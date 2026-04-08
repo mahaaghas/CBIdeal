@@ -52,7 +52,7 @@ export default function SettingsPage() {
           value={currentTenant ? activePlan?.name ?? "Workspace" : `${saasPricingModel.currency} ${pricingSnapshot.total}`}
           note={
             currentTenant
-              ? `${formatPlanAmount(activePlan ?? getSaasPlan("starter"))} / month`
+              ? `${formatPlanAmount(activePlan ?? getSaasPlan("solo"))} / month`
               : "Combined view of internal seats and external accounts."
           }
           trend={currentTenant ? currentTenant.subscriptionStatus : "Billing snapshot"}

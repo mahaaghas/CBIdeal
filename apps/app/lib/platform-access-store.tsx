@@ -1,14 +1,9 @@
 "use client"
 
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react"
-import { getSaasPlan, isSelfServePlan, saasAppConfig, type SaasPlanId, type SelfServePlanId } from "@cbideal/config"
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react"
+import { getSaasPlan, isSelfServePlan, saasAppConfig, type SelfServePlanId } from "@cbideal/config"
 import {
-  buildDefaultBrandingSeed,
-  buildScopedStorageKey,
   createEmptyPlatformState,
-  createId,
-  createSignupRecord,
-  createTenantRecord,
   DEMO_SCOPE_KEY,
   INTERNAL_SCOPE_KEY,
   PLATFORM_STORAGE_KEY,
@@ -37,9 +32,9 @@ type PlatformAccessContextValue = {
   getInternalSignupRecords: () => PlatformSignupRecord[]
   startDemoSession: () => void
   signOut: () => void
-  login: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>
+  login: (email: string, password: string) => Promise<{ ok: boolean; nextPath?: string; error?: string }>
   registerWorkspace: (input: RegistrationInput) => Promise<{ ok: boolean; tenantId?: string; error?: string }>
-  activateSubscription: (tenantId: string, data?: { checkoutSessionId?: string | null; customerId?: string | null; subscriptionId?: string | null }) => void
+  syncTenantStatus: (tenantId: string) => Promise<{ ok: boolean; tenant?: PlatformTenantRecord; error?: string }>
   markCheckoutPending: (tenantId: string, checkoutSessionId?: string | null) => void
   markPaymentFailed: (tenantId: string) => void
   updateTenantBrandingSeed: (tenantId: string, patch: Partial<PlatformTenantRecord["branding"]>) => void
@@ -47,12 +42,34 @@ type PlatformAccessContextValue = {
 
 const PlatformAccessContext = createContext<PlatformAccessContextValue | null>(null)
 
-async function hashPassword(value: string) {
-  const encoded = new TextEncoder().encode(value)
-  const digest = await crypto.subtle.digest("SHA-256", encoded)
-  return Array.from(new Uint8Array(digest))
-    .map((part) => part.toString(16).padStart(2, "0"))
-    .join("")
+function upsertRecord<T extends { id: string }>(records: T[], record: T) {
+  const existingIndex = records.findIndex((item) => item.id === record.id)
+  if (existingIndex === -1) {
+    return [...records, record]
+  }
+
+  return records.map((item) => (item.id === record.id ? record : item))
+}
+
+function upsertSignupRecord(records: PlatformSignupRecord[], record: PlatformSignupRecord) {
+  const existingIndex = records.findIndex((item) => item.tenantId === record.tenantId)
+  if (existingIndex === -1) {
+    return [...records, record]
+  }
+
+  return records.map((item) => (item.tenantId === record.tenantId ? record : item))
+}
+
+function mergeWorkspacePayload(
+  current: PlatformState,
+  payload: { tenant: PlatformTenantRecord; user: PlatformUserRecord; signup?: PlatformSignupRecord | null },
+) {
+  return {
+    ...current,
+    users: upsertRecord(current.users, payload.user),
+    tenants: upsertRecord(current.tenants, payload.tenant),
+    signups: payload.signup ? upsertSignupRecord(current.signups, payload.signup) : current.signups,
+  }
 }
 
 function usePlatformState() {
@@ -86,6 +103,32 @@ function usePlatformState() {
 
 export function PlatformAccessProvider({ children }: { children: ReactNode }) {
   const { ready, state, setState } = usePlatformState()
+
+  const syncTenantStatus = useCallback(
+    async (tenantId: string) => {
+      const response = await fetch(`/api/workspace/status?tenant=${encodeURIComponent(tenantId)}`, {
+        method: "GET",
+        cache: "no-store",
+      })
+
+      const payload = (await response.json()) as {
+        tenant?: PlatformTenantRecord
+        user?: PlatformUserRecord
+        signup?: PlatformSignupRecord
+        error?: string
+      }
+
+      const tenant = payload.tenant
+      const user = payload.user
+      if (!response.ok || !tenant || !user) {
+        return { ok: false, error: payload.error ?? "Unable to load the current billing status." }
+      }
+
+      setState((current) => mergeWorkspacePayload(current, { tenant, user, signup: payload.signup }))
+      return { ok: true, tenant }
+    },
+    [setState],
+  )
 
   const value = useMemo<PlatformAccessContextValue>(() => {
     const currentTenant =
@@ -127,73 +170,68 @@ export function PlatformAccessProvider({ children }: { children: ReactNode }) {
     }
 
     const login = async (email: string, password: string) => {
-      const emailAddress = email.trim().toLowerCase()
-      const matchingUser = state.users.find((user) => user.email.toLowerCase() === emailAddress)
-      if (!matchingUser) {
-        return { ok: false, error: "No account was found for that email address." }
+      const response = await fetch("/api/workspace/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
+
+      const payload = (await response.json()) as {
+        tenant?: PlatformTenantRecord
+        user?: PlatformUserRecord
+        signup?: PlatformSignupRecord
+        error?: string
       }
 
-      const passwordHash = await hashPassword(password)
-      if (matchingUser.passwordHash !== passwordHash) {
-        return { ok: false, error: "The password did not match this account." }
+      const tenant = payload.tenant
+      const user = payload.user
+      if (!response.ok || !tenant || !user) {
+        return { ok: false, error: payload.error ?? "Unable to sign in." }
       }
 
       setState((current) => ({
-        ...current,
+        ...mergeWorkspacePayload(current, { tenant, user, signup: payload.signup }),
         session: {
           mode: "workspace",
-          tenantId: matchingUser.tenantId,
-          userId: matchingUser.id,
+          tenantId: tenant.id,
+          userId: user.id,
           startedAt: new Date().toISOString(),
         },
       }))
 
-      return { ok: true }
+      return {
+        ok: true,
+        nextPath:
+          tenant.subscriptionStatus === "Active" && tenant.paymentStatus === "Paid"
+            ? "/dashboard"
+            : isSelfServePlan(tenant.planId)
+              ? getSelfServeCheckoutUrl(tenant.planId, tenant.id)
+              : saasAppConfig.enterprisePath,
+      }
     }
 
     const registerWorkspace = async (input: RegistrationInput) => {
-      const email = input.email.trim().toLowerCase()
-      if (state.users.some((user) => user.email.toLowerCase() === email)) {
-        return { ok: false, error: "An account with that email already exists." }
-      }
-
-      const fullName = input.fullName.trim()
-      const companyName = input.companyName.trim()
-      if (!fullName || !companyName) {
-        return { ok: false, error: "Please complete the account and company details first." }
-      }
-
-      const passwordHash = await hashPassword(input.password)
-      const user: PlatformUserRecord = {
-        id: createId("usr"),
-        tenantId: "",
-        fullName,
-        email,
-        passwordHash,
-        role: "Workspace owner",
-        createdAt: new Date().toISOString(),
-      }
-
-      const tenant = createTenantRecord({
-        companyName,
-        planId: input.planId,
-        ownerUserId: user.id,
+      const response = await fetch("/api/workspace/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
       })
-      user.tenantId = tenant.id
 
-      const signup = createSignupRecord({
-        tenantId: tenant.id,
-        companyName,
-        planId: input.planId,
-        userEmail: email,
-        userName: fullName,
-      })
+      const payload = (await response.json()) as {
+        tenant?: PlatformTenantRecord
+        user?: PlatformUserRecord
+        signup?: PlatformSignupRecord
+        error?: string
+      }
+
+      const tenant = payload.tenant
+      const user = payload.user
+      if (!response.ok || !tenant || !user) {
+        return { ok: false, error: payload.error ?? "We could not create the workspace." }
+      }
 
       setState((current) => ({
-        ...current,
-        users: [...current.users, user],
-        tenants: [...current.tenants, tenant],
-        signups: [...current.signups, signup],
+        ...mergeWorkspacePayload(current, { tenant, user, signup: payload.signup }),
         session: {
           mode: "workspace",
           tenantId: tenant.id,
@@ -203,37 +241,6 @@ export function PlatformAccessProvider({ children }: { children: ReactNode }) {
       }))
 
       return { ok: true, tenantId: tenant.id }
-    }
-
-    const activateSubscription = (
-      tenantId: string,
-      data?: { checkoutSessionId?: string | null; customerId?: string | null; subscriptionId?: string | null },
-    ) => {
-      setState((current) => ({
-        ...current,
-        tenants: current.tenants.map((tenant) =>
-          tenant.id === tenantId
-            ? {
-                ...tenant,
-                subscriptionStatus: "Active",
-                paymentStatus: "Paid",
-                activatedAt: new Date().toISOString(),
-                stripeCheckoutSessionId: data?.checkoutSessionId ?? tenant.stripeCheckoutSessionId,
-                stripeCustomerId: data?.customerId ?? tenant.stripeCustomerId,
-                stripeSubscriptionId: data?.subscriptionId ?? tenant.stripeSubscriptionId,
-              }
-            : tenant,
-        ),
-        signups: current.signups.map((signup) =>
-          signup.tenantId === tenantId
-            ? {
-                ...signup,
-                paymentStatus: "Paid",
-                subscriptionStatus: "Active",
-              }
-            : signup,
-        ),
-      }))
     }
 
     const markCheckoutPending = (tenantId: string, checkoutSessionId?: string | null) => {
@@ -308,12 +315,12 @@ export function PlatformAccessProvider({ children }: { children: ReactNode }) {
       signOut,
       login,
       registerWorkspace,
-      activateSubscription,
+      syncTenantStatus,
       markCheckoutPending,
       markPaymentFailed,
       updateTenantBrandingSeed,
     }
-  }, [ready, setState, state])
+  }, [ready, setState, state, syncTenantStatus])
 
   return <PlatformAccessContext.Provider value={value}>{children}</PlatformAccessContext.Provider>
 }

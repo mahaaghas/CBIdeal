@@ -6,7 +6,6 @@ import { Suspense, useMemo, useState } from "react"
 import {
   formatPlanAmount,
   getSaasPlan,
-  isSelfServePlan,
   saasAppConfig,
   saasPlans,
   type SelfServePlanId,
@@ -21,12 +20,13 @@ function SignupPageContent() {
   const { branding } = useBranding()
   const { registerWorkspace, ready } = usePlatformAccess()
   const requestedPlan = searchParams.get("plan")
-  const initialPlan = requestedPlan && isSelfServePlan(requestedPlan) ? requestedPlan : "starter"
+  const initialPlan =
+    requestedPlan === "solo" || requestedPlan === "team" || requestedPlan === "business" ? requestedPlan : "solo"
   const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [companyName, setCompanyName] = useState("")
-  const [planId, setPlanId] = useState<SelfServePlanId>(initialPlan === "growth" ? "growth" : "starter")
+  const [planId, setPlanId] = useState<SelfServePlanId>(initialPlan)
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const activePlan = useMemo(() => getSaasPlan(planId), [planId])
@@ -70,7 +70,7 @@ function SignupPageContent() {
                 Create your firm workspace.
               </h1>
               <p className="text-base leading-8 text-slate-300">
-                Starter and Growth plans move through a clean self-serve flow: account creation, company setup, billing, and direct access to {saasAppConfig.appUrl}.
+                Solo, Team, and Business move through one clean self-serve flow: account creation, company setup, secure billing, and direct access to {saasAppConfig.appUrl}.
               </p>
             </div>
             <div className="space-y-3">
@@ -86,13 +86,13 @@ function SignupPageContent() {
               <div className="rounded-[24px] border border-white/10 bg-white/6 p-5">
                 <p className="text-sm font-semibold text-white">Need a broader setup?</p>
                 <p className="mt-2 text-sm leading-7 text-slate-300">
-                  Enterprise remains sales-led so larger teams can be configured deliberately and rolled out with the right structure.
+                  Enterprise stays contact-led so tailored rollout, integration scope, and support expectations can be agreed before any workspace is provisioned.
                 </p>
                 <Link
                   href={saasAppConfig.enterprisePath}
                   className="mt-4 inline-flex rounded-full border border-white/12 px-4 py-2.5 text-sm font-semibold text-white transition hover:border-white/28"
                 >
-                  Request enterprise setup
+                  Contact us
                 </Link>
               </div>
             </div>
@@ -185,7 +185,7 @@ function SignupPageContent() {
 
               <div className="space-y-3">
                 <p className="text-sm font-medium text-slate-100">Choose a plan</p>
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-4 xl:grid-cols-3">
                   {saasPlans
                     .filter((plan) => plan.id !== "enterprise")
                     .map((plan) => {
@@ -207,8 +207,8 @@ function SignupPageContent() {
                             </span>
                           </div>
                           <div className="mt-4 space-y-2 text-sm leading-7 text-slate-300">
-                            <p>{plan.internalSeatLimit} internal users</p>
-                            <p>{plan.clientAccountLimit} client accounts</p>
+                            <p>Up to {plan.internalSeatLimit} internal users</p>
+                            <p>Up to {plan.clientAccountLimit} client accounts</p>
                           </div>
                         </button>
                       )
@@ -231,7 +231,7 @@ function SignupPageContent() {
                   </div>
                   <div className="text-right">
                     <p className="text-2xl font-semibold text-white">{formatPlanAmount(activePlan)}</p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-400">per month</p>
+                    <p className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-400">monthly</p>
                   </div>
                 </div>
               </div>

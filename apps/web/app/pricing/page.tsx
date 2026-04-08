@@ -53,24 +53,24 @@ export default function PricingPage() {
   const copy = {
     en: {
       eyebrow: "Solutions",
-      title: "Clear SaaS plans for specialist firms.",
+      title: "A clear plan structure for serious client-workflow operations.",
       description:
-        "This page explains the self-serve and sales-led paths into the CBI Deal platform. It should make the next step unambiguous: view the demo, create a workspace, or contact sales for a more tailored enterprise setup.",
+        "Review the public CBI Deal plan structure with a direct self-serve route for Solo, Team, and Business, plus a separate contact-led Enterprise path for tailored rollout discussions.",
       primary: "View Demo",
-      secondary: "Request Demo",
-      plansEyebrow: "Solutions",
-      plansTitle: "Three clear plan paths, with the right action attached to each one.",
+      secondary: "Contact us",
+      plansEyebrow: "Plans",
+      plansTitle: "Four plans, with one clear next step attached to each.",
       plansDescription:
-        "Starter and Growth move through self-serve onboarding and billing. Enterprise remains a higher-touch route so broader teams can be configured with more care from the outset.",
-      enterpriseTitle: "Need a broader rollout or a more tailored setup?",
+        "Solo, Team, and Business move directly into workspace signup and live Stripe checkout. Enterprise stays separate so broader rollout, integrations, and governance can be handled properly before provisioning.",
+      enterpriseTitle: "Need a tailored structure beyond the public plans?",
       enterpriseDescription:
-        "Enterprise is handled separately so implementation, access structure, and commercial scope can be discussed properly before any account is provisioned.",
-      enterpriseAction: "Contact Sales",
-      enterpriseNote: "Enterprise note",
+        "Enterprise is handled through a direct contact route so implementation scope, integrations, access structure, and support expectations can be shaped before any workspace is provisioned.",
+      enterpriseAction: "Contact us",
+      enterpriseNote: "Enterprise route",
       backToCompanies: "Back to company overview",
-      reviewTogether: "Would you prefer to review the solutions together?",
+      reviewTogether: "Would you prefer to review the plan structure together?",
       reviewTogetherDescription:
-        "Use this section if you would like to discuss team size, scope, or which solution structure appears most suitable before moving further.",
+        "Use this section if you would like to discuss team size, operating scope, or which plan path appears most suitable before moving further.",
     },
     ar: {
       eyebrow: "خيارات التعامل",
@@ -78,20 +78,20 @@ export default function PricingPage() {
       description:
         "هذه الصفحة تشرح مسار الاشتراك الذاتي ومسار المبيعات المخصص داخل منصة CBI Deal، بحيث تكون الخطوة التالية واضحة: عرض النسخة التجريبية، إنشاء مساحة العمل، أو التواصل معنا بخصوص إعداد Enterprise.",
       primary: "عرض النسخة التجريبية",
-      secondary: "طلب عرض توضيحي",
+      secondary: "تواصل معنا",
       plansEyebrow: "الخطط",
-      plansTitle: "ثلاثة مسارات واضحة، ولكل مسار الإجراء المناسب له.",
+      plansTitle: "أربع خطط واضحة، ولكل خطة الخطوة التالية المناسبة.",
       plansDescription:
-        "Starter و Growth ينتقلان عبر مسار تسجيل وفوترة ذاتي. أما Enterprise فيبقى مساراً أكثر خصوصية حتى يمكن ترتيب الفرق الأوسع بعناية أكبر.",
-      enterpriseTitle: "هل تحتاج إلى ترتيب أوسع أو صيغة أكثر تخصيصاً؟",
+        "Solo و Team و Business تنتقل مباشرة إلى التسجيل والدفع الذاتي. أما Enterprise فيبقى مسار تواصل منفصل حتى تتم مناقشة النطاق والتنفيذ والتكامل بالشكل المناسب.",
+      enterpriseTitle: "هل تحتاج إلى هيكل مخصص يتجاوز الخطط العامة؟",
       enterpriseDescription:
-        "يتم التعامل مع Enterprise بشكل منفصل حتى يمكن مناقشة التنفيذ وهيكل الوصول والنطاق التجاري قبل إنشاء أي حساب.",
-      enterpriseAction: "تواصل مع المبيعات",
-      enterpriseNote: "ملاحظة حول Enterprise",
+        "يتم التعامل مع Enterprise عبر مسار تواصل مباشر حتى يمكن تحديد نطاق التنفيذ والتكامل وهيكل الوصول ومستوى الدعم قبل إنشاء أي مساحة عمل.",
+      enterpriseAction: "تواصل معنا",
+      enterpriseNote: "مسار Enterprise",
       backToCompanies: "العودة إلى صفحة الشركات",
-      reviewTogether: "هل تفضل مراجعة الحلول في محادثة مباشرة؟",
+      reviewTogether: "هل تفضل مراجعة هيكل الخطط في محادثة مباشرة؟",
       reviewTogetherDescription:
-        "استخدم هذا القسم إذا كنت تريد مناقشة حجم الفريق أو النطاق أو الهيكل الأنسب قبل المضي قدماً.",
+        "استخدم هذا القسم إذا كنت تريد مناقشة حجم الفريق أو النطاق التشغيلي أو الخطة الأنسب قبل المضي قدماً.",
     },
     ru: {
       eyebrow: "Форматы взаимодействия",
@@ -99,20 +99,20 @@ export default function PricingPage() {
       description:
         "Эта страница объясняет самостоятельный и sales-led пути входа в платформу CBI Deal, чтобы следующий шаг был однозначным: открыть демо, создать рабочее пространство или связаться с отделом продаж по Enterprise.",
       primary: "Открыть демо",
-      secondary: "Запросить демо",
+      secondary: "Связаться с нами",
       plansEyebrow: "Тарифы",
-      plansTitle: "Три понятных варианта, и у каждого есть правильное следующее действие.",
+      plansTitle: "Четыре понятных плана, и у каждого есть правильный следующий шаг.",
       plansDescription:
-        "Starter и Growth идут через самостоятельную регистрацию и биллинг. Enterprise остаётся более персональным маршрутом, чтобы более широкие команды можно было настроить осознанно.",
-      enterpriseTitle: "Нужен более широкий формат или более индивидуальная структура?",
+        "Solo, Team и Business идут напрямую в самостоятельную регистрацию и оплату. Enterprise остаётся отдельным маршрутом, чтобы масштаб, внедрение и интеграции можно было согласовать заранее.",
+      enterpriseTitle: "Нужна более индивидуальная структура, чем публичные планы?",
       enterpriseDescription:
-        "Enterprise обрабатывается отдельно, чтобы внедрение, структура доступа и коммерческие условия были согласованы до создания аккаунта.",
-      enterpriseAction: "Связаться с отделом продаж",
-      enterpriseNote: "Примечание по Enterprise",
+        "Enterprise проходит через отдельный контактный маршрут, чтобы внедрение, интеграции, структура доступа и формат поддержки были согласованы до создания рабочего пространства.",
+      enterpriseAction: "Связаться с нами",
+      enterpriseNote: "Маршрут Enterprise",
       backToCompanies: "Назад к странице для компаний",
-      reviewTogether: "Хотите обсудить решения вместе?",
+      reviewTogether: "Хотите обсудить структуру планов вместе?",
       reviewTogetherDescription:
-        "Используйте этот раздел, если хотите обсудить размер команды, объём работ или наиболее подходящую структуру решения перед следующим шагом.",
+        "Используйте этот раздел, если хотите обсудить размер команды, операционный масштаб или наиболее подходящий план перед следующим шагом.",
     },
   }[locale]
 
@@ -123,34 +123,34 @@ export default function PricingPage() {
         title={copy.title}
         description={copy.description}
         primaryAction={{ href: ctaLinks.appDemo, label: copy.primary }}
-        secondaryAction={{ href: ctaLinks.requestProductDemo, label: copy.secondary }}
+        secondaryAction={{ href: ctaLinks.enterpriseContact, label: copy.secondary }}
         stats={[
           {
-            value: locale === "ar" ? "لكل مستخدم" : locale === "ru" ? "На пользователя" : "Per user",
+            value: locale === "ar" ? "USD" : locale === "ru" ? "USD" : "USD",
             label:
               locale === "ar"
-                ? "تسعير واضح للمقاعد"
+                ? "تسعير شهري واضح للخطط العامة"
                 : locale === "ru"
-                  ? "понятная модель по количеству мест"
-                  : "clear seat-based pricing",
+                  ? "понятная месячная структура публичных планов"
+                  : "clear monthly public plan pricing",
           },
           {
-            value: locale === "ar" ? "توفير سنوي" : locale === "ru" ? "Годовая экономия" : "Annual savings",
+            value: locale === "ar" ? "3" : locale === "ru" ? "3" : "3",
             label:
               locale === "ar"
-                ? "عند اختيار الفوترة السنوية"
+                ? "خطط ذاتية الاشتراك"
                 : locale === "ru"
-                  ? "при годовой оплате"
-                  : "with yearly billing",
+                  ? "самостоятельно оформляемых плана"
+                  : "self-serve plans",
           },
           {
             value: "Enterprise",
             label:
               locale === "ar"
-                ? "للهياكل الأوسع أو الاحتياجات المخصصة"
+                ? "للتنفيذ المخصص والاحتياجات الأوسع"
                 : locale === "ru"
-                  ? "для более широких структур и индивидуальных настроек"
-                  : "for broader custom structures",
+                  ? "для индивидуального внедрения и более широких структур"
+                  : "for tailored rollout and custom structures",
           },
         ]}
       />
@@ -174,7 +174,7 @@ export default function PricingPage() {
             eyebrow={copy.enterpriseNote}
             title={copy.enterpriseTitle}
             description={copy.enterpriseDescription}
-            primaryAction={{ href: ctaLinks.enterpriseSetup, label: copy.enterpriseAction }}
+            primaryAction={{ href: ctaLinks.enterpriseContact, label: copy.enterpriseAction }}
             secondaryAction={{ href: routeLinks.forCompanies, label: copy.backToCompanies }}
           />
         </div>

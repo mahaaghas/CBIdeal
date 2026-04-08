@@ -1,15 +1,18 @@
 import { NextResponse } from "next/server"
 import Stripe from "stripe"
 import { getSaasPlan, isSelfServePlan, normalizeSaasAppUrl, type SaasPlanId } from "@cbideal/config"
+import {
+  getBillingRuntimeDiagnostics,
+  getStripeBillingConfigIssues,
+  getStripePriceIdForPlan,
+  getWorkspaceStatus,
+  isStripeBillingConfigured,
+  logBillingRuntimeState,
+  markWorkspaceCheckoutPending,
+} from "@/lib/workspace-billing"
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY
 const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null
-
-function getPriceIdForPlan(planId: SaasPlanId) {
-  if (planId === "starter") return process.env.STRIPE_STARTER_PRICE_ID
-  if (planId === "growth") return process.env.STRIPE_GROWTH_PRICE_ID
-  return null
-}
 
 export async function POST(request: Request) {
   const body = (await request.json()) as { tenantId?: string; planId?: SaasPlanId }
@@ -22,35 +25,86 @@ export async function POST(request: Request) {
 
   const plan = getSaasPlan(planId)
   const baseUrl = normalizeSaasAppUrl(process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin)
-  const successUrl = `${baseUrl}/billing/success?tenant=${tenantId}&session_id={CHECKOUT_SESSION_ID}`
-  const cancelUrl = `${baseUrl}/billing/cancel?tenant=${tenantId}`
+  const successUrl = `${baseUrl}/billing/success?tenant=${tenantId}&plan=${planId}&session_id={CHECKOUT_SESSION_ID}`
+  const cancelUrl = `${baseUrl}/billing/cancel?tenant=${tenantId}&plan=${planId}`
+  const priceId = getStripePriceIdForPlan(planId)
+  const runtimeDiagnostics = getBillingRuntimeDiagnostics()
 
-  if (!stripe || !getPriceIdForPlan(planId)) {
-    return NextResponse.json({
-      url: `${baseUrl}/billing/success?tenant=${tenantId}&sandbox=1`,
-      checkoutSessionId: null,
-      mode: "sandbox",
-      note: "Stripe is not configured. Falling back to the local billing sandbox.",
+  if (!stripe || !isStripeBillingConfigured() || !priceId || !runtimeDiagnostics.supabaseConfigured) {
+    const diagnostics = logBillingRuntimeState("checkout-blocked")
+    const issues = getStripeBillingConfigIssues()
+    if (!diagnostics.supabaseConfigured) {
+      issues.push("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY.")
+    }
+    console.error("[billing.checkout] blocked because Stripe billing is not configured", {
+      tenantId,
+      planId,
+      issues,
     })
+    return NextResponse.json(
+      {
+        error:
+          issues[0] ??
+          "Stripe billing is not configured in this environment. Workspace activation is blocked until live billing is available.",
+      },
+      { status: 503 },
+    )
   }
 
   try {
+    const workspace = await getWorkspaceStatus(tenantId)
+    if (!workspace) {
+      return NextResponse.json({ error: "Workspace billing record not found." }, { status: 404 })
+    }
+
+    if (workspace.tenant.planId !== planId) {
+      return NextResponse.json(
+        { error: "The requested plan does not match the workspace billing record." },
+        { status: 400 },
+      )
+    }
+
+    if (workspace.tenant.subscriptionStatus === "Active") {
+      return NextResponse.json({ error: "This workspace is already active." }, { status: 409 })
+    }
+
+    console.info("[billing.checkout] creating Stripe checkout session", {
+      tenantId,
+      planId,
+      liveMode: stripeSecretKey?.startsWith("sk_live_") ?? false,
+    })
+
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       line_items: [
         {
-          price: getPriceIdForPlan(planId),
+          price: priceId,
           quantity: 1,
         },
       ],
+      client_reference_id: tenantId,
+      customer_email: workspace.user.email,
       metadata: {
         tenantId,
         planId,
+      },
+      subscription_data: {
+        metadata: {
+          tenantId,
+          planId,
+        },
       },
       success_url: successUrl,
       cancel_url: cancelUrl,
       allow_promotion_codes: true,
       billing_address_collection: "required",
+    })
+
+    await markWorkspaceCheckoutPending({
+      tenantId,
+      checkoutSessionId: session.id,
+      priceId,
+      liveMode: session.livemode,
     })
 
     return NextResponse.json({
@@ -61,6 +115,12 @@ export async function POST(request: Request) {
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to create the Stripe checkout session."
-    return NextResponse.json({ error: message }, { status: 500 })
+    console.error("[billing.checkout] failed to create Stripe checkout session", {
+      tenantId,
+      planId,
+      error: message,
+    })
+    const status = message.includes("missing") ? 503 : 500
+    return NextResponse.json({ error: message }, { status })
   }
 }

@@ -9,6 +9,7 @@ function BillingCancelPageContent() {
   const searchParams = useSearchParams()
   const { markPaymentFailed } = usePlatformAccess()
   const tenantId = searchParams.get("tenant")
+  const planId = searchParams.get("plan")
 
   useEffect(() => {
     if (!tenantId) return
@@ -29,10 +30,16 @@ function BillingCancelPageContent() {
             </p>
           </div>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href={tenantId ? `/signup/checkout?tenant=${tenantId}` : "/signup"} className="rounded-full bg-[var(--app-brand-primary)] px-5 py-3.5 text-sm font-semibold text-[var(--app-brand-on-primary)] transition hover:bg-[var(--app-brand-primary-strong)]">
+            <Link
+              href={tenantId ? `/signup/checkout?tenant=${tenantId}${planId ? `&plan=${planId}` : ""}` : "/signup"}
+              className="rounded-full bg-[var(--app-brand-primary)] px-5 py-3.5 text-sm font-semibold text-[var(--app-brand-on-primary)] transition hover:bg-[var(--app-brand-primary-strong)]"
+            >
               Return to checkout
             </Link>
-            <Link href="/demo" className="rounded-full border border-white/12 px-5 py-3.5 text-sm font-semibold text-white transition hover:border-white/28">
+            <Link
+              href="/demo"
+              className="rounded-full border border-white/12 px-5 py-3.5 text-sm font-semibold text-white transition hover:border-white/28"
+            >
               View Demo
             </Link>
           </div>

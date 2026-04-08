@@ -1,6 +1,6 @@
 import { buildSaasAppUrl, saasAppUrl } from "./app-url"
 
-export type SaasPlanId = "starter" | "growth" | "enterprise"
+export type SaasPlanId = "solo" | "team" | "business" | "enterprise"
 export type SelfServePlanId = Exclude<SaasPlanId, "enterprise">
 export type SubscriptionStatus = "Pending" | "Active" | "Past due" | "Cancelled" | "Enterprise review"
 export type PaymentStatus = "Pending" | "Paid" | "Failed" | "Manual review"
@@ -27,47 +27,63 @@ export const saasAppConfig = {
   signupPath: "/signup",
   billingSuccessPath: "/billing/success",
   billingCancelPath: "/billing/cancel",
-  enterprisePath: "https://www.cbideal.nl/for-companies#company-form",
+  enterprisePath: "https://www.cbideal.nl/contact?intent=enterprise-platform",
   requestDemoPath: "https://www.cbideal.nl/demo#demo-form",
 } as const
 
 export const saasPlans: SaasPlanDefinition[] = [
   {
-    id: "starter",
-    name: "Starter",
-    monthlyPrice: 189,
-    yearlyPrice: 169,
-    description: "For smaller advisory teams that want a polished workspace with disciplined client handling from the outset.",
-    ctaLabel: "Get Started",
+    id: "solo",
+    name: "Solo",
+    monthlyPrice: 49,
+    yearlyPrice: 49,
+    description: "For independent advisors and small operators managing client cases with clarity and structure.",
+    ctaLabel: "Start Solo",
     secondaryLabel: "View Demo",
     billingMode: "self-serve",
-    internalSeatLimit: 3,
+    internalSeatLimit: 2,
     clientAccountLimit: 40,
     features: [
-      "Up to 3 internal users",
-      "Up to 40 client accounts",
-      "Branded client portal",
-      "Quotations, payments, and document workflow",
-      "Email templates and communication history",
+      "Structured workspace for a focused advisory desk",
+      "Core document, quotation, and payment workflow",
+      "Professional client portal access",
+      "Clear case handling without excess complexity",
     ],
   },
   {
-    id: "growth",
-    name: "Growth",
-    monthlyPrice: 429,
-    yearlyPrice: 389,
-    description: "For established firms that need broader capacity, stronger coordination, and more room for branded client delivery.",
-    ctaLabel: "Get Started",
+    id: "team",
+    name: "Team",
+    monthlyPrice: 119,
+    yearlyPrice: 119,
+    description: "For small teams handling multiple clients, workflows, and internal coordination.",
+    ctaLabel: "Start Team",
     secondaryLabel: "View Demo",
     billingMode: "self-serve",
-    internalSeatLimit: 10,
-    clientAccountLimit: 180,
+    internalSeatLimit: 8,
+    clientAccountLimit: 160,
     features: [
-      "Up to 10 internal users",
-      "Up to 180 client accounts",
-      "Advanced reminder and review workflows",
-      "Branding personalisation",
-      "Priority onboarding guidance",
+      "Shared workspace for coordinated team delivery",
+      "Multi-client workflow visibility and reminders",
+      "Internal collaboration across cases and operators",
+      "Branded client-facing experience",
+    ],
+  },
+  {
+    id: "business",
+    name: "Business",
+    monthlyPrice: 199,
+    yearlyPrice: 199,
+    description: "For growing firms that need scalable client management, collaboration, and operational control.",
+    ctaLabel: "Start Business",
+    secondaryLabel: "View Demo",
+    billingMode: "self-serve",
+    internalSeatLimit: 20,
+    clientAccountLimit: 400,
+    features: [
+      "Scalable client management across active matters",
+      "Broader collaboration and operational oversight",
+      "Higher workspace capacity for growing firms",
+      "Priority onboarding guidance for rollout",
     ],
   },
   {
@@ -75,18 +91,17 @@ export const saasPlans: SaasPlanDefinition[] = [
     name: "Enterprise",
     monthlyPrice: null,
     yearlyPrice: null,
-    description: "For wider structures that require implementation support, custom limits, and a more tailored operating setup.",
-    ctaLabel: "Contact Sales",
+    description: "Custom solutions for larger organizations requiring tailored workflows, integrations, and dedicated support.",
+    ctaLabel: "Contact us",
     secondaryLabel: "Request Demo",
     billingMode: "sales-led",
     internalSeatLimit: null,
     clientAccountLimit: null,
     features: [
-      "Custom seat and client-account structure",
-      "Tailored implementation planning",
-      "Enterprise billing and rollout support",
-      "Priority service design",
-      "Manual provisioning and setup",
+      "Tailored workflow design and operating structure",
+      "Integration planning for larger teams",
+      "Dedicated support and implementation guidance",
+      "Custom access, governance, and rollout scope",
     ],
   },
 ] as const
@@ -95,7 +110,7 @@ export const demoWorkspaceConfig = {
   workspaceId: "demo-shared-workspace",
   workspaceName: "CBI Deal Demo",
   companyName: "CBI Deal Demonstration",
-  planId: "growth" as const,
+  planId: "business" as const,
 } as const
 
 export function getSaasDemoUrl() {
@@ -123,13 +138,13 @@ export function getSaasPlan(planId: SaasPlanId) {
 }
 
 export function isSelfServePlan(planId: SaasPlanId): planId is SelfServePlanId {
-  return planId === "starter" || planId === "growth"
+  return planId === "solo" || planId === "team" || planId === "business"
 }
 
 export function formatPlanAmount(plan: SaasPlanDefinition, billingCycle: "monthly" | "yearly" = "monthly") {
   const amount = billingCycle === "yearly" ? plan.yearlyPrice : plan.monthlyPrice
   if (amount == null) return "Custom"
-  return `EUR ${amount}`
+  return `USD ${amount}`
 }
 
 export function getPlanLimits(planId: SaasPlanId) {

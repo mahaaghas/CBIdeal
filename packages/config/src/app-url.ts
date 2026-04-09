@@ -1,5 +1,5 @@
-export const DEFAULT_SAAS_APP_URL = "https://cbideal-app.vercel.app"
-export const LEGACY_SAAS_APP_HOST = "app.cbideal.nl"
+export const DEFAULT_SAAS_APP_URL = "https://app.cbideal.nl"
+export const LEGACY_SAAS_APP_HOST = "cbideal-app.vercel.app"
 export const APP_URL = normalizeSaasAppUrl(process.env.NEXT_PUBLIC_APP_URL || DEFAULT_SAAS_APP_URL)
 
 const FALLBACK_APP_URL = new URL(DEFAULT_SAAS_APP_URL)

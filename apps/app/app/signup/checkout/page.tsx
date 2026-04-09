@@ -6,6 +6,7 @@ import { Suspense, useEffect, useState } from "react"
 import { getSaasPlan, saasAppConfig, type SelfServePlanId } from "@cbideal/config"
 import { SetupStatusNotice } from "@/components/setup-status-notice"
 import { customerSafeMessages } from "@/lib/customer-safe-errors"
+import { hasWorkspaceAccess } from "@/lib/platform-access"
 import { usePlatformAccess } from "@/lib/platform-access-store"
 
 type BillingRuntimePayload = {
@@ -25,7 +26,7 @@ function renderSeatLimit(limit: number | null) {
 function SignupCheckoutPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { currentTenant, markCheckoutPending, syncTenantStatus } = usePlatformAccess()
+  const { currentTenant, currentUser, markCheckoutPending, syncTenantStatus } = usePlatformAccess()
   const tenantId = searchParams.get("tenant")
   const rawPlanId = searchParams.get("plan")
   const planId = rawPlanId && (rawPlanId === "solo" || rawPlanId === "team" || rawPlanId === "business") ? rawPlanId : "solo"
@@ -54,11 +55,11 @@ function SignupCheckoutPageContent() {
   useEffect(() => {
     if (!tenantId) return
     void syncTenantStatus(tenantId).then((result) => {
-      if (result.ok && result.tenant?.subscriptionStatus === "Active" && result.tenant.paymentStatus === "Paid") {
+      if (result.ok && result.tenant && hasWorkspaceAccess(result.tenant, currentUser)) {
         router.replace("/setup")
       }
     })
-  }, [router, syncTenantStatus, tenantId])
+  }, [currentUser, router, syncTenantStatus, tenantId])
 
   useEffect(() => {
     void checkBillingAvailability()

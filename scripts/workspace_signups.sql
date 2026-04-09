@@ -12,6 +12,10 @@ create table if not exists public.workspace_signups (
   password_hash text not null,
   subscription_status text not null default 'Pending' check (subscription_status in ('Pending', 'Active', 'Past due', 'Cancelled')),
   payment_status text not null default 'Pending' check (payment_status in ('Pending', 'Paid', 'Failed')),
+  access_role text not null default 'workspace_owner' check (access_role in ('workspace_owner', 'internal_admin', 'super_admin')),
+  internal_access boolean not null default false,
+  billing_bypass boolean not null default false,
+  feature_scope text not null default 'standard' check (feature_scope in ('standard', 'full_access')),
   stripe_checkout_session_id text,
   stripe_customer_id text,
   stripe_subscription_id text,
@@ -62,3 +66,29 @@ alter table public.workspace_signups
 alter table public.workspace_signups
   add constraint workspace_signups_plan_id_check
   check (plan_id in ('solo', 'team', 'business'));
+
+alter table public.workspace_signups
+  add column if not exists access_role text not null default 'workspace_owner';
+
+alter table public.workspace_signups
+  add column if not exists internal_access boolean not null default false;
+
+alter table public.workspace_signups
+  add column if not exists billing_bypass boolean not null default false;
+
+alter table public.workspace_signups
+  add column if not exists feature_scope text not null default 'standard';
+
+alter table public.workspace_signups
+  drop constraint if exists workspace_signups_access_role_check;
+
+alter table public.workspace_signups
+  add constraint workspace_signups_access_role_check
+  check (access_role in ('workspace_owner', 'internal_admin', 'super_admin'));
+
+alter table public.workspace_signups
+  drop constraint if exists workspace_signups_feature_scope_check;
+
+alter table public.workspace_signups
+  add constraint workspace_signups_feature_scope_check
+  check (feature_scope in ('standard', 'full_access'));

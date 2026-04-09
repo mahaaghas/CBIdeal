@@ -6,6 +6,7 @@ import { customerSafeMessages } from "@/lib/customer-safe-errors"
 import {
   createEmptyPlatformState,
   DEMO_SCOPE_KEY,
+  hasWorkspaceAccess,
   INTERNAL_SCOPE_KEY,
   PLATFORM_STORAGE_KEY,
   type PlatformSessionMode,
@@ -207,12 +208,11 @@ export function PlatformAccessProvider({ children }: { children: ReactNode }) {
 
         return {
           ok: true,
-          nextPath:
-            tenant.subscriptionStatus === "Active" && tenant.paymentStatus === "Paid"
-              ? "/dashboard"
-              : isSelfServePlan(tenant.planId)
-                ? getSelfServeCheckoutUrl(tenant.planId, tenant.id)
-                : saasAppConfig.enterprisePath,
+          nextPath: hasWorkspaceAccess(tenant, user)
+            ? "/dashboard"
+            : isSelfServePlan(tenant.planId)
+              ? getSelfServeCheckoutUrl(tenant.planId, tenant.id)
+              : saasAppConfig.enterprisePath,
         }
       } catch {
         return { ok: false, error: customerSafeMessages.loginFailed }

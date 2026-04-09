@@ -4,11 +4,12 @@ import type { ReactNode } from "react"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { customerSafeMessages } from "@/lib/customer-safe-errors"
+import { hasWorkspaceAccess } from "@/lib/platform-access"
 import { usePlatformAccess } from "@/lib/platform-access-store"
 
 export function WorkspaceAccessGuard({ children }: { children: ReactNode }) {
   const router = useRouter()
-  const { currentTenant, mode, ready, syncTenantStatus } = usePlatformAccess()
+  const { currentTenant, currentUser, mode, ready, syncTenantStatus } = usePlatformAccess()
   const [checking, setChecking] = useState(false)
   const [statusError, setStatusError] = useState<string | null>(null)
 
@@ -42,7 +43,7 @@ export function WorkspaceAccessGuard({ children }: { children: ReactNode }) {
           return
         }
 
-        if (result.tenant.subscriptionStatus !== "Active" || result.tenant.paymentStatus !== "Paid") {
+        if (!hasWorkspaceAccess(result.tenant, currentUser)) {
           router.replace(`/signup/checkout?tenant=${currentTenant.id}&plan=${result.tenant.planId}`)
           return
         }
@@ -62,14 +63,13 @@ export function WorkspaceAccessGuard({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true
     }
-  }, [currentTenant?.id, currentTenant?.planId, mode, ready, router, syncTenantStatus])
+  }, [currentTenant?.id, currentTenant?.planId, currentUser, mode, ready, router, syncTenantStatus])
 
   if (
     !ready ||
     checking ||
     mode === "guest" ||
-    (mode === "workspace" &&
-      (!currentTenant || currentTenant.subscriptionStatus !== "Active" || currentTenant.paymentStatus !== "Paid"))
+    (mode === "workspace" && (!currentTenant || !hasWorkspaceAccess(currentTenant, currentUser)))
   ) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center rounded-[28px] border border-white/10 bg-white/5 px-8 py-14 text-center text-sm text-slate-300">

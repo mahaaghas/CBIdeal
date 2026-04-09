@@ -1,6 +1,8 @@
 import { demoWorkspaceConfig, getPlanLimits, type PaymentStatus, type SaasPlanId, type SubscriptionStatus } from "@cbideal/config"
 
 export type PlatformSessionMode = "guest" | "demo" | "workspace"
+export type PlatformAccessRole = "Workspace owner" | "Internal admin" | "Super admin"
+export type PlatformFeatureScope = "standard" | "full_access"
 
 export interface TenantBrandingSeed {
   companyName: string
@@ -30,6 +32,9 @@ export interface PlatformTenantRecord {
   clientAccountLimit: number | null
   internalSeatCount: number
   clientAccountCount: number
+  internalAccess: boolean
+  billingBypass: boolean
+  featureScope: PlatformFeatureScope
   branding: TenantBrandingSeed
 }
 
@@ -39,7 +44,7 @@ export interface PlatformUserRecord {
   fullName: string
   email: string
   passwordHash: string
-  role: "Workspace owner"
+  role: PlatformAccessRole
   createdAt: string
 }
 
@@ -143,6 +148,9 @@ export function createTenantRecord(input: {
     clientAccountLimit: limits.clientAccountLimit,
     internalSeatCount: 1,
     clientAccountCount: 0,
+    internalAccess: false,
+    billingBypass: false,
+    featureScope: "standard",
     branding: buildDefaultBrandingSeed(input.companyName),
   }
 }
@@ -168,3 +176,27 @@ export function createSignupRecord(input: {
   }
 }
 
+export function hasInternalAdminRole(user: PlatformUserRecord | null | undefined) {
+  return user?.role === "Internal admin" || user?.role === "Super admin"
+}
+
+export function hasPaidWorkspaceAccess(tenant: PlatformTenantRecord | null | undefined) {
+  return tenant?.subscriptionStatus === "Active" && tenant?.paymentStatus === "Paid"
+}
+
+export function hasWorkspaceAccess(
+  tenant: PlatformTenantRecord | null | undefined,
+  user: PlatformUserRecord | null | undefined,
+) {
+  if (!tenant) return false
+  if (hasPaidWorkspaceAccess(tenant)) return true
+
+  return Boolean(tenant.internalAccess && tenant.billingBypass && hasInternalAdminRole(user))
+}
+
+export function hasInternalAreaAccess(
+  tenant: PlatformTenantRecord | null | undefined,
+  user: PlatformUserRecord | null | undefined,
+) {
+  return Boolean(tenant?.internalAccess && hasInternalAdminRole(user))
+}

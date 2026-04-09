@@ -3,6 +3,7 @@ import type Stripe from "stripe"
 import { getPlanLimits, isSelfServePlan, type PaymentStatus, type SelfServePlanId, type SubscriptionStatus } from "@cbideal/config"
 import {
   buildDefaultBrandingSeed,
+  hasWorkspaceAccess,
   slugify,
   type PlatformSignupRecord,
   type PlatformTenantRecord,
@@ -31,6 +32,10 @@ type WorkspaceSignupRow = {
   stripe_price_id: string | null
   stripe_live_mode: boolean | null
   stripe_checkout_completed_at: string | null
+  access_role: "workspace_owner" | "internal_admin" | "super_admin"
+  internal_access: boolean
+  billing_bypass: boolean
+  feature_scope: "standard" | "full_access"
   activated_at: string | null
   created_at: string
   updated_at: string
@@ -72,6 +77,13 @@ export type BillingRuntimeDiagnostics = {
   appUrlPresent: boolean
   productionMode: boolean
   issues: string[]
+}
+
+type InternalWorkspaceAccessInput = {
+  email: string
+  fullName: string
+  password: string
+  companyName: string
 }
 
 function createPrefixedId(prefix: string) {
@@ -187,6 +199,9 @@ function toWorkspaceStatusPayload(row: WorkspaceSignupRow): WorkspaceStatusPaylo
       clientAccountLimit: limits.clientAccountLimit,
       internalSeatCount: 1,
       clientAccountCount: 0,
+      internalAccess: row.internal_access,
+      billingBypass: row.billing_bypass,
+      featureScope: row.feature_scope,
       branding: buildDefaultBrandingSeed(row.company_name),
     },
     user: {
@@ -195,7 +210,12 @@ function toWorkspaceStatusPayload(row: WorkspaceSignupRow): WorkspaceStatusPaylo
       fullName: row.owner_full_name,
       email: row.owner_email,
       passwordHash: "",
-      role: "Workspace owner",
+      role:
+        row.access_role === "super_admin"
+          ? "Super admin"
+          : row.access_role === "internal_admin"
+            ? "Internal admin"
+            : "Workspace owner",
       createdAt: row.created_at,
     },
     signup: {
@@ -327,6 +347,10 @@ export async function createWorkspaceSignup(input: CreateWorkspaceSignupInput) {
     password_hash: passwordHash,
     subscription_status: "Pending" as const,
     payment_status: "Pending" as const,
+    access_role: "workspace_owner" as const,
+    internal_access: false,
+    billing_bypass: false,
+    feature_scope: "standard" as const,
   }
 
   const { data, error } = await supabase
@@ -362,6 +386,51 @@ export async function verifyWorkspaceCredentials(email: string, password: string
 export async function getWorkspaceStatus(tenantId: string) {
   const row = await getWorkspaceSignupRowByTenantId(tenantId)
   return row ? toWorkspaceStatusPayload(row) : null
+}
+
+export async function provisionInternalTestWorkspace(input: InternalWorkspaceAccessInput) {
+  const supabase = requireSupabaseServerClient()
+  const email = normalizeEmail(input.email)
+  const now = new Date().toISOString()
+  const passwordHash = hashWorkspacePassword(input.password)
+  const existing = await getWorkspaceSignupRowByEmail(email)
+  const tenantId = existing?.tenant_id ?? createPrefixedId("tenant")
+  const userId = existing?.user_id ?? createPrefixedId("usr")
+
+  const payload = {
+    tenant_id: tenantId,
+    user_id: userId,
+    company_name: input.companyName.trim(),
+    company_slug: slugify(input.companyName) || createPrefixedId("firm"),
+    plan_id: "business" as const,
+    owner_full_name: input.fullName.trim(),
+    owner_email: email,
+    password_hash: passwordHash,
+    subscription_status: "Active" as const,
+    payment_status: "Paid" as const,
+    access_role: "internal_admin" as const,
+    internal_access: true,
+    billing_bypass: true,
+    feature_scope: "full_access" as const,
+    stripe_checkout_completed_at: now,
+    activated_at: now,
+  }
+
+  const query = existing
+    ? supabase.from(workspaceSignupsTable).update(payload).eq("tenant_id", existing.tenant_id)
+    : supabase.from(workspaceSignupsTable).insert(payload)
+
+  const { data, error } = await query.select("*").single()
+
+  if (error) {
+    throw new Error(`Unable to provision internal test workspace: ${error.message}`)
+  }
+
+  return toWorkspaceStatusPayload(data as WorkspaceSignupRow)
+}
+
+export function workspaceRequiresStripe(tenant: PlatformTenantRecord, user: PlatformUserRecord | null | undefined) {
+  return !hasWorkspaceAccess(tenant, user)
 }
 
 export async function markWorkspaceCheckoutPending(input: {

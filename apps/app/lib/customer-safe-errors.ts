@@ -4,13 +4,16 @@ export const customerSafeMessages = {
   billingPreparationFailed: "Something went wrong while preparing billing. Please try again.",
   billingConfirmationFailed: "We couldn't complete this step right now. Please return to billing and try again.",
   workspaceAccessFailed: "We're unable to confirm workspace access right now. Please return to billing and try again.",
-  loginFailed: "We couldn't complete sign-in right now. Please try again in a moment.",
-  invalidLogin: "We couldn't sign you in with those details.",
+  loginFailed: "We're unable to complete this right now. Please try again in a moment.",
+  invalidLogin: "Please check your email and password and try again.",
   duplicateAccount: "An account already exists for this email address. Sign in instead or use a different email.",
   workspaceMissing: "We couldn't find this workspace setup. Please restart the signup flow.",
   planMismatch: "We couldn't continue billing for the selected plan. Please return to setup and try again.",
   workspaceActive: "This workspace is already active. You can continue into the platform.",
   missingBillingReference: "We couldn't verify this payment step. Please return to billing and try again.",
+  authUnavailable: "We're unable to continue this step right now. Please try again in a moment.",
+  authLinkInvalid: "The link may have expired or already been used. Please request a new one to continue.",
+  passwordResetFailed: "We couldn't complete this password reset right now. Please request a new link and try again.",
 } as const
 
 type CustomerErrorContext =

@@ -180,6 +180,16 @@ function LoginPageContent() {
                 />
               </div>
 
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm leading-7 text-slate-400">Use the password created during onboarding.</p>
+                <Link
+                  href="/forgot-password"
+                  className="text-sm font-semibold text-slate-200 transition hover:text-white"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+
               {error ? (
                 <div className="rounded-2xl border border-[#f04f4f]/30 bg-[#f04f4f]/10 px-4 py-3 text-sm text-[#f9c7c7]">
                   {error}

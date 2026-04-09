@@ -31,7 +31,9 @@ export default function SettingsPage() {
           value={`${currentTenant?.internalSeatLimit ?? workspace.internalSeats}`}
           note={
             currentTenant
-              ? `${currentTenant.internalSeatCount} active of ${currentTenant.internalSeatLimit ?? "custom"} available`
+              ? currentTenant.internalSeatLimit == null
+                ? `${currentTenant.internalSeatCount} seats assigned`
+                : `${currentTenant.internalSeatCount} of ${currentTenant.internalSeatLimit} seats used`
               : "Capacity follows the active workspace plan."
           }
           trend="Operating users"
@@ -119,7 +121,9 @@ export default function SettingsPage() {
                       {
                         label: "Internal seats",
                         value: currentTenant
-                          ? `${currentTenant.internalSeatCount} active / ${currentTenant.internalSeatLimit ?? "custom"} allowed`
+                          ? currentTenant.internalSeatLimit == null
+                            ? `${currentTenant.internalSeatCount} seats assigned`
+                            : `${currentTenant.internalSeatCount} of ${currentTenant.internalSeatLimit} seats used`
                           : `${workspace.internalSeats} active`,
                       },
                       {
@@ -201,6 +205,10 @@ export default function SettingsPage() {
                 <Link href="/settings/data">Open data center</Link>
               </Button>
             </div>
+
+            <p className="text-sm leading-7 text-slate-300">
+              Invite team members and assign available seats from your workspace settings. Need more seats? Upgrade your plan to expand workspace access.
+            </p>
           </div>
         </div>
       </section>

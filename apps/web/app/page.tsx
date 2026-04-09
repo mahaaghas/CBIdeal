@@ -458,7 +458,7 @@ export default async function HomePage() {
         primaryAction={{ href: routeLinks.programs, label: copy.hero.primary }}
         secondaryAction={{ href: routeLinks.bookConsultation, label: copy.hero.secondary }}
         showGuideLink={false}
-        surface="bare"
+        surface="panel"
       />
 
       <section className="section-flow">

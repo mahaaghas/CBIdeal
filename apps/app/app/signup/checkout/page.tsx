@@ -17,6 +17,11 @@ function renderPlanPrice(plan: { monthlyPrice: number | null }) {
   return plan.monthlyPrice === null ? "Custom" : `$${plan.monthlyPrice}`
 }
 
+function renderSeatLimit(limit: number | null) {
+  if (limit == null) return "Flexible number of users"
+  return limit === 1 ? "1 user" : `Up to ${limit} users`
+}
+
 function SignupCheckoutPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -204,6 +209,7 @@ function SignupCheckoutPageContent() {
                   <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Selected plan</p>
                   <p className="mt-3 text-xl font-semibold text-white">{plan.name}</p>
                   <p className="mt-2 text-sm leading-7 text-slate-300">{plan.description}</p>
+                  <p className="mt-2 text-sm font-medium text-slate-200">{renderSeatLimit(plan.internalSeatLimit)}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-[2.15rem] font-semibold text-white">{renderPlanPrice(plan)}</p>

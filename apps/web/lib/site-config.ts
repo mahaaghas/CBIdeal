@@ -59,10 +59,10 @@ const pricingPlans = saasPlans.map((plan) => ({
   description: plan.description,
   capacityLabel:
     plan.id === "enterprise"
-      ? "Tailored implementation"
+      ? "Flexible number of users"
       : plan.internalSeatLimit === 1
-        ? "Single operator workspace"
-        : `Up to ${plan.internalSeatLimit} internal users`,
+        ? "1 user"
+        : `Up to ${plan.internalSeatLimit} users`,
   ctaLabel: plan.id === "enterprise" ? "Contact us" : "Start subscription",
   ctaHref: pricingPlanCtas[plan.id],
   secondaryLabel: plan.secondaryLabel,

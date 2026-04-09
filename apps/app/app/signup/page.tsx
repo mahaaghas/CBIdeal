@@ -19,6 +19,11 @@ function renderPlanPrice(plan: { monthlyPrice: number | null }) {
   return plan.monthlyPrice === null ? "Custom" : `$${plan.monthlyPrice}`
 }
 
+function renderSeatLimit(limit: number | null) {
+  if (limit == null) return "Flexible number of users"
+  return limit === 1 ? "1 user" : `Up to ${limit} users`
+}
+
 function SignupPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -261,7 +266,7 @@ function SignupPageContent() {
 
               <div className="space-y-3">
                 <p className="text-sm font-medium text-slate-100">Choose a plan</p>
-                <div className="grid gap-5 xl:grid-cols-3">
+                <div className="space-y-4">
                   {saasPlans
                     .filter((plan) => plan.id !== "enterprise")
                     .map((plan) => {
@@ -271,26 +276,49 @@ function SignupPageContent() {
                           key={plan.id}
                           type="button"
                           onClick={() => setPlanId(plan.id as SelfServePlanId)}
-                          className={`rounded-[28px] border p-6 text-left shadow-[0_22px_52px_rgba(8,13,24,0.14)] transition ${selected ? "border-[var(--app-brand-primary)] bg-[linear-gradient(180deg,rgba(108,132,164,0.22),rgba(255,255,255,0.05))]" : "border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] hover:border-white/24 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.04))]"}`}
+                          className={`w-full rounded-[30px] border px-6 py-6 text-left shadow-[0_22px_52px_rgba(8,13,24,0.14)] transition ${selected ? "border-[var(--app-brand-primary)] bg-[linear-gradient(180deg,rgba(108,132,164,0.24),rgba(255,255,255,0.05))]" : "border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] hover:border-white/22 hover:bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))]"}`}
                         >
-                          <div className="space-y-5">
-                            <div className="flex items-start justify-between gap-4">
-                              <div className="space-y-2">
-                                <p className="text-[1.55rem] font-semibold tracking-[-0.03em] text-white">{plan.name}</p>
-                                <p className="max-w-[20rem] text-[0.96rem] leading-7 text-slate-300">{plan.description}</p>
+                          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(260px,0.8fr)] xl:items-start">
+                            <div className="space-y-5">
+                              <div className="flex flex-wrap items-start justify-between gap-3">
+                                <div className="space-y-2">
+                                  <p className="text-[1.65rem] font-semibold tracking-[-0.035em] text-white">{plan.name}</p>
+                                  <p className="max-w-2xl text-[1rem] leading-8 text-slate-300">{plan.description}</p>
+                                </div>
+                                <span
+                                  className={`rounded-full px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.22em] ${selected ? "bg-white text-slate-950" : "border border-white/10 bg-white/[0.04] text-slate-300"}`}
+                                >
+                                  {selected ? "Selected" : "Available"}
+                                </span>
                               </div>
-                              <div className="shrink-0 rounded-[20px] border border-white/10 bg-slate-950/38 px-4 py-3 text-right shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
-                                <p className="text-[1.65rem] font-semibold leading-none text-white">{renderPlanPrice(plan)}</p>
-                                <p className="mt-2 text-[0.64rem] uppercase tracking-[0.24em] text-slate-400">monthly</p>
+                              <div className="grid gap-3 sm:grid-cols-2">
+                                {plan.features.slice(0, 2).map((feature) => (
+                                  <div
+                                    key={feature}
+                                    className="rounded-[18px] border border-white/8 bg-slate-950/18 px-4 py-3 text-sm leading-7 text-slate-300"
+                                  >
+                                    {feature}
+                                  </div>
+                                ))}
                               </div>
                             </div>
-                            <div className="h-px bg-white/8" />
-                            <div className="grid gap-3">
-                              <div className="rounded-[18px] border border-white/8 bg-slate-950/20 px-4 py-3 text-sm font-medium text-slate-200">
-                                {plan.internalSeatLimit} internal users
-                              </div>
-                              <div className="rounded-[18px] border border-white/8 bg-slate-950/20 px-4 py-3 text-sm font-medium text-slate-200">
-                                {plan.clientAccountLimit} client accounts
+
+                            <div className="rounded-[24px] border border-white/10 bg-slate-950/28 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+                              <div className="flex items-start justify-between gap-4 xl:flex-col xl:items-stretch">
+                                <div>
+                                  <p className="text-[2rem] font-semibold leading-none text-white">{renderPlanPrice(plan)}</p>
+                                  <p className="mt-2 text-[0.68rem] uppercase tracking-[0.24em] text-slate-400">monthly</p>
+                                </div>
+                                <div className="grid flex-1 gap-3 xl:mt-6">
+                                  <div className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-3">
+                                    <p className="text-[0.68rem] uppercase tracking-[0.18em] text-slate-400">Seats</p>
+                                    <p className="mt-2 text-base font-semibold text-white">{renderSeatLimit(plan.internalSeatLimit)}</p>
+                                  </div>
+                                  <div className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-3">
+                                    <p className="text-[0.68rem] uppercase tracking-[0.18em] text-slate-400">Client accounts</p>
+                                    <p className="mt-2 text-base font-semibold text-white">{plan.clientAccountLimit}</p>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -318,7 +346,7 @@ function SignupPageContent() {
                 </div>
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   <div className="rounded-[20px] border border-white/8 bg-slate-950/22 px-4 py-4 text-sm font-medium text-slate-200">
-                    {activePlan.internalSeatLimit} internal users
+                    {renderSeatLimit(activePlan.internalSeatLimit)}
                   </div>
                   <div className="rounded-[20px] border border-white/8 bg-slate-950/22 px-4 py-4 text-sm font-medium text-slate-200">
                     {activePlan.clientAccountLimit} client accounts

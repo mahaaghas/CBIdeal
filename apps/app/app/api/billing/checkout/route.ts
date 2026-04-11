@@ -4,6 +4,7 @@ import { getSaasPlan, isSelfServePlan, normalizeSaasAppUrl, type SaasPlanId } fr
 import { customerSafeMessages, getCustomerSafeMessage } from "@/lib/customer-safe-errors"
 import {
   getBillingRuntimeDiagnostics,
+  getSelfServeSeatCount,
   getStripeBillingConfigIssues,
   getStripePriceIdForPlan,
   getWorkspaceStatus,
@@ -25,10 +26,11 @@ export async function POST(request: Request) {
   }
 
   const plan = getSaasPlan(planId)
-  const baseUrl = normalizeSaasAppUrl(process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin)
+  const baseUrl = normalizeSaasAppUrl(process.env.NEXT_PUBLIC_APP_URL)
   const successUrl = `${baseUrl}/billing/success?tenant=${tenantId}&plan=${planId}&session_id={CHECKOUT_SESSION_ID}`
   const cancelUrl = `${baseUrl}/billing/cancel?tenant=${tenantId}&plan=${planId}`
   const priceId = getStripePriceIdForPlan(planId)
+  const seatCount = getSelfServeSeatCount(planId)
   const runtimeDiagnostics = getBillingRuntimeDiagnostics()
 
   if (!stripe || !isStripeBillingConfigured() || !priceId || !runtimeDiagnostics.supabaseConfigured) {
@@ -88,11 +90,13 @@ export async function POST(request: Request) {
       metadata: {
         tenantId,
         planId,
+        seatCount: String(seatCount),
       },
       subscription_data: {
         metadata: {
           tenantId,
           planId,
+          seatCount: String(seatCount),
         },
       },
       success_url: successUrl,

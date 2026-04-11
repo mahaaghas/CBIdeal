@@ -61,6 +61,7 @@ type ActivateWorkspaceInput = {
   customerId?: string | null
   subscriptionId?: string | null
   priceId?: string | null
+  subscriptionStatus?: Stripe.Subscription.Status | null
   liveMode?: boolean | null
   paidAt?: string | null
 }
@@ -68,7 +69,6 @@ type ActivateWorkspaceInput = {
 export type BillingRuntimeDiagnostics = {
   stripeSecretKeyPresent: boolean
   stripePublishableKeyPresent: boolean
-  stripePublishableAliasPresent: boolean
   stripeWebhookSecretPresent: boolean
   stripeSoloPricePresent: boolean
   stripeTeamPricePresent: boolean
@@ -105,32 +105,85 @@ function isLiveStripeKey(key: string | undefined | null, livePrefix: string, tes
   return false
 }
 
+function requiresLiveStripeConfiguration() {
+  return process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production"
+}
+
 export function getStripePriceIdForPlan(planId: SelfServePlanId) {
   if (planId === "solo") return process.env.STRIPE_PRICE_ID_SOLO?.trim() || null
   if (planId === "team") return process.env.STRIPE_PRICE_ID_TEAM?.trim() || null
   return process.env.STRIPE_PRICE_ID_BUSINESS?.trim() || null
 }
 
+export function getSelfServeSeatCount(planId: SelfServePlanId) {
+  const limits = getPlanLimits(planId)
+  return limits.internalSeatLimit ?? 0
+}
+
+export function getPlanIdFromStripePriceId(priceId?: string | null): SelfServePlanId | null {
+  const normalizedPriceId = priceId?.trim()
+  if (!normalizedPriceId) return null
+
+  if (normalizedPriceId === process.env.STRIPE_PRICE_ID_SOLO?.trim()) return "solo"
+  if (normalizedPriceId === process.env.STRIPE_PRICE_ID_TEAM?.trim()) return "team"
+  if (normalizedPriceId === process.env.STRIPE_PRICE_ID_BUSINESS?.trim()) return "business"
+
+  return null
+}
+
+function getWorkspaceStatusesForSubscription(
+  subscriptionStatus?: Stripe.Subscription.Status | null,
+): Pick<WorkspaceSignupRow, "subscription_status" | "payment_status"> | null {
+  switch (subscriptionStatus) {
+    case "active":
+    case "trialing":
+      return {
+        subscription_status: "Active",
+        payment_status: "Paid",
+      }
+    case "past_due":
+    case "unpaid":
+      return {
+        subscription_status: "Past due",
+        payment_status: "Failed",
+      }
+    case "canceled":
+    case "incomplete_expired":
+      return {
+        subscription_status: "Cancelled",
+        payment_status: "Failed",
+      }
+    case "incomplete":
+      return {
+        subscription_status: "Pending",
+        payment_status: "Pending",
+      }
+    case "paused":
+      return {
+        subscription_status: "Past due",
+        payment_status: "Pending",
+      }
+    default:
+      return null
+  }
+}
+
 export function getStripeBillingConfigIssues() {
   const issues: string[] = []
   const secretKey = process.env.STRIPE_SECRET_KEY?.trim()
   const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.trim()
-  const publishableAlias = process.env.STRIPE_PUBLISHABLE_KEY?.trim()
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET?.trim()
   const appUrl = process.env.NEXT_PUBLIC_APP_URL?.trim()
 
   if (!secretKey) issues.push("Missing STRIPE_SECRET_KEY.")
   if (!publishableKey) issues.push("Missing NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY.")
-  if (!publishableKey && publishableAlias) {
-    issues.push("STRIPE_PUBLISHABLE_KEY is set, but NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY is missing.")
-  }
   if (!webhookSecret) issues.push("Missing STRIPE_WEBHOOK_SECRET.")
   if (!appUrl) issues.push("Missing NEXT_PUBLIC_APP_URL.")
   if (!process.env.STRIPE_PRICE_ID_SOLO?.trim()) issues.push("Missing STRIPE_PRICE_ID_SOLO.")
   if (!process.env.STRIPE_PRICE_ID_TEAM?.trim()) issues.push("Missing STRIPE_PRICE_ID_TEAM.")
   if (!process.env.STRIPE_PRICE_ID_BUSINESS?.trim()) issues.push("Missing STRIPE_PRICE_ID_BUSINESS.")
 
-  const requiresLiveKeys = process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production"
+  const requiresLiveKeys = requiresLiveStripeConfiguration()
   if (requiresLiveKeys && secretKey && !isLiveStripeKey(secretKey, "sk_live_", "sk_test_")) {
     issues.push("STRIPE_SECRET_KEY must be a live key in production.")
   }
@@ -150,14 +203,13 @@ export function getBillingRuntimeDiagnostics(): BillingRuntimeDiagnostics {
   return {
     stripeSecretKeyPresent: Boolean(process.env.STRIPE_SECRET_KEY?.trim()),
     stripePublishableKeyPresent: Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.trim()),
-    stripePublishableAliasPresent: Boolean(process.env.STRIPE_PUBLISHABLE_KEY?.trim()),
     stripeWebhookSecretPresent: Boolean(process.env.STRIPE_WEBHOOK_SECRET?.trim()),
     stripeSoloPricePresent: Boolean(process.env.STRIPE_PRICE_ID_SOLO?.trim()),
     stripeTeamPricePresent: Boolean(process.env.STRIPE_PRICE_ID_TEAM?.trim()),
     stripeBusinessPricePresent: Boolean(process.env.STRIPE_PRICE_ID_BUSINESS?.trim()),
     supabaseConfigured: hasSupabaseServerConfig(),
     appUrlPresent: Boolean(process.env.NEXT_PUBLIC_APP_URL?.trim()),
-    productionMode: process.env.VERCEL_ENV === "production" || process.env.NODE_ENV === "production",
+    productionMode: requiresLiveStripeConfiguration(),
     issues,
   }
 }
@@ -490,19 +542,43 @@ export async function activateWorkspaceSubscription(input: ActivateWorkspaceInpu
     throw new Error("No workspace billing record matched the Stripe confirmation.")
   }
 
+  const expectedPriceId = getStripePriceIdForPlan(row.plan_id)
+  const normalizedPriceId = input.priceId?.trim() || row.stripe_price_id
+
+  if (expectedPriceId && normalizedPriceId && expectedPriceId !== normalizedPriceId) {
+    throw new Error(
+      `Stripe price ${normalizedPriceId} does not match workspace plan ${row.plan_id}. Expected ${expectedPriceId}.`,
+    )
+  }
+
+  const derivedPlanId = getPlanIdFromStripePriceId(normalizedPriceId)
+  if (normalizedPriceId && !derivedPlanId) {
+    throw new Error(`Stripe price ${normalizedPriceId} is not mapped to a configured self-serve plan.`)
+  }
+
+  if (derivedPlanId && derivedPlanId !== row.plan_id) {
+    throw new Error(`Stripe price ${normalizedPriceId} resolved to ${derivedPlanId}, not ${row.plan_id}.`)
+  }
+
+  if (requiresLiveStripeConfiguration() && input.liveMode === false) {
+    throw new Error("Stripe live mode is required in production.")
+  }
+
   const activatedAt = input.paidAt ?? new Date().toISOString()
+  const statusPatch = getWorkspaceStatusesForSubscription(input.subscriptionStatus)
   const { data, error } = await supabase
     .from(workspaceSignupsTable)
     .update({
-      payment_status: "Paid",
-      subscription_status: "Active",
+      payment_status: statusPatch?.payment_status ?? "Paid",
+      subscription_status: statusPatch?.subscription_status ?? "Active",
       stripe_checkout_session_id: input.checkoutSessionId ?? row.stripe_checkout_session_id,
       stripe_customer_id: input.customerId ?? row.stripe_customer_id,
       stripe_subscription_id: input.subscriptionId ?? row.stripe_subscription_id,
-      stripe_price_id: input.priceId ?? row.stripe_price_id,
+      stripe_price_id: normalizedPriceId,
       stripe_live_mode: input.liveMode ?? row.stripe_live_mode,
       stripe_checkout_completed_at: activatedAt,
-      activated_at: activatedAt,
+      activated_at:
+        (statusPatch?.subscription_status ?? "Active") === "Active" ? activatedAt : row.activated_at ?? activatedAt,
       updated_at: new Date().toISOString(),
     })
     .eq("tenant_id", row.tenant_id)
@@ -511,6 +587,70 @@ export async function activateWorkspaceSubscription(input: ActivateWorkspaceInpu
 
   if (error) {
     throw new Error(`Unable to activate the workspace subscription: ${error.message}`)
+  }
+
+  return toWorkspaceStatusPayload(data as WorkspaceSignupRow)
+}
+
+export async function syncWorkspaceSubscriptionStatus(input: ActivateWorkspaceInput) {
+  const supabase = requireSupabaseServerClient()
+  const row = await getWorkspaceSignupRowByStripeReference(input)
+  if (!row) {
+    throw new Error("No workspace billing record matched the Stripe subscription update.")
+  }
+
+  if (!input.subscriptionStatus) {
+    throw new Error("A Stripe subscription status is required to sync billing state.")
+  }
+
+  const normalizedPriceId = input.priceId?.trim() || row.stripe_price_id
+  const expectedPriceId = getStripePriceIdForPlan(row.plan_id)
+  const derivedPlanId = getPlanIdFromStripePriceId(normalizedPriceId)
+
+  if (expectedPriceId && normalizedPriceId && expectedPriceId !== normalizedPriceId) {
+    throw new Error(
+      `Stripe price ${normalizedPriceId} does not match workspace plan ${row.plan_id}. Expected ${expectedPriceId}.`,
+    )
+  }
+
+  if (normalizedPriceId && !derivedPlanId) {
+    throw new Error(`Stripe price ${normalizedPriceId} is not mapped to a configured self-serve plan.`)
+  }
+
+  if (derivedPlanId && derivedPlanId !== row.plan_id) {
+    throw new Error(`Stripe price ${normalizedPriceId} resolved to ${derivedPlanId}, not ${row.plan_id}.`)
+  }
+
+  if (requiresLiveStripeConfiguration() && input.liveMode === false) {
+    throw new Error("Stripe live mode is required in production.")
+  }
+
+  const statusPatch = getWorkspaceStatusesForSubscription(input.subscriptionStatus)
+  if (!statusPatch) {
+    throw new Error(`Unsupported Stripe subscription status: ${input.subscriptionStatus}.`)
+  }
+
+  const { data, error } = await supabase
+    .from(workspaceSignupsTable)
+    .update({
+      subscription_status: statusPatch.subscription_status,
+      payment_status: statusPatch.payment_status,
+      stripe_customer_id: input.customerId ?? row.stripe_customer_id,
+      stripe_subscription_id: input.subscriptionId ?? row.stripe_subscription_id,
+      stripe_price_id: normalizedPriceId,
+      stripe_live_mode: input.liveMode ?? row.stripe_live_mode,
+      activated_at:
+        statusPatch.subscription_status === "Active"
+          ? input.paidAt ?? row.activated_at ?? new Date().toISOString()
+          : row.activated_at,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("tenant_id", row.tenant_id)
+    .select("*")
+    .single()
+
+  if (error) {
+    throw new Error(`Unable to sync the workspace subscription state: ${error.message}`)
   }
 
   return toWorkspaceStatusPayload(data as WorkspaceSignupRow)

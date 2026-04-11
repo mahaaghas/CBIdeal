@@ -14,7 +14,6 @@ function BillingSuccessPageContent() {
   const { syncTenantStatus } = usePlatformAccess()
   const tenantId = searchParams.get("tenant")
   const planId = searchParams.get("plan")
-  const sandbox = searchParams.get("sandbox") === "1"
   const checkoutPath = tenantId ? `/signup/checkout?tenant=${tenantId}${planId ? `&plan=${planId}` : ""}` : "/signup"
 
   const [status, setStatus] = useState<"checking" | "active" | "pending" | "error">("checking")
@@ -22,19 +21,6 @@ function BillingSuccessPageContent() {
   const [navigating, setNavigating] = useState(false)
 
   useEffect(() => {
-    if (!sandbox) return
-
-    console.error("[billing.success.ui] invalid sandbox success path detected", {
-      tenantId,
-      planId,
-    })
-    setStatus("error")
-    setError(customerSafeMessages.missingBillingReference)
-  }, [planId, sandbox, tenantId])
-
-  useEffect(() => {
-    if (sandbox) return
-
     if (!tenantId) {
       setStatus("error")
       setError(customerSafeMessages.missingBillingReference)
@@ -82,7 +68,7 @@ function BillingSuccessPageContent() {
       cancelled = true
       if (timeout) clearTimeout(timeout)
     }
-  }, [sandbox, syncTenantStatus, tenantId])
+  }, [syncTenantStatus, tenantId])
 
   const continueToSetup = () => {
     console.info("[billing.success.ui] continue setup clicked", {

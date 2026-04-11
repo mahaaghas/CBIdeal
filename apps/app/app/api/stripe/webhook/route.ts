@@ -2,9 +2,12 @@ import { NextResponse } from "next/server"
 import Stripe from "stripe"
 import {
   activateWorkspaceSubscription,
+  getPlanIdFromStripePriceId,
+  getSelfServeSeatCount,
   getStripeMetadataValue,
   logBillingRuntimeState,
   markWorkspacePaymentFailed,
+  syncWorkspaceSubscriptionStatus,
 } from "@/lib/workspace-billing"
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY
@@ -39,6 +42,17 @@ function getInvoicePriceId(invoice: Stripe.Invoice) {
     return price.trim()
   }
   return null
+}
+
+function getSubscriptionPriceId(subscription: Stripe.Subscription) {
+  const firstItem = subscription.items.data[0]
+  const price = firstItem?.price
+  return price?.id?.trim() || null
+}
+
+function getSubscriptionSeatCount(subscription: Stripe.Subscription) {
+  const quantity = subscription.items.data[0]?.quantity
+  return typeof quantity === "number" && Number.isFinite(quantity) ? quantity : null
 }
 
 export async function POST(request: Request) {
@@ -80,10 +94,20 @@ export async function POST(request: Request) {
       case "checkout.session.completed": {
         const checkoutSession = event.data.object as Stripe.Checkout.Session
         const session = (await stripe.checkout.sessions.retrieve(checkoutSession.id, {
-          expand: ["customer", "subscription", "line_items.data.price"],
+          expand: ["customer", "subscription", "subscription.items.data.price", "line_items.data.price"],
         })) as RetrievedCheckoutSession
         const tenantId = getStripeMetadataValue(session.metadata, "tenantId") ?? session.client_reference_id ?? null
         const paid = session.payment_status === "paid" || session.status === "complete"
+        const subscriptionObject =
+          session.subscription && typeof session.subscription !== "string" ? session.subscription : null
+        const sessionPriceId = getSessionPriceId(session)
+        const resolvedPlanId =
+          getStripeMetadataValue(session.metadata, "planId") ?? getPlanIdFromStripePriceId(sessionPriceId)
+        const expectedSeatCount =
+          resolvedPlanId === "solo" || resolvedPlanId === "team" || resolvedPlanId === "business"
+            ? getSelfServeSeatCount(resolvedPlanId)
+            : null
+        const actualSeatCount = subscriptionObject ? getSubscriptionSeatCount(subscriptionObject) : null
 
         console.info("[stripe.webhook] processing checkout completion", {
           tenantId,
@@ -102,13 +126,25 @@ export async function POST(request: Request) {
           break
         }
 
+        if (
+          subscriptionObject &&
+          expectedSeatCount !== null &&
+          actualSeatCount !== null &&
+          actualSeatCount !== expectedSeatCount
+        ) {
+          throw new Error(
+            `Seat count mismatch for ${resolvedPlanId ?? "unknown"} plan. Expected ${expectedSeatCount}, received ${actualSeatCount}.`,
+          )
+        }
+
         const activated = await activateWorkspaceSubscription({
           tenantId,
           checkoutSessionId: session.id,
           customerId: typeof session.customer === "string" ? session.customer : session.customer?.id ?? null,
           subscriptionId:
             typeof session.subscription === "string" ? session.subscription : session.subscription?.id ?? null,
-          priceId: getSessionPriceId(session),
+          priceId: sessionPriceId,
+          subscriptionStatus: subscriptionObject?.status ?? null,
           liveMode: session.livemode,
           paidAt: new Date(session.created * 1000).toISOString(),
         })
@@ -142,6 +178,50 @@ export async function POST(request: Request) {
           tenantId: activated.tenant.id,
           subscriptionId: activated.tenant.stripeSubscriptionId,
           invoiceId: invoice.id,
+        })
+        break
+      }
+      case "customer.subscription.created":
+      case "customer.subscription.updated":
+      case "customer.subscription.deleted": {
+        const subscription = event.data.object as Stripe.Subscription
+        const priceId = getSubscriptionPriceId(subscription)
+        const resolvedPlanId =
+          getStripeMetadataValue(subscription.metadata, "planId") ?? getPlanIdFromStripePriceId(priceId)
+        const expectedSeatCount =
+          resolvedPlanId === "solo" || resolvedPlanId === "team" || resolvedPlanId === "business"
+            ? getSelfServeSeatCount(resolvedPlanId)
+            : null
+        const actualSeatCount = getSubscriptionSeatCount(subscription)
+
+        if (
+          expectedSeatCount !== null &&
+          actualSeatCount !== null &&
+          actualSeatCount !== expectedSeatCount
+        ) {
+          throw new Error(
+            `Seat count mismatch for ${resolvedPlanId ?? "unknown"} plan. Expected ${expectedSeatCount}, received ${actualSeatCount}.`,
+          )
+        }
+
+        const synced = await syncWorkspaceSubscriptionStatus({
+          tenantId: getStripeMetadataValue(subscription.metadata, "tenantId"),
+          subscriptionId: subscription.id,
+          customerId: typeof subscription.customer === "string" ? subscription.customer : null,
+          priceId,
+          subscriptionStatus: subscription.status,
+          liveMode: subscription.livemode,
+          paidAt:
+            subscription.status === "active" || subscription.status === "trialing"
+              ? new Date(subscription.created * 1000).toISOString()
+              : null,
+        })
+
+        console.info("[stripe.webhook] synced subscription state", {
+          tenantId: synced.tenant.id,
+          subscriptionId: subscription.id,
+          status: subscription.status,
+          eventType: event.type,
         })
         break
       }

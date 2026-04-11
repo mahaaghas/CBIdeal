@@ -55,7 +55,7 @@ export function getCustomerSafeMessage(context: CustomerErrorContext, rawMessage
   }
 
   if (context === "success") {
-    if (/missing a workspace reference|missing.*reference|sandbox/i.test(message)) {
+    if (/missing a workspace reference|missing.*reference/i.test(message)) {
       return customerSafeMessages.missingBillingReference
     }
     return customerSafeMessages.billingConfirmationFailed

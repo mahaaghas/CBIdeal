@@ -4,7 +4,7 @@ import {
   type ConsultationRequestValues,
 } from "@/lib/consultation-form"
 import {
-  createConsultationSubmissionRecord,
+  insertConsultationSubmissionRecord,
   markConsultationCrmSyncFailure,
   markConsultationCrmSyncSuccess,
   markConsultationEmailFailure,
@@ -15,6 +15,7 @@ import {
   getConsultationNotificationConfig,
   sendConsultationNotificationEmail,
 } from "@/lib/consultation-notifications"
+import { getSupabaseBrowserConfig, getSupabaseServerConfig } from "@/lib/supabase/config"
 
 export const runtime = "nodejs"
 
@@ -52,7 +53,21 @@ export async function POST(request: Request) {
   const referenceId = buildReferenceId()
 
   try {
+    console.info("CONSULTATION REQUEST RECEIVED", { referenceId })
+
+    const browserConfig = getSupabaseBrowserConfig()
+    const serverConfig = getSupabaseServerConfig()
     const body = (await request.json()) as Partial<ConsultationRequestValues>
+    console.info("[consultation] runtime configuration", {
+      referenceId,
+      hasSupabaseUrl: Boolean(browserConfig.url),
+      hasSupabasePublishableKey: Boolean(browserConfig.publishableKey),
+      hasSupabaseServerKey: Boolean(serverConfig.secretKey),
+    })
+    console.info("[consultation] payload keys", {
+      referenceId,
+      payloadKeys: Object.keys(body ?? {}).sort(),
+    })
     const validationResult = consultationRequestSchema.safeParse(body)
 
     if (!validationResult.success) {
@@ -93,7 +108,7 @@ export async function POST(request: Request) {
     })
 
     try {
-      await createConsultationSubmissionRecord({
+      const insertResult = await insertConsultationSubmissionRecord({
         referenceId,
         values,
         recipients: notificationConfig.recipients,
@@ -102,9 +117,33 @@ export async function POST(request: Request) {
         userAgent,
       })
 
+      console.info("[consultation] supabase insert target", {
+        referenceId,
+        table: insertResult.table,
+      })
+      console.info("[consultation] supabase insert payload", {
+        referenceId,
+        payload: insertResult.payload,
+      })
+      console.info("[consultation] supabase insert response", {
+        referenceId,
+        data: insertResult.data,
+        error: insertResult.error,
+      })
+
+      if (insertResult.error) {
+        console.error("[consultation] supabase insert failed", {
+          referenceId,
+          table: insertResult.table,
+          payload: insertResult.payload,
+          error: insertResult.error,
+        })
+        throw new Error(`Consultation submission insert failed: ${insertResult.error.message}`)
+      }
+
       console.info("[consultation] supabase insert succeeded", {
         referenceId,
-        table: "consultation_submissions",
+        table: insertResult.table,
       })
     } catch (error) {
       console.error("[consultation] supabase insert failed", {

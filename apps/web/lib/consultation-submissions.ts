@@ -89,7 +89,7 @@ function buildConsultationLeadInsert(values: ConsultationRequestValues) {
   }
 }
 
-export async function createConsultationSubmissionRecord(input: {
+export function buildConsultationSubmissionInsert(input: {
   referenceId: string
   values: ConsultationRequestValues
   recipients: string[]
@@ -97,8 +97,7 @@ export async function createConsultationSubmissionRecord(input: {
   sourceUrl: string
   userAgent: string
 }) {
-  const supabase = getSupabaseServerClient()
-  const { error } = await supabase.from(consultationSubmissionsTable).insert({
+  return {
     reference_id: input.referenceId,
     full_name: input.values.fullName,
     email: input.values.email,
@@ -125,7 +124,42 @@ export async function createConsultationSubmissionRecord(input: {
     crm_sync_status: "pending" satisfies ConsultationCrmSyncStatus,
     thank_you_status: "not_confirmed" satisfies ConsultationThankYouStatus,
     conversion_status: "not_triggered" satisfies ConsultationConversionStatus,
-  })
+  }
+}
+
+export async function insertConsultationSubmissionRecord(input: {
+  referenceId: string
+  values: ConsultationRequestValues
+  recipients: string[]
+  submittedAt: string
+  sourceUrl: string
+  userAgent: string
+}) {
+  const supabase = getSupabaseServerClient()
+  const payload = buildConsultationSubmissionInsert(input)
+  const response = await supabase
+    .from(consultationSubmissionsTable)
+    .insert(payload)
+    .select()
+    .single()
+
+  return {
+    table: consultationSubmissionsTable,
+    payload,
+    data: response.data,
+    error: response.error,
+  }
+}
+
+export async function createConsultationSubmissionRecord(input: {
+  referenceId: string
+  values: ConsultationRequestValues
+  recipients: string[]
+  submittedAt: string
+  sourceUrl: string
+  userAgent: string
+}) {
+  const { error } = await insertConsultationSubmissionRecord(input)
 
   if (error) {
     throw new Error(`Consultation submission insert failed: ${error.message}`)

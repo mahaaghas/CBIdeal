@@ -53,21 +53,21 @@ export async function POST(request: Request) {
   const referenceId = buildReferenceId()
 
   try {
-    console.info("CONSULTATION REQUEST RECEIVED", { referenceId })
+    console.info("CONSULTATION REQUEST RECEIVED")
 
     const browserConfig = getSupabaseBrowserConfig()
     const serverConfig = getSupabaseServerConfig()
     const body = (await request.json()) as Partial<ConsultationRequestValues>
-    console.info("[consultation] runtime configuration", {
-      referenceId,
-      hasSupabaseUrl: Boolean(browserConfig.url),
-      hasSupabasePublishableKey: Boolean(browserConfig.publishableKey),
-      hasSupabaseServerKey: Boolean(serverConfig.secretKey),
+    console.info("[consultation] env presence", {
+      NEXT_PUBLIC_SUPABASE_URL: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()),
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: Boolean(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim()),
+      SUPABASE_SECRET_KEY: Boolean(process.env.SUPABASE_SECRET_KEY?.trim()),
+      SUPABASE_SERVICE_ROLE_KEY: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()),
+      resolvedBrowserUrl: Boolean(browserConfig.url),
+      resolvedBrowserKey: Boolean(browserConfig.publishableKey),
+      resolvedServerKey: Boolean(serverConfig.secretKey),
     })
-    console.info("[consultation] payload keys", {
-      referenceId,
-      payloadKeys: Object.keys(body ?? {}).sort(),
-    })
+    console.info("[consultation] payload keys", Object.keys(body ?? {}).sort())
     const validationResult = consultationRequestSchema.safeParse(body)
 
     if (!validationResult.success) {
@@ -98,12 +98,6 @@ export async function POST(request: Request) {
       referenceId,
       sourcePage: values.sourcePage,
       sourceCategory: values.sourceCategory || "consultation",
-    })
-
-    console.info("[consultation] request received", {
-      referenceId,
-      sourcePage: values.sourcePage,
-      sourceCategory: values.sourceCategory || "consultation",
       email: maskEmail(values.email),
     })
 
@@ -117,27 +111,13 @@ export async function POST(request: Request) {
         userAgent,
       })
 
-      console.info("[consultation] supabase insert target", {
-        referenceId,
-        table: insertResult.table,
-      })
-      console.info("[consultation] supabase insert payload", {
-        referenceId,
-        payload: insertResult.payload,
-      })
-      console.info("[consultation] supabase insert response", {
-        referenceId,
-        data: insertResult.data,
-        error: insertResult.error,
-      })
+      console.info("[consultation] target table", insertResult.table)
+      console.info("[consultation] insert payload", insertResult.payload)
+      console.info("[consultation] supabase response", insertResult)
 
       if (insertResult.error) {
-        console.error("[consultation] supabase insert failed", {
-          referenceId,
-          table: insertResult.table,
-          payload: insertResult.payload,
-          error: insertResult.error,
-        })
+        console.error("[consultation] supabase error", insertResult.error)
+        console.error("[consultation] failure reason returned to frontend", "Supabase insert returned an error object.")
         throw new Error(`Consultation submission insert failed: ${insertResult.error.message}`)
       }
 
@@ -151,6 +131,10 @@ export async function POST(request: Request) {
         table: "consultation_submissions",
         error: error instanceof Error ? error.message : "Unknown insert error",
       })
+      console.error(
+        "[consultation] failure reason returned to frontend",
+        error instanceof Error ? error.message : "Unknown insert error",
+      )
       throw error
     }
 
@@ -233,6 +217,10 @@ export async function POST(request: Request) {
       referenceId,
       error: error instanceof Error ? error.message : "Unknown error",
     })
+    console.error(
+      "[consultation] failure reason returned to frontend",
+      error instanceof Error ? error.message : "Unknown error",
+    )
 
     const response = NextResponse.json(
       {

@@ -1,10 +1,5 @@
 import {
   consultationSubmissionsTable,
-  type ConsultationConversionStatus,
-  type ConsultationCrmSyncStatus,
-  type ConsultationEmailStatus,
-  type ConsultationSubmissionStatus,
-  type ConsultationThankYouStatus,
 } from "@cbideal/config/consultation-integrity"
 import {
   consultationBudgetOptions,
@@ -98,32 +93,18 @@ export function buildConsultationSubmissionInsert(input: {
   userAgent: string
 }) {
   return {
-    reference_id: input.referenceId,
     full_name: input.values.fullName,
     email: input.values.email,
     phone_whatsapp: input.values.phoneWhatsApp,
     country_of_residence: input.values.countryOfResidence,
     nationality: input.values.nationality,
     interested_in: optionLabel(consultationInterestOptions, input.values.interestedIn),
-    budget_range: optionLabel(consultationBudgetOptions, input.values.budgetRange),
-    preferred_contact_method: optionLabel(consultationContactMethodOptions, input.values.preferredContactMethod),
+    approximate_investment_range: optionLabel(consultationBudgetOptions, input.values.budgetRange),
     family_application: optionLabel(consultationFamilyApplicationOptions, input.values.familyApplication),
     timeline: optionLabel(consultationTimelineOptions, input.values.timeline),
     current_residency_status: normalizeOptional(input.values.currentResidencyStatus),
-    message: input.values.message,
-    language: input.values.language,
-    source_page: input.values.sourcePage,
-    source_category: normalizeOptional(input.values.sourceCategory),
-    source_url: input.sourceUrl,
-    campaign: normalizeOptional(input.values.campaign),
-    user_agent: input.userAgent,
-    submitted_at: input.submittedAt,
-    submission_status: "received" satisfies ConsultationSubmissionStatus,
-    email_status: "pending" satisfies ConsultationEmailStatus,
-    email_recipients: input.recipients,
-    crm_sync_status: "pending" satisfies ConsultationCrmSyncStatus,
-    thank_you_status: "not_confirmed" satisfies ConsultationThankYouStatus,
-    conversion_status: "not_triggered" satisfies ConsultationConversionStatus,
+    preferred_contact_method: optionLabel(consultationContactMethodOptions, input.values.preferredContactMethod),
+    message_additional_notes: input.values.message,
   }
 }
 

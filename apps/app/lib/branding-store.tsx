@@ -75,8 +75,8 @@ export function getBrandingUiTokens(branding: BrandingSettings) {
 
 export const defaultBrandingSettings: BrandingSettings = {
   companyName: "CBI Deal",
-  companyLogoUrl: "/logo.svg",
-  darkLogoUrl: "/logo.svg",
+  companyLogoUrl: "/logo.png",
+  darkLogoUrl: "/logo.png",
   appIconUrl: "/favicon.ico",
   primaryColor: "#5b78a2",
   secondaryColor: "#8ca6c6",

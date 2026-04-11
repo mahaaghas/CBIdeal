@@ -42,7 +42,7 @@ export const saasPlans: SaasPlanDefinition[] = [
     secondaryLabel: "View Demo",
     billingMode: "self-serve",
     internalSeatLimit: 1,
-    clientAccountLimit: 40,
+    clientAccountLimit: 5,
     features: [
       "Structured workspace for a focused advisory desk",
       "Core document, quotation, and payment workflow",
@@ -60,7 +60,7 @@ export const saasPlans: SaasPlanDefinition[] = [
     secondaryLabel: "View Demo",
     billingMode: "self-serve",
     internalSeatLimit: 3,
-    clientAccountLimit: 160,
+    clientAccountLimit: 20,
     features: [
       "Shared workspace for coordinated team delivery",
       "Multi-client workflow visibility and reminders",
@@ -78,7 +78,7 @@ export const saasPlans: SaasPlanDefinition[] = [
     secondaryLabel: "View Demo",
     billingMode: "self-serve",
     internalSeatLimit: 8,
-    clientAccountLimit: 400,
+    clientAccountLimit: 60,
     features: [
       "Scalable client management across active matters",
       "Broader collaboration and operational oversight",

@@ -30,7 +30,7 @@ export async function POST(request: Request) {
   }
 
   const diagnostics = getBillingRuntimeDiagnostics()
-  const setupBlocked = diagnostics.issues.length > 0 || !diagnostics.supabaseConfigured
+  const setupBlocked = diagnostics.blockingIssues.length > 0 || !diagnostics.supabaseConfigured
 
   if (setupBlocked) {
     console.error("[workspace.register] setup blocked before workspace creation", {

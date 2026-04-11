@@ -16,15 +16,15 @@ type AuthShellProps = {
 const defaultSeatSummary = [
   {
     label: "Solo",
-    value: "1 user included",
+    value: "1 user, 5 client accounts",
   },
   {
     label: "Team",
-    value: "Up to 3 users",
+    value: "Up to 3 users, 20 client accounts",
   },
   {
     label: "Business",
-    value: "Up to 8 users",
+    value: "Up to 8 users, 60 client accounts",
   },
   {
     label: "Enterprise",

@@ -77,6 +77,8 @@ export type BillingRuntimeDiagnostics = {
   appUrlPresent: boolean
   productionMode: boolean
   issues: string[]
+  blockingIssues: string[]
+  warningIssues: string[]
 }
 
 type InternalWorkspaceAccessInput = {
@@ -194,12 +196,31 @@ export function getStripeBillingConfigIssues() {
   return issues
 }
 
+export function getStripeBillingBlockingIssues() {
+  const blockingIssues: string[] = []
+
+  if (!process.env.STRIPE_SECRET_KEY?.trim()) blockingIssues.push("Missing STRIPE_SECRET_KEY.")
+  if (!process.env.NEXT_PUBLIC_APP_URL?.trim()) blockingIssues.push("Missing NEXT_PUBLIC_APP_URL.")
+  if (!process.env.STRIPE_PRICE_ID_SOLO?.trim()) blockingIssues.push("Missing STRIPE_PRICE_ID_SOLO.")
+  if (!process.env.STRIPE_PRICE_ID_TEAM?.trim()) blockingIssues.push("Missing STRIPE_PRICE_ID_TEAM.")
+  if (!process.env.STRIPE_PRICE_ID_BUSINESS?.trim()) blockingIssues.push("Missing STRIPE_PRICE_ID_BUSINESS.")
+
+  const secretKey = process.env.STRIPE_SECRET_KEY?.trim()
+  if (requiresLiveStripeConfiguration() && secretKey && !isLiveStripeKey(secretKey, "sk_live_", "sk_test_")) {
+    blockingIssues.push("STRIPE_SECRET_KEY must be a live key in production.")
+  }
+
+  return blockingIssues
+}
+
 export function isStripeBillingConfigured() {
-  return getStripeBillingConfigIssues().length === 0
+  return getStripeBillingBlockingIssues().length === 0
 }
 
 export function getBillingRuntimeDiagnostics(): BillingRuntimeDiagnostics {
   const issues = getStripeBillingConfigIssues()
+  const blockingIssues = getStripeBillingBlockingIssues()
+  const warningIssues = issues.filter((issue) => !blockingIssues.includes(issue))
   return {
     stripeSecretKeyPresent: Boolean(process.env.STRIPE_SECRET_KEY?.trim()),
     stripePublishableKeyPresent: Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.trim()),
@@ -211,6 +232,8 @@ export function getBillingRuntimeDiagnostics(): BillingRuntimeDiagnostics {
     appUrlPresent: Boolean(process.env.NEXT_PUBLIC_APP_URL?.trim()),
     productionMode: requiresLiveStripeConfiguration(),
     issues,
+    blockingIssues,
+    warningIssues,
   }
 }
 

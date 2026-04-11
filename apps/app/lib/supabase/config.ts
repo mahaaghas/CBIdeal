@@ -13,7 +13,8 @@ export function getSupabaseBrowserConfig() {
 
 export function getSupabaseServerConfig() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() || process.env.SUPABASE_URL?.trim() || null
-  const secretKey = process.env.SUPABASE_SECRET_KEY?.trim() || process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || null
+  const secretKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() || process.env.SUPABASE_SECRET_KEY?.trim() || null
 
   return {
     url,

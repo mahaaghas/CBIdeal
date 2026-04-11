@@ -247,7 +247,7 @@ function requireSupabaseServerClient() {
   const supabase = getSupabaseServerClient()
   if (!supabase) {
     throw new Error(
-      "Supabase server credentials are missing. Workspace billing is blocked until NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SECRET_KEY are configured. Legacy SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY aliases are still supported during migration.",
+      "Supabase server credentials are missing. Workspace billing is blocked until NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are configured. Legacy SUPABASE_URL and SUPABASE_SECRET_KEY aliases are still supported during migration.",
     )
   }
 

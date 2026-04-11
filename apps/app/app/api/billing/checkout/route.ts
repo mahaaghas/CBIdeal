@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     const issues = getStripeBillingConfigIssues()
     if (!diagnostics.supabaseConfigured) {
       issues.push(
-        "Missing NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SECRET_KEY. Legacy SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY aliases are also supported during migration.",
+        "Missing NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY. Legacy SUPABASE_URL and SUPABASE_SECRET_KEY aliases are also supported during migration.",
       )
     }
     console.error("[billing.checkout] blocked because Stripe billing is not configured", {

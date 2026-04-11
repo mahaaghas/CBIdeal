@@ -1,5 +1,5 @@
 export const customerSafeMessages = {
-  setupUnavailable: "We're unable to continue setup right now. Please try again in a moment.",
+  setupUnavailable: "Signup is temporarily unavailable. Please try again shortly.",
   billingUnavailable: "Billing is temporarily unavailable. Please try again shortly.",
   billingPreparationFailed: "Something went wrong while preparing billing. Please try again.",
   billingConfirmationFailed: "We couldn't complete this step right now. Please return to billing and try again.",

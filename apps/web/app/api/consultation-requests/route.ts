@@ -115,71 +115,6 @@ export async function POST(request: Request) {
       throw error
     }
 
-    let crmRecordId: string | null = null
-
-    try {
-      crmRecordId = await syncConsultationToLeadInbox(values)
-      await markConsultationCrmSyncSuccess(referenceId, crmRecordId)
-      console.info("[consultation] lead inbox insert succeeded", {
-        referenceId,
-        table: "investor_leads",
-        crmRecordId,
-      })
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown CRM sync error"
-
-      console.error("[consultation] lead inbox insert failed", {
-        referenceId,
-        error: message,
-      })
-
-      await markConsultationCrmSyncFailure(referenceId, message)
-      throw error
-    }
-
-    let emailResult: Awaited<ReturnType<typeof sendConsultationNotificationEmail>> | null = null
-
-    try {
-      emailResult = await sendConsultationNotificationEmail({
-        referenceId,
-        submittedAt: timestamp,
-        pageUrl,
-        values,
-        userAgent,
-      })
-
-      await markConsultationEmailSuccess(referenceId, emailResult.messageId)
-      console.info("[consultation] email send succeeded", {
-        referenceId,
-        emailId: emailResult.messageId,
-        recipients: emailResult.recipients,
-      })
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown email delivery error"
-
-      console.error("[consultation] email send failed", {
-        referenceId,
-        error: message,
-      })
-
-      try {
-        await markConsultationEmailFailure(referenceId, message)
-      } catch (updateError) {
-        console.error("[consultation] email failure could not be recorded", {
-          referenceId,
-          error: updateError instanceof Error ? updateError.message : "Unknown update error",
-        })
-      }
-
-      throw error
-    }
-
-    console.info("[consultation] request delivered", {
-      referenceId,
-      crmRecordId,
-      emailId: emailResult?.messageId ?? null,
-    })
-
     const response = NextResponse.json({
       ok: true,
       referenceId,
@@ -191,6 +126,67 @@ export async function POST(request: Request) {
       status: 200,
       ok: true,
     })
+
+    void (async () => {
+      try {
+        const crmRecordId = await syncConsultationToLeadInbox(values)
+        await markConsultationCrmSyncSuccess(referenceId, crmRecordId)
+        console.info("[consultation] lead inbox insert succeeded", {
+          referenceId,
+          table: "investor_leads",
+          crmRecordId,
+        })
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Unknown CRM sync error"
+
+        console.error("[consultation] lead inbox insert failed", {
+          referenceId,
+          error: message,
+        })
+
+        try {
+          await markConsultationCrmSyncFailure(referenceId, message)
+        } catch (updateError) {
+          console.error("[consultation] CRM sync failure could not be recorded", {
+            referenceId,
+            error: updateError instanceof Error ? updateError.message : "Unknown update error",
+          })
+        }
+      }
+
+      try {
+        const emailResult = await sendConsultationNotificationEmail({
+          referenceId,
+          submittedAt: timestamp,
+          pageUrl,
+          values,
+          userAgent,
+        })
+
+        await markConsultationEmailSuccess(referenceId, emailResult.messageId)
+        console.info("[consultation] email send succeeded", {
+          referenceId,
+          emailId: emailResult.messageId,
+          recipients: emailResult.recipients,
+        })
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Unknown email delivery error"
+
+        console.error("[consultation] email send failed", {
+          referenceId,
+          error: message,
+        })
+
+        try {
+          await markConsultationEmailFailure(referenceId, message)
+        } catch (updateError) {
+          console.error("[consultation] email failure could not be recorded", {
+            referenceId,
+            error: updateError instanceof Error ? updateError.message : "Unknown update error",
+          })
+        }
+      }
+    })()
 
     return response
   } catch (error) {

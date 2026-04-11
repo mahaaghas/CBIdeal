@@ -247,11 +247,6 @@ export default async function ForCompaniesPage() {
         description={copy.heroDescription}
         primaryAction={{ href: "#meeting", label: copy.bookMeeting }}
         secondaryAction={{ href: ctaLinks.requestDemo, label: copy.requestDemo }}
-        stats={[
-          { value: "Structure", label: locale === "ar" ? "Ù„Ø¹Ø±Ø¶ ØªØ´ØºÙŠÙ„ÙŠ Ø£ÙƒØ«Ø± ÙˆØ¶ÙˆØ­Ù‹Ø§" : "A clearer way to approach and organise cases" },
-          { value: "Discretion", label: locale === "ar" ? "Ù„Ù„Ù†Ù‚Ø§Ø´Ø§Øª Ø§Ù„Ù…Ù‡Ù†ÙŠØ© Ø§Ù„Ù…Ø¯Ø±ÙˆØ³Ø©" : "Conversations that remain measured and controlled" },
-          { value: "Fit", label: locale === "ar" ? "Ù„ØªÙ‚Ø¯ÙŠØ± Ø§Ù„Ù…Ù„Ø§Ø¡Ù…Ø© Ø¨Ø´ÙƒÙ„ Ø£Ù‡Ø¯Ø£" : "A better sense of whether working together makes sense" },
-        ]}
       >
         <div className="space-y-4 rounded-[28px] border border-white/10 bg-white/10 p-6 backdrop-blur">
           <p className="text-sm uppercase tracking-[0.18em] text-primary-foreground/70">{copy.whatFirms}</p>

@@ -35,24 +35,6 @@ export async function generateMetadata(): Promise<Metadata> {
   })
 }
 
-const trustItems = [
-  {
-    title: "Private by design",
-    description:
-      "Conversations are framed for discretion from the outset, especially where family considerations, timing, or profile sensitivity matter.",
-  },
-  {
-    title: "Grounded in suitability",
-    description:
-      "The aim is to establish whether a route appears suitable, not to create artificial certainty or push a quick decision before the context is properly understood.",
-  },
-  {
-    title: "Measured from the outset",
-    description:
-      "The first step is intended to clarify priorities, household context, and timing before any more detailed route discussion is treated as worthwhile.",
-  },
-]
-
 const faqs = [
   {
     question: "What is this first consultation for?",
@@ -167,6 +149,14 @@ export default function BookConsultationPage() {
           ctaSecondary: "العودة إلى خيارات المستثمرين",
         }
       : null
+  const heroDescription =
+    copy?.heroDescription ??
+    "Share the essentials so the first conversation starts with the right context. This initial step is designed to clarify priorities, timing, and whether a more detailed discussion is appropriate."
+  const supportEyebrow = copy?.valueEyebrow ?? "What this first step is for"
+  const supportDescription =
+    copy?.valueDescription ??
+    "A measured first exchange to understand your priorities, timing, family context, and whether a more detailed next step makes sense."
+  const supportPoints = copy?.supportPoints ?? ["Clarify priorities", "Review timing", "Determine suitability"]
   const processSteps = [
     {
       step: "01",
@@ -184,53 +174,27 @@ export default function BookConsultationPage() {
       description: "We confirm the best reply format and whether a broader advisory step appears appropriate after review.",
     },
   ]
-  const coverageCards =
-    copy?.valueCards ?? [
-      {
-        icon: MessageSquareQuote,
-        title: "Area of interest",
-        text: "Whether the stronger fit appears to be citizenship by investment, residency by investment, or a wider relocation strategy.",
-      },
-      {
-        icon: TimerReset,
-        title: "Timing",
-        text: "Whether there is a genuine need to move now, or whether a more measured pace would be wiser.",
-      },
-      {
-        icon: ShieldCheck,
-        title: "Suitability",
-        text: "Whether the direction under consideration appears coherent with your current position and wider objectives.",
-      },
-      {
-        icon: LockKeyhole,
-        title: "Next step",
-        text: "Whether a more detailed discussion, a written introduction, or a pause for reflection would be more appropriate.",
-      },
-    ]
-  const reassuranceItems = copy?.trustItems ?? trustItems
-
   return (
     <SiteShell>
       <section className="section-padding pb-10 md:pb-14">
         <div className="container-shell">
-          <div className="hero-panel relative overflow-hidden px-7 py-8 sm:px-9 sm:py-10 md:px-12 md:py-11 lg:px-[4.3rem] lg:py-[4rem]">
+          <div className="hero-panel relative overflow-hidden px-7 py-8 sm:px-9 sm:py-10 md:px-12 md:py-11 lg:px-[4.3rem] lg:py-[3.6rem]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(214,187,131,0.16),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_34%)]" />
-            <div className="relative grid gap-10 xl:grid-cols-[minmax(0,1.02fr)_minmax(39rem,1fr)] xl:items-start xl:gap-12">
-              <div className="space-y-8">
+            <div className="relative grid gap-8 xl:grid-cols-[minmax(22rem,0.82fr)_minmax(39rem,1fr)] xl:items-start xl:gap-10">
+              <div className="flex h-full flex-col justify-start pt-1 xl:max-w-[31rem]">
                 <div className="space-y-5">
                   <span className="eyebrow border-white/20 bg-white/10 text-primary-foreground/80">
-                    {copy?.heroEyebrow ?? "Private consultation"}
+                    {copy?.heroEyebrow ?? "PRIVATE CONSULTATION"}
                   </span>
-                  <h1 className="max-w-[14ch] text-[clamp(2.35rem,3.3vw,3.45rem)] leading-[1.03] tracking-[-0.04em] text-primary-foreground">
+                  <h1 className="max-w-[11ch] text-[clamp(2.5rem,3.1vw,3.65rem)] leading-[0.98] tracking-[-0.045em] text-primary-foreground">
                     {copy?.heroTitle ?? "Request a private consultation"}
                   </h1>
-                  <p className="max-w-[38rem] text-[1rem] leading-8 text-primary-foreground/76 md:text-[1.05rem]">
-                    {copy?.heroDescription ??
-                      "This page explains what a private consultation is for, what the first exchange tends to cover, and when it makes sense to request it. The initial conversation itself allows us to understand your situation, priorities, and timeline, and to determine whether there is a sensible basis for a more detailed discussion."}
+                  <p className="max-w-[31rem] text-[0.98rem] leading-8 text-primary-foreground/74 md:text-[1.02rem]">
+                    {heroDescription}
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                   <Link href="#consultation-request-form" className="conversion-primary-button w-full sm:w-auto">
                     {copy?.heroPrimary ?? "Request a consultation"}
                   </Link>
@@ -240,47 +204,23 @@ export default function BookConsultationPage() {
                   </Link>
                 </div>
 
-                <div className="rounded-[30px] border border-white/10 bg-white/[0.05] p-6 shadow-[0_18px_52px_rgba(9,15,24,0.12)] backdrop-blur md:p-7">
+                <div className="mt-8 max-w-[29rem] rounded-[28px] border border-white/10 bg-white/[0.04] px-6 py-5 shadow-[0_18px_52px_rgba(9,15,24,0.1)] md:px-7">
                   <div className="space-y-3">
                     <p className="text-[0.74rem] font-semibold uppercase tracking-[0.18em] text-primary-foreground/66">
-                      {copy?.valueEyebrow ?? "What this first step is for"}
+                      {supportEyebrow}
                     </p>
-                    <h2 className="max-w-[20ch] text-[1.75rem] leading-[1.08] tracking-[-0.03em] text-primary-foreground">
-                      {copy?.valueTitle ?? "A more considered first exchange, before anything more involved is discussed."}
-                    </h2>
-                    <p className="max-w-[42rem] text-sm leading-7 text-primary-foreground/72 md:text-[0.98rem] md:leading-8">
-                      {copy?.valueDescription ??
-                        "The purpose is to clarify the broader picture: route preference, readiness, family considerations, and whether a more detailed next step makes sense."}
+                    <p className="max-w-[30rem] text-sm leading-7 text-primary-foreground/72 md:text-[0.98rem]">
+                      {supportDescription}
                     </p>
                   </div>
 
-                  <div className="mt-6 grid gap-4 md:grid-cols-2">
-                    {coverageCards.map((item) => (
-                      <div
-                        key={item.title}
-                        className="rounded-[24px] border border-white/8 bg-white/[0.04] px-5 py-5"
-                      >
-                        <div className="flex items-start gap-4">
-                          <div className="mt-0.5 flex size-11 shrink-0 items-center justify-center rounded-2xl bg-white/[0.08] text-[#d6bb83]">
-                            <item.icon className="size-5" />
-                          </div>
-                          <div className="space-y-2">
-                            <h3 className="text-[1.08rem] leading-6 text-primary-foreground">{item.title}</h3>
-                            <p className="text-sm leading-7 text-primary-foreground/70">{item.text}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-3">
-                  {reassuranceItems.map((item) => (
-                    <div key={item.title} className="rounded-[24px] border border-white/10 bg-white/[0.03] px-5 py-5">
-                      <p className="text-[1.08rem] leading-6 text-primary-foreground">{item.title}</p>
-                      <p className="mt-3 text-sm leading-7 text-primary-foreground/68">{item.description}</p>
+                  <div className="mt-5 border-t border-white/10 pt-4">
+                    <div className="space-y-2 text-[0.8rem] uppercase tracking-[0.16em] text-primary-foreground/60">
+                      {supportPoints.map((point) => (
+                        <p key={point}>{point}</p>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </div>
               </div>
 

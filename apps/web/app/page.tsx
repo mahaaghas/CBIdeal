@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { ArrowRight, Compass, Globe2, ShieldCheck } from "lucide-react"
 import { BlogPostCard } from "@/components/cms/blog-post-card"
+import { CalendlyInlineEmbed } from "@/components/calendly-inline-embed"
 import { CtaPanel } from "@/components/cta-panel"
 import { PageHero } from "@/components/page-hero"
 import { ProcessSteps } from "@/components/process-steps"
@@ -19,6 +20,8 @@ import { getLocalizedRouteLinks } from "@/lib/site"
 import { getBlogPosts, getHomepageLandingPage, getResolvedSiteSettings } from "@/lib/sanity/content"
 
 type HomeCopy = ReturnType<typeof getHomeCopy>
+const HOMEPAGE_CALENDLY_URL =
+  "https://calendly.com/va-agency-hirings/crm-lead-partnership-call?hide_event_type_details=1&hide_gdpr_banner=1"
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = getRequestLocale()
@@ -464,6 +467,30 @@ export default async function HomePage() {
       <section className="section-flow">
         <div className="container-shell">
           <SectionHeading
+            eyebrow={copy.pathways.eyebrow}
+            title={copy.pathways.title}
+            description={copy.pathways.description}
+          />
+          <ProgramGrid items={copy.pathways.items} />
+        </div>
+      </section>
+
+      <section className="section-flow">
+        <div className="container-shell">
+          <CtaPanel
+            eyebrow={copy.consultation.eyebrow}
+            title={copy.consultation.title}
+            description={copy.consultation.description}
+            primaryAction={{ href: routeLinks.bookConsultation, label: copy.consultation.primary }}
+            secondaryAction={{ href: routeLinks.programs, label: copy.consultation.secondary }}
+            showGuideLink={false}
+          />
+        </div>
+      </section>
+
+      <section className="section-flow">
+        <div className="container-shell">
+          <SectionHeading
             eyebrow={copy.positioning.eyebrow}
             title={copy.positioning.title}
             description={copy.positioning.description}
@@ -480,17 +507,6 @@ export default async function HomePage() {
             description={copy.approach.description}
           />
           <ProcessSteps steps={copy.approach.steps} />
-        </div>
-      </section>
-
-      <section className="section-flow">
-        <div className="container-shell">
-          <SectionHeading
-            eyebrow={copy.pathways.eyebrow}
-            title={copy.pathways.title}
-            description={copy.pathways.description}
-          />
-          <ProgramGrid items={copy.pathways.items} />
         </div>
       </section>
 
@@ -519,14 +535,34 @@ export default async function HomePage() {
 
       <section className="section-flow">
         <div className="container-shell">
-          <CtaPanel
-            eyebrow={copy.consultation.eyebrow}
-            title={copy.consultation.title}
-            description={copy.consultation.description}
-            primaryAction={{ href: routeLinks.bookConsultation, label: copy.consultation.primary }}
-            secondaryAction={{ href: routeLinks.programs, label: copy.consultation.secondary }}
-            showGuideLink={false}
-          />
+          <div className="hero-panel overflow-hidden px-6 py-8 sm:px-8 md:px-10 md:py-10">
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:items-start">
+              <div className="section-stack">
+                <span className="eyebrow border-white/20 bg-white/10 text-primary-foreground/80">Final step</span>
+                <h2 className="section-title max-w-[16ch] text-primary-foreground">Contact us or schedule a call</h2>
+                <p className="max-w-[34rem] text-base leading-7 text-primary-foreground/74 md:text-[1.02rem] md:leading-8">
+                  Choose the route that fits your pace. You can send a private enquiry first, or book a call directly
+                  using the live calendar below.
+                </p>
+                <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap">
+                  <Button asChild size="lg" variant="secondary" className="conversion-primary-button w-full sm:w-auto">
+                    <Link href={HOMEPAGE_CALENDLY_URL}>
+                      Schedule a call
+                      <ArrowRight className="size-4" />
+                    </Link>
+                  </Button>
+                  <Link href={routeLinks.contact} className="conversion-secondary-button w-full sm:w-auto">
+                    Contact us
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </div>
+              </div>
+
+              <div className="overflow-hidden rounded-[28px] border border-white/14 bg-[#f8f7f4] p-2 shadow-[0_20px_55px_rgba(9,15,24,0.16)]">
+                <CalendlyInlineEmbed url={HOMEPAGE_CALENDLY_URL} height={760} />
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </SiteShell>

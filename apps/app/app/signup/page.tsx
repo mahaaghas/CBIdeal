@@ -2,18 +2,13 @@
 
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Suspense, useEffect, useMemo, useState } from "react"
+import { Suspense, useMemo, useState } from "react"
 import { getSaasPlan, saasAppConfig, saasPlans, type SelfServePlanId } from "@cbideal/config"
 import { AppBrand } from "@cbideal/ui/components/app-brand"
 import { SetupStatusNotice } from "@/components/setup-status-notice"
 import { useBranding } from "@/lib/branding-store"
 import { customerSafeMessages } from "@/lib/customer-safe-errors"
 import { getSelfServeCheckoutUrl, usePlatformAccess } from "@/lib/platform-access-store"
-
-type BillingRuntimePayload = {
-  hardFail?: boolean
-  userMessage?: string | null
-}
 
 function renderPlanPrice(plan: { monthlyPrice: number | null }) {
   return plan.monthlyPrice === null ? "Custom" : `$${plan.monthlyPrice}`
@@ -40,37 +35,11 @@ function SignupPageContent() {
   const [planId, setPlanId] = useState<SelfServePlanId>(initialPlan)
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
-  const [checkingAvailability, setCheckingAvailability] = useState(true)
-  const [setupBlockedMessage, setSetupBlockedMessage] = useState<string | null>(null)
 
   const activePlan = useMemo(() => getSaasPlan(planId), [planId])
 
-  const checkSetupAvailability = async () => {
-    setCheckingAvailability(true)
-
-    try {
-      const response = await fetch("/api/billing/runtime", { cache: "no-store" })
-      const payload = (await response.json()) as BillingRuntimePayload
-      setSetupBlockedMessage(payload.hardFail ? payload.userMessage ?? customerSafeMessages.setupUnavailable : null)
-    } catch (runtimeError) {
-      console.error("[signup.ui] runtime check failed", runtimeError)
-      setSetupBlockedMessage(customerSafeMessages.setupUnavailable)
-    } finally {
-      setCheckingAvailability(false)
-    }
-  }
-
-  useEffect(() => {
-    void checkSetupAvailability()
-  }, [])
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-
-    if (checkingAvailability || setupBlockedMessage) {
-      setError(setupBlockedMessage ?? customerSafeMessages.setupUnavailable)
-      return
-    }
 
     setSubmitting(true)
     setError(null)
@@ -172,31 +141,6 @@ function SignupPageContent() {
                 <span>{activePlan.name} is preselected from the pricing page.</span>
               </div>
             </div>
-
-            {setupBlockedMessage ? (
-              <SetupStatusNotice
-                tone="warning"
-                title="Setup is temporarily unavailable"
-                description={setupBlockedMessage}
-                actions={
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => void checkSetupAvailability()}
-                      className="rounded-full border border-white/12 px-4 py-2.5 text-sm font-semibold text-white transition hover:border-white/28"
-                    >
-                      Retry
-                    </button>
-                    <Link
-                      href="https://www.cbideal.nl/contact"
-                      className="rounded-full border border-white/12 px-4 py-2.5 text-sm font-semibold text-slate-300 transition hover:border-white/28 hover:text-white"
-                    >
-                      Contact support
-                    </Link>
-                  </>
-                }
-              />
-            ) : null}
 
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid gap-5 md:grid-cols-2">
@@ -356,16 +300,10 @@ function SignupPageContent() {
 
               <button
                 type="submit"
-                disabled={!ready || submitting || checkingAvailability || Boolean(setupBlockedMessage)}
+                disabled={!ready || submitting}
                 className="w-full rounded-full bg-[var(--app-brand-primary)] px-5 py-3.5 text-sm font-semibold text-[var(--app-brand-on-primary)] transition hover:bg-[var(--app-brand-primary-strong)] disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {checkingAvailability
-                  ? "Checking setup..."
-                  : submitting
-                    ? "Preparing workspace..."
-                    : setupBlockedMessage
-                      ? "Setup temporarily unavailable"
-                      : "Continue to billing"}
+                {submitting ? "Preparing workspace..." : "Continue to billing"}
               </button>
             </form>
           </div>

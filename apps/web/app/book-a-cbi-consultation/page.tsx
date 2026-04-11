@@ -181,15 +181,16 @@ export default function BookConsultationPage() {
           <div className="hero-panel relative overflow-hidden px-7 py-8 sm:px-9 sm:py-10 md:px-12 md:py-11 lg:px-[4.3rem] lg:py-[3.6rem]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(214,187,131,0.16),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_34%)]" />
             <div className="relative grid gap-8 xl:grid-cols-[minmax(22rem,0.82fr)_minmax(39rem,1fr)] xl:items-start xl:gap-10">
-              <div className="flex h-full flex-col justify-start pt-1 xl:max-w-[31rem]">
+              <div className="rounded-[30px] bg-[#F8F7F4] px-6 py-7 text-[#0B1F3B] shadow-[0_24px_80px_rgba(11,31,59,0.18)] sm:px-7 md:px-8 md:py-8 xl:max-w-[31rem]">
+                <div className="flex h-full flex-col justify-start">
                 <div className="space-y-5">
-                  <span className="eyebrow border-white/20 bg-white/10 text-primary-foreground/80">
+                  <span className="inline-flex items-center rounded-full border border-[#D8CCB8] bg-[#F8F7F4] px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#6D5C45]">
                     {copy?.heroEyebrow ?? "PRIVATE CONSULTATION"}
                   </span>
-                  <h1 className="max-w-[11ch] text-[clamp(2.5rem,3.1vw,3.65rem)] leading-[0.98] tracking-[-0.045em] text-primary-foreground">
+                  <h1 className="max-w-[11ch] text-[clamp(2.5rem,3.1vw,3.65rem)] leading-[0.98] tracking-[-0.045em] text-[#0B1F3B]">
                     {copy?.heroTitle ?? "Request a private consultation"}
                   </h1>
-                  <p className="max-w-[31rem] text-[0.98rem] leading-8 text-primary-foreground/74 md:text-[1.02rem]">
+                  <p className="max-w-[31rem] text-[0.98rem] leading-8 text-[#33435C] md:text-[1.02rem]">
                     {heroDescription}
                   </p>
                 </div>
@@ -204,24 +205,25 @@ export default function BookConsultationPage() {
                   </Link>
                 </div>
 
-                <div className="mt-8 max-w-[29rem] rounded-[28px] border border-white/10 bg-white/[0.04] px-6 py-5 shadow-[0_18px_52px_rgba(9,15,24,0.1)] md:px-7">
+                <div className="mt-8 max-w-[29rem] rounded-[24px] border border-[#DED6C8] bg-white px-6 py-5 shadow-none md:px-7">
                   <div className="space-y-3">
-                    <p className="text-[0.74rem] font-semibold uppercase tracking-[0.18em] text-primary-foreground/66">
+                    <p className="text-[0.74rem] font-semibold uppercase tracking-[0.18em] text-[#6D5C45]">
                       {supportEyebrow}
                     </p>
-                    <p className="max-w-[30rem] text-sm leading-7 text-primary-foreground/72 md:text-[0.98rem]">
+                    <p className="max-w-[30rem] text-sm leading-7 text-[#44536A] md:text-[0.98rem]">
                       {supportDescription}
                     </p>
                   </div>
 
-                  <div className="mt-5 border-t border-white/10 pt-4">
-                    <div className="space-y-2 text-[0.8rem] uppercase tracking-[0.16em] text-primary-foreground/60">
+                  <div className="mt-5 border-t border-[#E5DED1] pt-4">
+                    <div className="space-y-2 text-[0.8rem] uppercase tracking-[0.16em] text-[#6A7486]">
                       {supportPoints.map((point) => (
                         <p key={point}>{point}</p>
                       ))}
                     </div>
                   </div>
                 </div>
+              </div>
               </div>
 
               <div id="consultation-request-form" className="xl:pl-2">

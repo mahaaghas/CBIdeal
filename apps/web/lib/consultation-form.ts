@@ -85,7 +85,7 @@ export type ConsultationRequestField = keyof ConsultationRequestValues
 export type ConsultationRequestFieldErrors = Partial<Record<ConsultationRequestField, string[] | undefined>>
 
 export type ConsultationRequestSubmissionResult =
-  | { ok: true; referenceId: string }
+  | { ok: true; referenceId: string; redirectTo: string }
   | {
       ok: false
       message: string
@@ -147,7 +147,7 @@ export async function submitConsultationRequest(
       }
     }
 
-    if (payload?.ok && "referenceId" in payload) {
+    if (payload?.ok && "referenceId" in payload && "redirectTo" in payload) {
       return payload
     }
 

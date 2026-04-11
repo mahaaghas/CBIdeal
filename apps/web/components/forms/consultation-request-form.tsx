@@ -130,7 +130,7 @@ export function ConsultationRequestForm({
       language,
     })
 
-    router.push(localizeHref(locale, "/thank-you"))
+    router.push(localizeHref(locale, result.redirectTo))
   })
 
   return (
